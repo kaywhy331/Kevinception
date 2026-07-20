@@ -1,0 +1,10 @@
+{
+  "name": "Kevinception",
+  "short_name": "Kevinception",
+  "description": "One life through six technologies.",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#07080c",
+  "theme_color": "#07080c",
+  "icons": [{ "src": "/favicon.svg", "sizes": "any", "type": "image/svg+xml" }]
+}

@@ -1,0 +1,52 @@
+{
+  "name": "kevinception-v7-r3f",
+  "version": "0.7.0",
+  "private": true,
+  "description": "Kevinception V7 — one life through six technologies, delivered through a persistent R3F experience and semantic portfolio routes.",
+  "engines": {
+    "node": ">=20.9.0"
+  },
+  "scripts": {
+    "dev": "node scripts/dev.mjs",
+    "build": "next build",
+    "preview": "node scripts/serve.mjs out 4321",
+    "start": "npm run preview",
+    "typecheck": "tsc --noEmit",
+    "test": "vitest run",
+    "check:build": "node scripts/check-build.mjs",
+    "verify": "npm run typecheck && npm run test && npm run build && npm run check:build && npm run check:links && npm run check:security",
+    "check:links": "node scripts/check-links.mjs",
+    "check:security": "node scripts/check-security.mjs",
+    "test:runtime": "node scripts/runtime-check.mjs"
+  },
+  "dependencies": {
+    "@react-three/drei": "10.7.7",
+    "@react-three/fiber": "9.6.1",
+    "@react-three/postprocessing": "3.0.4",
+    "@xstate/react": "6.1.0",
+    "gsap": "3.15.0",
+    "next": "16.2.10",
+    "postprocessing": "6.39.3",
+    "react": "19.2.7",
+    "react-dom": "19.2.7",
+    "three": "0.185.1",
+    "xstate": "5.32.5",
+    "zod": "4.4.3",
+    "zustand": "5.0.14"
+  },
+  "devDependencies": {
+    "@testing-library/jest-dom": "6.9.1",
+    "@testing-library/react": "16.3.0",
+    "@types/node": "24.10.1",
+    "@types/react": "19.2.17",
+    "@types/react-dom": "19.2.3",
+    "@types/three": "0.185.0",
+    "jsdom": "27.2.0",
+    "puppeteer-core": "^25.3.0",
+    "typescript": "6.0.3",
+    "vitest": "4.1.10"
+  },
+  "overrides": {
+    "postcss": "8.5.20"
+  }
+}

@@ -1,0 +1,22 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 630" role="img" aria-label="Kevinception — Layers Within Layers">
+  <defs>
+    <radialGradient id="bg" cx="70%" cy="45%" r="65%"><stop offset="0" stop-color="#1d2430"/><stop offset=".55" stop-color="#0d0d15"/><stop offset="1" stop-color="#050507"/></radialGradient>
+    <filter id="glow"><feGaussianBlur stdDeviation="12" result="b"/><feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge></filter>
+    <pattern id="grid" width="64" height="64" patternUnits="userSpaceOnUse"><path d="M64 0H0V64" fill="none" stroke="#fff" stroke-opacity=".045"/></pattern>
+  </defs>
+  <rect width="1200" height="630" fill="url(#bg)"/>
+  <rect width="1200" height="630" fill="url(#grid)"/>
+  <g transform="translate(870 315)" fill="none">
+    <circle r="222" stroke="#7dffb2" stroke-opacity=".18"/>
+    <circle r="155" stroke="#8c7cff" stroke-opacity=".28"/>
+    <rect x="-88" y="-88" width="176" height="176" transform="rotate(45)" stroke="#7dffb2" stroke-width="2" filter="url(#glow)"/>
+    <rect x="-48" y="-48" width="96" height="96" transform="rotate(45)" stroke="#50d9ff" stroke-opacity=".6"/>
+    <path d="M-22-55v110M-20 0L46-56M-20 0l70 58" stroke="#f7f3e8" stroke-width="11"/>
+  </g>
+  <g font-family="Arial, Helvetica, sans-serif" fill="#f7f3e8">
+    <text x="92" y="180" font-family="monospace" font-size="25" letter-spacing="5" fill="#7dffb2">AN INTERACTIVE PORTFOLIO</text>
+    <text x="88" y="310" font-size="102" font-weight="700" letter-spacing="-7">Kevinception</text>
+    <text x="94" y="380" font-family="Georgia, serif" font-size="45" font-style="italic" fill="#d8d4c9">Layers within layers.</text>
+    <text x="94" y="492" font-family="monospace" font-size="23" fill="#a7a4a0">ONE IDENTITY / MULTIPLE TIMELINES</text>
+  </g>
+</svg>

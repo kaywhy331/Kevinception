@@ -1,0 +1,34 @@
+{
+  "00_OVERARCHING_GOAL.md": {
+    "bytes": 9890,
+    "sha256": "e549165487c1b42855832e05079800d4e4adb360878cc80a9d2eaec1f230087f"
+  },
+  "01_PRODUCT_REQUIREMENTS_DOCUMENT.md": {
+    "bytes": 20511,
+    "sha256": "62c3878bb046b500c82c8c7d88fcd27beebdd25903bfbcd36cddf0d2a6a6bc94"
+  },
+  "02_TECHNICAL_SPECIFICATION.md": {
+    "bytes": 21858,
+    "sha256": "92d55899f973a353b618701e3fb41fa41f11d59e1e0a7fc275817000af9ae488"
+  },
+  "03_CROSS_TIMELINE_INTERACTION_SPEC.md": {
+    "bytes": 9992,
+    "sha256": "61b08bfb98296ec4e4a78e37358e19daa43b48a5e87eac2421482684903557e7"
+  },
+  "04_PAGE_COMPLETION_CHECKLISTS.md": {
+    "bytes": 22412,
+    "sha256": "e03f52ecac8f08522f8dc78cb9193a1f4de30f68a219e4ffa6beab6d82ac97d8"
+  },
+  "KEVINCEPTION_V7_MASTER_SPEC.md": {
+    "bytes": 86127,
+    "sha256": "630f066e360130736239c961782444715ed43f40e582ff14271fb5abe2c0c78b"
+  },
+  "README.md": {
+    "bytes": 2031,
+    "sha256": "58c7228b05b72e6348b14e56264d29c847642bfb2c9b95c1724660dee0f9dde7"
+  },
+  "page-acceptance-index.json": {
+    "bytes": 1943,
+    "sha256": "ba7316e753a4b6ad7db1c2f720a1c70654a4bb8f58d577368346517a7e1ef192"
+  }
+}

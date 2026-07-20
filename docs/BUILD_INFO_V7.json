@@ -1,0 +1,14 @@
+{
+  "name": "Kevinception V7 R3F-first hybrid rebuild",
+  "version": "0.7.0",
+  "verified_date": "2026-07-20",
+  "architecture": ["Next.js App Router", "React", "TypeScript", "Three.js", "React Three Fiber", "semantic DOM interfaces"],
+  "years": ["1990", "2000", "2010", "2020", "2030", "2040"],
+  "required_routes": 13,
+  "generated_next_pages": 20,
+  "embedded_era_apps": 6,
+  "unit_tests": 7,
+  "local_references_checked": 897,
+  "production_audit_vulnerabilities": 0,
+  "status": "architectural implementation and functional vertical slice"
+}

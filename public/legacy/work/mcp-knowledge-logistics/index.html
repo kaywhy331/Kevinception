@@ -1,0 +1,195 @@
+<!doctype html>
+<html lang="en" data-motion="auto" data-sound="off">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>MCP &amp; Knowledge Logistics — Kevinception</title>
+    <meta name="description" content="A product direction that connects TokenPak to MCP-compatible clients and equips agents with reusable, source-backed, freshness-aware knowledge packages instead of repeated ad hoc research.">
+    <meta name="theme-color" content="#09090d">
+    <meta name="color-scheme" content="dark light">
+    <link rel="canonical" href="https://kevinception.com/work/mcp-knowledge-logistics/">
+    <link rel="icon" href="/legacy/assets/favicon.svg" type="image/svg+xml">
+    <link rel="manifest" href="/site.webmanifest">
+    <meta property="og:type" content="website">
+    <meta property="og:title" content="MCP &amp; Knowledge Logistics — Kevinception">
+    <meta property="og:description" content="A product direction that connects TokenPak to MCP-compatible clients and equips agents with reusable, source-backed, freshness-aware knowledge packages instead of repeated ad hoc research.">
+    <meta property="og:url" content="https://kevinception.com/work/mcp-knowledge-logistics/">
+    <meta property="og:image" content="https://kevinception.com/legacy/assets/og-card.png">
+    <meta name="twitter:card" content="summary_large_image">
+    <link rel="stylesheet" href="/legacy/assets/styles/tokens.css">
+    <link rel="stylesheet" href="/legacy/assets/styles/global.css">
+    <link rel="stylesheet" href="/legacy/assets/styles/portfolio.css">
+    <script type="application/ld+json">{"@context":"https://schema.org","@type":"CreativeWork","name":"MCP \u0026 Knowledge Logistics","description":"A product direction that connects TokenPak to MCP-compatible clients and equips agents with reusable, source-backed, freshness-aware knowledge packages instead of repeated ad hoc research.","creator":{"@context":"https://schema.org","@type":"Person","name":"Kevin Yang","url":"https://kevinception.com","jobTitle":["Entrepreneur","Project \u0026 Product Leader","Technology / Business Consultant","Systems Builder"],"sameAs":["https://github.com/kaywhy331"]},"url":"https://kevinception.com/work/mcp-knowledge-logistics/"}</script>
+  
+<style>
+html[data-embedded="true"] body{margin:0!important;min-height:100vh!important;}
+html[data-embedded="true"] .experience-utility,html[data-embedded="true"] .site-header,html[data-embedded="true"] .site-footer{display:none!important;}
+html[data-embedded="true"] main{min-height:100vh!important;}
+</style>
+</head>
+  <body class="page-case-study">
+    <a class="skip-link" href="#main-content">Skip to content</a>
+    
+    
+    <header class="site-header" data-site-header>
+      <div class="shell site-header__inner">
+        <a class="brand" href="/" aria-label="Kevinception home">
+          <span class="brand__glyph" aria-hidden="true"><span>K</span></span>
+          <span class="brand__wordmark">Kevinception</span>
+        </a>
+        <button class="nav-toggle" type="button" aria-expanded="false" aria-controls="site-navigation" data-nav-toggle>
+          <span class="sr-only">Toggle navigation</span>
+          <span aria-hidden="true"></span><span aria-hidden="true"></span>
+        </button>
+        <nav class="site-nav" id="site-navigation" aria-label="Primary" data-site-nav>
+          
+        <a href="/portfolio/">Portfolio</a>
+        <a href="/work/" aria-current="page">Work</a>
+        <a href="/resume/">Resume</a>
+        <a href="/about/">About</a>
+        <a href="/contact/">Contact</a>
+          <a class="button button--small button--ghost" href="/experience/">Enter a timeline</a>
+        </nav>
+      </div>
+    </header>
+    
+    <main id="main-content" data-project-page>
+      <div class="reading-progress" aria-hidden="true"><span data-reading-progress></span></div>
+      <article>
+        <header class="case-hero section">
+          <div class="shell case-hero__grid">
+            <div class="case-hero__copy reveal">
+              <a class="back-link" href="/work/">← Work archive</a>
+              <p class="eyebrow">TokenPak product expansion</p>
+              <h1>MCP &amp; Knowledge Logistics</h1>
+              <p class="lede">A product direction that connects TokenPak to MCP-compatible clients and equips agents with reusable, source-backed, freshness-aware knowledge packages instead of repeated ad hoc research.</p>
+              
+            </div>
+            <dl class="case-facts reveal" style="--reveal-delay:100ms">
+              <div><dt>Year</dt><dd>2026 R&amp;D</dd></div>
+              <div><dt>Role</dt><dd>Product strategy · Technical specification · Knowledge architecture · Risk design</dd></div>
+              <div><dt>Disciplines</dt><dd>MCP · Knowledge systems · AI interoperability · Retrieval · Product architecture</dd></div>
+            </dl>
+          </div>
+        </header>
+
+        <section class="section section--surface" aria-labelledby="problem-title">
+          <div class="shell case-two-column">
+            <div class="case-label reveal"><span>01</span><p>The situation</p></div>
+            <div class="case-copy reveal">
+              <h2 id="problem-title">Problem and context</h2>
+              <h3>The problem</h3><p>AI work is fragmented across chat, IDE, CLI, automation, and agent surfaces. At the same time, specialized agents repeatedly rediscover the same facts through model memory, noisy web search, long uploads, or one-off retrieval systems that are expensive and difficult to audit.</p>
+              <h3>Context</h3><p>The MCP Gateway and Knowledge PAK concepts extend TokenPak from a local context tool into a portable interoperability and knowledge-logistics layer. MCP provides a standardized entrance; TokenPak supplies the differentiated policy, retrieval, packing, memory, budget, routing, receipt, and capture behavior behind it.</p>
+              <h3>Constraints</h3>
+              <ul class="detail-list"><li>MCP can expose tools and data but cannot guarantee visibility into every host model’s internal context or complete transcript.</li><li>Source-backed knowledge needs versioning, freshness, authority, citation, and access controls.</li><li>The first release should be read-first and low-risk before adding mutation, dispatch, or memory-promotion actions.</li><li>The system must work across local stdio clients and remote streamable HTTP connections.</li></ul>
+            </div>
+          </div>
+        </section>
+
+        <section class="section" aria-labelledby="approach-title">
+          <div class="shell case-two-column">
+            <div class="case-label reveal"><span>02</span><p>The work</p></div>
+            <div class="case-copy reveal">
+              <h2 id="approach-title">Approach and decisions</h2>
+              <ol class="process-list"><li><span>01</span><p>Defined one universal gateway with platform-specific connection profiles rather than separate product integrations.</p></li><li><span>02</span><p>Separated the MCP ingress layer from the optional capture companion/proxy needed for deeper observability and routing control.</p></li><li><span>03</span><p>Designed a small initial tool surface for status, estimates, budgets, vault search, retrieval, recall, context packing, and receipt reading.</p></li><li><span>04</span><p>Specified Knowledge PAKs as versioned, indexed, source-backed bundles refreshed when authoritative sources change.</p></li><li><span>05</span><p>Connected every retrieval and action to scoped permissions and receipts.</p></li></ol>
+              <h3>Key decisions</h3>
+              <ul class="detail-list"><li>MCP is the standardized entrance, not the complete product moat.</li><li>The MVP begins read-first; write actions arrive later behind confirmations and receipts.</li><li>Knowledge is packed into task-specific slices instead of dumping entire corpora into context.</li><li>Source identity, freshness, and authority are preserved so agents can explain what they relied on.</li></ul>
+            </div>
+          </div>
+        </section>
+
+        <section class="section section--surface" aria-labelledby="deliverables-title">
+          <div class="shell case-two-column">
+            <div class="case-label reveal"><span>03</span><p>The output</p></div>
+            <div class="case-copy reveal">
+              <h2 id="deliverables-title">Deliverables and artifacts</h2>
+              <div class="deliverable-grid"><div><span aria-hidden="true">↳</span>MCP Gateway PRD and technical specification</div><div><span aria-hidden="true">↳</span>Remote HTTP and local stdio connection model</div><div><span aria-hidden="true">↳</span>Authentication, pairing, scope, and receipt design</div><div><span aria-hidden="true">↳</span>Initial MCP tool schemas</div><div><span aria-hidden="true">↳</span>Knowledge PAK builder and registry proposal</div><div><span aria-hidden="true">↳</span>Freshness, citation, and source-governance model</div></div>
+              <div class="artifact-grid">
+                
+                  <article class="artifact-card">
+                    <div class="artifact-card__visual" aria-hidden="true"><span>01</span><i></i></div>
+                    <p class="eyebrow">document</p>
+                    <h3>TokenPak MCP Gateway PRD</h3>
+                    <p>Product thesis, user modes, transport, authentication, tool surface, schemas, risks, and roadmap.</p>
+                    <span class="artifact-card__placeholder">Artifact slot ready</span>
+                  </article>
+                  <article class="artifact-card">
+                    <div class="artifact-card__visual" aria-hidden="true"><span>02</span><i></i></div>
+                    <p class="eyebrow">document</p>
+                    <h3>Knowledge PAK proposal</h3>
+                    <p>Source ingestion, indexing, freshness, retrieval, packing, citation, and agent attachment model.</p>
+                    <span class="artifact-card__placeholder">Artifact slot ready</span>
+                  </article>
+                  <article class="artifact-card">
+                    <div class="artifact-card__visual" aria-hidden="true"><span>03</span><i></i></div>
+                    <p class="eyebrow">prototype</p>
+                    <h3>Cross-client profiles</h3>
+                    <p>Connection and usage models for ChatGPT, Claude, Gemini CLI, IDE assistants, and local agents.</p>
+                    <span class="artifact-card__placeholder">Artifact slot ready</span>
+                  </article>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <section class="section" aria-labelledby="outcomes-title">
+          <div class="shell case-two-column">
+            <div class="case-label reveal"><span>04</span><p>The evidence</p></div>
+            <div class="case-copy reveal">
+              <h2 id="outcomes-title">Outcomes</h2>
+              <div class="outcome-grid">
+                <article><p>Interoperability model</p><strong>One gateway, many clients</strong><small>Chat, IDE, CLI, automation, and agent surfaces connect through shared TokenPak contracts.</small></article><article><p>Knowledge model</p><strong>Source-backed and reusable</strong><small>Knowledge PAKs are versioned, indexed, refreshed, retrieved in slices, and cited in receipts.</small></article><article><p>MVP posture</p><strong>Read-first and governed</strong><small>High-risk mutation and dispatch actions are deferred behind explicit permissions and confirmations.</small></article>
+              </div>
+              <h3>Learning</h3>
+              <ul class="detail-list"><li>Interoperability standards create reach, but product differentiation still lives in policy, context quality, observability, and trust.</li><li>Professional agent work needs governed knowledge substrates, not only stronger prompts or larger context windows.</li><li>Read-first product sequencing creates useful value while giving permission and receipt systems time to mature.</li></ul>
+            </div>
+          </div>
+        </section>
+
+        <nav class="case-next section" aria-label="Project navigation">
+          <div class="shell cta-panel">
+            <div><p class="eyebrow">Continue exploring</p><h2>See this work through another layer.</h2></div>
+            <div class="button-row"><a class="button button--primary" href="/experience/2000/">Open in Kevin Online</a><a class="button button--secondary" href="/work/">All projects</a></div>
+          </div>
+        </nav>
+      </article>
+    </main>
+    
+    <footer class="site-footer">
+      <div class="shell site-footer__inner">
+        <div>
+          <a class="brand brand--compact" href="/">
+            <span class="brand__glyph" aria-hidden="true"><span>K</span></span>
+            <span class="brand__wordmark">Kevinception</span>
+          </a>
+          <p>One identity. Multiple cultural interfaces. Layers within layers.</p>
+        </div>
+        <div class="site-footer__links">
+          <a href="/work/">Work</a>
+          <a href="/resume/">Resume</a>
+          <a href="/experience/">Timelines</a>
+          <a href="https://github.com/kaywhy331" rel="me">GitHub</a>
+        </div>
+        <p class="site-footer__meta">© 2026 Kevin Yang. Built as an original experience.</p>
+      </div>
+    </footer>
+    <div class="toast-region" aria-live="polite" aria-atomic="true" data-toast-region></div>
+    <script type="module" src="/legacy/assets/client/global.js"></script>
+    <script type="module" src="/legacy/assets/client/project.js"></script>
+  
+<script>
+(function(){
+  document.documentElement.dataset.embedded='true';
+  document.addEventListener('click',function(event){
+    var anchor=event.target && event.target.closest ? event.target.closest('a[href^="/"]') : null;
+    if(!anchor) return;
+    var href=anchor.getAttribute('href');
+    if(!href || href.indexOf('/legacy/')===0 || href.indexOf('/assets/')===0) return;
+    event.preventDefault();
+    window.parent.postMessage({type:'kevinception:navigate',href:href},window.location.origin);
+  },true);
+  window.parent.postMessage({type:'kevinception:legacy-ready',path:window.location.pathname},window.location.origin);
+})();
+</script>
+</body>
+</html>

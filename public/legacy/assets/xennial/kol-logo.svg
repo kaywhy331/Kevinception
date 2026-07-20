@@ -1,0 +1,15 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 420 140" role="img" aria-labelledby="title desc">
+  <title id="title">Kevin Online</title><desc id="desc">A blue triangular Kevin Online parody wordmark.</desc>
+  <defs>
+    <linearGradient id="g" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#071d70"/><stop offset="1" stop-color="#164fc6"/></linearGradient>
+  </defs>
+  <path d="M72 8 8 126h128L72 8Z" fill="url(#g)" stroke="#00104b" stroke-width="5"/>
+  <path d="M72 42 41 100h61L72 42Z" fill="#fff" opacity=".12"/>
+  <path d="M90 62c-22-9-45 5-45 27 0 22 23 36 45 27l-13-19c-8 3-15-1-15-8 0-7 7-11 15-8L90 62Z" fill="#fff"/>
+  <path d="M83 73h21l-18 16 18 16H83L66 89l17-16Z" fill="#081d72"/>
+  <text x="150" y="58" font-family="Arial,Helvetica,sans-serif" font-size="34" font-weight="700" letter-spacing="8" fill="#1235a7">KEVIN</text>
+  <text x="145" y="112" font-family="Brush Script MT,Segoe Script,cursive" font-size="58" font-style="italic" font-weight="700" fill="#1235a7">Online</text>
+  <path d="M145 119c90 15 190 10 260-14" fill="none" stroke="#1235a7" stroke-width="5" stroke-linecap="round"/>
+  <circle cx="404" cy="99" r="6" fill="none" stroke="#1235a7" stroke-width="2"/>
+  <text x="401" y="103" font-family="Arial" font-size="8" text-anchor="middle" fill="#1235a7">K</text>
+</svg>

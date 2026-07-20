@@ -1,0 +1,92 @@
+{
+  "version": "7.0",
+  "pages": [
+    {
+      "id": "threshold",
+      "route": "/",
+      "title": "Threshold"
+    },
+    {
+      "id": "timeline",
+      "route": "/experience",
+      "title": "Technology Timeline"
+    },
+    {
+      "id": "1990",
+      "route": "/experience/1990",
+      "title": "KevinVision"
+    },
+    {
+      "id": "2000",
+      "route": "/experience/2000",
+      "title": "Kevin Online"
+    },
+    {
+      "id": "2010",
+      "route": "/experience/2010",
+      "title": "KevinBook"
+    },
+    {
+      "id": "2020",
+      "route": "/experience/2020",
+      "title": "KevTok"
+    },
+    {
+      "id": "2030",
+      "route": "/experience/2030",
+      "title": "Kevin Nexus"
+    },
+    {
+      "id": "2040",
+      "route": "/experience/2040",
+      "title": "Kevin Echo"
+    },
+    {
+      "id": "portfolio",
+      "route": "/portfolio",
+      "title": "Portfolio"
+    },
+    {
+      "id": "work",
+      "route": "/work",
+      "title": "Work Index"
+    },
+    {
+      "id": "project",
+      "route": "/work/[project-slug]",
+      "title": "Project Case Study"
+    },
+    {
+      "id": "resume",
+      "route": "/resume",
+      "title": "Resume"
+    },
+    {
+      "id": "about",
+      "route": "/about",
+      "title": "About"
+    },
+    {
+      "id": "contact",
+      "route": "/contact",
+      "title": "Contact"
+    },
+    {
+      "id": "settings",
+      "route": "/settings",
+      "title": "Settings & Accessibility"
+    },
+    {
+      "id": "fallback",
+      "route": "system",
+      "title": "Loading, Error & Fallback"
+    }
+  ],
+  "globalDefinitionOfDone": [
+    "Canonical content trust validation passes",
+    "No essential content depends on WebGL, AI, game completion, sound, drag, or Easter eggs",
+    "Keyboard, touch, reduced-motion, muted, and no-WebGL paths are complete",
+    "Performance, accessibility, route, security, and E2E gates pass",
+    "Cross-era artifact state persists and can reset"
+  ]
+}
