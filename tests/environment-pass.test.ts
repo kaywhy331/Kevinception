@@ -38,7 +38,7 @@ describe('V7.1 connected physical environment pass', () => {
 
   it('uses compact era docks rather than the previous full descriptive cards', () => {
     const overlay = read('src/experience/ExperienceOverlay.tsx');
-    const styles = read('app/globals.css');
+    const styles = read('app/environment-pass.css');
     expect(overlay).toContain('era-details');
     expect(styles).toContain('.timeline-panel');
     expect(styles).toContain('max-width: 760px');

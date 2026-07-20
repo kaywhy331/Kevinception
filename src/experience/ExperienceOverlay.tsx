@@ -42,15 +42,18 @@ function TimelinePanel() {
   const { navigateToYear } = useExperienceActions();
   return (
     <section className="timeline-panel glass-panel" style={{ '--era-accent': config.accent } as React.CSSProperties}>
-      <p className="eyebrow">Technology memory corridor</p>
-      <div className="timeline-panel__year">{activeYear}</div>
-      <h1>{config.title}</h1>
-      <p className="timeline-panel__product">{config.product}</p>
-      <p>{config.description}</p>
-      <strong>{config.transformation}</strong>
+      <div className="timeline-panel__identity">
+        <p className="eyebrow">Technology memory corridor</p>
+        <h1><span>{activeYear}</span> {config.title}</h1>
+        <strong>{config.transformation}</strong>
+      </div>
+      <details className="era-details">
+        <summary>About this era</summary>
+        <p><b>{config.product}</b> · {config.description}</p>
+      </details>
       <div className="button-row">
         <button className="primary-action" type="button" onClick={() => navigateToYear(activeYear)}>{config.enterLabel}</button>
-        <Link className="secondary-action" href="/portfolio/">View Kevin’s work</Link>
+        <Link className="secondary-action" href="/portfolio/">Portfolio</Link>
       </div>
     </section>
   );
@@ -64,11 +67,14 @@ function EnvironmentPanel() {
   const next = getAdjacentYear(activeYear, 1);
   return (
     <section className="environment-panel glass-panel" style={{ '--era-accent': config.accent } as React.CSSProperties}>
-      <div>
+      <div className="environment-panel__identity">
         <p className="eyebrow">{config.product}</p>
         <h1><span>{activeYear}</span> {config.title}</h1>
-        <p>{config.description}</p>
-        <small>{config.emotionalGoal}</small>
+        <details className="era-details">
+          <summary>About this environment</summary>
+          <p>{config.description}</p>
+          <small>{config.emotionalGoal}</small>
+        </details>
       </div>
       <div className="environment-panel__actions">
         <button className="primary-action" type="button" onClick={openInterface}>{config.enterLabel}</button>

@@ -1,5 +1,6 @@
 import type { Metadata } from 'next';
 import './globals.css';
+import './environment-pass.css';
 import { site } from '@/content/data';
 
 export const metadata: Metadata = {
