@@ -1,7 +1,7 @@
 import { describe, expect, it } from 'vitest';
-import { eraConfigs, getAdjacentYear, getYearFromPath, transitionBetween, YEAR_ORDER } from '@/experience/config';
+import { eraConfigs, getAdjacentYear, getYearFromPath, transitionBetween, yearDistance, YEAR_ORDER } from '@/experience/config';
 
- describe('experience configuration', () => {
+describe('experience configuration', () => {
   it('has one complete manifest per year', () => {
     expect(Object.keys(eraConfigs)).toEqual(YEAR_ORDER);
     for (const year of YEAR_ORDER) {
@@ -15,9 +15,10 @@ import { eraConfigs, getAdjacentYear, getYearFromPath, transitionBetween, YEAR_O
     expect(getAdjacentYear('1990', -1)).toBeNull();
     expect(getAdjacentYear('1990', 1)).toBe('2000');
   });
-  it('uses authored transition types', () => {
+  it('uses authored transitions for adjacent eras and a temporal jump for distant eras', () => {
     expect(transitionBetween('1990', '2000')).toBe('static-modem');
     expect(transitionBetween('2030', '2040')).toBe('agents-to-echo');
-    expect(transitionBetween('1990', '2040')).toBe('timeline-fade');
+    expect(transitionBetween('1990', '2040')).toBe('time-jump');
+    expect(yearDistance('1990', '2040')).toBe(5);
   });
 });
