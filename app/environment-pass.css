@@ -1,14 +1,16 @@
-/* V7.4 flow, focus, and performance UI. */
+/* V7.5 scene refinement, flow, and performance UI. */
 .timeline-panel {
   position: absolute;
-  left: clamp(.8rem, 3vw, 2.5rem);
+  left: 50%;
   bottom: 5.9rem;
-  width: min(680px, calc(100% - 1.6rem));
+  translate: -50% 0;
+  width: min(720px, calc(100% - 1.6rem));
   max-width: 760px;
   padding: .8rem .95rem;
   border-radius: 16px;
   display: flex;
   align-items: center;
+  justify-content: space-between;
   gap: .9rem;
   pointer-events: auto;
 }
@@ -26,10 +28,11 @@
 .year-selector { bottom: .7rem; width: min(860px, calc(100% - 1.4rem)); padding: .32rem; border-radius: 15px; gap: .3rem; }
 .year-selector button { min-height: 48px; padding: .42rem .6rem; border-radius: 10px; }
 .year-selector button b { font-size: .64rem; }
+.persistent-year-selector { position: fixed; z-index: 24; }
 .environment-panel {
   position: absolute;
   left: 50%;
-  bottom: .8rem;
+  bottom: 5.9rem;
   translate: -50% 0;
   width: min(860px, calc(100% - 1.6rem));
   min-height: 74px;
@@ -72,8 +75,8 @@
 @keyframes time-jump-pulse { 0% { transform: scale(.45); opacity: 0 } 42% { transform: scale(1); opacity: 1 } 100% { transform: scale(1.5); opacity: 0 } }
 
 @media (min-aspect-ratio: 21/9) and (min-width: 1300px) {
-  .timeline-panel { left: 1.4rem; bottom: 4.9rem; width: min(630px, 31vw); }
-  .year-selector { width: min(760px, 45vw); }
+  .timeline-panel { left: 50%; bottom: 5.4rem; translate: -50% 0; width: min(720px, 46vw); }
+  .year-selector { width: min(800px, 48vw); }
 }
 
 @media (max-width: 900px) {
@@ -90,7 +93,7 @@
   .experience-mark b { display: none; }
   .experience-toolbar nav > * { padding: .48rem .6rem; }
   .experience-toolbar nav > *:nth-child(2), .experience-toolbar nav > *:nth-child(4), .experience-toolbar nav > *:nth-child(6), .experience-toolbar nav > *:nth-child(7) { display: none; }
-  .timeline-panel { left: .55rem; bottom: 5.15rem; width: calc(100% - 1.1rem); padding: .65rem .7rem; gap: .55rem; }
+  .timeline-panel { left: 50%; bottom: 5.15rem; translate: -50% 0; width: calc(100% - 1.1rem); padding: .65rem .7rem; gap: .55rem; }
   .timeline-panel h1 { font-size: 1.25rem; }
   .timeline-panel strong, .timeline-panel .eyebrow, .timeline-panel .era-details { display: none; }
   .timeline-panel .button-row { margin: 0; }
@@ -99,7 +102,7 @@
   .year-selector { width: calc(100% - 1.1rem); bottom: .45rem; grid-template-columns: repeat(6, 1fr); overflow-x: auto; }
   .year-selector button { min-width: 72px; padding: .4rem; }
   .year-selector button b { display: none; }
-  .environment-panel { bottom: .45rem; width: calc(100% - 1.1rem); min-height: 62px; padding: .58rem .65rem; gap: .45rem; }
+  .environment-panel { bottom: 5.15rem; width: calc(100% - 1.1rem); min-height: 62px; padding: .58rem .65rem; gap: .45rem; }
   .environment-panel .eyebrow, .environment-panel .era-details { display: none; }
   .environment-panel h1 { font-size: 1.18rem; }
   .environment-panel .secondary-action { display: none; }
