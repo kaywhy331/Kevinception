@@ -67,22 +67,35 @@ const shardLayout = [
   { position: [0, 1.7, 1.35] as [number, number, number], color: '#f7f6ff' }
 ];
 
-export function Year2040Scene({ active }: { active: boolean; timeline: boolean }) {
+export function Year2040Scene({ active, detail = true }: { active: boolean; timeline: boolean; detail?: boolean }) {
   const config = eraConfigs['2040'];
   const { enterYear, discover } = useExperienceActions();
   const shards = useRef<THREE.Group>(null);
   useFrame(({ clock }) => {
-    if (!active || !shards.current) return;
+    if (!active || !detail || !shards.current) return;
     shards.current.rotation.y = Math.sin(clock.elapsedTime * 0.16) * 0.06;
   });
 
+  if (!detail) {
+    return (
+      <group position={[config.stationX, 0, 0]}>
+        <RoomShell floorColor="#ddd9df" wallColor="#f0edef" sideColor="#dedbe2" ceilingColor="#f7f5f3" trimColor="#9d98aa" accent={config.accent} openLeft active={false} floorRoughness={0.32} />
+        <GlassPanel position={[0, 3.5, -3.35]} size={[7.3, 4.35, 0.055]} color="#d7efff" opacity={0.05} frameColor="#aba8b4" />
+        <mesh position={[0, 0.2, -0.25]} castShadow receiveShadow><cylinderGeometry args={[1.45, 1.8, 0.3, 40]} /><meshStandardMaterial color="#d8d3df" roughness={0.32} metalness={0.1} /></mesh>
+        <mesh position={[0, 2.1, -0.25]}><capsuleGeometry args={[0.42, 1.85, 6, 16]} /><meshStandardMaterial color="#c7bbf1" emissive="#a88cff" emissiveIntensity={0.14} transparent opacity={0.32} wireframe /></mesh>
+        <LightBar position={[-2.7, 5.55, -2.45]} length={3.0} color="#fff5df" intensity={0.05} />
+        <LightBar position={[2.7, 5.55, -2.45]} length={3.0} color="#ddd2ff" intensity={0.06} />
+      </group>
+    );
+  }
+
   return (
     <group position={[config.stationX, 0, 0]}>
-      <RoomShell floorColor="#e8e5e2" wallColor="#edeae6" sideColor="#ddd9e0" ceilingColor="#f6f4f1" trimColor="#9d98aa" accent={config.accent} openLeft active={active} floorRoughness={0.28} />
+      <RoomShell floorColor="#ddd9df" wallColor="#f0edef" sideColor="#dedbe2" ceilingColor="#f7f5f3" trimColor="#9d98aa" accent={config.accent} openLeft active={active} floorRoughness={0.28} />
       <Dust center={[0, 3.0, 0]} spread={[9.2, 5.8, 7]} color="#d4c9ff" active={active} count={active ? 54 : 14} />
 
       <GlassPanel position={[0, 3.5, -3.35]} size={[7.3, 4.35, 0.055]} color="#d7efff" opacity={active ? 0.15 : 0.06} frameColor="#aba8b4" />
-      <mesh position={[0, 3.5, -3.39]}><planeGeometry args={[7.05, 4.1]} /><meshBasicMaterial color="#c9d7e2" transparent opacity={0.2} /></mesh>
+      <mesh position={[0, 3.5, -3.39]}><planeGeometry args={[7.05, 4.1]} /><meshBasicMaterial color="#c9d7e2" transparent opacity={0.18} /></mesh>
       <mesh position={[0, 3.0, -3.0]} rotation={[0, 0, Math.PI]}><torusGeometry args={[2.35, 0.075, 12, 72, Math.PI]} /><meshStandardMaterial color="#bbb5c2" metalness={0.2} roughness={0.34} /></mesh>
       <LightBar position={[-2.7, 5.55, -2.45]} length={3.0} color="#fff5df" intensity={active ? 0.75 : 0.08} />
       <LightBar position={[2.7, 5.55, -2.45]} length={3.0} color="#ddd2ff" intensity={active ? 0.85 : 0.08} />
@@ -94,7 +107,7 @@ export function Year2040Scene({ active }: { active: boolean; timeline: boolean }
         </group>
       ))}
 
-      <mesh position={[0, -0.105, -0.05]} rotation={[-Math.PI / 2, 0, 0]} receiveShadow><circleGeometry args={[3.35, 64]} /><meshPhysicalMaterial color="#bce7ea" transparent opacity={0.38} roughness={0.08} metalness={0.02} clearcoat={1} clearcoatRoughness={0.04} /></mesh>
+      <mesh position={[0, -0.105, -0.05]} rotation={[-Math.PI / 2, 0, 0]} receiveShadow><circleGeometry args={[3.35, 64]} /><meshPhysicalMaterial color="#bce7ea" transparent opacity={0.34} roughness={0.08} metalness={0.02} clearcoat={1} clearcoatRoughness={0.04} /></mesh>
       <mesh position={[0, -0.135, -0.05]} rotation={[-Math.PI / 2, 0, 0]}><ringGeometry args={[2.85, 3.38, 64]} /><meshStandardMaterial color="#d8d2dd" roughness={0.32} metalness={0.12} /></mesh>
 
       <Hoverable label="Contact Kevin Echo" onClick={() => enterYear('2040')}>
