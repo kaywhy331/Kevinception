@@ -6,7 +6,7 @@ import { useCallback, useEffect, useMemo, useRef } from 'react';
 import { useMachine } from '@xstate/react';
 import type { YearId } from '@/content/data';
 import type { ArtifactId } from './artifacts';
-import { transitionBetween, getAdjacentYear, getYearFromPath, YEAR_ORDER } from './config';
+import { transitionBetween, getAdjacentYear, getYearFromPath, yearDistance, YEAR_ORDER } from './config';
 import { ExperienceActionsProvider } from './ExperienceContext';
 import { experienceMachine } from './machine';
 import { useExperienceStore } from './store';
@@ -65,6 +65,7 @@ export function ExperienceShell({ children }: { children: React.ReactNode }) {
   const discoverArtifact = useExperienceStore((state) => state.discoverArtifact);
   const setWebgl = useExperienceStore((state) => state.setWebglAvailable);
   const setMotion = useExperienceStore((state) => state.setMotion);
+  const setQuality = useExperienceStore((state) => state.setQuality);
   const settingsOpen = useExperienceStore((state) => state.settingsOpen);
   const helpOpen = useExperienceStore((state) => state.helpOpen);
   const artifactsOpen = useExperienceStore((state) => state.artifactsOpen);
@@ -96,6 +97,13 @@ export function ExperienceShell({ children }: { children: React.ReactNode }) {
   }, [setMotion]);
 
   useEffect(() => {
+    if (window.localStorage.getItem('kevinception-v7')) return;
+    const device = navigator as Navigator & { deviceMemory?: number; connection?: { saveData?: boolean } };
+    const lowPower = window.innerWidth < 760 || (device.deviceMemory ?? 8) <= 4 || navigator.hardwareConcurrency <= 4 || Boolean(device.connection?.saveData);
+    if (lowPower) setQuality('lite');
+  }, [setQuality]);
+
+  useEffect(() => {
     const canvas = document.createElement('canvas');
     const available = Boolean(canvas.getContext('webgl2') || canvas.getContext('webgl'));
     setWebgl(available);
@@ -125,43 +133,60 @@ export function ExperienceShell({ children }: { children: React.ReactNode }) {
     }, delay));
   }, [send, setTransition]);
 
-  const navigateToYear = useCallback((year: YearId) => {
-    if (machine.matches('transitioning')) return;
-    if (machine.matches('environment') && year === activeYear) return;
+  const interruptTransition = useCallback(() => {
+    if (!machine.matches('transitioning')) return;
     clearTransitionTimers();
-    const duration = motion === 'reduced' ? 40 : 560;
-    setTransition({ from: activeYear, to: year, id: 'timeline-fade', startedAt: Date.now() });
+    setTransition(null);
+    send({ type: 'SYNC_VIEW', destination: 'environment' });
+  }, [clearTransitionTimers, machine, send, setTransition]);
+
+  const navigateToYear = useCallback((year: YearId) => {
+    if (machine.matches('transitioning')) interruptTransition();
+    if (year === activeYear) {
+      if (machine.matches('timeline')) {
+        router.push(experienceUrl(year), { scroll: false });
+        send({ type: 'SHOW_ENVIRONMENT' });
+      }
+      return;
+    }
+    clearTransitionTimers();
+    const distance = yearDistance(activeYear, year);
+    const id = distance > 1 ? 'time-jump' : 'timeline-fade';
+    const duration = motion === 'reduced' ? 24 : distance > 1 ? 300 : 420;
+    setTransition({ from: activeYear, to: year, id, startedAt: Date.now() });
     setActiveYear(year);
     recordVisit(year);
     send({ type: 'START_TRANSITION' });
     router.push(experienceUrl(year), { scroll: false });
     playInterfaceTone('transition', sound);
     completeTransition('environment', duration);
-  }, [activeYear, clearTransitionTimers, completeTransition, machine, motion, recordVisit, router, send, setActiveYear, setTransition, sound]);
+  }, [activeYear, clearTransitionTimers, completeTransition, interruptTransition, machine, motion, recordVisit, router, send, setActiveYear, setTransition, sound]);
 
   const enterYear = useCallback((year: YearId = activeYear) => {
-    if (machine.matches('transitioning')) return;
+    if (machine.matches('transitioning')) interruptTransition();
     clearTransitionTimers();
     const changingYear = year !== activeYear;
-    const duration = motion === 'reduced' ? 50 : changingYear ? 920 : 360;
-    setTransition({ from: activeYear, to: year, id: changingYear ? transitionBetween(activeYear, year) : 'timeline-fade', startedAt: Date.now() });
+    const id = changingYear ? transitionBetween(activeYear, year) : 'timeline-fade';
+    const duration = motion === 'reduced' ? 36 : id === 'time-jump' ? 390 : changingYear ? 660 : 250;
+    setTransition({ from: activeYear, to: year, id, startedAt: Date.now() });
     setActiveYear(year);
     recordVisit(year);
     send({ type: 'START_TRANSITION' });
     router.push(experienceUrl(year, 'interface'), { scroll: false });
     playInterfaceTone(changingYear ? 'transition' : 'click', sound);
     completeTransition('interface', duration);
-  }, [activeYear, clearTransitionTimers, completeTransition, machine, motion, recordVisit, router, send, setActiveYear, setTransition, sound]);
+  }, [activeYear, clearTransitionTimers, completeTransition, interruptTransition, machine, motion, recordVisit, router, send, setActiveYear, setTransition, sound]);
 
   const showTimeline = useCallback(() => {
     if (machine.matches('timeline')) return;
+    if (machine.matches('transitioning')) interruptTransition();
     clearTransitionTimers();
-    const duration = motion === 'reduced' ? 40 : 420;
+    const duration = motion === 'reduced' ? 24 : 300;
     setTransition({ from: activeYear, to: activeYear, id: 'timeline-fade', startedAt: Date.now() });
     send({ type: 'START_TRANSITION' });
     router.push('/experience/', { scroll: false });
     completeTransition('timeline', duration);
-  }, [activeYear, clearTransitionTimers, completeTransition, machine, motion, router, send, setTransition]);
+  }, [activeYear, clearTransitionTimers, completeTransition, interruptTransition, machine, motion, router, send, setTransition]);
 
   const openInterface = useCallback(() => enterYear(activeYear), [activeYear, enterYear]);
 
@@ -203,7 +228,7 @@ export function ExperienceShell({ children }: { children: React.ReactNode }) {
   }, [enterYear, router, showTimeline]);
 
   useEffect(() => {
-    const canNavigateTimeline = () => !machine.matches('interface') && !machine.matches('text') && !machine.matches('transitioning') && !settingsOpen && !helpOpen && !artifactsOpen;
+    const canNavigateTimeline = () => !machine.matches('interface') && !machine.matches('text') && !settingsOpen && !helpOpen && !artifactsOpen;
     const move = (direction: -1 | 1) => {
       const next = getAdjacentYear(useExperienceStore.getState().activeYear, direction);
       if (next) navigateToYear(next);
@@ -224,10 +249,10 @@ export function ExperienceShell({ children }: { children: React.ReactNode }) {
     const onWheel = (event: WheelEvent) => {
       if (!canNavigateTimeline() || shouldIgnoreGesture(event.target) || event.ctrlKey) return;
       const now = Date.now();
-      if (now - lastGestureAt.current < 600) return;
+      if (now - lastGestureAt.current < 450) return;
       const delta = Math.abs(event.deltaX) > Math.abs(event.deltaY) * 0.7 ? event.deltaX : event.deltaY;
       wheelDistance.current += delta;
-      if (Math.abs(wheelDistance.current) < 140) return;
+      if (Math.abs(wheelDistance.current) < 110) return;
       lastGestureAt.current = now;
       const direction: -1 | 1 = wheelDistance.current > 0 ? 1 : -1;
       wheelDistance.current = 0;
