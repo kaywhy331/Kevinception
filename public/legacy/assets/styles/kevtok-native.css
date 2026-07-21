@@ -190,6 +190,7 @@ html[data-kevinception-frame="true"] [data-toast-region] {
   transform: translateX(-50%);
   pointer-events: none;
 }
+html[data-kevinception-frame="true"] [data-toast-region] .toast:not(:last-child) { display: none !important; }
 html[data-kevinception-frame="true"] [data-toast-region] .toast {
   width: fit-content;
   max-width: 100%;
