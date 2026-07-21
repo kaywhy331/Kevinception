@@ -1,6 +1,7 @@
 import type { Metadata } from 'next';
 import './globals.css';
 import './environment-pass.css';
+import './device-native-pass.css';
 import { site } from '@/content/data';
 import { narrativeSite } from '@/content/narrative';
 
