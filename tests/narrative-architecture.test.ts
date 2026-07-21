@@ -38,7 +38,7 @@ describe('V7.6 narrative architecture', () => {
     expect(overlay).toContain('Chapter {config.chapterNumber}');
     expect(overlay).toContain('Experienced through');
     expect(overlay).toContain('What Kevin carried forward');
-    expect(overlay).toContain('Continue to {next} {eraConfigs[next].chapterName}');
+    expect(overlay).toContain('Continue to {eraConfigs[next].chapterName}');
     expect(overlay).toContain('from.chapterName} → ${to.chapterName}');
   });
 
