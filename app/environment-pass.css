@@ -4,6 +4,7 @@
   left: clamp(.8rem, 3vw, 2.5rem);
   bottom: 5.9rem;
   width: min(680px, calc(100% - 1.6rem));
+  max-width: 760px;
   padding: .8rem .95rem;
   border-radius: 16px;
   display: flex;
