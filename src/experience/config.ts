@@ -1,6 +1,6 @@
 import type { YearId } from '@/content/data';
 
-export type TransitionId = 'static-modem' | 'profile-flatten' | 'portrait-rotate' | 'signals-to-agents' | 'agents-to-echo' | 'timeline-fade';
+export type TransitionId = 'static-modem' | 'profile-flatten' | 'portrait-rotate' | 'signals-to-agents' | 'agents-to-echo' | 'timeline-fade' | 'time-jump';
 
 export type EraConfig = {
   id: YearId;
@@ -69,10 +69,16 @@ export function getAdjacentYear(year: YearId, direction: -1 | 1): YearId | null 
   return next ?? null;
 }
 
+export function yearDistance(from: YearId | null, to: YearId) {
+  if (!from) return 0;
+  return Math.abs(YEAR_ORDER.indexOf(to) - YEAR_ORDER.indexOf(from));
+}
+
 export function transitionBetween(from: YearId | null, to: YearId): TransitionId {
   if (!from) return 'timeline-fade';
   const fromIndex = YEAR_ORDER.indexOf(from);
   const toIndex = YEAR_ORDER.indexOf(to);
+  if (Math.abs(toIndex - fromIndex) > 1) return 'time-jump';
   if (toIndex === fromIndex + 1) return eraConfigs[from].transitionToNext ?? 'timeline-fade';
   if (toIndex === fromIndex - 1) return eraConfigs[to].transitionToNext ?? 'timeline-fade';
   return 'timeline-fade';
