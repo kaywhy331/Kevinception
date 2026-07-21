@@ -1,10 +1,9 @@
-/* V7.1 connected-environment UI: keep controls legible without covering the rooms. */
+/* V7.2 flow and performance UI: keep controls legible without covering the rooms. */
 .timeline-panel {
   position: absolute;
   left: clamp(.8rem, 3vw, 2.5rem);
   bottom: 5.9rem;
-  width: min(640px, calc(100% - 1.6rem));
-  max-width: 760px;
+  width: min(680px, calc(100% - 1.6rem));
   padding: .8rem .95rem;
   border-radius: 16px;
   display: flex;
@@ -21,7 +20,7 @@
 .era-details summary { list-style: none; cursor: pointer; color: #c6cfdd; font-size: .72rem; padding: .45rem .6rem; border: 1px solid rgba(255,255,255,.13); border-radius: 999px; background: rgba(255,255,255,.035); }
 .era-details summary::-webkit-details-marker { display: none; }
 .era-details[open] { position: static; }
-.era-details[open] > p { position: absolute; left: .85rem; right: .85rem; bottom: calc(100% + .55rem); z-index: 4; margin: 0; padding: .8rem .9rem; border: 1px solid rgba(255,255,255,.14); border-radius: 12px; background: rgba(8,10,16,.94); color: #bdc6d4; box-shadow: 0 18px 60px rgba(0,0,0,.38); }
+.era-details[open] > p { position: absolute; left: .85rem; right: .85rem; bottom: calc(100% + .55rem); z-index: 4; margin: 0; padding: .8rem .9rem; border: 1px solid rgba(255,255,255,.14); border-radius: 12px; background: rgba(8,10,16,.96); color: #bdc6d4; box-shadow: 0 18px 60px rgba(0,0,0,.38); }
 .era-details[open] small { display: block; margin-top: .35rem; color: var(--era-accent); }
 .year-selector { bottom: .7rem; width: min(860px, calc(100% - 1.4rem)); padding: .32rem; border-radius: 15px; gap: .3rem; }
 .year-selector button { min-height: 48px; padding: .42rem .6rem; border-radius: 10px; }
@@ -48,14 +47,38 @@
 .environment-panel__actions { display: flex; gap: .42rem; flex-wrap: nowrap; justify-content: flex-end; align-items: center; }
 .environment-panel__actions > * { white-space: nowrap; }
 
+.interface-mode { transition: opacity .22s ease, visibility 0s linear 0s; }
+.interface-mode.is-hidden { opacity: 0; visibility: hidden; pointer-events: none; transition: opacity .16s ease, visibility 0s linear .16s; }
+.interface-mode.is-visible { opacity: 1; visibility: visible; pointer-events: auto; }
+.interface-mode__device { position: relative; overflow: hidden; }
+.interface-mode__frame { position: absolute; inset: clamp(.35rem, 1vw, .8rem); width: calc(100% - clamp(.7rem, 2vw, 1.6rem)); height: calc(100% - clamp(.7rem, 2vw, 1.6rem)); }
+.interface-mode__frame.is-cached { display: none; }
+.interface-loading { position: absolute; inset: 0; z-index: 2; display: grid; place-items: center; align-content: center; gap: .8rem; background: radial-gradient(circle, color-mix(in srgb, var(--era-accent) 14%, #08090d), #08090d 68%); }
+.interface-loading span { width: 42px; height: 42px; border: 2px solid rgba(255,255,255,.13); border-top-color: var(--era-accent); border-radius: 50%; animation: spin .8s linear infinite; }
+.interface-loading p { margin: 0; color: #dce3ed; font-size: .8rem; letter-spacing: .04em; }
+
+.experience-hint { position: absolute; left: 50%; top: 5.2rem; translate: -50% 0; z-index: 32; display: flex; align-items: center; gap: .7rem; width: min(570px, calc(100% - 2rem)); padding: .65rem .7rem .65rem .9rem; border: 1px solid rgba(255,255,255,.14); border-radius: 999px; background: rgba(7,9,14,.88); backdrop-filter: blur(16px); box-shadow: 0 16px 50px rgba(0,0,0,.35); pointer-events: auto; }
+.experience-hint p { flex: 1; margin: 0; color: #c8d0dc; font-size: .73rem; }
+.experience-hint button { border: 1px solid rgba(255,255,255,.16); border-radius: 999px; background: var(--era-accent); color: #081018; font-weight: 800; padding: .45rem .7rem; cursor: pointer; }
+
+.experience-toolbar { transition: opacity .2s ease; }
+.mode-interface .experience-toolbar { opacity: 0; pointer-events: none; }
+.transition-overlay { pointer-events: none; }
+
 @media (max-width: 900px) {
-  .timeline-panel { bottom: 5.8rem; width: min(600px, calc(100% - 1.4rem)); }
+  .timeline-panel { bottom: 5.8rem; width: min(620px, calc(100% - 1.4rem)); }
   .timeline-panel .secondary-action { display: none; }
   .environment-panel { width: min(760px, calc(100% - 1.4rem)); }
   .environment-panel__actions { justify-content: flex-end; }
+  .experience-toolbar nav > *:nth-child(4), .experience-toolbar nav > *:nth-child(6), .experience-toolbar nav > *:nth-child(7) { display: none; }
+  .interface-mode__bar nav button:nth-child(2), .interface-mode__bar nav a { display: none; }
 }
 
 @media (max-width: 640px) {
+  .experience-toolbar { inset: .5rem .5rem auto; }
+  .experience-mark b { display: none; }
+  .experience-toolbar nav > * { padding: .48rem .6rem; }
+  .experience-toolbar nav > *:nth-child(2), .experience-toolbar nav > *:nth-child(4), .experience-toolbar nav > *:nth-child(6), .experience-toolbar nav > *:nth-child(7) { display: none; }
   .timeline-panel { left: .55rem; bottom: 5.15rem; width: calc(100% - 1.1rem); padding: .65rem .7rem; gap: .55rem; }
   .timeline-panel h1 { font-size: 1.25rem; }
   .timeline-panel strong, .timeline-panel .eyebrow, .timeline-panel .era-details { display: none; }
@@ -67,9 +90,19 @@
   .year-selector button b { display: none; }
   .environment-panel { bottom: .45rem; width: calc(100% - 1.1rem); min-height: 62px; padding: .58rem .65rem; gap: .45rem; }
   .environment-panel .eyebrow, .environment-panel .era-details { display: none; }
-  .environment-panel h1 { font-size: 1.28rem; }
+  .environment-panel h1 { font-size: 1.18rem; }
   .environment-panel .secondary-action { display: none; }
   .environment-panel__actions { gap: .3rem; }
-  .environment-panel__actions .primary-action { padding: .55rem .65rem; font-size: .72rem; }
+  .environment-panel__actions .primary-action { padding: .55rem .65rem; font-size: .7rem; }
   .environment-panel__actions .icon-action { width: 38px; height: 38px; }
+  .experience-hint { top: 4.25rem; border-radius: 14px; align-items: flex-start; }
+  .experience-hint p { font-size: .68rem; }
+  .interface-mode__bar { padding: .55rem .65rem; }
+  .interface-mode__bar > div b { max-width: 130px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+  .interface-mode__bar nav button { font-size: .68rem; padding: .42rem .55rem; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .interface-mode, .experience-toolbar { transition: none; }
+  .interface-loading span { animation-duration: 1.4s; }
 }
