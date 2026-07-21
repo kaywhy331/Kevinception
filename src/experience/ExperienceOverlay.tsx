@@ -4,82 +4,85 @@ import Link from 'next/link';
 import { useEffect, useMemo, useState } from 'react';
 import { projects, timelineContent, type YearId } from '@/content/data';
 import { artifacts } from './artifacts';
-import { eraConfigs, getAdjacentYear, YEAR_ORDER, type TransitionId } from './config';
+import { eraConfigs, getAdjacentYear, YEAR_ORDER } from './config';
 import { useExperienceActions } from './ExperienceContext';
 import { useExperienceStore } from './store';
+
+function canPrewarmInterface() {
+  if (typeof navigator === 'undefined') return false;
+  const device = navigator as Navigator & { deviceMemory?: number; connection?: { saveData?: boolean } };
+  return !device.connection?.saveData && (device.deviceMemory ?? 8) > 4 && navigator.hardwareConcurrency > 4;
+}
+
+function requestInterfacePrewarm(year: YearId) {
+  if (!canPrewarmInterface()) return;
+  window.dispatchEvent(new CustomEvent('kevinception:prewarm', { detail: { year } }));
+}
 
 function YearSelector() {
   const activeYear = useExperienceStore((state) => state.activeYear);
   const visits = useExperienceStore((state) => state.yearVisits);
   const { navigateToYear } = useExperienceActions();
   return (
-    <div className="year-selector" role="list" aria-label="Technology timeline years">
+    <nav className="year-selector persistent-year-selector" aria-label="Technology chapters">
       {YEAR_ORDER.map((year) => {
         const config = eraConfigs[year];
         return (
           <button
             key={year}
             type="button"
-            role="listitem"
             className={activeYear === year ? 'is-active' : ''}
             style={{ '--era-accent': config.accent } as React.CSSProperties}
             onClick={() => navigateToYear(year)}
+            onPointerEnter={() => requestInterfacePrewarm(year)}
+            onFocus={() => requestInterfacePrewarm(year)}
             aria-current={activeYear === year ? 'step' : undefined}
+            aria-label={`${year} ${config.chapterName}, experienced through ${config.experienceName}`}
           >
             <span>{year}</span>
-            <b>{config.title}</b>
+            <b>{config.chapterName}</b>
+            <em>{config.experienceName}</em>
             {visits[year] > 0 && <small aria-label={`${visits[year]} visits`}>●</small>}
           </button>
         );
       })}
-    </div>
+    </nav>
   );
 }
 
-function TimelinePanel() {
+function ChapterCard({ mode }: { mode: 'timeline' | 'environment' }) {
   const activeYear = useExperienceStore((state) => state.activeYear);
   const config = eraConfigs[activeYear];
   const { enterYear } = useExperienceActions();
+  const panelClass = mode === 'timeline' ? 'timeline-panel' : 'environment-panel';
   return (
-    <section className="timeline-panel glass-panel" style={{ '--era-accent': config.accent } as React.CSSProperties}>
-      <div className="timeline-panel__identity">
-        <p className="eyebrow">Technology memory corridor</p>
-        <h1><span>{activeYear}</span> {config.title}</h1>
+    <section className={`${panelClass} chapter-card glass-panel`} style={{ '--era-accent': config.accent } as React.CSSProperties}>
+      <div className="chapter-card__identity">
+        <p className="eyebrow">Chapter {config.chapterNumber} of {YEAR_ORDER.length}</p>
+        <h1><span>{activeYear}</span> {config.chapterName}</h1>
+        <p className="chapter-card__experience">Experienced through <b>{config.experienceName}</b></p>
         <strong>{config.transformation}</strong>
       </div>
       <details className="era-details">
-        <summary>About this era</summary>
-        <p><b>{config.product}</b> · {config.description}</p>
+        <summary>Why this chapter matters</summary>
+        <div className="chapter-details">
+          <p><b>{config.medium}</b></p>
+          <p>{config.chapterThesis}</p>
+          <ul>{config.capabilityLinks.map((capability) => <li key={capability}>{capability}</li>)}</ul>
+        </div>
       </details>
-      <div className="button-row">
-        <button className="primary-action" type="button" onClick={() => enterYear(activeYear)}>{config.enterLabel}</button>
+      <div className="button-row chapter-card__actions">
+        <button
+          className="primary-action"
+          type="button"
+          onPointerEnter={() => requestInterfacePrewarm(activeYear)}
+          onFocus={() => requestInterfacePrewarm(activeYear)}
+          onTouchStart={() => requestInterfacePrewarm(activeYear)}
+          onClick={() => enterYear(activeYear)}
+        >
+          {config.enterLabel}
+        </button>
         <Link className="secondary-action" href="/portfolio/">Portfolio</Link>
-      </div>
-    </section>
-  );
-}
-
-function EnvironmentPanel() {
-  const activeYear = useExperienceStore((state) => state.activeYear);
-  const config = eraConfigs[activeYear];
-  const { openInterface, showTimeline, navigateToYear } = useExperienceActions();
-  const previous = getAdjacentYear(activeYear, -1);
-  const next = getAdjacentYear(activeYear, 1);
-  return (
-    <section className="environment-panel glass-panel" style={{ '--era-accent': config.accent } as React.CSSProperties}>
-      <div className="environment-panel__identity">
-        <p className="eyebrow">{config.product}</p>
-        <h1><span>{activeYear}</span> {config.title}</h1>
-        <details className="era-details">
-          <summary>About this environment</summary>
-          <p>{config.description}<small>{config.emotionalGoal}</small></p>
-        </details>
-      </div>
-      <div className="environment-panel__actions">
-        <button className="primary-action" type="button" onClick={openInterface}>{config.enterLabel}</button>
-        <button className="secondary-action" type="button" onClick={showTimeline}>Timeline</button>
-        <button className="icon-action" type="button" disabled={!previous} onClick={() => previous && navigateToYear(previous)} aria-label="Previous year">←</button>
-        <button className="icon-action" type="button" disabled={!next} onClick={() => next && navigateToYear(next)} aria-label="Next year">→</button>
       </div>
     </section>
   );
@@ -91,7 +94,17 @@ function InterfaceLayer({ visible }: { visible: boolean }) {
   const { closeInterface, enterYear, showTimeline } = useExperienceActions();
   const [mountedYears, setMountedYears] = useState<YearId[]>([]);
   const [loadedYears, setLoadedYears] = useState<Partial<Record<YearId, boolean>>>({});
+  const [takeawayOpen, setTakeawayOpen] = useState(false);
+  const previous = getAdjacentYear(activeYear, -1);
   const next = getAdjacentYear(activeYear, 1);
+
+  const mountYear = (year: YearId) => {
+    if (year === '2000') return;
+    setMountedYears((current) => {
+      const withoutYear = current.filter((item) => item !== year);
+      return [...withoutYear, year].slice(-2);
+    });
+  };
 
   useEffect(() => {
     if (!visible) return;
@@ -102,13 +115,21 @@ function InterfaceLayer({ visible }: { visible: boolean }) {
   }, [activeYear, visible]);
 
   useEffect(() => {
-    if (visible || activeYear === '2000' || loadedYears[activeYear]) return;
-    const timer = window.setTimeout(() => {
-      setMountedYears((current) => {
-        const withoutActive = current.filter((year) => year !== activeYear);
-        return [...withoutActive, activeYear].slice(-2);
-      });
-    }, 850);
+    setTakeawayOpen(false);
+  }, [activeYear]);
+
+  useEffect(() => {
+    const listener = (event: Event) => {
+      const year = (event as CustomEvent<{ year?: YearId }>).detail?.year;
+      if (year && YEAR_ORDER.includes(year) && !loadedYears[year]) mountYear(year);
+    };
+    window.addEventListener('kevinception:prewarm', listener);
+    return () => window.removeEventListener('kevinception:prewarm', listener);
+  }, [loadedYears]);
+
+  useEffect(() => {
+    if (visible || activeYear === '2000' || loadedYears[activeYear] || !canPrewarmInterface()) return;
+    const timer = window.setTimeout(() => mountYear(activeYear), 1100);
     return () => window.clearTimeout(timer);
   }, [activeYear, loadedYears, visible]);
 
@@ -128,18 +149,33 @@ function InterfaceLayer({ visible }: { visible: boolean }) {
   };
 
   return (
-    <section className={`interface-mode ${visible ? 'is-visible' : 'is-hidden'}`} aria-label={`${config.title} interface`} aria-hidden={!visible}>
+    <section className={`interface-mode ${visible ? 'is-visible' : 'is-hidden'}`} aria-label={`${activeYear} ${config.chapterName}, ${config.experienceName} interface`} aria-hidden={!visible}>
       <header className="interface-mode__bar">
-        <div><span>{activeYear}</span><b>{config.title}</b></div>
+        <div className="interface-mode__identity">
+          <span>{config.chapterNumber}/{YEAR_ORDER.length} · {config.chapterName}</span>
+          <b>{activeYear} {config.experienceName}</b>
+        </div>
         <nav aria-label="Interface controls">
+          {previous && <button type="button" onClick={() => enterYear(previous)} aria-label={`Previous chapter: ${eraConfigs[previous].chapterName}`}>← {eraConfigs[previous].chapterName}</button>}
           <button type="button" onClick={closeInterface}>Step back</button>
           <button type="button" onClick={showTimeline}>Timeline</button>
-          {next && <button type="button" onClick={() => enterYear(next)}>Continue to {next}</button>}
+          <button type="button" onClick={() => setTakeawayOpen((open) => !open)} aria-expanded={takeawayOpen}>Takeaway</button>
+          {next && <button type="button" onClick={() => enterYear(next)}>Continue to {next} {eraConfigs[next].chapterName}</button>}
           <Link href="/portfolio/">Portfolio</Link>
         </nav>
       </header>
+      {takeawayOpen && (
+        <aside className="chapter-takeaway-panel" aria-label={`${config.chapterName} chapter takeaway`}>
+          <p className="eyebrow">What Kevin carried forward</p>
+          <h2>{config.transformation}</h2>
+          <p>{config.lesson}</p>
+          <ul>{config.capabilityLinks.map((capability) => <li key={capability}>{capability}</li>)}</ul>
+          {config.bridgeToNext && <p className="chapter-bridge">Next: {config.bridgeToNext}</p>}
+          {next && <button className="primary-action" type="button" onClick={() => enterYear(next)}>Continue to {eraConfigs[next].chapterName}</button>}
+        </aside>
+      )}
       <div className="interface-mode__device" style={{ '--era-accent': config.accent } as React.CSSProperties}>
-        {!loadedYears[activeYear] && visible && <div className="interface-loading" role="status"><span></span><p>Starting {config.title}…</p></div>}
+        {!loadedYears[activeYear] && visible && <div className="interface-loading" role="status"><span></span><p>Starting {config.experienceName}…</p></div>}
         {mountedYears.map((year) => {
           const yearConfig = eraConfigs[year];
           const isActive = visible && year === activeYear;
@@ -148,7 +184,7 @@ function InterfaceLayer({ visible }: { visible: boolean }) {
               key={year}
               className={`interface-mode__frame ${isActive ? 'is-active' : 'is-cached'}`}
               src={yearConfig.legacyPath}
-              title={`${yearConfig.title} functional application`}
+              title={`${yearConfig.experienceName} functional application for the ${yearConfig.chapterName} chapter`}
               sandbox="allow-scripts allow-forms allow-same-origin allow-popups allow-modals allow-downloads allow-top-navigation-by-user-activation"
               loading={year === activeYear ? 'eager' : 'lazy'}
               tabIndex={isActive ? 0 : -1}
@@ -167,15 +203,17 @@ function TextMode() {
   const { closeTextMode, navigateToYear } = useExperienceActions();
   const yearData = timelineContent[activeYear as keyof typeof timelineContent] as unknown as Record<string, unknown>;
   const featured = projects.slice(0, 3);
+  const next = getAdjacentYear(activeYear, 1);
   return (
-    <section className="text-mode" aria-label={`${config.title} text experience`}>
+    <section className="text-mode" aria-label={`${activeYear} ${config.chapterName} text experience`}>
       <header><button type="button" onClick={closeTextMode}>Return to 3D</button><Link href="/portfolio/">Portfolio</Link></header>
       <article>
-        <p className="eyebrow">Text experience · {activeYear}</p>
-        <h1>{config.title}</h1>
-        <p className="lead">{config.description}</p>
-        <h2>What this year represents</h2>
-        <p>{config.transformation}. The emotional target is {config.emotionalGoal.toLowerCase()}.</p>
+        <p className="eyebrow">Chapter {config.chapterNumber} of {YEAR_ORDER.length} · {activeYear}</p>
+        <h1>{config.chapterName}</h1>
+        <p className="lead">Experienced through {config.experienceName}. {config.chapterThesis}</p>
+        <h2>{config.transformation}</h2>
+        <p>{config.lesson}</p>
+        <ul className="chapter-capability-list">{config.capabilityLinks.map((capability) => <li key={capability}>{capability}</li>)}</ul>
         {activeYear === '1990' && 'channels' in yearData && (
           <div className="text-mode__grid">
             {(yearData.channels as Array<{ number: number; name: string; title: string; body: string }>).map((channel) => (
@@ -194,7 +232,7 @@ function TextMode() {
         <div className="text-mode__grid">
           {featured.map((project) => <section key={project.slug}><h3>{project.title}</h3><p>{project.summary}</p><Link href={`/work/${project.slug}/`}>Open case study</Link></section>)}
         </div>
-        <div className="button-row"><button type="button" onClick={() => navigateToYear(getAdjacentYear(activeYear, 1) ?? '1990')}>Continue through time</button></div>
+        <div className="button-row"><button type="button" onClick={() => navigateToYear(next ?? '1990')}>{next ? `Continue to ${eraConfigs[next].chapterName}` : 'Return to Curiosity'}</button></div>
       </article>
     </section>
   );
@@ -252,8 +290,8 @@ function HelpPanel() {
     <div className="modal-backdrop" role="presentation" onMouseDown={() => setOpen(false)}>
       <section className="modal-card" role="dialog" aria-modal="true" aria-label="Experience help" onMouseDown={(event) => event.stopPropagation()}>
         <header><h2>How to explore</h2><button type="button" autoFocus onClick={() => setOpen(false)} aria-label="Close help">×</button></header>
-        <p>Swipe, scroll, use the visible timeline, or press the arrow keys to preview a year. Press Enter—or the primary era button—to open its functional interface immediately.</p>
-        <dl><dt>← / →</dt><dd>Previous or next year</dd><dt>Enter</dt><dd>Open the selected interface</dd><dt>Escape</dt><dd>Close the top layer or return to the timeline</dd><dt>T</dt><dd>Return to the timeline</dd></dl>
+        <p>Swipe, scroll, use the chapter timeline, or press the arrow keys to preview a chapter. Press Enter—or the primary chapter button—to open its functional era interface immediately.</p>
+        <dl><dt>← / →</dt><dd>Previous or next chapter</dd><dt>Enter</dt><dd>Open the selected interface</dd><dt>Escape</dt><dd>Close the top layer or return to the timeline</dd><dt>T</dt><dd>Return to the timeline</dd></dl>
         <p>Essential portfolio content is also available through Portfolio, Work, Resume, About, and Contact.</p>
       </section>
     </div>
@@ -263,29 +301,34 @@ function HelpPanel() {
 function FirstRunHint({ visible }: { visible: boolean }) {
   const [open, setOpen] = useState(false);
   useEffect(() => {
-    if (!visible || window.localStorage.getItem('kevinception:v7.2-hint')) return;
+    if (!visible || window.localStorage.getItem('kevinception:v7.6-hint')) return;
     setOpen(true);
   }, [visible]);
   if (!open) return null;
   const dismiss = () => {
-    window.localStorage.setItem('kevinception:v7.2-hint', 'seen');
+    window.localStorage.setItem('kevinception:v7.6-hint', 'seen');
     setOpen(false);
   };
-  return <div className="experience-hint" role="status"><p>Swipe, scroll, or use ← → to move through time. Press Enter to open the selected interface.</p><button type="button" onClick={dismiss}>Got it</button></div>;
+  return <div className="experience-hint" role="status"><p>Swipe, scroll, or use ← → to move through the six chapters. Press Enter to open the selected era interface.</p><button type="button" onClick={dismiss}>Got it</button></div>;
 }
 
 function TransitionOverlay() {
   const transition = useExperienceStore((state) => state.transition);
   if (!transition || transition.id === 'timeline-fade') return null;
-  const labels: Partial<Record<TransitionId, string>> = {
-    'static-modem': 'Static becomes modem noise',
-    'profile-flatten': 'Personal pages become social identity',
-    'portrait-rotate': 'The social feed rotates into short-form video',
-    'signals-to-agents': 'Reactions reorganize into autonomous agents',
-    'agents-to-echo': 'Agent memories merge into a digital echo',
-    'time-jump': 'Jumping through the technology timeline'
-  };
-  return <div className={`transition-overlay transition-${transition.id}`} role="status" aria-live="polite"><span></span><p>{labels[transition.id] ?? 'Moving through time'}</p></div>;
+  const from = transition.from ? eraConfigs[transition.from] : null;
+  const to = eraConfigs[transition.to];
+  const technicalLine = transition.id === 'time-jump'
+    ? `Jumping from ${transition.from ?? 'the present'} to ${transition.to}.`
+    : from?.transitionLine ?? 'Moving through the technology timeline.';
+  return (
+    <div className={`transition-overlay transition-${transition.id}`} role="status" aria-live="polite">
+      <span></span>
+      <div className="transition-copy">
+        <strong>{from ? `${from.chapterName} → ${to.chapterName}` : to.chapterName}</strong>
+        <p>{technicalLine}</p>
+      </div>
+    </div>
+  );
 }
 
 export function ExperienceOverlay() {
@@ -301,10 +344,11 @@ export function ExperienceOverlay() {
   const artifactProgress = useExperienceStore((state) => state.artifacts);
   const { showTimeline, showTextMode } = useExperienceActions();
   const foundCount = useMemo(() => Object.values(artifactProgress).filter((item) => item.discoveredYears.length > 0).length, [artifactProgress]);
+  const showChapterNavigation = viewMode === 'timeline' || viewMode === 'environment' || viewMode === 'transition';
   return (
     <div className={`experience-overlay mode-${viewMode}`} style={{ '--era-accent': config.accent } as React.CSSProperties}>
       <header className="experience-toolbar">
-        <button className="experience-mark" type="button" onClick={showTimeline} aria-label="Open timeline"><span>K</span><b>Kevinception</b></button>
+        <button className="experience-mark" type="button" onClick={showTimeline} aria-label="Open chapter timeline"><span>K</span><b>Kevinception</b></button>
         <nav aria-label="Global experience controls">
           <button type="button" onClick={showTimeline}>Timeline</button>
           <Link href="/portfolio/">Portfolio</Link>
@@ -316,8 +360,9 @@ export function ExperienceOverlay() {
         </nav>
       </header>
       {webgl === false && <div className="webgl-notice"><p>3D rendering is unavailable. The complete text experience remains available.</p><button type="button" onClick={showTextMode}>Open text experience</button></div>}
-      {viewMode === 'timeline' && <><TimelinePanel /><YearSelector /></>}
-      {viewMode === 'environment' && <EnvironmentPanel />}
+      {viewMode === 'timeline' && <ChapterCard mode="timeline" />}
+      {viewMode === 'environment' && <ChapterCard mode="environment" />}
+      {showChapterNavigation && <YearSelector />}
       <InterfaceLayer visible={viewMode === 'interface'} />
       {viewMode === 'text' && <TextMode />}
       <FirstRunHint visible={viewMode === 'timeline' || viewMode === 'environment'} />
@@ -325,7 +370,7 @@ export function ExperienceOverlay() {
       <ArtifactDrawer />
       <HelpPanel />
       <TransitionOverlay />
-      <div className="sr-only" aria-live="polite">Current timeline: {activeYear}, {config.title}.</div>
+      <div className="sr-only" aria-live="polite">Current chapter: {config.chapterNumber} of {YEAR_ORDER.length}, {activeYear} {config.chapterName}, experienced through {config.experienceName}.</div>
     </div>
   );
 }

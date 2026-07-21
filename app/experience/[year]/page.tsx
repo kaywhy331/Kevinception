@@ -12,7 +12,7 @@ export async function generateMetadata({ params }: { params: Promise<{ year: str
   if (!YEAR_ORDER.includes(rawYear as YearId)) return {};
   const year = rawYear as YearId;
   const config = eraConfigs[year];
-  return { title: `${year} — ${config.title}`, description: config.description };
+  return { title: `${year} ${config.chapterName} — ${config.experienceName}`, description: config.chapterThesis };
 }
 
 export default async function EraPage({ params }: { params: Promise<{ year: string }> }) {
@@ -22,11 +22,11 @@ export default async function EraPage({ params }: { params: Promise<{ year: stri
   const config = eraConfigs[year];
   return (
     <article id="main-content">
-      <p>{config.product}</p>
-      <h1>{year}: {config.title}</h1>
-      <p>{config.description}</p>
-      <h2>Story function</h2>
-      <p>{config.transformation}. The intended feeling is {config.emotionalGoal.toLowerCase()}.</p>
+      <p>Chapter {config.chapterNumber} of {YEAR_ORDER.length} · {config.medium}</p>
+      <h1>{year}: {config.chapterName}</h1>
+      <p>Experienced through {config.experienceName}. {config.chapterThesis}</p>
+      <h2>{config.transformation}</h2>
+      <p>{config.lesson}</p>
     </article>
   );
 }

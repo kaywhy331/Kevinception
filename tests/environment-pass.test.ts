@@ -5,10 +5,11 @@ import { describe, expect, it } from 'vitest';
 const read = (relative: string) => fs.readFileSync(path.join(process.cwd(), relative), 'utf8');
 
 describe('V7 connected physical environment pass', () => {
-  it('mounts a shared timeline architecture around the active render band', () => {
+  it('mounts a shared timeline architecture around the active scene', () => {
     const world = read('src/experience/ExperienceWorld.tsx');
     const architecture = read('src/experience/TimelineArchitecture.tsx');
     expect(world).toContain('<TimelineArchitecture');
+    expect(world).toContain('function EraProxy');
     expect(architecture).toContain('FutureDataConduit');
     expect(architecture).toContain('function Corridor');
     expect(architecture).toContain('if (!transitionActive) return null');
@@ -53,14 +54,15 @@ describe('V7 connected physical environment pass', () => {
     expect(echo).toContain('openLeft');
   });
 
-  it('centers the era card and persists timeline navigation in environment view', () => {
+  it('centers one adaptive chapter card and keeps chapter navigation persistent', () => {
     const styles = read('app/environment-pass.css');
     const layout = read('app/experience/layout.tsx');
-    const persistentNav = read('src/experience/PersistentTimelineNav.tsx');
-    expect(styles).toContain('width: min(720px');
+    const overlay = read('src/experience/ExperienceOverlay.tsx');
+    expect(styles).toContain('width: min(850px');
     expect(styles).toContain('left: 50%');
     expect(styles).toContain('.persistent-year-selector');
-    expect(layout).toContain('<PersistentTimelineNav />');
-    expect(persistentNav).toContain("viewMode !== 'environment' && viewMode !== 'transition'");
+    expect(layout).not.toContain('PersistentTimelineNav');
+    expect(overlay).toContain('function ChapterCard');
+    expect(overlay).toContain("showChapterNavigation && <YearSelector />");
   });
 });
