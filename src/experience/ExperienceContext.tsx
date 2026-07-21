@@ -5,7 +5,10 @@ import type { YearId } from '@/content/data';
 import type { ArtifactId } from './artifacts';
 
 type ExperienceActions = {
+  /** Preview a year in the physical timeline without opening its application. */
   navigateToYear: (year: YearId) => void;
+  /** Enter the selected year's functional interface directly. */
+  enterYear: (year?: YearId) => void;
   showTimeline: () => void;
   openInterface: () => void;
   closeInterface: () => void;

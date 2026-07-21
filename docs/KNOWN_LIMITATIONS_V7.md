@@ -1,6 +1,6 @@
 # Kevinception V7 — Known Limitations
 
-- The six 3D environments use procedural geometry. They establish composition, interaction, lighting, camera, and art direction, but are not final bespoke asset production.
+- The six 3D environments now include connected room shells, props, materials, lighting, and a shared 2030/2040 future wing. They still use procedural geometry rather than final artist-authored GLB assets and production texture atlases.
 - Screen transitions use camera choreography and authored full-screen effects. High-tier render-to-texture portals remain future work.
 - The functional era applications are embedded from the V6 static build. A later refactor may move each application into native React packages while retaining the same contracts.
 - AI conversations remain deterministic because no secure server-side retrieval/LLM endpoint has been configured.

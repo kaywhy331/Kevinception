@@ -1,10 +1,10 @@
 'use client';
 
 import Link from 'next/link';
-import { useMemo } from 'react';
-import { profile, projects, timelineContent, type YearId } from '@/content/data';
+import { useEffect, useMemo, useState } from 'react';
+import { projects, timelineContent, type YearId } from '@/content/data';
 import { artifacts } from './artifacts';
-import { eraConfigs, getAdjacentYear, YEAR_ORDER } from './config';
+import { eraConfigs, getAdjacentYear, YEAR_ORDER, type TransitionId } from './config';
 import { useExperienceActions } from './ExperienceContext';
 import { useExperienceStore } from './store';
 
@@ -39,18 +39,21 @@ function YearSelector() {
 function TimelinePanel() {
   const activeYear = useExperienceStore((state) => state.activeYear);
   const config = eraConfigs[activeYear];
-  const { navigateToYear } = useExperienceActions();
+  const { enterYear } = useExperienceActions();
   return (
     <section className="timeline-panel glass-panel" style={{ '--era-accent': config.accent } as React.CSSProperties}>
-      <p className="eyebrow">Technology memory corridor</p>
-      <div className="timeline-panel__year">{activeYear}</div>
-      <h1>{config.title}</h1>
-      <p className="timeline-panel__product">{config.product}</p>
-      <p>{config.description}</p>
-      <strong>{config.transformation}</strong>
+      <div className="timeline-panel__identity">
+        <p className="eyebrow">Technology memory corridor</p>
+        <h1><span>{activeYear}</span> {config.title}</h1>
+        <strong>{config.transformation}</strong>
+      </div>
+      <details className="era-details">
+        <summary>About this era</summary>
+        <p><b>{config.product}</b> · {config.description}</p>
+      </details>
       <div className="button-row">
-        <button className="primary-action" type="button" onClick={() => navigateToYear(activeYear)}>{config.enterLabel}</button>
-        <Link className="secondary-action" href="/portfolio/">View Kevin’s work</Link>
+        <button className="primary-action" type="button" onClick={() => enterYear(activeYear)}>{config.enterLabel}</button>
+        <Link className="secondary-action" href="/portfolio/">Portfolio</Link>
       </div>
     </section>
   );
@@ -64,11 +67,13 @@ function EnvironmentPanel() {
   const next = getAdjacentYear(activeYear, 1);
   return (
     <section className="environment-panel glass-panel" style={{ '--era-accent': config.accent } as React.CSSProperties}>
-      <div>
+      <div className="environment-panel__identity">
         <p className="eyebrow">{config.product}</p>
         <h1><span>{activeYear}</span> {config.title}</h1>
-        <p>{config.description}</p>
-        <small>{config.emotionalGoal}</small>
+        <details className="era-details">
+          <summary>About this environment</summary>
+          <p>{config.description}<small>{config.emotionalGoal}</small></p>
+        </details>
       </div>
       <div className="environment-panel__actions">
         <button className="primary-action" type="button" onClick={openInterface}>{config.enterLabel}</button>
@@ -80,30 +85,77 @@ function EnvironmentPanel() {
   );
 }
 
-function EraInterfaceFrame() {
+function InterfaceLayer({ visible }: { visible: boolean }) {
   const activeYear = useExperienceStore((state) => state.activeYear);
   const config = eraConfigs[activeYear];
-  const { closeInterface, navigateToYear, showTimeline } = useExperienceActions();
+  const { closeInterface, enterYear, showTimeline } = useExperienceActions();
+  const [mountedYears, setMountedYears] = useState<YearId[]>([]);
+  const [loadedYears, setLoadedYears] = useState<Partial<Record<YearId, boolean>>>({});
   const next = getAdjacentYear(activeYear, 1);
+
+  useEffect(() => {
+    if (!visible) return;
+    setMountedYears((current) => {
+      const withoutActive = current.filter((year) => year !== activeYear);
+      return [...withoutActive, activeYear].slice(-2);
+    });
+  }, [activeYear, visible]);
+
+  useEffect(() => {
+    if (visible || activeYear === '2000' || loadedYears[activeYear]) return;
+    const timer = window.setTimeout(() => {
+      setMountedYears((current) => {
+        const withoutActive = current.filter((year) => year !== activeYear);
+        return [...withoutActive, activeYear].slice(-2);
+      });
+    }, 850);
+    return () => window.clearTimeout(timer);
+  }, [activeYear, loadedYears, visible]);
+
+  const onFrameLoad = (year: YearId, frame: HTMLIFrameElement) => {
+    setLoadedYears((current) => ({ ...current, [year]: true }));
+    if (year === '2000') return;
+    window.setTimeout(() => {
+      try {
+        const document = frame.contentDocument;
+        const boot = document?.querySelector<HTMLElement>('[data-era-boot]');
+        const enter = document?.querySelector<HTMLButtonElement>('[data-era-enter]');
+        if (boot && !boot.hidden && enter) enter.click();
+      } catch {
+        // The embedded application remains usable if frame access is restricted.
+      }
+    }, 0);
+  };
+
   return (
-    <section className="interface-mode" aria-label={`${config.title} interface`}>
+    <section className={`interface-mode ${visible ? 'is-visible' : 'is-hidden'}`} aria-label={`${config.title} interface`} aria-hidden={!visible}>
       <header className="interface-mode__bar">
         <div><span>{activeYear}</span><b>{config.title}</b></div>
         <nav aria-label="Interface controls">
           <button type="button" onClick={closeInterface}>Step back</button>
           <button type="button" onClick={showTimeline}>Timeline</button>
-          {next && <button type="button" onClick={() => navigateToYear(next)}>Continue to {next}</button>}
+          {next && <button type="button" onClick={() => enterYear(next)}>Continue to {next}</button>}
           <Link href="/portfolio/">Portfolio</Link>
         </nav>
       </header>
       <div className="interface-mode__device" style={{ '--era-accent': config.accent } as React.CSSProperties}>
-        <iframe
-          key={activeYear}
-          src={config.legacyPath}
-          title={`${config.title} functional application`}
-          sandbox="allow-scripts allow-forms allow-same-origin allow-popups allow-modals allow-downloads allow-top-navigation-by-user-activation"
-          loading="eager"
-        />
+        {!loadedYears[activeYear] && visible && <div className="interface-loading" role="status"><span></span><p>Starting {config.title}…</p></div>}
+        {mountedYears.map((year) => {
+          const yearConfig = eraConfigs[year];
+          const isActive = visible && year === activeYear;
+          return (
+            <iframe
+              key={year}
+              className={`interface-mode__frame ${isActive ? 'is-active' : 'is-cached'}`}
+              src={yearConfig.legacyPath}
+              title={`${yearConfig.title} functional application`}
+              sandbox="allow-scripts allow-forms allow-same-origin allow-popups allow-modals allow-downloads allow-top-navigation-by-user-activation"
+              loading={year === activeYear ? 'eager' : 'lazy'}
+              tabIndex={isActive ? 0 : -1}
+              onLoad={(event) => onFrameLoad(year, event.currentTarget)}
+            />
+          );
+        })}
       </div>
     </section>
   );
@@ -117,10 +169,7 @@ function TextMode() {
   const featured = projects.slice(0, 3);
   return (
     <section className="text-mode" aria-label={`${config.title} text experience`}>
-      <header>
-        <button type="button" onClick={closeTextMode}>Return to 3D</button>
-        <Link href="/portfolio/">Portfolio</Link>
-      </header>
+      <header><button type="button" onClick={closeTextMode}>Return to 3D</button><Link href="/portfolio/">Portfolio</Link></header>
       <article>
         <p className="eyebrow">Text experience · {activeYear}</p>
         <h1>{config.title}</h1>
@@ -166,7 +215,7 @@ function SettingsPanel() {
   return (
     <div className="modal-backdrop" role="presentation" onMouseDown={() => setOpen(false)}>
       <section className="modal-card" role="dialog" aria-modal="true" aria-label="Experience settings" onMouseDown={(event) => event.stopPropagation()}>
-        <header><h2>Experience settings</h2><button type="button" onClick={() => setOpen(false)} aria-label="Close settings">×</button></header>
+        <header><h2>Experience settings</h2><button type="button" autoFocus onClick={() => setOpen(false)} aria-label="Close settings">×</button></header>
         <fieldset><legend>Visual quality</legend>{(['high','standard','lite'] as const).map((value) => <label key={value}><input type="radio" checked={quality === value} onChange={() => setQuality(value)} /> {value}</label>)}</fieldset>
         <fieldset><legend>Motion</legend>{(['full','reduced'] as const).map((value) => <label key={value}><input type="radio" checked={motion === value} onChange={() => setMotion(value)} /> {value}</label>)}</fieldset>
         <button type="button" onClick={toggleSound}>Sound: {sound ? 'on' : 'off'}</button>
@@ -185,7 +234,7 @@ function ArtifactDrawer() {
   if (!open) return null;
   return (
     <aside className="artifact-drawer" aria-label="Cross-era artifacts">
-      <header><div><p className="eyebrow">Kevinception continuity</p><h2>Artifacts</h2></div><button type="button" onClick={() => setOpen(false)} aria-label="Close artifacts">×</button></header>
+      <header><div><p className="eyebrow">Kevinception continuity</p><h2>Artifacts</h2></div><button type="button" autoFocus onClick={() => setOpen(false)} aria-label="Close artifacts">×</button></header>
       <p>These objects transform as the interface changes. Progress remains in this browser only.</p>
       {artifacts.map((artifact) => {
         const years = progress[artifact.id].discoveredYears;
@@ -202,27 +251,41 @@ function HelpPanel() {
   return (
     <div className="modal-backdrop" role="presentation" onMouseDown={() => setOpen(false)}>
       <section className="modal-card" role="dialog" aria-modal="true" aria-label="Experience help" onMouseDown={(event) => event.stopPropagation()}>
-        <header><h2>How to explore</h2><button type="button" onClick={() => setOpen(false)} aria-label="Close help">×</button></header>
-        <p>Use the visible timeline controls, arrow keys, swipe, or the physical device. Press Enter to enter an era’s interface and Escape to step back.</p>
-        <dl><dt>← / →</dt><dd>Previous or next year</dd><dt>Enter</dt><dd>Enter the selected interface</dd><dt>Escape</dt><dd>Step back or close a panel</dd><dt>T</dt><dd>Return to the timeline</dd></dl>
+        <header><h2>How to explore</h2><button type="button" autoFocus onClick={() => setOpen(false)} aria-label="Close help">×</button></header>
+        <p>Swipe, scroll, use the visible timeline, or press the arrow keys to preview a year. Press Enter—or the primary era button—to open its functional interface immediately.</p>
+        <dl><dt>← / →</dt><dd>Previous or next year</dd><dt>Enter</dt><dd>Open the selected interface</dd><dt>Escape</dt><dd>Close the top layer or return to the timeline</dd><dt>T</dt><dd>Return to the timeline</dd></dl>
         <p>Essential portfolio content is also available through Portfolio, Work, Resume, About, and Contact.</p>
       </section>
     </div>
   );
 }
 
+function FirstRunHint({ visible }: { visible: boolean }) {
+  const [open, setOpen] = useState(false);
+  useEffect(() => {
+    if (!visible || window.localStorage.getItem('kevinception:v7.2-hint')) return;
+    setOpen(true);
+  }, [visible]);
+  if (!open) return null;
+  const dismiss = () => {
+    window.localStorage.setItem('kevinception:v7.2-hint', 'seen');
+    setOpen(false);
+  };
+  return <div className="experience-hint" role="status"><p>Swipe, scroll, or use ← → to move through time. Press Enter to open the selected interface.</p><button type="button" onClick={dismiss}>Got it</button></div>;
+}
+
 function TransitionOverlay() {
   const transition = useExperienceStore((state) => state.transition);
-  if (!transition) return null;
-  const labels = {
+  if (!transition || transition.id === 'timeline-fade') return null;
+  const labels: Partial<Record<TransitionId, string>> = {
     'static-modem': 'Static becomes modem noise',
     'profile-flatten': 'Personal pages become social identity',
     'portrait-rotate': 'The social feed rotates into short-form video',
     'signals-to-agents': 'Reactions reorganize into autonomous agents',
     'agents-to-echo': 'Agent memories merge into a digital echo',
-    'timeline-fade': 'Moving through the technology timeline'
+    'time-jump': 'Jumping through the technology timeline'
   };
-  return <div className={`transition-overlay transition-${transition.id}`} role="status" aria-live="polite"><span></span><p>{labels[transition.id]}</p></div>;
+  return <div className={`transition-overlay transition-${transition.id}`} role="status" aria-live="polite"><span></span><p>{labels[transition.id] ?? 'Moving through time'}</p></div>;
 }
 
 export function ExperienceOverlay() {
@@ -255,8 +318,9 @@ export function ExperienceOverlay() {
       {webgl === false && <div className="webgl-notice"><p>3D rendering is unavailable. The complete text experience remains available.</p><button type="button" onClick={showTextMode}>Open text experience</button></div>}
       {viewMode === 'timeline' && <><TimelinePanel /><YearSelector /></>}
       {viewMode === 'environment' && <EnvironmentPanel />}
-      {viewMode === 'interface' && <EraInterfaceFrame />}
+      <InterfaceLayer visible={viewMode === 'interface'} />
       {viewMode === 'text' && <TextMode />}
+      <FirstRunHint visible={viewMode === 'timeline' || viewMode === 'environment'} />
       <SettingsPanel />
       <ArtifactDrawer />
       <HelpPanel />

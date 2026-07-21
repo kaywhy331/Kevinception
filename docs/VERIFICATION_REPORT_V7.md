@@ -1,6 +1,6 @@
 # Kevinception V7 — Verification Report
 
-**Version:** 0.7.0  
+**Version:** 0.8.0  
 **Verified:** July 20, 2026  
 **Node:** 20+ compatible
 
@@ -27,8 +27,8 @@ Security-configuration validation
 
 ```text
 TypeScript:                     passed
-Vitest files:                   3 passed
-Vitest assertions:              7 passed
+Vitest files:                   4 passed
+Vitest assertions:              12 passed
 Next.js production compilation: passed
 Generated Next routes:          20 static/SSG pages
 Required public routes:         13 present
@@ -40,16 +40,16 @@ Security configuration:         passed
 Production dependency audit:    0 known vulnerabilities
 ```
 
-The exported `out/` directory contains canonical routes, six experience routes, the complete embedded application layer, metadata, sitemap, robots rules, web manifest, static assets, and hosting-header configuration.
+The exported `out/` directory contains canonical routes, six experience routes, the connected-environment R3F application, the complete embedded application layer, metadata, sitemap, robots rules, web manifest, static assets, and hosting-header configuration.
 
 ## Output profile
 
 ```text
 Exported files:                 240
-Exported directory size:        approximately 4.2 MB
-Next JavaScript + CSS raw:       approximately 1.89 MB
-Next JavaScript + CSS gzip:      approximately 0.57 MB
-Embedded functional apps:       approximately 0.95 MB
+Exported directory size:        approximately 4.3 MB
+Next JavaScript + CSS raw:       approximately 2.02 MB
+Next JavaScript + CSS gzip:      approximately 0.61 MB
+Embedded functional apps:       approximately 0.99 MB
 ```
 
 The large R3F/Three.js code path is confined to the immersive experience. Canonical portfolio routes remain statically rendered and usable without entering the 3D journey.
@@ -91,6 +91,8 @@ npm run test:runtime
 
 When another port is selected automatically, use the printed URL for `BASE_URL`.
 
+The source-level environment tests additionally verify the shared corridor, physical 2030 lab, physical 2040 sanctuary, open future-wing connection, and compact era docks.
+
 Manual checks should include:
 
 - Threshold to timeline
@@ -106,5 +108,5 @@ Manual checks should include:
 - Echo thought interpreter
 - Reduced motion
 - Text mode
-- mobile viewport
+- Mobile viewport
 - WebGL-disabled fallback
