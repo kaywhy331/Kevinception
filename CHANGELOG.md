@@ -1,5 +1,16 @@
 # Changelog
 
+## 0.8.1 — V7.2 flow and performance pass
+
+- Kept year previews and interface entry inside the persistent `/experience/` route.
+- Made the primary era CTA enter the functional interface directly.
+- Added browser Back/Forward synchronization, legacy route normalization, swipe navigation, wheel/trackpad thresholds, and an Escape hierarchy.
+- Preserved current and recent embedded application documents across Step Back.
+- Automatically skipped duplicate embedded intro screens while preserving the intentional Kevin Online startup and Sign On journey.
+- Replaced six simultaneously mounted environments with an active/adjacent render band.
+- Paused inactive scene animation loops and reduced DPR, shadow, particle, light, postprocessing, and camera-update costs.
+- Added era-specific interface loading feedback, first-run interaction guidance, and regression coverage for the fluidity pass.
+
 ## 0.8.0
 
 - Replaced floating black-void display stands with connected physical era dioramas.
