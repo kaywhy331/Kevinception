@@ -12,6 +12,12 @@ jobs:
           node-version: 22
           cache: npm
       - run: npm ci
+      - name: Capture JavaScript syntax output
+        shell: bash
+        run: |
+          set +e
+          node --check public/legacy/assets/client/kevtok-native.js > syntax-output.txt 2>&1
+          exit 0
       - name: Capture Vitest output
         id: tests
         shell: bash
@@ -23,8 +29,10 @@ jobs:
           exit 0
       - uses: actions/upload-artifact@v4
         with:
-          name: vitest-output
-          path: test-output.txt
+          name: test-diagnostics
+          path: |
+            syntax-output.txt
+            test-output.txt
       - name: Preserve failure status
         shell: bash
         run: exit "${{ steps.tests.outputs.status }}"
