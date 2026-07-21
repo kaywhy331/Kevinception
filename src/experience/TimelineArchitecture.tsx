@@ -74,14 +74,14 @@ function FutureDataConduit() {
       new THREE.Vector3(24.75, 1.5, 0.58),
       new THREE.Vector3(25.45, 1.15, 1.1)
     ]);
-    return { curve, geometry: new THREE.TubeGeometry(curve, 64, 0.055, 10, false) };
+    return { curve, geometry: new THREE.TubeGeometry(curve, 48, 0.055, 8, false) };
   }, []);
   useEffect(() => () => data.geometry.dispose(), [data]);
   const active = activeYear === '2030' || activeYear === '2040';
+  const transitionActive = transition?.id === 'agents-to-echo';
   useFrame(({ clock }) => {
-    if (!pulse.current) return;
-    const transitionActive = transition?.id === 'agents-to-echo';
-    const speed = transitionActive ? 0.48 : active ? 0.11 : 0.025;
+    if (!pulse.current || (!active && !transitionActive)) return;
+    const speed = transitionActive ? 0.48 : 0.11;
     const forward = transitionActive || activeYear === '2030';
     const raw = (clock.elapsedTime * speed) % 1;
     const t = forward ? raw : 1 - raw;
@@ -91,13 +91,13 @@ function FutureDataConduit() {
   return (
     <group>
       <mesh geometry={data.geometry}>
-        <meshStandardMaterial color="#a6ecff" emissive="#67dff7" emissiveIntensity={active ? 0.9 : 0.25} transparent opacity={active ? 0.62 : 0.22} />
+        <meshStandardMaterial color="#a6ecff" emissive="#67dff7" emissiveIntensity={active ? 0.9 : 0.18} transparent opacity={active ? 0.62 : 0.16} />
       </mesh>
-      <mesh ref={pulse}>
+      <mesh ref={pulse} visible={active || transitionActive}>
         <octahedronGeometry args={[0.13, 0]} />
-        <meshStandardMaterial color="#ffffff" emissive={activeYear === '2040' ? '#bfaaff' : '#73ecff'} emissiveIntensity={transition?.id === 'agents-to-echo' ? 3.2 : 1.8} />
+        <meshStandardMaterial color="#ffffff" emissive={activeYear === '2040' ? '#bfaaff' : '#73ecff'} emissiveIntensity={transitionActive ? 3.2 : 1.8} />
       </mesh>
-      <pointLight position={[24, 1.6, 0]} color={activeYear === '2040' ? '#bba2ff' : '#78e8ff'} intensity={active ? 2.6 : 0.45} distance={5.5} decay={2} />
+      {(active || transitionActive) && <pointLight position={[24, 1.6, 0]} color={activeYear === '2040' ? '#bba2ff' : '#78e8ff'} intensity={active ? 2.1 : 0.8} distance={5.5} decay={2} />}
     </group>
   );
 }
@@ -117,16 +117,7 @@ export function TimelineArchitecture() {
       </mesh>
       {YEAR_ORDER.slice(0, -1).map((year, index) => {
         const next = YEAR_ORDER[index + 1];
-        return (
-          <Corridor
-            key={`${year}-${next}`}
-            from={eraConfigs[year].stationX}
-            to={eraConfigs[next].stationX}
-            fromColor={eraConfigs[year].accent}
-            toColor={eraConfigs[next].accent}
-            future={year === '2030'}
-          />
-        );
+        return <Corridor key={`${year}-${next}`} from={eraConfigs[year].stationX} to={eraConfigs[next].stationX} fromColor={eraConfigs[year].accent} toColor={eraConfigs[next].accent} future={year === '2030'} />;
       })}
       {YEAR_ORDER.map((year) => (
         <group key={year} position={[eraConfigs[year].stationX, 0, 0]}>
