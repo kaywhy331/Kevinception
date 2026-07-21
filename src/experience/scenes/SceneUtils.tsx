@@ -1,6 +1,6 @@
 'use client';
 
-import { useMemo, useRef, useState } from 'react';
+import { useEffect, useMemo, useRef, useState } from 'react';
 import { RoundedBox, useCursor } from '@react-three/drei';
 import { useFrame } from '@react-three/fiber';
 import * as THREE from 'three';
@@ -43,10 +43,12 @@ export function DeviceScreen({
   glass?: boolean;
 }) {
   const material = useRef<THREE.MeshStandardMaterial>(null);
+  useEffect(() => {
+    if (material.current && !active) material.current.emissiveIntensity = 0.16;
+  }, [active]);
   useFrame(({ clock }) => {
-    if (!material.current) return;
-    const pulse = active ? 0.52 + Math.sin(clock.elapsedTime * 1.5) * 0.065 : 0.16;
-    material.current.emissiveIntensity = pulse;
+    if (!active || !material.current) return;
+    material.current.emissiveIntensity = 0.52 + Math.sin(clock.elapsedTime * 1.5) * 0.065;
   });
   return (
     <group position={position}>
@@ -77,9 +79,9 @@ export function ArtifactMesh({
   const found = useExperienceStore((state) => state.artifacts[id].discoveredYears.includes(year));
   const ref = useRef<THREE.Mesh>(null);
   useFrame(({ clock }, delta) => {
-    if (!ref.current) return;
+    if (!active || !ref.current) return;
     ref.current.rotation.y += delta * (found ? 0.55 : 0.25);
-    ref.current.position.y = position[1] + Math.sin(clock.elapsedTime * 1.3 + position[0]) * (active ? 0.08 : 0.025);
+    ref.current.position.y = position[1] + Math.sin(clock.elapsedTime * 1.3 + position[0]) * 0.08;
   });
   const geometry = shape === 'sphere' ? <sphereGeometry args={[0.28 * scale, 18, 18]} />
     : shape === 'octahedron' ? <octahedronGeometry args={[0.32 * scale]} />
@@ -89,7 +91,7 @@ export function ArtifactMesh({
     <Hoverable label={`Discover ${id}`} onClick={() => discover(id, year)}>
       <mesh ref={ref} position={position} castShadow>
         {geometry}
-        <meshStandardMaterial color={found ? '#ffffff' : color} emissive={color} emissiveIntensity={found ? 1.3 : active ? 0.55 : 0.12} roughness={0.25} />
+        <meshStandardMaterial color={found ? '#ffffff' : color} emissive={color} emissiveIntensity={found ? 1.3 : active ? 0.55 : 0.1} roughness={0.25} />
       </mesh>
     </Hoverable>
   );
