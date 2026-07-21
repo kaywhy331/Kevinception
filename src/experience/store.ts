@@ -60,7 +60,7 @@ export const useExperienceStore = create<ExperienceStore>()(
       yearVisits: { '1990': 0, '2000': 0, '2010': 0, '2020': 0, '2030': 0, '2040': 0 },
       webglAvailable: null,
       setActiveYear: (activeYear) => set({ activeYear, lastVisitedYear: activeYear }),
-      setViewMode: (viewMode) => set({ viewMode }),
+      setViewMode: (viewMode) => set({ viewMode: (viewMode as string) === 'transitioning' ? 'transition' : viewMode }),
       setTransition: (transition) => set({ transition }),
       setQuality: (quality) => set({ quality }),
       setMotion: (motion) => set({ motion }),
