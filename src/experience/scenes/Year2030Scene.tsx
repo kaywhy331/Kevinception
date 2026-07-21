@@ -11,11 +11,11 @@ import { ArchiveColumn, CylinderBetween, GlassPanel, LightBar, RoomShell } from 
 import { FloorPedestal, WallDisplay } from './SceneLayout';
 
 const agents = [
-  { id: 'clarifier', label: 'Clarifier', position: [-3.2, 0, -0.75] as [number, number, number], color: '#7de9ff' },
-  { id: 'researcher', label: 'Researcher', position: [-2.25, 0, 1.45] as [number, number, number], color: '#8da8ff' },
-  { id: 'architect', label: 'Architect', position: [0, 0, -2.25] as [number, number, number], color: '#79ffd1' },
-  { id: 'builder', label: 'Builder', position: [2.25, 0, 1.45] as [number, number, number], color: '#ffd66b' },
-  { id: 'governor', label: 'Governor', position: [3.2, 0, -0.75] as [number, number, number], color: '#ff7f9c' }
+  { id: 'clarifier', label: 'Clarifier', position: [-3.3, 0, -0.9] as [number, number, number], color: '#7de9ff' },
+  { id: 'researcher', label: 'Researcher', position: [-2.55, 0, 1.7] as [number, number, number], color: '#8da8ff' },
+  { id: 'architect', label: 'Architect', position: [0, 0, -2.9] as [number, number, number], color: '#79ffd1' },
+  { id: 'builder', label: 'Builder', position: [2.55, 0, 1.7] as [number, number, number], color: '#ffd66b' },
+  { id: 'governor', label: 'Governor', position: [3.3, 0, -0.9] as [number, number, number], color: '#ff7f9c' }
 ];
 
 function AgentStation({ agent, selected, active, onSelect }: {
@@ -61,11 +61,7 @@ export function Year2030Scene({ active }: { active: boolean; timeline: boolean }
       packets.current.children.forEach((child, index) => {
         const t = (clock.elapsedTime * (0.12 + index * 0.01) + index * 0.16) % 1;
         const node = agents[index % agents.length];
-        child.position.set(
-          corePosition[0] + (node.position[0] - corePosition[0]) * t,
-          corePosition[1] + (1.32 - corePosition[1]) * t,
-          corePosition[2] + (node.position[2] - corePosition[2]) * t
-        );
+        child.position.set(corePosition[0] + (node.position[0] - corePosition[0]) * t, corePosition[1] + (1.32 - corePosition[1]) * t, corePosition[2] + (node.position[2] - corePosition[2]) * t);
       });
     }
   });
@@ -99,11 +95,10 @@ export function Year2030Scene({ active }: { active: boolean; timeline: boolean }
           <AgentStation agent={agent} selected={selected === agent.id} active={active} onSelect={() => { setSelected(agent.id); if (agent.id === 'governor') discover('human-gate', '2030'); }} />
         </group>
       ))}
-
       <group ref={packets} visible={active}>{agents.map((agent) => <mesh key={agent.id} position={corePosition}><boxGeometry args={[0.075, 0.075, 0.075]} /><meshStandardMaterial color={agent.color} emissive={agent.color} emissiveIntensity={1.0} /></mesh>)}</group>
 
       <Hoverable label="Human approval console" onClick={() => { setSelected('governor'); discover('human-gate', '2030'); }}>
-        <group position={[0, 0, 2.78]}>
+        <group position={[0, 0, 2.95]}>
           <FloorPedestal position={[0, 0, 0]} size={[2.8, 0.58, 1.05]} color="#d1d9da" accent={selectedAgent.color} />
           <RoundedBox position={[0, 0.72, 0]} args={[2.9, 0.28, 1.08]} radius={0.15} smoothness={4} castShadow><meshStandardMaterial color="#d7dfdf" metalness={0.18} roughness={0.32} /></RoundedBox>
           <GlassPanel position={[0, 1.02, -0.08]} size={[2.35, 0.5, 0.035]} color={selectedAgent.color} opacity={active ? 0.17 : 0.05} rotation={[-0.26, 0, 0]} frameColor="#7d8d90" />
