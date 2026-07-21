@@ -3,7 +3,7 @@
 import { RoundedBox } from '@react-three/drei';
 
 export const FLOOR_SURFACE_Y = 0;
-export const DESK_SURFACE_Y = 1.2;
+export const DESK_SURFACE_Y = 1.55;
 export const MEDIA_SURFACE_Y = 0.92;
 
 export function GroundedDesk({
