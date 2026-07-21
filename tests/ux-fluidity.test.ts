@@ -9,9 +9,9 @@ describe('V7 fluid experience pass', () => {
     const shell = read('src/experience/ExperienceShell.tsx');
     const overlay = read('src/experience/ExperienceOverlay.tsx');
     expect(shell).toContain('/experience/?year=');
-    expect(shell).toContain("experienceUrl(year, 'interface')");
+    expect(shell).toContain("writeExperienceHistory(year, 'interface')");
     expect(shell).toContain("writeExperienceHistory(location.year, 'interface', 'replace')");
-    expect(shell).toContain("window.history[method]");
+    expect(shell).toContain('window.history[method]');
     expect(overlay).toContain('onClick={() => enterYear(activeYear)}');
   });
 
