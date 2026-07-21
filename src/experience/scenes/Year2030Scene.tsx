@@ -43,7 +43,7 @@ function AgentStation({ agent, selected, active, onSelect }: {
   );
 }
 
-export function Year2030Scene({ active }: { active: boolean; timeline: boolean }) {
+export function Year2030Scene({ active, detail = true }: { active: boolean; timeline: boolean; detail?: boolean }) {
   const config = eraConfigs['2030'];
   const { enterYear, discover } = useExperienceActions();
   const core = useRef<THREE.Mesh>(null);
@@ -52,7 +52,7 @@ export function Year2030Scene({ active }: { active: boolean; timeline: boolean }
   const selectedAgent = agents.find((agent) => agent.id === selected) ?? agents[2];
   const corePosition: [number, number, number] = [0, 1.55, 0];
   useFrame(({ clock }, delta) => {
-    if (!active) return;
+    if (!active || !detail) return;
     if (core.current) {
       core.current.rotation.y += delta * 0.3;
       core.current.rotation.x = Math.sin(clock.elapsedTime * 0.4) * 0.06;
@@ -66,9 +66,22 @@ export function Year2030Scene({ active }: { active: boolean; timeline: boolean }
     }
   });
 
+  if (!detail) {
+    return (
+      <group position={[config.stationX, 0, 0]}>
+        <RoomShell floorColor="#cbd6d7" wallColor="#e5eceb" sideColor="#ccd8d9" ceilingColor="#f4f7f5" trimColor="#75888c" accent={config.accent} openLeft openRight active={false} floorRoughness={0.38} />
+        <LightBar position={[-2.7, 5.55, -2.4]} length={3.1} color="#c7fbff" intensity={0.06} />
+        <LightBar position={[2.7, 5.55, -2.4]} length={3.1} color="#e7fff5" intensity={0.06} />
+        <WallDisplay position={[3.35, 3.45, -3.26]} size={[2.35, 1.65]} frameColor="#718489" screenColor="#dffbff" accent={config.accent} active={false} />
+        <mesh position={[0, 0.22, 0]} receiveShadow><cylinderGeometry args={[1.8, 2.05, 0.4, 40]} /><meshStandardMaterial color="#c5d2d2" metalness={0.2} roughness={0.4} /></mesh>
+        <mesh position={[0, 1.35, 0]}><icosahedronGeometry args={[0.58, 1]} /><meshStandardMaterial color="#43676d" emissive="#64e8ff" emissiveIntensity={0.16} wireframe /></mesh>
+      </group>
+    );
+  }
+
   return (
     <group position={[config.stationX, 0, 0]}>
-      <RoomShell floorColor="#d5dedf" wallColor="#e5eceb" sideColor="#ccd8d9" ceilingColor="#f4f7f5" trimColor="#75888c" accent={config.accent} openLeft openRight active={active} floorRoughness={0.35} />
+      <RoomShell floorColor="#cbd6d7" wallColor="#e5eceb" sideColor="#ccd8d9" ceilingColor="#f4f7f5" trimColor="#75888c" accent={config.accent} openLeft openRight active={active} floorRoughness={0.35} />
       <Dust center={[0, 3.0, 0]} spread={[9.4, 5.5, 7]} color="#8cecff" active={active} count={active ? 30 : 10} />
       <LightBar position={[-2.7, 5.55, -2.4]} length={3.1} color="#c7fbff" intensity={active ? 0.85 : 0.08} />
       <LightBar position={[2.7, 5.55, -2.4]} length={3.1} color="#e7fff5" intensity={active ? 0.8 : 0.08} />
