@@ -61,6 +61,10 @@ async function visit(route, screenshot, viewport) {
   const response = await page.goto(`${base}${route}`, { waitUntil: 'networkidle2', timeout: 60000 });
   report.pages.push({ route, status: response?.status() ?? null, title: await page.title(), viewport });
   assert(`${route} returned a successful response`, Boolean(response && response.status() < 400), `status ${response?.status()}`);
+  if (route.startsWith('/experience/')) {
+    await page.waitForSelector('.experience-canvas', { timeout: 30000 });
+    await new Promise((resolve) => setTimeout(resolve, 950));
+  }
   if (screenshot) await page.screenshot({ path: path.join(outputDir, screenshot), fullPage: false });
 }
 
@@ -91,6 +95,8 @@ try {
   const frame = await kevtokFrame();
   const utilityDisplay = await frame.$eval('.era-utility', (node) => getComputedStyle(node).display);
   assert('The duplicated embedded era utility bar is hidden', utilityDisplay === 'none', utilityDisplay);
+  const topInboxDisplay = await frame.$eval('.kt-header > button', (node) => getComputedStyle(node).display);
+  assert('KevTok uses one Inbox destination instead of duplicating it in the header', topInboxDisplay === 'none', topInboxDisplay);
 
   const navLabels = await frame.$$eval('.kt-nav [data-kt-nav]', (buttons) => buttons.map((button) => button.textContent?.replace(/\s+/g, ' ').trim()));
   assert('KevTok exposes five device-native destinations', navLabels.length === 5, navLabels.join(' | '));
@@ -157,6 +163,19 @@ try {
   assert('Profile exposes saved clips', savedTiles >= 1, `${savedTiles} saved tiles`);
   await closeNativeDialog(frame, 'profile');
 
+  await frame.click(shareSelector);
+  await new Promise((resolve) => setTimeout(resolve, 120));
+  const feedbackBounds = await frame.evaluate((clipSelector) => {
+    const visual = document.querySelector(`${clipSelector} .kt-clip__visual`)?.getBoundingClientRect();
+    const feedback = [...document.querySelectorAll('[data-toast-region] .toast, .kt-native-toast.is-visible')]
+      .filter((node) => getComputedStyle(node).display !== 'none' && getComputedStyle(node).opacity !== '0')
+      .map((node) => node.getBoundingClientRect());
+    return {
+      feedbackCount: feedback.length,
+      contained: Boolean(visual && feedback.length && feedback.every((rect) => rect.left >= visual.left - 4 && rect.right <= visual.right + 4))
+    };
+  }, firstClip);
+  assert('Interaction feedback remains inside the device column', feedbackBounds.contained, `${feedbackBounds.feedbackCount} visible feedback items`);
   await page.screenshot({ path: path.join(outputDir, '2020-interface-interactions.png'), fullPage: false });
 
   await visit('/experience/?year=2030', '2030-straight-desktop.png', { width: 1920, height: 1080, deviceScaleFactor: 1 });
