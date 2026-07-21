@@ -77,27 +77,24 @@ function FutureDataConduit() {
     return { curve, geometry: new THREE.TubeGeometry(curve, 48, 0.055, 8, false) };
   }, []);
   useEffect(() => () => data.geometry.dispose(), [data]);
-  const active = activeYear === '2030' || activeYear === '2040';
   const transitionActive = transition?.id === 'agents-to-echo';
   useFrame(({ clock }) => {
-    if (!pulse.current || (!active && !transitionActive)) return;
-    const speed = transitionActive ? 0.48 : 0.11;
-    const forward = transitionActive || activeYear === '2030';
-    const raw = (clock.elapsedTime * speed) % 1;
-    const t = forward ? raw : 1 - raw;
+    if (!transitionActive || !pulse.current) return;
+    const t = (clock.elapsedTime * 0.48) % 1;
     pulse.current.position.copy(data.curve.getPointAt(t));
-    pulse.current.scale.setScalar(transitionActive ? 1.7 : 0.9 + Math.sin(clock.elapsedTime * 5) * 0.12);
+    pulse.current.scale.setScalar(1.45 + Math.sin(clock.elapsedTime * 5) * 0.12);
   });
+  if (!transitionActive) return null;
   return (
     <group>
       <mesh geometry={data.geometry}>
-        <meshStandardMaterial color="#a6ecff" emissive="#67dff7" emissiveIntensity={active ? 0.9 : 0.18} transparent opacity={active ? 0.62 : 0.16} />
+        <meshStandardMaterial color="#a6ecff" emissive="#67dff7" emissiveIntensity={1.0} transparent opacity={0.72} />
       </mesh>
-      <mesh ref={pulse} visible={active || transitionActive}>
+      <mesh ref={pulse}>
         <octahedronGeometry args={[0.13, 0]} />
-        <meshStandardMaterial color="#ffffff" emissive={activeYear === '2040' ? '#bfaaff' : '#73ecff'} emissiveIntensity={transitionActive ? 3.2 : 1.8} />
+        <meshStandardMaterial color="#ffffff" emissive={activeYear === '2040' ? '#bfaaff' : '#73ecff'} emissiveIntensity={3.0} />
       </mesh>
-      {(active || transitionActive) && <pointLight position={[24, 1.6, 0]} color={activeYear === '2040' ? '#bba2ff' : '#78e8ff'} intensity={active ? 2.1 : 0.8} distance={5.5} decay={2} />}
+      <pointLight position={[24, 1.6, 0]} color={activeYear === '2040' ? '#bba2ff' : '#78e8ff'} intensity={1.3} distance={5.5} decay={2} />
     </group>
   );
 }
