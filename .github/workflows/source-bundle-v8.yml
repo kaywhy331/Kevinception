@@ -18,11 +18,10 @@ jobs:
             --exclude=.next \
             --exclude=out \
             --exclude=coverage \
-            --exclude=source-bundle.tgz \
-            -czf source-bundle.tgz .
+            -czf "$RUNNER_TEMP/source-bundle.tgz" .
       - name: Upload source bundle
         uses: actions/upload-artifact@v4
         with:
           name: source-bundle-v8
-          path: source-bundle.tgz
+          path: ${{ runner.temp }}/source-bundle.tgz
           if-no-files-found: error
