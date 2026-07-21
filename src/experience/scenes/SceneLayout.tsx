@@ -39,7 +39,7 @@ export function GroundedDesk({
         </mesh>
       ))}
       {drawers && (
-        <group position={[size[0] / 2 - 1.08, drawerHeight / 2, 0.15]}>
+        <group position={[-size[0] / 2 + 1.08, drawerHeight / 2, 0.15]}>
           <RoundedBox args={[1.3, drawerHeight, size[1] - 0.48]} radius={0.06} smoothness={2} castShadow>
             <meshStandardMaterial color={legColor} roughness={0.74} />
           </RoundedBox>
