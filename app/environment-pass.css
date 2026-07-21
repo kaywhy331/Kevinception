@@ -1,4 +1,4 @@
-/* V7.2 flow and performance UI: keep controls legible without covering the rooms. */
+/* V7.4 flow, focus, and performance UI. */
 .timeline-panel {
   position: absolute;
   left: clamp(.8rem, 3vw, 2.5rem);
@@ -65,6 +65,16 @@
 .experience-toolbar { transition: opacity .2s ease; }
 .mode-interface .experience-toolbar { opacity: 0; pointer-events: none; }
 .transition-overlay { pointer-events: none; }
+.transition-time-jump { background: #02040a; animation: time-jump-fade .3s both; }
+.transition-time-jump span { inset: -8%; background: radial-gradient(circle at center, white 0 1px, var(--era-accent) 2px 5%, transparent 25%), repeating-radial-gradient(circle at center, transparent 0 18px, color-mix(in srgb, var(--era-accent) 30%, transparent) 20px 21px); filter: blur(.25px); animation: time-jump-pulse .3s ease-out both; }
+.transition-time-jump p { opacity: .82; font-size: .7rem; }
+@keyframes time-jump-fade { 0% { opacity: 0 } 18%, 70% { opacity: 1 } 100% { opacity: 0 } }
+@keyframes time-jump-pulse { 0% { transform: scale(.45); opacity: 0 } 42% { transform: scale(1); opacity: 1 } 100% { transform: scale(1.5); opacity: 0 } }
+
+@media (min-aspect-ratio: 21/9) and (min-width: 1300px) {
+  .timeline-panel { left: 1.4rem; bottom: 4.9rem; width: min(630px, 31vw); }
+  .year-selector { width: min(760px, 45vw); }
+}
 
 @media (max-width: 900px) {
   .timeline-panel { bottom: 5.8rem; width: min(620px, calc(100% - 1.4rem)); }
@@ -106,4 +116,5 @@
 @media (prefers-reduced-motion: reduce) {
   .interface-mode, .experience-toolbar { transition: none; }
   .interface-loading span { animation-duration: 1.4s; }
+  .transition-time-jump { animation-duration: .01ms; }
 }
