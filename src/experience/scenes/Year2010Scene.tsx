@@ -15,9 +15,9 @@ export function Year2010Scene({ active, timeline }: { active: boolean; timeline:
   const [phoneLit, setPhoneLit] = useState(true);
   const notifications = useRef<THREE.Group>(null);
   useFrame(({ clock }) => {
-    if (!notifications.current) return;
+    if (!active || !notifications.current) return;
     notifications.current.rotation.y = Math.sin(clock.elapsedTime * 0.38) * 0.12;
-    notifications.current.position.y = 2.75 + Math.sin(clock.elapsedTime * 1.15) * (active ? 0.08 : 0.025);
+    notifications.current.position.y = 2.75 + Math.sin(clock.elapsedTime * 1.15) * 0.08;
   });
   const activate = () => timeline ? navigateToYear('2010') : openInterface();
 
@@ -116,8 +116,8 @@ export function Year2010Scene({ active, timeline }: { active: boolean; timeline:
       <Cable points={[[0.35, 1.1, 1.0], [-0.5, 0.2, 1.5], [-2.8, 0.18, 1.6], [-3.15, 1.1, 0.7]]} color="#404247" radius={0.017} />
 
       <ArtifactMesh id="project-blueprint" year="2010" position={[4.2, 1.0, -0.55]} color="#8db7ff" active={active} shape="box" scale={1.35} />
-      <spotLight position={[-2.4, 5.7, 2.8]} target-position={[-0.4, 1.9, 0]} color="#dbeeff" intensity={active ? 5.6 : 1.2} distance={15} angle={0.62} penumbra={0.6} castShadow={active} />
-      <pointLight position={[-0.5, 3.2, 1.6]} color="#9bbcff" intensity={active ? 3.8 : 0.5} distance={9} decay={2} />
+      <spotLight position={[-2.4, 5.7, 2.8]} target-position={[-0.4, 1.9, 0]} color="#dbeeff" intensity={active ? 5.6 : 0.55} distance={15} angle={0.62} penumbra={0.6} castShadow={active} />
+      <pointLight position={[-0.5, 3.2, 1.6]} color="#9bbcff" intensity={active ? 3.8 : 0.2} distance={9} decay={2} />
     </group>
   );
 }
