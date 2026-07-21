@@ -1,18 +1,28 @@
 (() => {
-  if (window.__kevtokNativeLoaded) return;
-  window.__kevtokNativeLoaded = true;
+  if (window.__kevtokNativeV2Loaded) return;
+  window.__kevtokNativeV2Loaded = true;
 
   const MAIN_STATE_KEY = 'kevinception:timeline-v6';
-  const NATIVE_STATE_KEY = 'kevinception:kevtok-native-v1';
+  const NATIVE_STATE_KEY = 'kevinception:kevtok-native-v2';
 
-  function readJson(key, fallback) {
-    try { return { ...fallback, ...(JSON.parse(localStorage.getItem(key) || '{}') || {}) }; }
-    catch { return { ...fallback }; }
-  }
-  function writeJson(key, value) {
-    try { localStorage.setItem(key, JSON.stringify(value)); } catch { /* local storage unavailable */ }
-  }
-  function mainState() {
+  const readJson = (key, fallback) => {
+    try {
+      const parsed = JSON.parse(localStorage.getItem(key) || '{}') || {};
+      return { ...fallback, ...parsed };
+    } catch {
+      return { ...fallback };
+    }
+  };
+  const writeJson = (key, value) => {
+    try { localStorage.setItem(key, JSON.stringify(value)); } catch { /* storage unavailable */ }
+  };
+  const escapeHtml = (value) => String(value ?? '').replace(/[&<>'"]/g, (char) => ({
+    '&': '&amp;', '<': '&lt;', '>': '&gt;', "'": '&#39;', '"': '&quot;'
+  }[char]));
+  const reducedMotion = () => matchMedia('(prefers-reduced-motion: reduce)').matches;
+  const formatCount = (value) => value >= 1000 ? `${(value / 1000).toFixed(value >= 10000 ? 0 : 1)}K` : String(value);
+
+  function getMainState() {
     const state = readJson(MAIN_STATE_KEY, {});
     state.y2020 ||= { likes: {}, saves: {}, comments: {} };
     state.y2020.likes ||= {};
@@ -20,27 +30,35 @@
     state.y2020.comments ||= {};
     return state;
   }
-  function nativeState() {
-    return readJson(NATIVE_STATE_KEY, { drafts: [], shares: {}, inboxRead: false, activeNav: 'home' });
+
+  function getNativeState() {
+    return readJson(NATIVE_STATE_KEY, {
+      drafts: [],
+      shares: {},
+      inboxRead: false,
+      activeNav: 'home'
+    });
   }
-  function saveNative(state) { writeJson(NATIVE_STATE_KEY, state); }
-  function escapeHtml(value) {
-    return String(value ?? '').replace(/[&<>'"]/g, (char) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', "'": '&#39;', '"': '&quot;' }[char]));
-  }
-  function formatCount(value) {
-    if (value >= 1000) return `${(value / 1000).toFixed(value >= 10000 ? 0 : 1)}K`;
-    return String(value);
-  }
+
+  const saveNativeState = (state) => writeJson(NATIVE_STATE_KEY, state);
+  const clips = () => [...document.querySelectorAll('[data-kt-clip]')];
+  const clipId = (clip) => clip?.dataset?.clipId || '';
+  const clipTitle = (clip) => clip?.querySelector('h1')?.textContent?.trim() || 'KevTok clip';
+  const clipCategory = (clip) => clip?.dataset?.category || 'Kevin';
+  const clipById = (id) => clips().find((clip) => clipId(clip) === id);
+
   function openDialog(dialog) {
     if (!dialog) return;
     if (typeof dialog.showModal === 'function') dialog.showModal();
     else dialog.setAttribute('open', '');
   }
+
   function closeDialog(dialog) {
     if (!dialog) return;
     if (typeof dialog.close === 'function') dialog.close();
     else dialog.removeAttribute('open');
   }
+
   function toast(message) {
     let node = document.querySelector('[data-kt-native-toast]');
     if (!node) {
@@ -54,41 +72,27 @@
     clearTimeout(toast.timer);
     toast.timer = setTimeout(() => node.classList.remove('is-visible'), 2400);
   }
-  function ensureStyles() {
-    if (document.querySelector('link[data-kevtok-native-style]')) return;
-    const link = document.createElement('link');
-    link.rel = 'stylesheet';
-    link.href = '/legacy/assets/styles/kevtok-native.css';
-    link.dataset.kevtokNativeStyle = 'true';
-    document.head.append(link);
-  }
-  function clips() { return [...document.querySelectorAll('[data-kt-clip]')]; }
-  function clipId(clip) { return clip?.dataset?.clipId || ''; }
-  function clipTitle(clip) { return clip?.querySelector('h1')?.textContent?.trim() || 'KevTok clip'; }
-  function clipCategory(clip) { return clip?.dataset?.category || 'Kevin'; }
-  function clipById(id) { return clips().find((clip) => clipId(clip) === id); }
-  function scrollToClip(id) {
-    const clip = clipById(id);
-    if (!clip) return;
-    document.querySelector('[data-kt-filter="all"]')?.click();
-    window.setTimeout(() => clip.scrollIntoView({ behavior: matchMedia('(prefers-reduced-motion: reduce)').matches ? 'auto' : 'smooth', block: 'start' }), 0);
-  }
 
   function createDialog(name, label, body) {
-    const existing = document.querySelector(`[data-kt-native-dialog="${name}"]`);
+    const selector = `[data-kt-native-dialog="${name}"]`;
+    const existing = document.querySelector(selector);
     if (existing) return existing;
     const dialog = document.createElement('dialog');
     dialog.className = `era-dialog kt-native-dialog kt-native-dialog--${name}`;
     dialog.dataset.ktNativeDialog = name;
     dialog.setAttribute('aria-label', label);
     dialog.innerHTML = body;
-    dialog.querySelectorAll('[data-kt-native-close]').forEach((button) => button.addEventListener('click', () => closeDialog(dialog)));
-    dialog.addEventListener('click', (event) => { if (event.target === dialog) closeDialog(dialog); });
+    dialog.querySelectorAll('[data-kt-native-close]').forEach((button) => {
+      button.addEventListener('click', () => closeDialog(dialog));
+    });
+    dialog.addEventListener('click', (event) => {
+      if (event.target === dialog) closeDialog(dialog);
+    });
     document.body.append(dialog);
     return dialog;
   }
 
-  function ensureNativeDialogs() {
+  function ensureDialogs() {
     createDialog('discover', 'Discover KevTok clips', `
       <article>
         <header><div><p class="eyebrow">Discover</p><h2>Search Kevin's clips</h2></div><button type="button" data-kt-native-close aria-label="Close discover">×</button></header>
@@ -113,7 +117,7 @@
         <div class="kt-native-inbox" data-kt-native-inbox></div>
       </article>
     `);
-    createDialog('profile', 'Kevin's KevTok profile', `
+    createDialog('profile', "Kevin's KevTok profile", `
       <article>
         <header><div><p class="eyebrow">Profile</p><h2>@kevinbuilds</h2></div><button type="button" data-kt-native-close aria-label="Close profile">×</button></header>
         <section class="kt-native-profile">
@@ -128,15 +132,20 @@
   }
 
   function setActiveNav(name) {
-    const state = nativeState();
+    const state = getNativeState();
     state.activeNav = name;
-    saveNative(state);
-    document.querySelectorAll('[data-kt-nav]').forEach((button) => button.classList.toggle('is-active', button.dataset.ktNav === name));
+    saveNativeState(state);
+    document.querySelectorAll('[data-kt-nav]').forEach((button) => {
+      const active = button.dataset.ktNav === name;
+      button.classList.toggle('is-active', active);
+      button.setAttribute('aria-current', active ? 'page' : 'false');
+    });
   }
 
   function replaceBottomNavigation() {
     const nav = document.querySelector('.kt-nav');
     if (!nav) return;
+    nav.setAttribute('aria-label', 'KevTok navigation');
     nav.innerHTML = `
       <button type="button" class="is-active" data-kt-nav="home"><span aria-hidden="true">⌂</span><small>Home</small></button>
       <button type="button" data-kt-nav="discover"><span aria-hidden="true">⌕</span><small>Discover</small></button>
@@ -146,31 +155,45 @@
     `;
   }
 
+  function scrollToClip(id) {
+    const clip = clipById(id);
+    if (!clip) return;
+    document.querySelector('[data-kt-filter="all"]')?.click();
+    setActiveNav('home');
+    setTimeout(() => clip.scrollIntoView({ behavior: reducedMotion() ? 'auto' : 'smooth', block: 'start' }), 0);
+  }
+
   function actionBases(index) {
     return { likes: 128 + index * 71, comments: 2 + index, saves: 18 + index * 9, shares: 7 + index * 5 };
   }
 
   function syncActionCounts() {
-    const main = mainState();
-    const local = nativeState();
+    const main = getMainState();
+    const local = getNativeState();
     clips().forEach((clip, index) => {
       const id = clipId(clip);
       const base = actionBases(index);
-      const like = clip.querySelector('[data-kt-like]');
-      const comment = clip.querySelector('[data-kt-comment]');
-      const save = clip.querySelector('[data-kt-save]');
-      const share = clip.querySelector('[data-kt-share]');
-      if (like?.querySelector('b')) like.querySelector('b').textContent = formatCount(base.likes + (main.y2020.likes[id] ? 1 : 0));
-      if (comment?.querySelector('b')) comment.querySelector('b').textContent = formatCount(base.comments + (main.y2020.comments[id]?.length || 0));
-      if (save?.querySelector('b')) save.querySelector('b').textContent = formatCount(base.saves + (main.y2020.saves[id] ? 1 : 0));
-      if (share) {
-        let count = share.querySelector('b');
+      const values = {
+        like: base.likes + (main.y2020.likes[id] ? 1 : 0),
+        comment: base.comments + (main.y2020.comments[id]?.length || 0),
+        save: base.saves + (main.y2020.saves[id] ? 1 : 0),
+        share: base.shares + Number(local.shares[id] || 0)
+      };
+      const buttons = {
+        like: clip.querySelector('[data-kt-like]'),
+        comment: clip.querySelector('[data-kt-comment]'),
+        save: clip.querySelector('[data-kt-save]'),
+        share: clip.querySelector('[data-kt-share]')
+      };
+      Object.entries(buttons).forEach(([key, button]) => {
+        if (!button) return;
+        let count = button.querySelector('b');
         if (!count) {
           count = document.createElement('b');
-          share.querySelector('small')?.before(count);
+          button.querySelector('small')?.before(count);
         }
-        count.textContent = formatCount(base.shares + (local.shares[id] || 0));
-      }
+        count.textContent = formatCount(values[key]);
+      });
     });
   }
 
@@ -178,29 +201,37 @@
     const dialog = document.querySelector('[data-kt-native-dialog="discover"]');
     if (!dialog) return;
     const normalized = query.trim().toLowerCase();
-    const results = clips().filter((clip) => !normalized || `${clipTitle(clip)} ${clipCategory(clip)} ${clip.textContent}`.toLowerCase().includes(normalized));
+    const results = clips().filter((clip) => {
+      const haystack = `${clipTitle(clip)} ${clipCategory(clip)} ${clip.textContent}`.toLowerCase();
+      return !normalized || haystack.includes(normalized);
+    });
     const container = dialog.querySelector('[data-kt-native-results]');
     container.innerHTML = results.length ? results.map((clip) => `
       <button type="button" data-kt-native-result="${escapeHtml(clipId(clip))}">
         <span>${escapeHtml(clipCategory(clip))}</span><b>${escapeHtml(clipTitle(clip))}</b><small>Open clip</small>
       </button>
     `).join('') : '<p class="kt-native-empty">No clips match that search.</p>';
-    container.querySelectorAll('[data-kt-native-result]').forEach((button) => button.addEventListener('click', () => {
-      closeDialog(dialog);
-      setActiveNav('home');
-      scrollToClip(button.dataset.ktNativeResult);
-    }));
+    container.querySelectorAll('[data-kt-native-result]').forEach((button) => {
+      button.addEventListener('click', () => {
+        closeDialog(dialog);
+        scrollToClip(button.dataset.ktNativeResult);
+      });
+    });
   }
 
   function openDiscover() {
     setActiveNav('discover');
     const dialog = document.querySelector('[data-kt-native-dialog="discover"]');
+    if (!dialog) return;
     const categories = dialog.querySelector('[data-kt-native-categories]');
     categories.innerHTML = ['Kevin', 'Systems', 'Projects', 'AI'].map((category) => `<button type="button" data-kt-native-category="${category}">${category}</button>`).join('');
-    categories.querySelectorAll('[data-kt-native-category]').forEach((button) => button.addEventListener('click', () => {
-      document.querySelector(`[data-kt-filter="${button.dataset.ktNativeCategory}"]`)?.click();
-      closeDialog(dialog);
-    }));
+    categories.querySelectorAll('[data-kt-native-category]').forEach((button) => {
+      button.addEventListener('click', () => {
+        document.querySelector(`[data-kt-filter="${button.dataset.ktNativeCategory}"]`)?.click();
+        closeDialog(dialog);
+        setActiveNav('home');
+      });
+    });
     const input = dialog.querySelector('[data-kt-native-search]');
     input.value = '';
     input.oninput = () => renderDiscover(input.value);
@@ -212,34 +243,36 @@
   function renderDrafts() {
     const dialog = document.querySelector('[data-kt-native-dialog="create"]');
     if (!dialog) return;
-    const state = nativeState();
+    const state = getNativeState();
     dialog.querySelector('[data-kt-native-draft-count]').textContent = String(state.drafts.length);
     const container = dialog.querySelector('[data-kt-native-drafts]');
     container.innerHTML = state.drafts.length ? state.drafts.slice().reverse().map((draft) => `
       <article><span>${escapeHtml(draft.format)}</span><p>${escapeHtml(draft.caption)}</p><small>${new Date(draft.createdAt).toLocaleString()}</small><button type="button" data-kt-native-delete-draft="${draft.id}">Delete</button></article>
     `).join('') : '<p class="kt-native-empty">No drafts yet. Nothing leaves this browser.</p>';
-    container.querySelectorAll('[data-kt-native-delete-draft]').forEach((button) => button.addEventListener('click', () => {
-      const current = nativeState();
-      current.drafts = current.drafts.filter((draft) => draft.id !== button.dataset.ktNativeDeleteDraft);
-      saveNative(current);
-      renderDrafts();
-      updateInboxBadge();
-    }));
+    container.querySelectorAll('[data-kt-native-delete-draft]').forEach((button) => {
+      button.addEventListener('click', () => {
+        const current = getNativeState();
+        current.drafts = current.drafts.filter((draft) => draft.id !== button.dataset.ktNativeDeleteDraft);
+        saveNativeState(current);
+        renderDrafts();
+        updateInboxBadge();
+      });
+    });
   }
 
   function openCreate() {
     setActiveNav('create');
-    const dialog = document.querySelector('[data-kt-native-dialog="create"]');
     renderDrafts();
+    const dialog = document.querySelector('[data-kt-native-dialog="create"]');
     openDialog(dialog);
-    requestAnimationFrame(() => dialog.querySelector('textarea')?.focus());
+    requestAnimationFrame(() => dialog?.querySelector('textarea')?.focus());
   }
 
   function renderInbox() {
     const dialog = document.querySelector('[data-kt-native-dialog="inbox"]');
     if (!dialog) return;
-    const main = mainState();
-    const local = nativeState();
+    const main = getMainState();
+    const local = getNativeState();
     const liked = Object.values(main.y2020.likes).filter(Boolean).length;
     const saved = Object.values(main.y2020.saves).filter(Boolean).length;
     const comments = Object.values(main.y2020.comments).reduce((total, items) => total + (items?.length || 0), 0);
@@ -255,7 +288,7 @@
   }
 
   function updateInboxBadge() {
-    const local = nativeState();
+    const local = getNativeState();
     const badge = document.querySelector('[data-kt-native-inbox-badge]');
     if (!badge) return;
     const count = local.inboxRead ? 0 : 1 + local.drafts.length;
@@ -265,9 +298,9 @@
 
   function openInbox() {
     setActiveNav('inbox');
-    const local = nativeState();
-    local.inboxRead = true;
-    saveNative(local);
+    const state = getNativeState();
+    state.inboxRead = true;
+    saveNativeState(state);
     renderInbox();
     updateInboxBadge();
     openDialog(document.querySelector('[data-kt-native-dialog="inbox"]'));
@@ -276,10 +309,12 @@
   function renderProfile(tab = 'posts') {
     const dialog = document.querySelector('[data-kt-native-dialog="profile"]');
     if (!dialog) return;
-    const main = mainState();
+    const main = getMainState();
     const likedIds = Object.entries(main.y2020.likes).filter(([, value]) => value).map(([id]) => id);
     const savedIds = Object.entries(main.y2020.saves).filter(([, value]) => value).map(([id]) => id);
-    dialog.querySelectorAll('[data-kt-profile-tab]').forEach((button) => button.classList.toggle('is-active', button.dataset.ktProfileTab === tab));
+    dialog.querySelectorAll('[data-kt-profile-tab]').forEach((button) => {
+      button.classList.toggle('is-active', button.dataset.ktProfileTab === tab);
+    });
     dialog.querySelector('[data-kt-native-profile-stats]').innerHTML = `<div><dt>8</dt><dd>Posts</dd></div><div><dt>${likedIds.length}</dt><dd>Liked</dd></div><div><dt>${savedIds.length}</dt><dd>Saved</dd></div>`;
     const ids = tab === 'liked' ? likedIds : tab === 'saved' ? savedIds : clips().map(clipId);
     const grid = dialog.querySelector('[data-kt-native-profile-grid]');
@@ -287,18 +322,18 @@
       const clip = clipById(id);
       return `<button type="button" data-kt-profile-clip="${escapeHtml(id)}"><span>${escapeHtml(clipCategory(clip))}</span><b>${escapeHtml(clipTitle(clip))}</b></button>`;
     }).join('') : `<p class="kt-native-empty">No ${escapeHtml(tab)} clips yet.</p>`;
-    grid.querySelectorAll('[data-kt-profile-clip]').forEach((button) => button.addEventListener('click', () => {
-      closeDialog(dialog);
-      setActiveNav('home');
-      scrollToClip(button.dataset.ktProfileClip);
-    }));
+    grid.querySelectorAll('[data-kt-profile-clip]').forEach((button) => {
+      button.addEventListener('click', () => {
+        closeDialog(dialog);
+        scrollToClip(button.dataset.ktProfileClip);
+      });
+    });
   }
 
   function openProfile() {
     setActiveNav('profile');
-    const dialog = document.querySelector('[data-kt-native-dialog="profile"]');
     renderProfile('posts');
-    openDialog(dialog);
+    openDialog(document.querySelector('[data-kt-native-dialog="profile"]'));
   }
 
   function showHeartBurst(visual) {
@@ -306,7 +341,7 @@
     heart.className = 'kt-heart-burst';
     heart.textContent = '♥';
     visual.append(heart);
-    window.setTimeout(() => heart.remove(), 720);
+    setTimeout(() => heart.remove(), 720);
   }
 
   function bindSocialInteractions() {
@@ -316,32 +351,41 @@
       const save = clip.querySelector('[data-kt-save]');
       const share = clip.querySelector('[data-kt-share]');
       const visual = clip.querySelector('.kt-clip__visual');
-      [like, save].forEach((button) => button?.addEventListener('click', () => window.setTimeout(() => { syncActionCounts(); renderProfile(); renderInbox(); }, 0)));
+      [like, save].forEach((button) => button?.addEventListener('click', () => setTimeout(() => {
+        syncActionCounts();
+        renderProfile();
+        renderInbox();
+      }, 0)));
       share?.addEventListener('click', () => {
-        const local = nativeState();
-        local.shares[id] = (local.shares[id] || 0) + 1;
-        saveNative(local);
-        window.setTimeout(() => { syncActionCounts(); renderInbox(); }, 0);
+        const state = getNativeState();
+        state.shares[id] = Number(state.shares[id] || 0) + 1;
+        saveNativeState(state);
+        setTimeout(() => { syncActionCounts(); renderInbox(); }, 0);
       });
       let lastTap = 0;
       visual?.addEventListener('pointerup', (event) => {
-        if (event.target.closest('button, a')) return;
+        if (event.target instanceof Element && event.target.closest('button, a')) return;
         const now = Date.now();
         if (now - lastTap < 320) {
-          if (!like.classList.contains('is-active')) like.click();
+          if (like && !like.classList.contains('is-active')) like.click();
           showHeartBurst(visual);
           lastTap = 0;
-        } else lastTap = now;
+        } else {
+          lastTap = now;
+        }
       });
     });
-    document.querySelector('[data-kt-comment-form]')?.addEventListener('submit', () => window.setTimeout(() => { syncActionCounts(); renderInbox(); }, 0));
+    document.querySelector('[data-kt-comment-form]')?.addEventListener('submit', () => setTimeout(() => {
+      syncActionCounts();
+      renderInbox();
+    }, 0));
   }
 
-  function bindNativeNavigation() {
+  function bindNavigation() {
     document.querySelector('[data-kt-nav="home"]')?.addEventListener('click', () => {
       setActiveNav('home');
       document.querySelector('[data-kt-filter="all"]')?.click();
-      clips()[0]?.scrollIntoView({ behavior: matchMedia('(prefers-reduced-motion: reduce)').matches ? 'auto' : 'smooth', block: 'start' });
+      clips()[0]?.scrollIntoView({ behavior: reducedMotion() ? 'auto' : 'smooth', block: 'start' });
     });
     document.querySelector('[data-kt-nav="discover"]')?.addEventListener('click', openDiscover);
     document.querySelector('[data-kt-nav="create"]')?.addEventListener('click', openCreate);
@@ -368,17 +412,25 @@
       openCreate();
     }, true);
 
-    document.querySelectorAll('[data-kt-profile-tab]').forEach((button) => button.addEventListener('click', () => renderProfile(button.dataset.ktProfileTab)));
+    document.querySelectorAll('[data-kt-profile-tab]').forEach((button) => {
+      button.addEventListener('click', () => renderProfile(button.dataset.ktProfileTab));
+    });
+
     const createForm = document.querySelector('[data-kt-native-create-form]');
     createForm?.addEventListener('submit', (event) => {
       event.preventDefault();
       const form = event.currentTarget;
       const caption = form.elements.caption.value.trim();
       if (!caption) return;
-      const local = nativeState();
-      local.drafts.push({ id: `draft-${Date.now()}`, caption, format: form.elements.format.value, createdAt: new Date().toISOString() });
-      local.inboxRead = false;
-      saveNative(local);
+      const state = getNativeState();
+      state.drafts.push({
+        id: `draft-${Date.now()}`,
+        caption,
+        format: form.elements.format.value,
+        createdAt: new Date().toISOString()
+      });
+      state.inboxRead = false;
+      saveNativeState(state);
       form.reset();
       renderDrafts();
       updateInboxBadge();
@@ -389,10 +441,9 @@
   function init() {
     const app = document.querySelector('.kt-app');
     if (!app) return;
-    ensureStyles();
-    ensureNativeDialogs();
+    ensureDialogs();
     replaceBottomNavigation();
-    bindNativeNavigation();
+    bindNavigation();
     bindSocialInteractions();
     syncActionCounts();
     updateInboxBadge();
