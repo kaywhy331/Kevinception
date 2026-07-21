@@ -39,10 +39,11 @@ describe('V7.7 device-native navigation', () => {
     const overlay = read('src/experience/ExperienceOverlay.tsx');
     const script = read('public/legacy/assets/client/kevtok-native.js');
     const styles = read('public/legacy/assets/styles/kevtok-native.css');
+    expect(() => new Function(script)).not.toThrow();
     expect(overlay).toContain("script.src = '/legacy/assets/client/kevtok-native.js'");
     expect(overlay).toContain("link.href = '/legacy/assets/styles/kevtok-native.css'");
     for (const item of ['home', 'discover', 'create', 'inbox', 'profile']) {
-      expect(script).toContain(`data-kt-nav=\"${item}\"`);
+      expect(script).toContain(`data-kt-nav="${item}"`);
     }
     expect(script).toContain("createDialog('discover'");
     expect(script).toContain("createDialog('create'");
