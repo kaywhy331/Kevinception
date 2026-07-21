@@ -1,10 +1,10 @@
 'use client';
 
 import Link from 'next/link';
-import { useEffect, useMemo, useRef, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import { projects, timelineContent, type YearId } from '@/content/data';
 import { artifacts } from './artifacts';
-import { eraConfigs, getAdjacentYear, YEAR_ORDER } from './config';
+import { eraConfigs, getAdjacentYear, YEAR_ORDER, type TransitionId } from './config';
 import { useExperienceActions } from './ExperienceContext';
 import { useExperienceStore } from './store';
 
@@ -101,6 +101,17 @@ function InterfaceLayer({ visible }: { visible: boolean }) {
     });
   }, [activeYear, visible]);
 
+  useEffect(() => {
+    if (visible || activeYear === '2000' || loadedYears[activeYear]) return;
+    const timer = window.setTimeout(() => {
+      setMountedYears((current) => {
+        const withoutActive = current.filter((year) => year !== activeYear);
+        return [...withoutActive, activeYear].slice(-2);
+      });
+    }, 850);
+    return () => window.clearTimeout(timer);
+  }, [activeYear, loadedYears, visible]);
+
   const onFrameLoad = (year: YearId, frame: HTMLIFrameElement) => {
     setLoadedYears((current) => ({ ...current, [year]: true }));
     if (year === '2000') return;
@@ -111,7 +122,7 @@ function InterfaceLayer({ visible }: { visible: boolean }) {
         const enter = document?.querySelector<HTMLButtonElement>('[data-era-enter]');
         if (boot && !boot.hidden && enter) enter.click();
       } catch {
-        // The embedded application remains usable even if a browser blocks same-origin frame access.
+        // The embedded application remains usable if frame access is restricted.
       }
     }, 0);
   };
@@ -158,10 +169,7 @@ function TextMode() {
   const featured = projects.slice(0, 3);
   return (
     <section className="text-mode" aria-label={`${config.title} text experience`}>
-      <header>
-        <button type="button" onClick={closeTextMode}>Return to 3D</button>
-        <Link href="/portfolio/">Portfolio</Link>
-      </header>
+      <header><button type="button" onClick={closeTextMode}>Return to 3D</button><Link href="/portfolio/">Portfolio</Link></header>
       <article>
         <p className="eyebrow">Text experience · {activeYear}</p>
         <h1>{config.title}</h1>
@@ -269,14 +277,15 @@ function FirstRunHint({ visible }: { visible: boolean }) {
 function TransitionOverlay() {
   const transition = useExperienceStore((state) => state.transition);
   if (!transition || transition.id === 'timeline-fade') return null;
-  const labels = {
+  const labels: Partial<Record<TransitionId, string>> = {
     'static-modem': 'Static becomes modem noise',
     'profile-flatten': 'Personal pages become social identity',
     'portrait-rotate': 'The social feed rotates into short-form video',
     'signals-to-agents': 'Reactions reorganize into autonomous agents',
-    'agents-to-echo': 'Agent memories merge into a digital echo'
+    'agents-to-echo': 'Agent memories merge into a digital echo',
+    'time-jump': 'Jumping through the technology timeline'
   };
-  return <div className={`transition-overlay transition-${transition.id}`} role="status" aria-live="polite"><span></span><p>{labels[transition.id]}</p></div>;
+  return <div className={`transition-overlay transition-${transition.id}`} role="status" aria-live="polite"><span></span><p>{labels[transition.id] ?? 'Moving through time'}</p></div>;
 }
 
 export function ExperienceOverlay() {
