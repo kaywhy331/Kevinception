@@ -2,14 +2,15 @@ import type { Metadata } from 'next';
 import './globals.css';
 import './environment-pass.css';
 import { site } from '@/content/data';
+import { narrativeSite } from '@/content/narrative';
 
 export const metadata: Metadata = {
   metadataBase: new URL(site.domain),
-  title: { default: site.title, template: `%s | ${site.name}` },
-  description: site.description,
+  title: { default: narrativeSite.title, template: `%s | ${site.name}` },
+  description: narrativeSite.description,
   applicationName: site.name,
-  openGraph: { title: site.title, description: site.description, url: site.domain, siteName: site.name, type: 'website' },
-  twitter: { card: 'summary_large_image', title: site.title, description: site.description },
+  openGraph: { title: narrativeSite.title, description: narrativeSite.description, url: site.domain, siteName: site.name, type: 'website' },
+  twitter: { card: 'summary_large_image', title: narrativeSite.title, description: narrativeSite.description },
   robots: { index: true, follow: true },
   manifest: '/site.webmanifest',
   icons: { icon: '/favicon.svg' }
