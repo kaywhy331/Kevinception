@@ -39,35 +39,38 @@ describe('V7 fluid experience pass', () => {
     expect(styles).toContain('.transition-time-jump');
   });
 
-  it('mounts a small render band and omits the source scene during distant jumps', () => {
+  it('loads one full scene and uses lightweight proxies for visible neighbors', () => {
     const world = read('src/experience/ExperienceWorld.tsx');
-    expect(world).toContain('const mountedYears = new Set<YearId>');
-    expect(world).toContain("transition?.id !== 'time-jump'");
-    expect(world).toContain("mountedYears.has('1990')");
-    expect(world).toContain("detail={activeYear === '2030'}");
-    expect(world).toContain("detail={activeYear === '2040'}");
+    expect(world).toContain('const sceneLoaders');
+    expect(world).toContain('lazy(sceneLoaders[year])');
+    expect(world).toContain('function EraProxy');
+    expect(world).toContain('const ActiveScene = sceneComponents[activeYear]');
+    expect(world).toContain('<ActiveScene active timeline={timeline} detail />');
+    expect(world).toContain("filter((year) => year !== activeYear)");
   });
 
-  it('keeps the active interface mounted, prewarms settled eras, and skips duplicate intros', () => {
+  it('keeps the active interface mounted, prewarms on intent, and skips duplicate intros', () => {
     const overlay = read('src/experience/ExperienceOverlay.tsx');
     expect(overlay).toContain('const [mountedYears, setMountedYears]');
     expect(overlay).toContain("activeYear === '2000'");
-    expect(overlay).toContain('}, 850)');
+    expect(overlay).toContain("window.addEventListener('kevinception:prewarm'");
+    expect(overlay).toContain('onPointerEnter={() => requestInterfacePrewarm(activeYear)}');
     expect(overlay).toContain("document?.querySelector<HTMLButtonElement>('[data-era-enter]')");
     expect(overlay).toContain("<InterfaceLayer visible={viewMode === 'interface'} />");
   });
 
-  it('caps pixel density, pauses inactive loops, and uses lightweight future neighbors', () => {
+  it('caps pixel density, pauses idle rendering, and pauses inactive scene loops', () => {
     const canvas = read('src/experience/ExperienceCanvas.tsx');
     const nexus = read('src/experience/scenes/Year2030Scene.tsx');
     const echo = read('src/experience/scenes/Year2040Scene.tsx');
     const kevtok = read('src/experience/scenes/Year2020Scene.tsx');
     expect(canvas).toContain('[1, 1.7]');
     expect(canvas).toContain('<AdaptiveDpr');
+    expect(canvas).toContain('function FrameBudgetController');
+    expect(canvas).toContain("setFrameloop('demand')");
+    expect(canvas).toContain("setFrameloop('never')");
     expect(nexus).toContain('if (!active || !detail) return');
-    expect(nexus).toContain('if (!detail)');
     expect(echo).toContain('if (!active || !detail || !shards.current) return');
-    expect(echo).toContain('if (!detail)');
     expect(kevtok).toContain('if (!active || !reactions.current) return');
   });
 
