@@ -2,13 +2,6 @@ import { setup } from 'xstate';
 
 type Destination = 'timeline' | 'environment' | 'interface' | 'text';
 
-const syncTransitions = [
-  { guard: ({ event }: { event: { destination: Destination } }) => event.destination === 'timeline', target: 'timeline' },
-  { guard: ({ event }: { event: { destination: Destination } }) => event.destination === 'interface', target: 'interface' },
-  { guard: ({ event }: { event: { destination: Destination } }) => event.destination === 'text', target: 'text' },
-  { target: 'environment' }
-];
-
 export const experienceMachine = setup({
   types: {
     events: {} as
@@ -32,7 +25,12 @@ export const experienceMachine = setup({
         ENTER_INTERFACE: 'interface',
         START_TRANSITION: 'transitioning',
         SHOW_TEXT: 'text',
-        SYNC_VIEW: syncTransitions
+        SYNC_VIEW: [
+          { guard: ({ event }) => event.destination === 'timeline', target: 'timeline' },
+          { guard: ({ event }) => event.destination === 'interface', target: 'interface' },
+          { guard: ({ event }) => event.destination === 'text', target: 'text' },
+          { target: 'environment' }
+        ]
       }
     },
     environment: {
@@ -41,7 +39,12 @@ export const experienceMachine = setup({
         ENTER_INTERFACE: 'interface',
         START_TRANSITION: 'transitioning',
         SHOW_TEXT: 'text',
-        SYNC_VIEW: syncTransitions
+        SYNC_VIEW: [
+          { guard: ({ event }) => event.destination === 'timeline', target: 'timeline' },
+          { guard: ({ event }) => event.destination === 'interface', target: 'interface' },
+          { guard: ({ event }) => event.destination === 'text', target: 'text' },
+          { target: 'environment' }
+        ]
       }
     },
     interface: {
@@ -50,7 +53,12 @@ export const experienceMachine = setup({
         SHOW_TIMELINE: 'timeline',
         START_TRANSITION: 'transitioning',
         SHOW_TEXT: 'text',
-        SYNC_VIEW: syncTransitions
+        SYNC_VIEW: [
+          { guard: ({ event }) => event.destination === 'timeline', target: 'timeline' },
+          { guard: ({ event }) => event.destination === 'interface', target: 'interface' },
+          { guard: ({ event }) => event.destination === 'text', target: 'text' },
+          { target: 'environment' }
+        ]
       }
     },
     text: {
@@ -60,7 +68,12 @@ export const experienceMachine = setup({
           { target: 'environment' }
         ],
         START_TRANSITION: 'transitioning',
-        SYNC_VIEW: syncTransitions
+        SYNC_VIEW: [
+          { guard: ({ event }) => event.destination === 'timeline', target: 'timeline' },
+          { guard: ({ event }) => event.destination === 'interface', target: 'interface' },
+          { guard: ({ event }) => event.destination === 'text', target: 'text' },
+          { target: 'environment' }
+        ]
       }
     },
     transitioning: {
@@ -70,7 +83,12 @@ export const experienceMachine = setup({
           { guard: ({ event }) => event.destination === 'interface', target: 'interface' },
           { target: 'environment' }
         ],
-        SYNC_VIEW: syncTransitions
+        SYNC_VIEW: [
+          { guard: ({ event }) => event.destination === 'timeline', target: 'timeline' },
+          { guard: ({ event }) => event.destination === 'interface', target: 'interface' },
+          { guard: ({ event }) => event.destination === 'text', target: 'text' },
+          { target: 'environment' }
+        ]
       }
     }
   }
