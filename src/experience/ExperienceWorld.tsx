@@ -7,9 +7,21 @@ import { Year2020Scene } from './scenes/Year2020Scene';
 import { Year2030Scene } from './scenes/Year2030Scene';
 import { Year2040Scene } from './scenes/Year2040Scene';
 import { TimelineArchitecture } from './TimelineArchitecture';
-import { YEAR_ORDER } from './config';
+import { eraConfigs, YEAR_ORDER } from './config';
 import { useExperienceStore } from './store';
 import type { YearId } from '@/content/data';
+import type { ViewMode } from './types';
+
+function NeighborVeil({ year, active, viewMode }: { year: YearId; active: boolean; viewMode: ViewMode }) {
+  if (active || viewMode === 'interface' || viewMode === 'text') return null;
+  const opacity = viewMode === 'timeline' ? 0.42 : 0.52;
+  return (
+    <mesh position={[eraConfigs[year].stationX, 3.0, 4.02]} renderOrder={24} raycast={() => {}}>
+      <planeGeometry args={[10.35, 6.05]} />
+      <meshBasicMaterial color="#030509" transparent opacity={opacity} depthTest={false} depthWrite={false} />
+    </mesh>
+  );
+}
 
 export function ExperienceWorld() {
   const activeYear = useExperienceStore((state) => state.activeYear);
@@ -23,8 +35,10 @@ export function ExperienceWorld() {
   const next = YEAR_ORDER[index + 1];
   if (previous) mountedYears.add(previous);
   if (next) mountedYears.add(next);
-  if (transition?.from) mountedYears.add(transition.from);
-  if (transition?.to) mountedYears.add(transition.to);
+  if (transition?.id !== 'time-jump') {
+    if (transition?.from) mountedYears.add(transition.from);
+    if (transition?.to) mountedYears.add(transition.to);
+  }
   if (activeYear === '2030' || activeYear === '2040' || transition?.id === 'agents-to-echo') {
     mountedYears.add('2030');
     mountedYears.add('2040');
@@ -50,8 +64,9 @@ export function ExperienceWorld() {
       {mountedYears.has('2000') && <Year2000Scene active={activeYear === '2000'} timeline={timeline} />}
       {mountedYears.has('2010') && <Year2010Scene active={activeYear === '2010'} timeline={timeline} />}
       {mountedYears.has('2020') && <Year2020Scene active={activeYear === '2020'} timeline={timeline} />}
-      {mountedYears.has('2030') && <Year2030Scene active={activeYear === '2030'} timeline={timeline} />}
-      {mountedYears.has('2040') && <Year2040Scene active={activeYear === '2040'} timeline={timeline} />}
+      {mountedYears.has('2030') && <Year2030Scene active={activeYear === '2030'} timeline={timeline} detail={activeYear === '2030'} />}
+      {mountedYears.has('2040') && <Year2040Scene active={activeYear === '2040'} timeline={timeline} detail={activeYear === '2040'} />}
+      {[...mountedYears].map((year) => <NeighborVeil key={`veil-${year}`} year={year} active={year === activeYear} viewMode={viewMode} />)}
     </>
   );
 }
