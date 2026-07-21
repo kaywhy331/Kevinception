@@ -3,6 +3,7 @@
 import { useMemo, useRef, useState } from 'react';
 import { RoundedBox } from '@react-three/drei';
 import { useFrame } from '@react-three/fiber';
+import * as THREE from 'three';
 import { eraConfigs } from '../config';
 import { useExperienceActions } from '../ExperienceContext';
 import { ArtifactMesh, DeviceScreen, Dust, Hoverable } from './SceneUtils';
