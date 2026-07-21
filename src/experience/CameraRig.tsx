@@ -26,14 +26,14 @@ export function ExperienceCameraRig() {
     const futureCameraOffset = activeYear === '2030' ? -1.15 : activeYear === '2040' ? 1.15 : 0;
     const futureTargetOffset = activeYear === '2030' ? 0.62 : activeYear === '2040' ? -0.62 : 0;
     if (viewMode === 'timeline') return {
-      position: [stationX, narrow ? 6.7 : ultraWide ? 6.75 : 7.15, narrow ? 18.2 : ultraWide ? 16.2 : 16.8],
-      target: [stationX, ultraWide ? 2.25 : 2.0, -0.2]
+      position: [stationX, narrow ? 6.55 : ultraWide ? 6.25 : 6.5, narrow ? 18.0 : ultraWide ? 15.9 : 16.35],
+      target: [stationX, ultraWide ? 2.45 : 2.3, -0.15]
     };
     if (viewMode === 'interface') return { position: [stationX, narrow ? 4.5 : 3.85, narrow ? 12.2 : 8.6], target: [stationX, 1.8, 0] };
     if (viewMode === 'text') return { position: [stationX, 5.8, 12.8], target: [stationX, 1.8, 0] };
     return {
-      position: [stationX + (narrow ? 0 : futureCameraOffset), narrow ? 5.9 : ultraWide ? 5.25 : 5.45, narrow ? 14.8 : activeYear === '2030' || activeYear === '2040' ? 12.1 : ultraWide ? 10.9 : 11.45],
-      target: [stationX + (narrow ? 0 : futureTargetOffset), activeYear === '2030' || activeYear === '2040' ? 2.05 : ultraWide ? 2.0 : 1.8, -0.15]
+      position: [stationX + (narrow ? 0 : futureCameraOffset), narrow ? 5.75 : ultraWide ? 4.95 : 5.1, narrow ? 14.5 : activeYear === '2030' || activeYear === '2040' ? 11.9 : ultraWide ? 10.75 : 11.25],
+      target: [stationX + (narrow ? 0 : futureTargetOffset), activeYear === '2030' || activeYear === '2040' ? 2.2 : ultraWide ? 2.3 : 2.15, -0.1]
     };
   }, [activeYear, aspect, stationX, viewMode, size.width]);
 

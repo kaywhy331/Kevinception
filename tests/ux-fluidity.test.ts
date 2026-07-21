@@ -9,16 +9,20 @@ describe('V7 fluid experience pass', () => {
     const shell = read('src/experience/ExperienceShell.tsx');
     const overlay = read('src/experience/ExperienceOverlay.tsx');
     expect(shell).toContain('/experience/?year=');
-    expect(shell).toContain("experienceUrl(year, 'interface')");
-    expect(shell).toContain("router.replace(experienceUrl(location.year, 'interface')");
+    expect(shell).toContain("writeExperienceHistory(year, 'interface')");
+    expect(shell).toContain("writeExperienceHistory(location.year, 'interface', 'replace')");
+    expect(shell).toContain('window.history[method]');
     expect(overlay).toContain('onClick={() => enterYear(activeYear)}');
   });
 
-  it('supports browser history, touch swipes, trackpad scrolling, and an escape hierarchy', () => {
+  it('supports browser history, touch swipes, coalesced trackpad scrolling, and an escape hierarchy', () => {
     const shell = read('src/experience/ExperienceShell.tsx');
     expect(shell).toContain("window.addEventListener('popstate'");
     expect(shell).toContain("window.addEventListener('touchstart'");
     expect(shell).toContain("window.addEventListener('wheel'");
+    expect(shell).toContain('wheelCommitTimer');
+    expect(shell).toContain('Math.ceil(Math.abs(total) / 180)');
+    expect(shell).toContain("navigateToYearInternal(target, 'replace')");
     expect(shell).toContain('if (settingsOpen) setSettingsOpen(false)');
     expect(shell).toContain("else if (machine.matches('environment')) showTimeline()");
   });
@@ -73,6 +77,6 @@ describe('V7 fluid experience pass', () => {
     expect(camera).toContain('TARGET_HORIZONTAL_FOV');
     expect(camera).toContain('THREE.MathUtils.clamp(responsiveFov, 32, 48)');
     expect(world).toContain('function NeighborVeil');
-    expect(world).toContain('opacity = viewMode === \'timeline\' ? 0.42 : 0.52');
+    expect(world).toContain("opacity = viewMode === 'timeline' ? 0.42 : 0.52");
   });
 });

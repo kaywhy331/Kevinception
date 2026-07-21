@@ -6,7 +6,7 @@ import { useFrame } from '@react-three/fiber';
 import * as THREE from 'three';
 import { eraConfigs } from '../config';
 import { useExperienceActions } from '../ExperienceContext';
-import { ArtifactMesh, Dust, Hoverable } from './SceneUtils';
+import { Dust, Hoverable } from './SceneUtils';
 import { ArchiveColumn, CylinderBetween, GlassPanel, LightBar, RoomShell } from './EnvironmentPrimitives';
 import { FloorPedestal, WallDisplay } from './SceneLayout';
 
@@ -49,7 +49,6 @@ export function Year2030Scene({ active, detail = true }: { active: boolean; time
   const core = useRef<THREE.Mesh>(null);
   const packets = useRef<THREE.Group>(null);
   const [selected, setSelected] = useState('architect');
-  const selectedAgent = agents.find((agent) => agent.id === selected) ?? agents[2];
   const corePosition: [number, number, number] = [0, 1.55, 0];
   useFrame(({ clock }, delta) => {
     if (!active || !detail) return;
@@ -82,9 +81,9 @@ export function Year2030Scene({ active, detail = true }: { active: boolean; time
   return (
     <group position={[config.stationX, 0, 0]}>
       <RoomShell floorColor="#cbd6d7" wallColor="#e5eceb" sideColor="#ccd8d9" ceilingColor="#f4f7f5" trimColor="#75888c" accent={config.accent} openLeft openRight active={active} floorRoughness={0.35} />
-      <Dust center={[0, 3.0, 0]} spread={[9.4, 5.5, 7]} color="#8cecff" active={active} count={active ? 30 : 10} />
-      <LightBar position={[-2.7, 5.55, -2.4]} length={3.1} color="#c7fbff" intensity={active ? 0.85 : 0.08} />
-      <LightBar position={[2.7, 5.55, -2.4]} length={3.1} color="#e7fff5" intensity={active ? 0.8 : 0.08} />
+      <Dust center={[0, 3.0, 0]} spread={[9.4, 5.5, 7]} color="#8cecff" active={active} count={active ? 26 : 8} />
+      <LightBar position={[-2.7, 5.55, -2.4]} length={3.1} color="#c7fbff" intensity={active ? 0.78 : 0.07} />
+      <LightBar position={[2.7, 5.55, -2.4]} length={3.1} color="#e7fff5" intensity={active ? 0.74 : 0.07} />
 
       <group position={[-3.72, 1.75, -2.78]}>
         {[-0.66, 0, 0.66].map((x, index) => <ArchiveColumn key={x} position={[x, 0, 0]} color={['#8cecff', '#a7b9ff', '#83ffd0'][index]} active={active} height={3.2} radius={0.24} />)}
@@ -98,7 +97,7 @@ export function Year2030Scene({ active, detail = true }: { active: boolean; time
           <mesh position={[0, 0.46, 0]} receiveShadow><cylinderGeometry args={[1.72, 1.9, 0.13, 56]} /><meshPhysicalMaterial color="#bdefff" transparent opacity={0.22} roughness={0.08} clearcoat={1} /></mesh>
           <mesh ref={core} position={corePosition} castShadow><icosahedronGeometry args={[0.72, 2]} /><meshStandardMaterial color="#2c5961" emissive="#64e8ff" emissiveIntensity={active ? 1.05 : 0.14} metalness={0.5} roughness={0.2} wireframe /></mesh>
           <mesh position={corePosition}><sphereGeometry args={[0.38, 28, 28]} /><meshStandardMaterial color="#efffff" emissive="#64e8ff" emissiveIntensity={active ? 1.55 : 0.2} transparent opacity={0.76} /></mesh>
-          {active && <pointLight position={corePosition} color="#64e8ff" intensity={5.5} distance={7} decay={2} />}
+          {active && <pointLight position={corePosition} color="#64e8ff" intensity={5.0} distance={7} decay={2} />}
         </group>
       </Hoverable>
 
@@ -110,19 +109,21 @@ export function Year2030Scene({ active, detail = true }: { active: boolean; time
       ))}
       <group ref={packets} visible={active}>{agents.map((agent) => <mesh key={agent.id} position={corePosition}><boxGeometry args={[0.075, 0.075, 0.075]} /><meshStandardMaterial color={agent.color} emissive={agent.color} emissiveIntensity={1.0} /></mesh>)}</group>
 
-      <Hoverable label="Human approval console" onClick={() => { setSelected('governor'); discover('human-gate', '2030'); }}>
-        <group position={[0, 0, 2.95]}>
-          <FloorPedestal position={[0, 0, 0]} size={[2.8, 0.58, 1.05]} color="#d1d9da" accent={selectedAgent.color} />
-          <RoundedBox position={[0, 0.72, 0]} args={[2.9, 0.28, 1.08]} radius={0.15} smoothness={4} castShadow><meshStandardMaterial color="#d7dfdf" metalness={0.18} roughness={0.32} /></RoundedBox>
-          <GlassPanel position={[0, 1.02, -0.08]} size={[2.35, 0.5, 0.035]} color={selectedAgent.color} opacity={active ? 0.17 : 0.05} rotation={[-0.26, 0, 0]} frameColor="#7d8d90" />
-          {[-0.7, 0, 0.7].map((x, index) => <mesh key={x} position={[x, 0.82, 0.57]}><cylinderGeometry args={[0.13, 0.13, 0.07, 20]} /><meshStandardMaterial color={['#79ffd1', '#ffd66b', '#ff7f9c'][index]} emissive={['#3abf91', '#a47a18', '#a62b4c'][index]} emissiveIntensity={active ? 0.55 : 0.06} /></mesh>)}
+      <Hoverable label="Human approval node" onClick={() => { setSelected('governor'); discover('human-gate', '2030'); }}>
+        <group position={[0, 0, 2.85]}>
+          <FloorPedestal position={[0, 0, 0]} size={[1.05, 0.55, 0.9]} color="#d4dddd" accent="#ffffff" />
+          <RoundedBox position={[0, 0.68, 0.06]} args={[1.08, 0.18, 0.82]} radius={0.08} smoothness={3} castShadow receiveShadow><meshStandardMaterial color="#c8d2d3" roughness={0.32} metalness={0.18} /></RoundedBox>
+          <GlassPanel position={[0, 0.98, 0.42]} size={[0.86, 0.42, 0.03]} color="#efffff" opacity={active ? 0.14 : 0.045} frameColor="#819093" />
+          {agents.map((agent, index) => (
+            <mesh key={agent.id} position={[-0.36 + index * 0.18, 0.79, 0.48]}>
+              <sphereGeometry args={[0.045, 12, 12]} />
+              <meshStandardMaterial color={agent.color} emissive={agent.color} emissiveIntensity={active ? 0.95 : 0.12} />
+            </mesh>
+          ))}
         </group>
       </Hoverable>
 
-      <FloorPedestal position={[4.05, 0, -1.25]} size={[0.78, 0.48, 0.78]} color="#b8c8ca" accent={config.accent} />
-      <ArtifactMesh id="human-gate" year="2030" position={[4.05, 0.78, -1.25]} color="#64e8ff" active={active} shape="octahedron" scale={0.78} />
-      <spotLight position={[0, 5.7, 2.6]} target-position={[0, 1.45, 0]} color="#d8ffff" intensity={active ? 3.7 : 0.32} distance={15} angle={0.65} penumbra={0.68} castShadow={active} />
-      {active && <pointLight position={[4.0, 2.8, 0]} color="#64e8ff" intensity={1.7} distance={7} decay={2} />}
+      <spotLight position={[0, 5.7, 2.6]} target-position={[0, 1.45, 0]} color="#d8ffff" intensity={active ? 3.5 : 0.3} distance={15} angle={0.65} penumbra={0.68} castShadow={active} />
     </group>
   );
 }
