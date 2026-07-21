@@ -1,0 +1,56 @@
+name: Browser smoke
+on:
+  pull_request:
+
+jobs:
+  runtime:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+      - name: Install locked dependencies
+        run: npm ci
+      - name: Build static application
+        run: npm run build
+      - name: Run browser interaction review
+        shell: bash
+        run: |
+          npm run preview > preview-server.log 2>&1 &
+          server_pid=$!
+          trap 'kill "$server_pid" 2>/dev/null || true' EXIT
+
+          ready=0
+          for attempt in $(seq 1 60); do
+            if curl --silent --fail http://127.0.0.1:4321/ > /dev/null; then
+              ready=1
+              break
+            fi
+            sleep 1
+          done
+          if [ "$ready" -ne 1 ]; then
+            cat preview-server.log
+            exit 1
+          fi
+
+          chrome_path="$(command -v google-chrome || command -v google-chrome-stable || command -v chromium || command -v chromium-browser || true)"
+          if [ -z "$chrome_path" ]; then
+            echo 'No supported Chromium browser is installed on the runner.'
+            exit 1
+          fi
+
+          CHROME_PATH="$chrome_path" BASE_URL=http://127.0.0.1:4321 node scripts/runtime-review-v77.mjs
+          CHROME_PATH="$chrome_path" BASE_URL=http://127.0.0.1:4321 node scripts/capture-future-ultrawide.mjs
+      - name: Upload browser review
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: browser-review-v77
+          if-no-files-found: warn
+          path: |
+            docs/previews/v77
+            docs/RUNTIME_REVIEW_V77.json
+            preview-server.log

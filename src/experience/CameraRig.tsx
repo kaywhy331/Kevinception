@@ -20,22 +20,28 @@ export function ExperienceCameraRig() {
   const lookTarget = useRef(new THREE.Vector3());
   const stationX = eraConfigs[activeYear].stationX;
   const aspect = size.width / Math.max(1, size.height);
+  const futureRoom = activeYear === '2030' || activeYear === '2040';
+
   const pose = useMemo(() => {
     const narrow = size.width < 760;
     const ultraWide = aspect > 2.15;
-    const futureCameraOffset = activeYear === '2030' ? -1.15 : activeYear === '2040' ? 1.15 : 0;
-    const futureTargetOffset = activeYear === '2030' ? 0.62 : activeYear === '2040' ? -0.62 : 0;
     if (viewMode === 'timeline') return {
-      position: [stationX, narrow ? 6.55 : ultraWide ? 6.25 : 6.5, narrow ? 18.0 : ultraWide ? 15.9 : 16.35],
+      position: [stationX, narrow ? 6.55 : ultraWide ? 6.25 : 6.5],
       target: [stationX, ultraWide ? 2.45 : 2.3, -0.15]
     };
-    if (viewMode === 'interface') return { position: [stationX, narrow ? 4.5 : 3.85, narrow ? 12.2 : 8.6], target: [stationX, 1.8, 0] };
-    if (viewMode === 'text') return { position: [stationX, 5.8, 12.8], target: [stationX, 1.8, 0] };
-    return {
-      position: [stationX + (narrow ? 0 : futureCameraOffset), narrow ? 5.75 : ultraWide ? 4.95 : 5.1, narrow ? 14.5 : activeYear === '2030' || activeYear === '2040' ? 11.9 : ultraWide ? 10.75 : 11.25],
-      target: [stationX + (narrow ? 0 : futureTargetOffset), activeYear === '2030' || activeYear === '2040' ? 2.2 : ultraWide ? 2.3 : 2.15, -0.1]
+    if (viewMode === 'interface') return {
+      position: [stationX, narrow ? 4.5 : 3.85, narrow ? 12.2 : 8.6],
+      target: [stationX, 1.8, 0]
     };
-  }, [activeYear, aspect, stationX, viewMode, size.width]);
+    if (viewMode === 'text') return {
+      position: [stationX, 5.8, 12.8],
+      target: [stationX, 1.8, 0]
+    };
+    return {
+      position: [stationX, narrow ? 5.75 : ultraWide ? 4.95 : 5.1, narrow ? 14.5 : futureRoom ? 11.9 : ultraWide ? 10.75 : 11.25],
+      target: [stationX, futureRoom ? 2.2 : ultraWide ? 2.3 : 2.15, -0.1]
+    };
+  }, [aspect, futureRoom, stationX, viewMode, size.width]);
 
   useEffect(() => {
     if (transition?.id === 'time-jump') {
@@ -71,7 +77,8 @@ export function ExperienceCameraRig() {
   }, [aspect, camera, invalidate]);
 
   useFrame(() => {
-    const parallax = motion === 'reduced' || viewMode === 'interface' || viewMode === 'text' || transition?.id === 'time-jump' ? 0 : 0.09;
+    const parallaxDisabled = motion === 'reduced' || futureRoom || viewMode === 'interface' || viewMode === 'text' || transition?.id === 'time-jump';
+    const parallax = parallaxDisabled ? 0 : 0.09;
     camera.position.set(base.current.x + pointer.x * parallax, base.current.y + pointer.y * parallax * 0.45, base.current.z);
     lookTarget.current.set(target.current.x, target.current.y, target.current.z);
     camera.lookAt(lookTarget.current);

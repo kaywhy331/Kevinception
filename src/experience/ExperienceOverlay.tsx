@@ -82,10 +82,49 @@ function ChapterCard({ mode }: { mode: 'timeline' | 'environment' }) {
         >
           {config.enterLabel}
         </button>
-        <Link className="secondary-action" href="/portfolio/">Portfolio</Link>
       </div>
     </section>
   );
+}
+
+function injectEmbeddedFrameChrome(year: YearId, frame: HTMLIFrameElement) {
+  try {
+    const document = frame.contentDocument;
+    if (!document?.head || !document.body) return;
+    document.documentElement.dataset.kevinceptionFrame = 'true';
+
+    if (!document.querySelector('[data-kevinception-frame-style]')) {
+      const style = document.createElement('style');
+      style.dataset.kevinceptionFrameStyle = 'true';
+      style.textContent = `
+        .era-utility{display:none!important}
+        .era-stage{padding-top:0!important}
+        .era-guide{top:.65rem!important;max-height:calc(100svh - 1.3rem)!important}
+        .kt-stage,.kt-app{height:100svh!important}
+        .kb-topbar{top:0!important}
+        .nexus-shell,.echo-space{min-height:100svh!important}
+      `;
+      document.head.append(style);
+    }
+
+    if (year === '2020') {
+      if (!document.querySelector('link[data-kevtok-native-style]')) {
+        const link = document.createElement('link');
+        link.rel = 'stylesheet';
+        link.href = '/legacy/assets/styles/kevtok-native.css';
+        link.dataset.kevtokNativeStyle = 'true';
+        document.head.append(link);
+      }
+      if (!document.querySelector('script[data-kevtok-native]')) {
+        const script = document.createElement('script');
+        script.src = '/legacy/assets/client/kevtok-native.js';
+        script.dataset.kevtokNative = 'true';
+        document.body.append(script);
+      }
+    }
+  } catch {
+    // Embedded applications still work when same-origin frame customization is unavailable.
+  }
 }
 
 function InterfaceLayer({ visible }: { visible: boolean }) {
@@ -95,7 +134,6 @@ function InterfaceLayer({ visible }: { visible: boolean }) {
   const [mountedYears, setMountedYears] = useState<YearId[]>([]);
   const [loadedYears, setLoadedYears] = useState<Partial<Record<YearId, boolean>>>({});
   const [takeawayOpen, setTakeawayOpen] = useState(false);
-  const previous = getAdjacentYear(activeYear, -1);
   const next = getAdjacentYear(activeYear, 1);
 
   const mountYear = (year: YearId) => {
@@ -135,6 +173,7 @@ function InterfaceLayer({ visible }: { visible: boolean }) {
 
   const onFrameLoad = (year: YearId, frame: HTMLIFrameElement) => {
     setLoadedYears((current) => ({ ...current, [year]: true }));
+    injectEmbeddedFrameChrome(year, frame);
     if (year === '2000') return;
     window.setTimeout(() => {
       try {
@@ -151,22 +190,24 @@ function InterfaceLayer({ visible }: { visible: boolean }) {
   return (
     <section className={`interface-mode ${visible ? 'is-visible' : 'is-hidden'}`} aria-label={`${activeYear} ${config.chapterName}, ${config.experienceName} interface`} aria-hidden={!visible}>
       <header className="interface-mode__bar">
-        <div className="interface-mode__identity">
+        <button
+          className="interface-mode__chapter"
+          type="button"
+          onClick={() => setTakeawayOpen((open) => !open)}
+          aria-expanded={takeawayOpen}
+          aria-label={`Open ${config.chapterName} chapter takeaway`}
+        >
           <span>{config.chapterNumber}/{YEAR_ORDER.length} · {config.chapterName}</span>
           <b>{activeYear} {config.experienceName}</b>
-        </div>
-        <nav aria-label="Interface controls">
-          {previous && <button type="button" onClick={() => enterYear(previous)} aria-label={`Previous chapter: ${eraConfigs[previous].chapterName}`}>← {eraConfigs[previous].chapterName}</button>}
+        </button>
+        <nav aria-label="Experience frame controls">
           <button type="button" onClick={closeInterface}>Step back</button>
-          <button type="button" onClick={showTimeline}>Timeline</button>
-          <button type="button" onClick={() => setTakeawayOpen((open) => !open)} aria-expanded={takeawayOpen}>Takeaway</button>
-          {next && <button type="button" onClick={() => enterYear(next)}>Continue to {next} {eraConfigs[next].chapterName}</button>}
-          <Link href="/portfolio/">Portfolio</Link>
+          <button type="button" onClick={showTimeline}>Chapters</button>
         </nav>
       </header>
       {takeawayOpen && (
         <aside className="chapter-takeaway-panel" aria-label={`${config.chapterName} chapter takeaway`}>
-          <p className="eyebrow">What Kevin carried forward</p>
+          <header><p className="eyebrow">What Kevin carried forward</p><button type="button" onClick={() => setTakeawayOpen(false)} aria-label="Close takeaway">×</button></header>
           <h2>{config.transformation}</h2>
           <p>{config.lesson}</p>
           <ul>{config.capabilityLinks.map((capability) => <li key={capability}>{capability}</li>)}</ul>
@@ -312,6 +353,50 @@ function FirstRunHint({ visible }: { visible: boolean }) {
   return <div className="experience-hint" role="status"><p>Swipe, scroll, or use ← → to move through the six chapters. Press Enter to open the selected era interface.</p><button type="button" onClick={dismiss}>Got it</button></div>;
 }
 
+function UtilityMenu({ foundCount }: { foundCount: number }) {
+  const [open, setOpen] = useState(false);
+  const setArtifactsOpen = useExperienceStore((state) => state.setArtifactsOpen);
+  const setSettingsOpen = useExperienceStore((state) => state.setSettingsOpen);
+  const setHelpOpen = useExperienceStore((state) => state.setHelpOpen);
+  const sound = useExperienceStore((state) => state.sound);
+  const toggleSound = useExperienceStore((state) => state.toggleSound);
+  const { showTextMode } = useExperienceActions();
+
+  useEffect(() => {
+    if (!open) return;
+    const close = (event: PointerEvent) => {
+      if (!(event.target instanceof Element) || !event.target.closest('.experience-menu')) setOpen(false);
+    };
+    const escape = (event: KeyboardEvent) => { if (event.key === 'Escape') setOpen(false); };
+    window.addEventListener('pointerdown', close);
+    window.addEventListener('keydown', escape);
+    return () => {
+      window.removeEventListener('pointerdown', close);
+      window.removeEventListener('keydown', escape);
+    };
+  }, [open]);
+
+  const activate = (action: () => void) => {
+    action();
+    setOpen(false);
+  };
+
+  return (
+    <div className="experience-menu">
+      <button type="button" className="experience-menu__trigger" onClick={() => setOpen((value) => !value)} aria-expanded={open} aria-haspopup="menu">Menu</button>
+      {open && (
+        <div className="experience-menu__popover" role="menu">
+          <button type="button" role="menuitem" onClick={() => activate(() => setArtifactsOpen(true))}>Artifacts <span>{foundCount}</span></button>
+          <button type="button" role="menuitem" onClick={() => activate(toggleSound)}>Sound {sound ? 'on' : 'off'}</button>
+          <button type="button" role="menuitem" onClick={() => activate(() => setSettingsOpen(true))}>Settings</button>
+          <button type="button" role="menuitem" onClick={() => activate(() => setHelpOpen(true))}>Help</button>
+          <button type="button" role="menuitem" onClick={() => activate(showTextMode)}>Text version</button>
+        </div>
+      )}
+    </div>
+  );
+}
+
 function TransitionOverlay() {
   const transition = useExperienceStore((state) => state.transition);
   if (!transition || transition.id === 'timeline-fade') return null;
@@ -335,11 +420,6 @@ export function ExperienceOverlay() {
   const viewMode = useExperienceStore((state) => state.viewMode);
   const activeYear = useExperienceStore((state) => state.activeYear);
   const webgl = useExperienceStore((state) => state.webglAvailable);
-  const settings = useExperienceStore((state) => state.setSettingsOpen);
-  const artifactsOpen = useExperienceStore((state) => state.setArtifactsOpen);
-  const help = useExperienceStore((state) => state.setHelpOpen);
-  const sound = useExperienceStore((state) => state.sound);
-  const toggleSound = useExperienceStore((state) => state.toggleSound);
   const config = eraConfigs[activeYear];
   const artifactProgress = useExperienceStore((state) => state.artifacts);
   const { showTimeline, showTextMode } = useExperienceActions();
@@ -350,13 +430,9 @@ export function ExperienceOverlay() {
       <header className="experience-toolbar">
         <button className="experience-mark" type="button" onClick={showTimeline} aria-label="Open chapter timeline"><span>K</span><b>Kevinception</b></button>
         <nav aria-label="Global experience controls">
-          <button type="button" onClick={showTimeline}>Timeline</button>
+          <button type="button" onClick={showTimeline}>Chapters</button>
           <Link href="/portfolio/">Portfolio</Link>
-          <button type="button" onClick={() => artifactsOpen(true)}>Artifacts <span>{foundCount}</span></button>
-          <button type="button" onClick={toggleSound}>Sound {sound ? 'on' : 'off'}</button>
-          <button type="button" onClick={() => settings(true)}>Settings</button>
-          <button type="button" onClick={() => help(true)}>Help</button>
-          <button type="button" onClick={showTextMode}>Text</button>
+          <UtilityMenu foundCount={foundCount} />
         </nav>
       </header>
       {webgl === false && <div className="webgl-notice"><p>3D rendering is unavailable. The complete text experience remains available.</p><button type="button" onClick={showTextMode}>Open text experience</button></div>}
