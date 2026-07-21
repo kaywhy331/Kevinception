@@ -1,0 +1,28 @@
+name: Source bundle V8
+on:
+  pull_request:
+    branches: [main]
+
+jobs:
+  bundle:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v4
+      - name: Package repository source
+        shell: bash
+        run: |
+          tar \
+            --exclude=.git \
+            --exclude=node_modules \
+            --exclude=.next \
+            --exclude=out \
+            --exclude=coverage \
+            --exclude=source-bundle.tgz \
+            -czf source-bundle.tgz .
+      - name: Upload source bundle
+        uses: actions/upload-artifact@v4
+        with:
+          name: source-bundle-v8
+          path: source-bundle.tgz
+          if-no-files-found: error
