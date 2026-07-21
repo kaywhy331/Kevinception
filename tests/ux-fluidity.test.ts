@@ -9,7 +9,7 @@ describe('V7.2 fluid experience pass', () => {
     const shell = read('src/experience/ExperienceShell.tsx');
     const overlay = read('src/experience/ExperienceOverlay.tsx');
     expect(shell).toContain('/experience/?year=');
-    expect(shell).toContain('&view=interface');
+    expect(shell).toContain("experienceUrl(year, 'interface')");
     expect(shell).toContain("router.replace(experienceUrl(location.year, 'interface')");
     expect(overlay).toContain('onClick={() => enterYear(activeYear)}');
   });
@@ -44,7 +44,7 @@ describe('V7.2 fluid experience pass', () => {
     const nexus = read('src/experience/scenes/Year2030Scene.tsx');
     const echo = read('src/experience/scenes/Year2040Scene.tsx');
     const kevtok = read('src/experience/scenes/Year2020Scene.tsx');
-    expect(canvas).toContain("[1, 1.7]");
+    expect(canvas).toContain('[1, 1.7]');
     expect(canvas).toContain('<AdaptiveDpr');
     expect(nexus).toContain('if (!active) return');
     expect(echo).toContain('if (!active || !shards.current) return');
