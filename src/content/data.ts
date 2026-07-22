@@ -14,7 +14,7 @@ export const site = {
   "tokenPakUrl": "https://tokenpak.ai",
   "tokenPakGithubUrl": "https://github.com/tokenpak",
   "draftContent": false,
-  "socialImage": "/assets/og-card.png",
+  "socialImage": "/opengraph-image",
   "themeColor": "#09090d"
 } as const;
 

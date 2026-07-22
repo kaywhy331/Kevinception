@@ -29,4 +29,29 @@ describe('timeline routing stability', () => {
     expect(nginx).toContain('location = /experience');
     expect(nginx).toContain('try_files /experience/index.html =404;');
   });
+
+  it('returns a real 404 status from the production preview fallback', () => {
+    const server = read('scripts/serve.mjs');
+    expect(server).toContain('let status = 200');
+    expect(server).toContain('status = 404');
+    expect(server).toContain('fs.existsSync(file) ? status : 404');
+  });
+
+  it('serves the static social image with a PNG content type', () => {
+    expect(read('scripts/serve.mjs')).toContain("url.pathname === '/opengraph-image' ? 'image/png'");
+    expect(read('deploy/nginx.conf')).toContain('default_type image/png');
+    expect(read('public/_headers')).toContain('/opengraph-image');
+    expect(read('public/_headers')).toContain('Content-Type: image/png');
+    expect(read('vercel.json')).toContain('"source": "/opengraph-image"');
+  });
+
+  it('finalizes Next static-export prefetch payloads for ordinary static hosts', () => {
+    const pkg = read('package.json');
+    const finalizer = read('scripts/finalize-static-export.mjs');
+    const buildCheck = read('scripts/check-build.mjs');
+    expect(pkg).toContain('next build && node scripts/finalize-static-export.mjs');
+    expect(finalizer).toContain("entry.name.startsWith('__next.')");
+    expect(finalizer).toContain("join('.')");
+    expect(buildCheck).toContain('Missing RSC prefetch aliases');
+  });
 });

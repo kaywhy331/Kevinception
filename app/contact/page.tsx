@@ -2,8 +2,9 @@ import { profile, site } from '@/content/data';
 import { SiteChrome } from '@/components/SiteChrome';
 import { ContactForm } from '@/components/ContactForm';
 import { narrativeSite } from '@/content/narrative';
+import { createPageMetadata } from '@/content/metadata';
 
-export const metadata = { title: 'Contact', description: 'Start a conversation with Kevin about a product, system, automation, AI workflow, or unconventional idea.' };
+export const metadata = createPageMetadata({ title: 'Contact', description: 'Start a conversation with Kevin about a product, system, automation, AI workflow, or unconventional idea.', path: '/contact/' });
 
 export default function ContactPage() {
   return (

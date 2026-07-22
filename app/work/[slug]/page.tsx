@@ -2,6 +2,7 @@ import type { Metadata } from 'next';
 import Link from 'next/link';
 import { notFound } from 'next/navigation';
 import { projects } from '@/content/data';
+import { createPageMetadata } from '@/content/metadata';
 import { SiteChrome } from '@/components/SiteChrome';
 import { eraConfigs, YEAR_ORDER } from '@/experience/config';
 
@@ -13,7 +14,7 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
   const { slug } = await params;
   const project = projects.find((item) => item.slug === slug);
   if (!project) return {};
-  return { title: project.title, description: project.summary, alternates: { canonical: `/work/${project.slug}/` }, openGraph: { title: project.title, description: project.summary, url: `/work/${project.slug}/`, type: 'article' } };
+  return createPageMetadata({ title: project.title, description: project.summary, path: `/work/${project.slug}/`, type: 'article' });
 }
 
 export default async function ProjectPage({ params }: { params: Promise<{ slug: string }> }) {

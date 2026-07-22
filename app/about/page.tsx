@@ -1,10 +1,11 @@
 import Link from 'next/link';
 import { profile } from '@/content/data';
 import { kevinOriginNarrative, narrativeSite } from '@/content/narrative';
+import { createPageMetadata } from '@/content/metadata';
 import { SiteChrome } from '@/components/SiteChrome';
 import { eraConfigs, YEAR_ORDER } from '@/experience/config';
 
-export const metadata = { title: 'About Kevin', description: 'Kevin Yang’s technology origin story, working style, philosophy, and six-stage relationship with technology.' };
+export const metadata = createPageMetadata({ title: 'About Kevin', description: 'Kevin Yang’s technology origin story, working style, philosophy, and six-stage relationship with technology.', path: '/about/' });
 
 export default function AboutPage() {
   return (

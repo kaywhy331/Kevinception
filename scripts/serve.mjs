@@ -29,17 +29,21 @@ const server = http.createServer((req, res) => {
   let pathname = decodeURIComponent(url.pathname);
   if (pathname.endsWith('/')) pathname += 'index.html';
   let file = path.resolve(root, `.${pathname}`);
+  let status = 200;
   if (!file.startsWith(root)) {
     res.writeHead(403).end('Forbidden'); return;
   }
   if (!fs.existsSync(file) || fs.statSync(file).isDirectory()) {
     const htmlCandidate = `${file}.html`;
     if (fs.existsSync(htmlCandidate)) file = htmlCandidate;
-    else file = path.join(root, '404.html');
+    else {
+      file = path.join(root, '404.html');
+      status = 404;
+    }
   }
   const ext = path.extname(file).toLowerCase();
-  res.writeHead(fs.existsSync(file) ? 200 : 404, {
-    'Content-Type': mime[ext] ?? 'application/octet-stream',
+  res.writeHead(fs.existsSync(file) ? status : 404, {
+    'Content-Type': url.pathname === '/opengraph-image' ? 'image/png' : mime[ext] ?? 'application/octet-stream',
     'Cache-Control': ext === '.html' ? 'no-cache' : 'public, max-age=3600'
   });
   fs.createReadStream(file).pipe(res);

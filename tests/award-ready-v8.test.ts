@@ -51,10 +51,30 @@ describe('award-ready V8 contract', () => {
 
   it('uses canonical chapter routes and unique share metadata', () => {
     const route = read('app/experience/[year]/page.tsx');
+    const metadata = read('src/content/metadata.ts');
     const shell = read('src/experience/ExperienceShell.tsx');
-    expect(route).toContain('alternates: { canonical: url }');
-    expect(route).toContain("openGraph: { title, description, url");
+    expect(route).toContain('createPageMetadata');
+    expect(metadata).toContain('alternates: { canonical: path }');
+    expect(metadata).toContain('openGraph: {');
+    expect(metadata).toContain("card: 'summary_large_image'");
+    expect(metadata).toContain('images: [{ url: site.socialImage');
+    expect(read('app/opengraph-image.tsx')).toContain('One evolving mind.');
     expect(shell).toContain('`/experience/${year}/${suffix}`');
+  });
+
+  it('assigns every direct route its own canonical metadata identity', () => {
+    const routes = {
+      'app/experience/page.tsx': '/experience/',
+      'app/portfolio/page.tsx': '/portfolio/',
+      'app/work/page.tsx': '/work/',
+      'app/resume/page.tsx': '/resume/',
+      'app/about/page.tsx': '/about/',
+      'app/contact/page.tsx': '/contact/'
+    };
+    for (const [file, route] of Object.entries(routes)) {
+      expect(read(file)).toContain('createPageMetadata');
+      expect(read(file)).toContain(`path: '${route}'`);
+    }
   });
 
   it('guards global keys, limits gesture navigation, and provides true dialog behavior', () => {

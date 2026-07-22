@@ -3,9 +3,10 @@ import { capabilityGroups, experienceItems, profile, projects } from '@/content/
 import { ProjectCard } from '@/components/ProjectCard';
 import { SiteChrome } from '@/components/SiteChrome';
 import { narrativeSite } from '@/content/narrative';
+import { createPageMetadata } from '@/content/metadata';
 import { eraConfigs, YEAR_ORDER } from '@/experience/config';
 
-export const metadata = { title: 'Portfolio', description: 'Kevin Yang’s work across strategy, systems, product, operations, automation, AI, and creative technology.' };
+export const metadata = createPageMetadata({ title: 'Portfolio', description: 'Kevin Yang’s work across strategy, systems, product, operations, automation, AI, and creative technology.', path: '/portfolio/' });
 
 export default function PortfolioPage() {
   const featured = projects.filter((project) => project.featured);

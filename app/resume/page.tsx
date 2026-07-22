@@ -2,8 +2,9 @@ import Link from 'next/link';
 import { capabilityGroups, experienceItems, profile } from '@/content/data';
 import { SiteChrome } from '@/components/SiteChrome';
 import { PrintButton } from '@/components/PrintButton';
+import { createPageMetadata } from '@/content/metadata';
 
-export const metadata = { title: 'Resume', description: 'Kevin Yang’s experience, capabilities, current work, and operating approach.' };
+export const metadata = createPageMetadata({ title: 'Resume', description: 'Kevin Yang’s experience, capabilities, current work, and operating approach.', path: '/resume/' });
 
 export default function ResumePage() {
   return (

@@ -2,6 +2,7 @@ import type { Metadata } from 'next';
 import { notFound } from 'next/navigation';
 import { eraConfigs, YEAR_ORDER } from '@/experience/config';
 import type { YearId } from '@/content/data';
+import { createPageMetadata } from '@/content/metadata';
 
 export function generateStaticParams() {
   return YEAR_ORDER.map((year) => ({ year }));
@@ -15,13 +16,11 @@ export async function generateMetadata({ params }: { params: Promise<{ year: str
   const title = `${year} ${config.chapterName} — ${config.experienceName}`;
   const description = `${config.chapterThesis} ${config.transformation}`;
   const url = `/experience/${year}/`;
-  return {
+  return createPageMetadata({
     title,
     description,
-    alternates: { canonical: url },
-    openGraph: { title, description, url, type: 'website', siteName: 'Kevinception' },
-    twitter: { card: 'summary_large_image', title, description }
-  };
+    path: url
+  });
 }
 
 export default async function EraPage({ params }: { params: Promise<{ year: string }> }) {
