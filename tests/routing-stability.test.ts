@@ -60,4 +60,12 @@ describe('timeline routing stability', () => {
     expect(runtimeReview).toContain('status === 200 || status === 304');
     expect(runtimeReview).toContain('HTTP 200 or a valid browser-cache 304');
   });
+
+  it('keeps security headers inherited while assigning immutable asset caching in nginx', () => {
+    const nginx = read('deploy/nginx.conf');
+    expect(nginx).toContain('map $uri $kevinception_cache_control');
+    expect(nginx).toContain('add_header Cache-Control $kevinception_cache_control always;');
+    expect(nginx.match(/add_header Cache-Control/g)).toHaveLength(1);
+    expect(nginx).not.toContain('expires 1y;');
+  });
 });
