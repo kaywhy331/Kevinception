@@ -1,33 +1,16 @@
-name: Source bundle V8
+name: V8 branch metadata
 on:
   pull_request:
     branches: [main]
 
 jobs:
-  bundle:
+  metadata:
     runs-on: ubuntu-24.04
-    timeout-minutes: 15
+    timeout-minutes: 3
     steps:
       - uses: actions/checkout@v4
-      - uses: actions/setup-node@v4
-        with:
-          node-version: 22
-          cache: npm
-      - name: Install locked dependencies
-        run: npm ci --no-audit --no-fund
-      - name: Package repository source and dependencies
+      - name: Print Git object metadata
         shell: bash
         run: |
-          tar \
-            --exclude=.git \
-            --exclude=.next \
-            --exclude=out \
-            --exclude=coverage \
-            -czf "$RUNNER_TEMP/kevinception-workspace.tgz" .
-      - name: Upload source workspace
-        uses: actions/upload-artifact@v4
-        with:
-          name: source-workspace-v8
-          path: ${{ runner.temp }}/kevinception-workspace.tgz
-          compression-level: 0
-          if-no-files-found: error
+          echo "COMMIT_SHA=$(git rev-parse HEAD)"
+          echo "TREE_SHA=$(git rev-parse HEAD^{tree})"
