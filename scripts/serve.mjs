@@ -44,4 +44,4 @@ const server = http.createServer((req, res) => {
   });
   fs.createReadStream(file).pipe(res);
 });
-server.listen(port, '127.0.0.1', () => console.log(`Kevinception V7 preview: http://127.0.0.1:${port}`));
+server.listen(port, '127.0.0.1', () => console.log(`Kevinception V8 preview: http://127.0.0.1:${port}`));

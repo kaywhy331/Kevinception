@@ -46,7 +46,7 @@ The next bespoke GLB and texture pass, original environmental soundscape, render
 
 ## Run locally
 
-Node.js 20.9 or newer is required.
+Node.js 22.12 or newer is required. This matches the engine floor of the locked browser-review and 3D control dependencies.
 
 ```powershell
 npm ci --no-audit --no-fund

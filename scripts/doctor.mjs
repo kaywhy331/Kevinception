@@ -30,8 +30,8 @@ for (const script of ['dev', 'build', 'verify', 'preview']) {
 }
 
 const [major, minor] = process.versions.node.split('.').map(Number);
-if (major < 20 || (major === 20 && minor < 9)) {
-  fail(`Node ${process.versions.node} is too old. Install Node 20.9 or newer.`);
+if (major < 22 || (major === 22 && minor < 12)) {
+  fail(`Node ${process.versions.node} is too old. Install Node 22.12 or newer.`);
 }
 
 console.log('Kevinception project root: OK');

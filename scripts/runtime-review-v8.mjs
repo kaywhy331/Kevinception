@@ -19,7 +19,7 @@ if (!executablePath) throw new Error('No supported Chrome or Chromium executable
 
 fs.mkdirSync(outputDir, { recursive: true });
 const report = {
-  generatedAt: new Date().toISOString(), browser: executablePath, base,
+  generatedAt: new Date().toISOString(), node: process.version, browser: executablePath, base,
   pages: [], assertions: [], consoleErrors: [], pageErrors: [], requestFailures: [], abortedPrefetches: [], screenshots: []
 };
 const assert = (name, condition, detail = '') => report.assertions.push({ name, passed: Boolean(condition), detail });
