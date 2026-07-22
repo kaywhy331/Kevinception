@@ -64,7 +64,6 @@ function ChapterCard({ mode }: { mode: 'timeline' | 'environment' }) {
         <h1><span>{activeYear}</span> {config.chapterName}</h1>
         <p className="chapter-card__experience">Experienced through <b>{config.experienceName}</b></p>
         <strong>{config.transformation}</strong>
-        <p className="chapter-card__master">{narrativeSite.masterStatement}</p>
       </div>
       <details className="era-details">
         <summary>Why this chapter matters</summary>
@@ -72,6 +71,7 @@ function ChapterCard({ mode }: { mode: 'timeline' | 'environment' }) {
           <p><b>{config.medium}</b></p>
           <p>{config.chapterThesis}</p>
           <ul>{config.capabilityLinks.map((capability) => <li key={capability}>{capability}</li>)}</ul>
+          <p className="chapter-details__master">{narrativeSite.masterStatement}</p>
         </div>
       </details>
       <div className="button-row chapter-card__actions">
@@ -99,7 +99,13 @@ function SemanticHotspots() {
   return (
     <section className="semantic-hotspots" aria-label={`${activeYear} accessible evidence hotspots`}>
       <p className="eyebrow">Evidence hotspots</p>
-      {activeYear === '2030' && <p className="agent-role-legend"><b>Strategist</b><b>Researcher</b><b>Builder</b><b>Governor</b><b>Archivist</b></p>}
+      {activeYear === '2030' && (
+        <ol className="agent-role-legend" aria-label="Agent roles in the 2030 orchestration room">
+          {['Strategist', 'Researcher', 'Builder', 'Governor', 'Archivist'].map((role, index) => (
+            <li key={role}><span>{String(index + 1).padStart(2, '0')}</span><b>{role}</b>{role === 'Governor' && <em>Human gate</em>}</li>
+          ))}
+        </ol>
+      )}
       {activeYear === '2040' && <p className="continuity-summary"><b>{discoveredForms}</b> discovered {discoveredForms === 1 ? 'form is' : 'forms are'} shaping this reconstruction.</p>}
       <div>{config.hotspots.map((hotspot, index) => {
         const discoveredYears = progress[hotspot.artifact].discoveredYears;
@@ -277,7 +283,8 @@ function InterfaceLayer({ visible }: { visible: boolean }) {
         <p>{config.lesson}</p>
         <dl><div><dt>Motion intent</dt><dd>{config.artDirection.motion}</dd></div><div><dt>Human capability</dt><dd>{config.capabilityLinks.join(' · ')}</dd></div></dl>
         <p className="eyebrow">Project evidence</p>
-        <div>{chapterProjects.map((project) => <Link key={project.slug} href={`/work/${project.slug}/`}><small>{project.roles[0]}</small><b>{project.title}</b><span>{project.artifacts[0]?.label}</span></Link>)}</div>
+        <div className="interface-context__projects">{chapterProjects.map((project) => <Link key={project.slug} href={`/work/${project.slug}/`}><small>{project.roles[0]}</small><b>{project.title}</b><span>{project.artifacts[0]?.label}</span><p>{project.artifacts[0]?.description}</p><em>{project.outcomes[0]?.value}</em><q>{project.decisions[0]}</q></Link>)}</div>
+        {next && <footer className="interface-context__bridge"><small>Carried into {next}</small><b>{config.bridgeToNext}</b><button className="text-link" type="button" onClick={() => enterYear(next)}>Continue to {eraConfigs[next].chapterName} →</button></footer>}
       </aside>
       </div>
     </section>

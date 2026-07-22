@@ -1,4 +1,5 @@
 import Link from 'next/link';
+import type { CSSProperties } from 'react';
 import { profile, projects } from '@/content/data';
 import { SiteChrome } from '@/components/SiteChrome';
 import { ProjectCard } from '@/components/ProjectCard';
@@ -20,7 +21,7 @@ export default function HomePage() {
         </div>
         <div className="authored-threshold" aria-label="Six chapter trajectory">
           <span className="authored-threshold__signal" aria-hidden="true">K</span>
-          <ol>{chapters.map((chapter) => <li key={chapter.id}><Link href={`/experience/${chapter.id}/`}><small>{chapter.id} · {chapter.medium}</small><b>{chapter.chapterName}</b><span>{chapter.transformation}</span></Link></li>)}</ol>
+          <ol>{chapters.map((chapter) => <li key={chapter.id}><Link href={`/experience/${chapter.id}/`} style={{ '--chapter-accent': chapter.accent } as CSSProperties}><small>{chapter.id} · {chapter.medium}</small><b>{chapter.chapterName}</b><span>{chapter.transformation}</span></Link></li>)}</ol>
         </div>
       </section>
       <section className="threshold-manifesto section-shell">

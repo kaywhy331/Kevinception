@@ -62,6 +62,7 @@ export function ExperienceWorld() {
   const artifactProgress = useExperienceStore((state) => state.artifacts);
   const activeArt = eraConfigs[activeYear].artDirection;
   const continuityCount = Object.values(artifactProgress).reduce((total, artifact) => total + artifact.discoveredYears.length, 0);
+  const continuitySignals = Object.values(artifactProgress).flatMap((artifact) => artifact.discoveredYears);
   const timeline = viewMode === 'timeline';
   const index = YEAR_ORDER.indexOf(activeYear);
   const visibleYears = new Set<YearId>([activeYear]);
@@ -103,7 +104,7 @@ export function ExperienceWorld() {
         shadow-mapSize-height={quality === 'high' ? 1536 : 768}
         shadow-bias={-0.00045}
       />
-      <hemisphereLight args={['#a8bee4', '#251c19', 0.6]} />
+      <hemisphereLight args={['#a8bee4', '#251c19', activeYear === '2040' ? 0.34 : 0.6]} />
       <TimelineArchitecture />
       {[...visibleYears].filter((year) => year !== activeYear).map((year) => <EraProxy key={`proxy-${year}`} year={year} />)}
       <Suspense fallback={<EraProxy year={activeYear} />}>
@@ -111,10 +112,16 @@ export function ExperienceWorld() {
       </Suspense>
       {(activeYear === '2030' || activeYear === '2040') && continuityCount > 0 && (
         <group position={[eraConfigs[activeYear].stationX, 2.8, -1.8]}>
-          {Array.from({ length: Math.min(continuityCount, 12) }, (_, index) => (
+          {continuitySignals.slice(0, 12).map((sourceYear, index) => (
             <mesh key={index} position={[Math.sin(index * 1.7) * (1.2 + index * .08), Math.cos(index * 1.1) * 1.15, index * -.12]}>
               <octahedronGeometry args={[.08 + (index % 3) * .025]} />
-              <meshStandardMaterial color={activeArt.palette.accent} emissive={activeArt.palette.accent} emissiveIntensity={1.4} />
+              <meshStandardMaterial color={eraConfigs[sourceYear].accent} emissive={eraConfigs[sourceYear].accent} emissiveIntensity={1.4} />
+            </mesh>
+          ))}
+          {activeYear === '2040' && continuitySignals.slice(0, 3).map((sourceYear, index) => (
+            <mesh key={`continuity-ring-${sourceYear}-${index}`} position={[0, -.35, -.45 - index * .08]} rotation={[0, 0, index * .14]}>
+              <torusGeometry args={[1.18 + index * .34, .022 + index * .004, 8, 72]} />
+              <meshBasicMaterial color={eraConfigs[sourceYear].accent} transparent opacity={.52 - index * .1} depthWrite={false} />
             </mesh>
           ))}
           <pointLight color={activeArt.palette.accent} intensity={Math.min(2.8, .4 + continuityCount * .16)} distance={7} />

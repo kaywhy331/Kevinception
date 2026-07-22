@@ -12,10 +12,22 @@ export default function PortfolioPage() {
   return (
     <SiteChrome>
       <section id="main-content" className="portfolio-hero section-shell">
-        <p className="eyebrow">Kevin Yang · entrepreneur · systems builder</p>
-        <h1>{narrativeSite.masterStatement}</h1>
-        <p className="lead">{profile.currentFocus}</p>
-        <div className="button-row"><Link className="primary-action" href="/work/">View selected work</Link><Link className="secondary-action" href="/contact/">Start a conversation</Link><Link className="text-link" href="/experience/">Enter Kevinception →</Link></div>
+        <div className="portfolio-hero__copy">
+          <p className="eyebrow">Kevin Yang · entrepreneur · systems builder</p>
+          <h1>{narrativeSite.masterStatement}</h1>
+          <p className="lead">{profile.currentFocus}</p>
+          <div className="button-row"><Link className="primary-action" href="/work/">View selected work</Link><Link className="secondary-action" href="/contact/">Start a conversation</Link><Link className="text-link" href="/experience/">Enter Kevinception →</Link></div>
+        </div>
+        <aside className="portfolio-proof" aria-label="Portfolio evidence at a glance">
+          <p className="eyebrow">Proof before spectacle</p>
+          <h2>Open the work with the evidence already in view.</h2>
+          <dl>
+            <div><dt>Case studies</dt><dd>{featured.length} featured systems</dd></div>
+            <div><dt>Evidence contract</dt><dd>Role · artifact · decision · outcome</dd></div>
+            <div><dt>Experience map</dt><dd>{YEAR_ORDER.length} canonical chapters</dd></div>
+          </dl>
+          <Link className="text-link" href={`/work/${featured[0].slug}/`}>Start with {featured[0].title} →</Link>
+        </aside>
       </section>
       <section className="section-shell"><header className="section-heading"><p className="eyebrow">Selected work</p><h2>Systems, products, and original interfaces.</h2></header><div className="project-grid">{featured.map((project) => <ProjectCard key={project.slug} project={project} />)}</div></section>
       <section className="section-shell"><header className="section-heading"><p className="eyebrow">Evidence across eras</p><h2>Each chapter turns a human capability into visible proof.</h2></header><div className="chapter-evidence-grid">{YEAR_ORDER.map((year, index) => { const chapter = eraConfigs[year]; const project = projects[index % projects.length]; return <article key={year}><small>{year} · {chapter.chapterName}</small><h3>{chapter.artDirection.evidenceMetaphor}</h3><p>{chapter.lesson}</p><Link href={`/work/${project.slug}/`}>{project.title}: {project.artifacts[0]?.label} →</Link></article>; })}</div></section>

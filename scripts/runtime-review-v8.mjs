@@ -64,14 +64,25 @@ try {
   const threshold = await page.evaluate(() => {
     const statement = document.querySelector('.threshold-copy h1')?.getBoundingClientRect();
     const action = document.querySelector('.threshold-copy .primary-action')?.getBoundingClientRect();
-    return { statement: document.querySelector('.threshold-copy h1')?.textContent?.trim(), statementBottom: statement?.bottom ?? Infinity, actionBottom: action?.bottom ?? Infinity };
+    const thresholdObject = document.querySelector('.authored-threshold')?.getBoundingClientRect();
+    const lastEra = document.querySelector('.authored-threshold li:last-child a')?.getBoundingClientRect();
+    return { statement: document.querySelector('.threshold-copy h1')?.textContent?.trim(), statementBottom: statement?.bottom ?? Infinity, actionBottom: action?.bottom ?? Infinity, allErasFit: Boolean(thresholdObject && lastEra && lastEra.bottom <= thresholdObject.bottom + 1) };
   });
   assert('Homepage exposes the canonical master statement', threshold.statement?.startsWith('One evolving mind. Six defining interfaces.'), threshold.statement ?? 'missing');
   assert('Homepage primary action is visible in the first 1440×900 viewport', threshold.actionBottom <= 900, `${threshold.actionBottom}px`);
+  assert('Homepage threshold keeps all six era cards inside the authored object at 1440×900', threshold.allErasFit, JSON.stringify(threshold));
   assert('Homepage title is the canonical metadata identity', home.title.includes('One Evolving Mind Through Six Defining Interfaces'), home.title);
 
-  await setViewport(1920, 1080); await visit('/'); await shot('home-1920x1080.png');
-  await setViewport(2560, 1080); await visit('/'); await shot('home-2560x1080.png');
+  for (const [width, height, file] of [[1920, 1080, 'home-1920x1080.png'], [2560, 1080, 'home-2560x1080.png']]) {
+    await setViewport(width, height); await visit('/');
+    const allErasFit = await page.evaluate(() => {
+      const thresholdObject = document.querySelector('.authored-threshold')?.getBoundingClientRect();
+      const lastEra = document.querySelector('.authored-threshold li:last-child a')?.getBoundingClientRect();
+      return Boolean(thresholdObject && lastEra && lastEra.bottom <= thresholdObject.bottom + 1);
+    });
+    assert(`Homepage threshold keeps all six era cards inside the authored object at ${width}×${height}`, allErasFit);
+    await shot(file);
+  }
   await setViewport(390, 844); await visit('/'); await shot('home-390x844.png');
   await setViewport(430, 932); await visit('/');
   await page.click('.mobile-nav summary');
@@ -188,13 +199,30 @@ try {
     overflow: document.documentElement.scrollWidth - document.documentElement.clientWidth
   }));
   assert('Mobile interface recomposes rather than deleting chapter context', mobileInterface.contextVisible && mobileInterface.overflow <= 1, JSON.stringify(mobileInterface));
+  const channelLayout = await page.$eval('.interface-mode__frame.is-active', (frame) => {
+    const nav = frame.contentDocument?.querySelector('.kt-header nav');
+    return nav ? { clientWidth: nav.clientWidth, scrollWidth: nav.scrollWidth, labels: [...nav.querySelectorAll('button')].map((button) => button.textContent?.trim()) } : null;
+  });
+  assert('2020 mobile header keeps every channel visible without clipping', Boolean(channelLayout && channelLayout.scrollWidth <= channelLayout.clientWidth + 1), JSON.stringify(channelLayout));
   await shot('2020-interface-390x844.png');
-  await setViewport(430, 932); await visit('/experience/2030/', { waitForExperience: true }); await shot('2030-environment-430x932.png');
+  await setViewport(430, 932); await visit('/experience/2030/', { waitForExperience: true });
+  const mobileRoles = await page.$$eval('.agent-role-legend li', (roles) => roles.filter((role) => {
+    const rect = role.getBoundingClientRect();
+    return getComputedStyle(role).display !== 'none' && rect.width > 0 && rect.height >= 32 && rect.left >= 0 && rect.right <= window.innerWidth;
+  }).length);
+  assert('2030 keeps all five orchestration roles visibly composed on mobile', mobileRoles === 5, `${mobileRoles}/5 visible roles`);
+  await shot('2030-environment-430x932.png');
 
   await setViewport(1440, 900);
-  for (const [route, name] of [['/portfolio/', 'portfolio-1440x900.png'], ['/work/kevinception/', 'case-study-1440x900.png'], ['/contact/', 'contact-1440x900.png']]) {
-    await visit(route); await shot(name);
-  }
+  await visit('/portfolio/');
+  const proofTop = await page.$eval('.portfolio-proof', (proof) => proof.getBoundingClientRect().top);
+  assert('Portfolio places recruiter-facing proof in the first desktop viewport', proofTop < 900, `${proofTop}px`);
+  await shot('portfolio-1440x900.png');
+  await visit('/work/kevinception/'); await shot('case-study-1440x900.png');
+  await visit('/contact/');
+  const builderTop = await page.$eval('.contact-builder', (builder) => builder.getBoundingClientRect().top);
+  assert('Contact brief builder begins in the first desktop viewport', builderTop < 900, `${builderTop}px`);
+  await shot('contact-1440x900.png');
   const contact = await page.evaluate(() => ({ mailto: Boolean(document.querySelector('a[href^="mailto:"]')), note: document.body.textContent?.includes('A public contact email has not been assumed.') }));
   assert('Contact path does not invent an email address', !contact.mailto && contact.note, JSON.stringify(contact));
 

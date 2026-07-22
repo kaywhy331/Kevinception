@@ -70,7 +70,8 @@ describe('award-ready V8 contract', () => {
 
   it('keeps mobile navigation and essential narrative present and contact claims honest', () => {
     expect(read('src/components/SiteChrome.tsx')).toContain('className="mobile-nav"');
-    expect(read('app/v8.css')).toContain('.chapter-card__experience,.chapter-card strong,.chapter-card .eyebrow,.chapter-card__master { display:block!important; }');
+    expect(read('app/v8.css')).toContain('.chapter-card__experience,.chapter-card strong,.chapter-card .eyebrow { display:block!important; }');
+    expect(read('src/experience/ExperienceOverlay.tsx')).toContain('className="chapter-details__master"');
     expect(read('src/components/ContactForm.tsx')).toContain('A public contact email has not been assumed.');
     expect(read('src/content/data.ts')).toContain('"contactEmail": ""');
   });
