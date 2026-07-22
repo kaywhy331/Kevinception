@@ -9,8 +9,18 @@ jobs:
     timeout-minutes: 3
     steps:
       - uses: actions/checkout@v4
-      - name: Print Git object metadata
+        with:
+          ref: agent/award-ready-v8
+      - name: Record Git object metadata
         shell: bash
         run: |
-          echo "COMMIT_SHA=$(git rev-parse HEAD)"
-          echo "TREE_SHA=$(git rev-parse HEAD^{tree})"
+          git rev-parse HEAD > commit-sha.txt
+          git rev-parse HEAD^{tree} > tree-sha.txt
+      - name: Upload Git object metadata
+        uses: actions/upload-artifact@v4
+        with:
+          name: v8-tree-metadata
+          path: |
+            commit-sha.txt
+            tree-sha.txt
+          if-no-files-found: error
