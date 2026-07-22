@@ -54,4 +54,10 @@ describe('timeline routing stability', () => {
     expect(finalizer).toContain("join('.')");
     expect(buildCheck).toContain('Missing RSC prefetch aliases');
   });
+
+  it('accepts standards-compliant cached document revalidation in the hosted runtime review', () => {
+    const runtimeReview = read('scripts/runtime-review-v8.mjs');
+    expect(runtimeReview).toContain('status === 200 || status === 304');
+    expect(runtimeReview).toContain('HTTP 200 or a valid browser-cache 304');
+  });
 });

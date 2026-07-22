@@ -51,8 +51,10 @@ async function visit(route, { waitForExperience = false } = {}) {
     await sleep(650);
   }
   const pageResult = await page.evaluate(() => ({ title: document.title, overflow: document.documentElement.scrollWidth - document.documentElement.clientWidth }));
-  report.pages.push({ route, status: response?.status() ?? null, ...pageResult, viewport: page.viewport() });
-  assert(`${route} returns HTTP 200`, response?.status() === 200, `status ${response?.status()}`);
+  const status = response?.status() ?? null;
+  const validDocumentResponse = status === 200 || status === 304;
+  report.pages.push({ route, status, ...pageResult, viewport: page.viewport() });
+  assert(`${route} returns HTTP 200 or a valid browser-cache 304`, validDocumentResponse, `status ${status}`);
   assert(`${route} has no horizontal overflow`, pageResult.overflow <= 1, `${pageResult.overflow}px`);
   return pageResult;
 }
