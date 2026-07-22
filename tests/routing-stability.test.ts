@@ -5,7 +5,7 @@ import { describe, expect, it } from 'vitest';
 const read = (relative: string) => fs.readFileSync(path.join(process.cwd(), relative), 'utf8');
 
 describe('timeline routing stability', () => {
-  it('uses same-document history updates for query-only experience navigation', () => {
+  it('uses same-document history updates for canonical chapter navigation', () => {
     const shell = read('src/experience/ExperienceShell.tsx');
     expect(shell).toContain("type HistoryMode = 'push' | 'replace'");
     expect(shell).toContain('window.history[method]');
@@ -19,7 +19,8 @@ describe('timeline routing stability', () => {
     expect(shell).toContain('navigationVersion.current !== version');
     expect(shell).toContain('const wheelCommitTimer');
     expect(shell).toContain('window.setTimeout(commitWheelNavigation, 90)');
-    expect(shell).toContain('const steps = Math.min');
+    expect(shell).toContain('const target = getAdjacentYear(currentYear, direction)');
+    expect(shell).not.toContain('const steps = Math.min');
   });
 
   it('serves /experience without an absolute nginx redirect that drops mapped ports', () => {

@@ -12,7 +12,16 @@ export async function generateMetadata({ params }: { params: Promise<{ year: str
   if (!YEAR_ORDER.includes(rawYear as YearId)) return {};
   const year = rawYear as YearId;
   const config = eraConfigs[year];
-  return { title: `${year} ${config.chapterName} — ${config.experienceName}`, description: config.chapterThesis };
+  const title = `${year} ${config.chapterName} — ${config.experienceName}`;
+  const description = `${config.chapterThesis} ${config.transformation}`;
+  const url = `/experience/${year}/`;
+  return {
+    title,
+    description,
+    alternates: { canonical: url },
+    openGraph: { title, description, url, type: 'website', siteName: 'Kevinception' },
+    twitter: { card: 'summary_large_image', title, description }
+  };
 }
 
 export default async function EraPage({ params }: { params: Promise<{ year: string }> }) {

@@ -119,8 +119,12 @@ export const chapterNarrative: Record<YearId, ChapterNarrative> = {
 };
 
 export const narrativeSite = {
-  title: 'Kevinception — Six Digital Eras. One Evolving Mind.',
-  description: 'Kevin Yang’s interactive portfolio follows six stages of his relationship with technology—Curiosity, Connection, Presence, Creation, Delegation, and Continuity—each experienced through a defining interface of its era.'
+  name: 'Kevinception',
+  masterStatement: 'One evolving mind. Six defining interfaces. A lifetime of turning curiosity into systems people can use.',
+  title: 'Kevinception — One Evolving Mind Through Six Defining Interfaces',
+  description: 'Kevin Yang’s award-ready interactive portfolio follows one evolving mind through Curiosity, Connection, Presence, Creation, Delegation, and Continuity—and shows how each era became practical systems, products, and evidence.',
+  closingStatement: 'Bring the difficult system. Kevin will find the signal, make the model visible, and turn the next possibility into something people can use.',
+  shortStatement: 'Curiosity becomes capability. Capability becomes continuity.'
 } as const;
 
 export const kevinOriginNarrative = {

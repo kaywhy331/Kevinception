@@ -4,12 +4,13 @@ import { describe, expect, it } from 'vitest';
 
 const read = (relative: string) => fs.readFileSync(path.join(process.cwd(), relative), 'utf8');
 
-describe('V7.7 device-native navigation', () => {
+describe('V8 device-native navigation', () => {
   it('keeps the 2030 and 2040 camera centered and disables future-room parallax', () => {
     const camera = read('src/experience/CameraRig.tsx');
     expect(camera).toContain("const futureRoom = activeYear === '2030' || activeYear === '2040'");
-    expect(camera).toContain('position: [stationX, narrow ? 5.75');
-    expect(camera).toContain('target: [stationX, futureRoom ? 2.2');
+    expect(camera).toContain('config.artDirection.camera[key]');
+    expect(camera).toContain('const position: Vec3 = [');
+    expect(camera).toContain('const target: Vec3 = [');
     expect(camera).toContain("motion === 'reduced' || futureRoom");
     expect(camera).not.toContain('futureCameraOffset');
     expect(camera).not.toContain('futureTargetOffset');

@@ -3,6 +3,8 @@
 import Link from 'next/link';
 import { useEffect, useMemo, useState } from 'react';
 import { projects, timelineContent, type YearId } from '@/content/data';
+import { narrativeSite } from '@/content/narrative';
+import { AccessibleDialog } from '@/components/AccessibleDialog';
 import { artifacts } from './artifacts';
 import { eraConfigs, getAdjacentYear, YEAR_ORDER } from './config';
 import { useExperienceActions } from './ExperienceContext';
@@ -62,6 +64,7 @@ function ChapterCard({ mode }: { mode: 'timeline' | 'environment' }) {
         <h1><span>{activeYear}</span> {config.chapterName}</h1>
         <p className="chapter-card__experience">Experienced through <b>{config.experienceName}</b></p>
         <strong>{config.transformation}</strong>
+        <p className="chapter-card__master">{narrativeSite.masterStatement}</p>
       </div>
       <details className="era-details">
         <summary>Why this chapter matters</summary>
@@ -83,6 +86,30 @@ function ChapterCard({ mode }: { mode: 'timeline' | 'environment' }) {
           {config.enterLabel}
         </button>
       </div>
+    </section>
+  );
+}
+
+function SemanticHotspots() {
+  const activeYear = useExperienceStore((state) => state.activeYear);
+  const progress = useExperienceStore((state) => state.artifacts);
+  const config = eraConfigs[activeYear];
+  const { discover } = useExperienceActions();
+  const discoveredForms = Object.values(progress).reduce((total, artifact) => total + artifact.discoveredYears.length, 0);
+  return (
+    <section className="semantic-hotspots" aria-label={`${activeYear} accessible evidence hotspots`}>
+      <p className="eyebrow">Evidence hotspots</p>
+      {activeYear === '2030' && <p className="agent-role-legend"><b>Strategist</b><b>Researcher</b><b>Builder</b><b>Governor</b><b>Archivist</b></p>}
+      {activeYear === '2040' && <p className="continuity-summary"><b>{discoveredForms}</b> discovered {discoveredForms === 1 ? 'form is' : 'forms are'} shaping this reconstruction.</p>}
+      <div>{config.hotspots.map((hotspot, index) => {
+        const discoveredYears = progress[hotspot.artifact].discoveredYears;
+        const discovered = discoveredYears.length > 0;
+        return (
+          <button key={hotspot.id} type="button" className={discovered ? 'is-discovered' : ''} onClick={() => discover(hotspot.artifact, activeYear)} aria-label={`${hotspot.label}. ${hotspot.description}`}>
+            <span>{String(index + 1).padStart(2, '0')}</span><b>{hotspot.label}</b><small>{discovered ? `Carried forward from ${discoveredYears.join(', ')}` : hotspot.description}</small>
+          </button>
+        );
+      })}</div>
     </section>
   );
 }
@@ -135,6 +162,15 @@ function InterfaceLayer({ visible }: { visible: boolean }) {
   const [loadedYears, setLoadedYears] = useState<Partial<Record<YearId, boolean>>>({});
   const [takeawayOpen, setTakeawayOpen] = useState(false);
   const next = getAdjacentYear(activeYear, 1);
+  const projectSlugsByChapter: Record<YearId, readonly string[]> = {
+    '1990': ['kevinception', 'kevin-online'],
+    '2000': ['kevin-online', 'kevinception'],
+    '2010': ['kevinception', 'tokenpak'],
+    '2020': ['kevinception', 'tokenpak'],
+    '2030': ['agentic-work-fleet', 'mcp-knowledge-logistics'],
+    '2040': ['kevinception', 'tokenpak']
+  };
+  const chapterProjects = projectSlugsByChapter[activeYear].map((slug) => projects.find((project) => project.slug === slug)).filter((project) => project !== undefined);
 
   const mountYear = (year: YearId) => {
     if (year === '2000') return;
@@ -215,6 +251,7 @@ function InterfaceLayer({ visible }: { visible: boolean }) {
           {next && <button className="primary-action" type="button" onClick={() => enterYear(next)}>Continue to {eraConfigs[next].chapterName}</button>}
         </aside>
       )}
+      <div className={`interface-mode__workspace interface-mode__workspace--${activeYear}`}>
       <div className="interface-mode__device" style={{ '--era-accent': config.accent } as React.CSSProperties}>
         {!loadedYears[activeYear] && visible && <div className="interface-loading" role="status"><span></span><p>Starting {config.experienceName}…</p></div>}
         {mountedYears.map((year) => {
@@ -234,6 +271,15 @@ function InterfaceLayer({ visible }: { visible: boolean }) {
           );
         })}
       </div>
+      <aside className="interface-context" aria-label={`${activeYear} chapter context and project evidence`}>
+        <p className="eyebrow">{config.chapterName} in practice</p>
+        <h2>{config.artDirection.evidenceMetaphor}</h2>
+        <p>{config.lesson}</p>
+        <dl><div><dt>Motion intent</dt><dd>{config.artDirection.motion}</dd></div><div><dt>Human capability</dt><dd>{config.capabilityLinks.join(' · ')}</dd></div></dl>
+        <p className="eyebrow">Project evidence</p>
+        <div>{chapterProjects.map((project) => <Link key={project.slug} href={`/work/${project.slug}/`}><small>{project.roles[0]}</small><b>{project.title}</b><span>{project.artifacts[0]?.label}</span></Link>)}</div>
+      </aside>
+      </div>
     </section>
   );
 }
@@ -245,6 +291,8 @@ function TextMode() {
   const yearData = timelineContent[activeYear as keyof typeof timelineContent] as unknown as Record<string, unknown>;
   const featured = projects.slice(0, 3);
   const next = getAdjacentYear(activeYear, 1);
+  const progress = useExperienceStore((state) => state.artifacts);
+  const { discover } = useExperienceActions();
   return (
     <section className="text-mode" aria-label={`${activeYear} ${config.chapterName} text experience`}>
       <header><button type="button" onClick={closeTextMode}>Return to 3D</button><Link href="/portfolio/">Portfolio</Link></header>
@@ -255,6 +303,7 @@ function TextMode() {
         <h2>{config.transformation}</h2>
         <p>{config.lesson}</p>
         <ul className="chapter-capability-list">{config.capabilityLinks.map((capability) => <li key={capability}>{capability}</li>)}</ul>
+        <section className="text-mode__hotspots" aria-labelledby="text-hotspot-title"><h2 id="text-hotspot-title">Accessible evidence interactions</h2>{config.hotspots.map((hotspot) => { const found = progress[hotspot.artifact].discoveredYears.includes(activeYear); return <button key={hotspot.id} type="button" onClick={() => discover(hotspot.artifact, activeYear)}><b>{hotspot.label}</b><span>{found ? 'Discovered and carried forward.' : hotspot.description}</span></button>; })}</section>
         {activeYear === '1990' && 'channels' in yearData && (
           <div className="text-mode__grid">
             {(yearData.channels as Array<{ number: number; name: string; title: string; body: string }>).map((channel) => (
@@ -290,18 +339,14 @@ function SettingsPanel() {
   const toggleSound = useExperienceStore((state) => state.toggleSound);
   const reset = useExperienceStore((state) => state.resetProgress);
   const { showTextMode } = useExperienceActions();
-  if (!open) return null;
   return (
-    <div className="modal-backdrop" role="presentation" onMouseDown={() => setOpen(false)}>
-      <section className="modal-card" role="dialog" aria-modal="true" aria-label="Experience settings" onMouseDown={(event) => event.stopPropagation()}>
-        <header><h2>Experience settings</h2><button type="button" autoFocus onClick={() => setOpen(false)} aria-label="Close settings">×</button></header>
+    <AccessibleDialog open={open} onClose={() => setOpen(false)} title="Experience settings">
         <fieldset><legend>Visual quality</legend>{(['high','standard','lite'] as const).map((value) => <label key={value}><input type="radio" checked={quality === value} onChange={() => setQuality(value)} /> {value}</label>)}</fieldset>
         <fieldset><legend>Motion</legend>{(['full','reduced'] as const).map((value) => <label key={value}><input type="radio" checked={motion === value} onChange={() => setMotion(value)} /> {value}</label>)}</fieldset>
         <button type="button" onClick={toggleSound}>Sound: {sound ? 'on' : 'off'}</button>
         <button type="button" onClick={() => { showTextMode(); setOpen(false); }}>Use text experience</button>
         <button type="button" onClick={() => { reset(); setOpen(false); }}>Reset local progress</button>
-      </section>
-    </div>
+    </AccessibleDialog>
   );
 }
 
@@ -310,32 +355,26 @@ function ArtifactDrawer() {
   const setOpen = useExperienceStore((state) => state.setArtifactsOpen);
   const activeYear = useExperienceStore((state) => state.activeYear);
   const progress = useExperienceStore((state) => state.artifacts);
-  if (!open) return null;
   return (
-    <aside className="artifact-drawer" aria-label="Cross-era artifacts">
-      <header><div><p className="eyebrow">Kevinception continuity</p><h2>Artifacts</h2></div><button type="button" autoFocus onClick={() => setOpen(false)} aria-label="Close artifacts">×</button></header>
+    <AccessibleDialog open={open} onClose={() => setOpen(false)} title="Kevinception continuity ledger" className="artifact-drawer">
       <p>These objects transform as the interface changes. Progress remains in this browser only.</p>
       {artifacts.map((artifact) => {
         const years = progress[artifact.id].discoveredYears;
         return <section key={artifact.id} className={years.length ? 'is-found' : ''}><h3>{artifact.title}</h3><p>{artifact.meaning}</p><b>{activeYear}: {artifact.transformations[activeYear]}</b><small>{years.length}/6 forms discovered {years.length ? `· ${years.join(', ')}` : ''}</small></section>;
       })}
-    </aside>
+    </AccessibleDialog>
   );
 }
 
 function HelpPanel() {
   const open = useExperienceStore((state) => state.helpOpen);
   const setOpen = useExperienceStore((state) => state.setHelpOpen);
-  if (!open) return null;
   return (
-    <div className="modal-backdrop" role="presentation" onMouseDown={() => setOpen(false)}>
-      <section className="modal-card" role="dialog" aria-modal="true" aria-label="Experience help" onMouseDown={(event) => event.stopPropagation()}>
-        <header><h2>How to explore</h2><button type="button" autoFocus onClick={() => setOpen(false)} aria-label="Close help">×</button></header>
+    <AccessibleDialog open={open} onClose={() => setOpen(false)} title="How to explore">
         <p>Swipe, scroll, use the chapter timeline, or press the arrow keys to preview a chapter. Press Enter—or the primary chapter button—to open its functional era interface immediately.</p>
         <dl><dt>← / →</dt><dd>Previous or next chapter</dd><dt>Enter</dt><dd>Open the selected interface</dd><dt>Escape</dt><dd>Close the top layer or return to the timeline</dd><dt>T</dt><dd>Return to the timeline</dd></dl>
         <p>Essential portfolio content is also available through Portfolio, Work, Resume, About, and Contact.</p>
-      </section>
-    </div>
+    </AccessibleDialog>
   );
 }
 
@@ -383,7 +422,7 @@ function UtilityMenu({ foundCount }: { foundCount: number }) {
 
   return (
     <div className="experience-menu">
-      <button type="button" className="experience-menu__trigger" onClick={() => setOpen((value) => !value)} aria-expanded={open} aria-haspopup="menu">Menu</button>
+      <button type="button" className="experience-menu__trigger" data-dialog-return-focus onClick={() => setOpen((value) => !value)} aria-expanded={open} aria-haspopup="menu">Menu</button>
       {open && (
         <div className="experience-menu__popover" role="menu">
           <button type="button" role="menuitem" onClick={() => activate(() => setArtifactsOpen(true))}>Artifacts <span>{foundCount}</span></button>
@@ -438,6 +477,7 @@ export function ExperienceOverlay() {
       {webgl === false && <div className="webgl-notice"><p>3D rendering is unavailable. The complete text experience remains available.</p><button type="button" onClick={showTextMode}>Open text experience</button></div>}
       {viewMode === 'timeline' && <ChapterCard mode="timeline" />}
       {viewMode === 'environment' && <ChapterCard mode="environment" />}
+      {viewMode === 'environment' && <SemanticHotspots />}
       {showChapterNavigation && <YearSelector />}
       <InterfaceLayer visible={viewMode === 'interface'} />
       {viewMode === 'text' && <TextMode />}

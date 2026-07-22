@@ -1,0 +1,843 @@
+{
+  "generatedAt": "2026-07-22T14:56:35.978Z",
+  "browser": "C:\\Program Files\\Google\\Chrome\\Application\\chrome.exe",
+  "base": "http://127.0.0.1:4321",
+  "pages": [
+    {
+      "route": "/",
+      "status": 200,
+      "title": "Kevinception — One Evolving Mind Through Six Defining Interfaces",
+      "overflow": 0,
+      "viewport": {
+        "width": 1440,
+        "height": 900,
+        "deviceScaleFactor": 1
+      }
+    },
+    {
+      "route": "/",
+      "status": 200,
+      "title": "Kevinception — One Evolving Mind Through Six Defining Interfaces",
+      "overflow": 0,
+      "viewport": {
+        "width": 1920,
+        "height": 1080,
+        "deviceScaleFactor": 1
+      }
+    },
+    {
+      "route": "/",
+      "status": 200,
+      "title": "Kevinception — One Evolving Mind Through Six Defining Interfaces",
+      "overflow": 0,
+      "viewport": {
+        "width": 2560,
+        "height": 1080,
+        "deviceScaleFactor": 1
+      }
+    },
+    {
+      "route": "/",
+      "status": 200,
+      "title": "Kevinception — One Evolving Mind Through Six Defining Interfaces",
+      "overflow": 0,
+      "viewport": {
+        "width": 390,
+        "height": 844,
+        "deviceScaleFactor": 1
+      }
+    },
+    {
+      "route": "/",
+      "status": 200,
+      "title": "Kevinception — One Evolving Mind Through Six Defining Interfaces",
+      "overflow": 0,
+      "viewport": {
+        "width": 430,
+        "height": 932,
+        "deviceScaleFactor": 1
+      }
+    },
+    {
+      "route": "/experience/1990/",
+      "status": 200,
+      "title": "1990 Curiosity — KevinVision | Kevinception",
+      "overflow": 0,
+      "viewport": {
+        "width": 1440,
+        "height": 900,
+        "deviceScaleFactor": 1
+      }
+    },
+    {
+      "route": "/experience/2000/",
+      "status": 200,
+      "title": "2000 Connection — Kevin Online | Kevinception",
+      "overflow": 0,
+      "viewport": {
+        "width": 1440,
+        "height": 900,
+        "deviceScaleFactor": 1
+      }
+    },
+    {
+      "route": "/experience/2010/",
+      "status": 200,
+      "title": "2010 Presence — KevinBook | Kevinception",
+      "overflow": 0,
+      "viewport": {
+        "width": 1440,
+        "height": 900,
+        "deviceScaleFactor": 1
+      }
+    },
+    {
+      "route": "/experience/2020/",
+      "status": 200,
+      "title": "2020 Creation — KevTok | Kevinception",
+      "overflow": 0,
+      "viewport": {
+        "width": 1440,
+        "height": 900,
+        "deviceScaleFactor": 1
+      }
+    },
+    {
+      "route": "/experience/2030/",
+      "status": 200,
+      "title": "2030 Delegation — Kevin Nexus | Kevinception",
+      "overflow": 0,
+      "viewport": {
+        "width": 1440,
+        "height": 900,
+        "deviceScaleFactor": 1
+      }
+    },
+    {
+      "route": "/experience/2040/",
+      "status": 200,
+      "title": "2040 Continuity — Kevin Echo | Kevinception",
+      "overflow": 0,
+      "viewport": {
+        "width": 1440,
+        "height": 900,
+        "deviceScaleFactor": 1
+      }
+    },
+    {
+      "route": "/experience/1990/",
+      "status": 200,
+      "title": "1990 Curiosity — KevinVision | Kevinception",
+      "overflow": 0,
+      "viewport": {
+        "width": 1440,
+        "height": 900,
+        "deviceScaleFactor": 1
+      }
+    },
+    {
+      "route": "/experience/1990/",
+      "status": 200,
+      "title": "1990 Curiosity — KevinVision | Kevinception",
+      "overflow": 0,
+      "viewport": {
+        "width": 1440,
+        "height": 900,
+        "deviceScaleFactor": 1
+      }
+    },
+    {
+      "route": "/experience/1990/",
+      "status": 200,
+      "title": "1990 Curiosity — KevinVision | Kevinception",
+      "overflow": 0,
+      "viewport": {
+        "width": 1440,
+        "height": 900,
+        "deviceScaleFactor": 1
+      }
+    },
+    {
+      "route": "/experience/2020/",
+      "status": 200,
+      "title": "2020 Creation — KevTok | Kevinception",
+      "overflow": 0,
+      "viewport": {
+        "width": 1440,
+        "height": 900,
+        "deviceScaleFactor": 1
+      }
+    },
+    {
+      "route": "/experience/2020/?view=interface",
+      "status": 200,
+      "title": "2020 Creation — KevTok | Kevinception",
+      "overflow": 0,
+      "viewport": {
+        "width": 1920,
+        "height": 1080,
+        "deviceScaleFactor": 1
+      }
+    },
+    {
+      "route": "/experience/2020/",
+      "status": 200,
+      "title": "2020 Creation — KevTok | Kevinception",
+      "overflow": 0,
+      "viewport": {
+        "width": 390,
+        "height": 844,
+        "deviceScaleFactor": 1
+      }
+    },
+    {
+      "route": "/experience/2020/?view=interface",
+      "status": 200,
+      "title": "2020 Creation — KevTok | Kevinception",
+      "overflow": 0,
+      "viewport": {
+        "width": 390,
+        "height": 844,
+        "deviceScaleFactor": 1
+      }
+    },
+    {
+      "route": "/experience/2030/",
+      "status": 200,
+      "title": "2030 Delegation — Kevin Nexus | Kevinception",
+      "overflow": 0,
+      "viewport": {
+        "width": 430,
+        "height": 932,
+        "deviceScaleFactor": 1
+      }
+    },
+    {
+      "route": "/portfolio/",
+      "status": 200,
+      "title": "Portfolio | Kevinception",
+      "overflow": 0,
+      "viewport": {
+        "width": 1440,
+        "height": 900,
+        "deviceScaleFactor": 1
+      }
+    },
+    {
+      "route": "/work/kevinception/",
+      "status": 200,
+      "title": "Kevinception | Kevinception",
+      "overflow": 0,
+      "viewport": {
+        "width": 1440,
+        "height": 900,
+        "deviceScaleFactor": 1
+      }
+    },
+    {
+      "route": "/contact/",
+      "status": 200,
+      "title": "Contact | Kevinception",
+      "overflow": 0,
+      "viewport": {
+        "width": 1440,
+        "height": 900,
+        "deviceScaleFactor": 1
+      }
+    },
+    {
+      "route": "/experience/",
+      "status": 200,
+      "title": "Technology Timeline | Kevinception",
+      "overflow": 0,
+      "viewport": {
+        "width": 1440,
+        "height": 900,
+        "deviceScaleFactor": 1
+      }
+    },
+    {
+      "route": "/work/",
+      "status": 200,
+      "title": "Work | Kevinception",
+      "overflow": 0,
+      "viewport": {
+        "width": 1440,
+        "height": 900,
+        "deviceScaleFactor": 1
+      }
+    },
+    {
+      "route": "/resume/",
+      "status": 200,
+      "title": "Resume | Kevinception",
+      "overflow": 0,
+      "viewport": {
+        "width": 1440,
+        "height": 900,
+        "deviceScaleFactor": 1
+      }
+    },
+    {
+      "route": "/about/",
+      "status": 200,
+      "title": "About Kevin | Kevinception",
+      "overflow": 0,
+      "viewport": {
+        "width": 1440,
+        "height": 900,
+        "deviceScaleFactor": 1
+      }
+    }
+  ],
+  "assertions": [
+    {
+      "name": "/ returns HTTP 200",
+      "passed": true,
+      "detail": "status 200"
+    },
+    {
+      "name": "/ has no horizontal overflow",
+      "passed": true,
+      "detail": "0px"
+    },
+    {
+      "name": "Homepage exposes the canonical master statement",
+      "passed": true,
+      "detail": "One evolving mind. Six defining interfaces. A lifetime of turning curiosity into systems people can use."
+    },
+    {
+      "name": "Homepage primary action is visible in the first 1440×900 viewport",
+      "passed": true,
+      "detail": "789.890625px"
+    },
+    {
+      "name": "Homepage title is the canonical metadata identity",
+      "passed": true,
+      "detail": "Kevinception — One Evolving Mind Through Six Defining Interfaces"
+    },
+    {
+      "name": "/ returns HTTP 200",
+      "passed": true,
+      "detail": "status 200"
+    },
+    {
+      "name": "/ has no horizontal overflow",
+      "passed": true,
+      "detail": "0px"
+    },
+    {
+      "name": "/ returns HTTP 200",
+      "passed": true,
+      "detail": "status 200"
+    },
+    {
+      "name": "/ has no horizontal overflow",
+      "passed": true,
+      "detail": "0px"
+    },
+    {
+      "name": "/ returns HTTP 200",
+      "passed": true,
+      "detail": "status 200"
+    },
+    {
+      "name": "/ has no horizontal overflow",
+      "passed": true,
+      "detail": "0px"
+    },
+    {
+      "name": "/ returns HTTP 200",
+      "passed": true,
+      "detail": "status 200"
+    },
+    {
+      "name": "/ has no horizontal overflow",
+      "passed": true,
+      "detail": "0px"
+    },
+    {
+      "name": "Mobile navigation exposes every primary destination",
+      "passed": true,
+      "detail": "Experience, Portfolio, Work, Resume, About, Contact"
+    },
+    {
+      "name": "/experience/1990/ returns HTTP 200",
+      "passed": true,
+      "detail": "status 200"
+    },
+    {
+      "name": "/experience/1990/ has no horizontal overflow",
+      "passed": true,
+      "detail": "0px"
+    },
+    {
+      "name": "/experience/2000/ returns HTTP 200",
+      "passed": true,
+      "detail": "status 200"
+    },
+    {
+      "name": "/experience/2000/ has no horizontal overflow",
+      "passed": true,
+      "detail": "0px"
+    },
+    {
+      "name": "/experience/2010/ returns HTTP 200",
+      "passed": true,
+      "detail": "status 200"
+    },
+    {
+      "name": "/experience/2010/ has no horizontal overflow",
+      "passed": true,
+      "detail": "0px"
+    },
+    {
+      "name": "/experience/2020/ returns HTTP 200",
+      "passed": true,
+      "detail": "status 200"
+    },
+    {
+      "name": "/experience/2020/ has no horizontal overflow",
+      "passed": true,
+      "detail": "0px"
+    },
+    {
+      "name": "/experience/2030/ returns HTTP 200",
+      "passed": true,
+      "detail": "status 200"
+    },
+    {
+      "name": "/experience/2030/ has no horizontal overflow",
+      "passed": true,
+      "detail": "0px"
+    },
+    {
+      "name": "/experience/2040/ returns HTTP 200",
+      "passed": true,
+      "detail": "status 200"
+    },
+    {
+      "name": "/experience/2040/ has no horizontal overflow",
+      "passed": true,
+      "detail": "0px"
+    },
+    {
+      "name": "All six chapters have unique page titles",
+      "passed": true,
+      "detail": "1990 Curiosity — KevinVision | Kevinception | 2000 Connection — Kevin Online | Kevinception | 2010 Presence — KevinBook | Kevinception | 2020 Creation — KevTok | Kevinception | 2030 Delegation — Kevin Nexus | Kevinception | 2040 Continuity — Kevin Echo | Kevinception"
+    },
+    {
+      "name": "2030 keeps all five agent roles legible",
+      "passed": true,
+      "detail": "Strategist, Researcher, Builder, Governor, Archivist"
+    },
+    {
+      "name": "/experience/1990/ returns HTTP 200",
+      "passed": true,
+      "detail": "status 200"
+    },
+    {
+      "name": "/experience/1990/ has no horizontal overflow",
+      "passed": true,
+      "detail": "0px"
+    },
+    {
+      "name": "A discovered artifact visibly affects the 2040 reconstruction",
+      "passed": true,
+      "detail": "1 discovered form is shaping this reconstruction."
+    },
+    {
+      "name": "/experience/1990/ returns HTTP 200",
+      "passed": true,
+      "detail": "status 200"
+    },
+    {
+      "name": "/experience/1990/ has no horizontal overflow",
+      "passed": true,
+      "detail": "0px"
+    },
+    {
+      "name": "One wheel gesture advances only one adjacent chapter",
+      "passed": true,
+      "detail": "http://127.0.0.1:4321/experience/2000/"
+    },
+    {
+      "name": "/experience/1990/ returns HTTP 200",
+      "passed": true,
+      "detail": "status 200"
+    },
+    {
+      "name": "/experience/1990/ has no horizontal overflow",
+      "passed": true,
+      "detail": "0px"
+    },
+    {
+      "name": "The 1990→2000 transition uses the authored static-to-modem treatment",
+      "passed": true,
+      "detail": ""
+    },
+    {
+      "name": "Browser Back restores the prior canonical chapter",
+      "passed": true,
+      "detail": "http://127.0.0.1:4321/experience/1990/"
+    },
+    {
+      "name": "/experience/2020/ returns HTTP 200",
+      "passed": true,
+      "detail": "status 200"
+    },
+    {
+      "name": "/experience/2020/ has no horizontal overflow",
+      "passed": true,
+      "detail": "0px"
+    },
+    {
+      "name": "Focused hotspot keys do not trigger global chapter navigation",
+      "passed": true,
+      "detail": "http://127.0.0.1:4321/experience/2020/"
+    },
+    {
+      "name": "Dialog makes the background inert and hidden to assistive technology",
+      "passed": true,
+      "detail": ""
+    },
+    {
+      "name": "Dialog keeps Tab focus contained inside the modal",
+      "passed": true,
+      "detail": ""
+    },
+    {
+      "name": "Dialog Escape restores focus to its opener",
+      "passed": true,
+      "detail": ""
+    },
+    {
+      "name": "Lite mode can be selected and persisted",
+      "passed": true,
+      "detail": "lite"
+    },
+    {
+      "name": "Reduced-motion mode can be selected and persisted",
+      "passed": true,
+      "detail": "reduced"
+    },
+    {
+      "name": "Text mode is available from settings",
+      "passed": true,
+      "detail": ""
+    },
+    {
+      "name": "/experience/2020/?view=interface returns HTTP 200",
+      "passed": true,
+      "detail": "status 200"
+    },
+    {
+      "name": "/experience/2020/?view=interface has no horizontal overflow",
+      "passed": true,
+      "detail": "0px"
+    },
+    {
+      "name": "2020 desktop gives the portrait interface an authored evidence field",
+      "passed": true,
+      "detail": "{\"deviceWidth\":748.796875,\"contextWidth\":1171.203125,\"contextText\":\"Creation in practiceclip, proof card, and behind-the-scenes decisionKevin carried forward a creator’s bias toward making ideas tangible, communicating quickly, testing signals, and building experiences people choose to engage with.Motion intentportrait snap, signal streak, intentional creator rhythmHuman capabilityProduct creation · Storytelling · Branding · Audience behaviorProject evidenceCreatorKevinceptionKevinception PRDProduct directionTokenPakTokenPak strategic plan\"}"
+    },
+    {
+      "name": "2020 desktop context names chapter-relevant project evidence",
+      "passed": true,
+      "detail": "Creation in practiceclip, proof card, and behind-the-scenes decisionKevin carried forward a creator’s bias toward making ideas tangible, communicating quickly, testing signals, and building experiences people choose to engage with.Motion intentportrait snap, signal streak, intentional creator rhythmHuman capabilityProduct creation · Storytelling · Branding · Audience behaviorProject evidenceCreatorKevinceptionKevinception PRDProduct directionTokenPakTokenPak strategic plan"
+    },
+    {
+      "name": "/experience/2020/ returns HTTP 200",
+      "passed": true,
+      "detail": "status 200"
+    },
+    {
+      "name": "/experience/2020/ has no horizontal overflow",
+      "passed": true,
+      "detail": "0px"
+    },
+    {
+      "name": "Mobile first-run orientation does not cover semantic hotspots",
+      "passed": true,
+      "detail": "0px overlap"
+    },
+    {
+      "name": "/experience/2020/?view=interface returns HTTP 200",
+      "passed": true,
+      "detail": "status 200"
+    },
+    {
+      "name": "/experience/2020/?view=interface has no horizontal overflow",
+      "passed": true,
+      "detail": "0px"
+    },
+    {
+      "name": "Mobile interface recomposes rather than deleting chapter context",
+      "passed": true,
+      "detail": "{\"contextVisible\":true,\"overflow\":0}"
+    },
+    {
+      "name": "/experience/2030/ returns HTTP 200",
+      "passed": true,
+      "detail": "status 200"
+    },
+    {
+      "name": "/experience/2030/ has no horizontal overflow",
+      "passed": true,
+      "detail": "0px"
+    },
+    {
+      "name": "/portfolio/ returns HTTP 200",
+      "passed": true,
+      "detail": "status 200"
+    },
+    {
+      "name": "/portfolio/ has no horizontal overflow",
+      "passed": true,
+      "detail": "0px"
+    },
+    {
+      "name": "/work/kevinception/ returns HTTP 200",
+      "passed": true,
+      "detail": "status 200"
+    },
+    {
+      "name": "/work/kevinception/ has no horizontal overflow",
+      "passed": true,
+      "detail": "0px"
+    },
+    {
+      "name": "/contact/ returns HTTP 200",
+      "passed": true,
+      "detail": "status 200"
+    },
+    {
+      "name": "/contact/ has no horizontal overflow",
+      "passed": true,
+      "detail": "0px"
+    },
+    {
+      "name": "Contact path does not invent an email address",
+      "passed": true,
+      "detail": "{\"mailto\":false,\"note\":true}"
+    },
+    {
+      "name": "/experience/ returns HTTP 200",
+      "passed": true,
+      "detail": "status 200"
+    },
+    {
+      "name": "/experience/ has no horizontal overflow",
+      "passed": true,
+      "detail": "0px"
+    },
+    {
+      "name": "/work/ returns HTTP 200",
+      "passed": true,
+      "detail": "status 200"
+    },
+    {
+      "name": "/work/ has no horizontal overflow",
+      "passed": true,
+      "detail": "0px"
+    },
+    {
+      "name": "/resume/ returns HTTP 200",
+      "passed": true,
+      "detail": "status 200"
+    },
+    {
+      "name": "/resume/ has no horizontal overflow",
+      "passed": true,
+      "detail": "0px"
+    },
+    {
+      "name": "/about/ returns HTTP 200",
+      "passed": true,
+      "detail": "status 200"
+    },
+    {
+      "name": "/about/ has no horizontal overflow",
+      "passed": true,
+      "detail": "0px"
+    },
+    {
+      "name": "No browser console errors occurred",
+      "passed": true,
+      "detail": ""
+    },
+    {
+      "name": "No uncaught page errors occurred",
+      "passed": true,
+      "detail": ""
+    },
+    {
+      "name": "No non-aborted network requests failed",
+      "passed": true,
+      "detail": ""
+    }
+  ],
+  "consoleErrors": [],
+  "pageErrors": [],
+  "requestFailures": [],
+  "abortedPrefetches": [
+    "fetch http://127.0.0.1:4321/experience/2040/ :: net::ERR_ABORTED",
+    "fetch http://127.0.0.1:4321/experience/2030/ :: net::ERR_ABORTED",
+    "fetch http://127.0.0.1:4321/experience/2020/ :: net::ERR_ABORTED",
+    "fetch http://127.0.0.1:4321/experience/2010/ :: net::ERR_ABORTED",
+    "fetch http://127.0.0.1:4321/experience/2000/ :: net::ERR_ABORTED",
+    "fetch http://127.0.0.1:4321/experience/1990/ :: net::ERR_ABORTED",
+    "fetch http://127.0.0.1:4321/contact/ :: net::ERR_ABORTED",
+    "fetch http://127.0.0.1:4321/resume/ :: net::ERR_ABORTED",
+    "fetch http://127.0.0.1:4321/work/ :: net::ERR_ABORTED",
+    "fetch http://127.0.0.1:4321/portfolio/ :: net::ERR_ABORTED",
+    "fetch http://127.0.0.1:4321/experience/ :: net::ERR_ABORTED",
+    "fetch http://127.0.0.1:4321/about/ :: net::ERR_ABORTED",
+    "fetch http://127.0.0.1:4321/experience/2040/ :: net::ERR_ABORTED",
+    "fetch http://127.0.0.1:4321/experience/2030/ :: net::ERR_ABORTED",
+    "fetch http://127.0.0.1:4321/experience/2020/ :: net::ERR_ABORTED",
+    "fetch http://127.0.0.1:4321/experience/2010/ :: net::ERR_ABORTED",
+    "fetch http://127.0.0.1:4321/experience/2000/ :: net::ERR_ABORTED",
+    "fetch http://127.0.0.1:4321/experience/1990/ :: net::ERR_ABORTED",
+    "fetch http://127.0.0.1:4321/contact/ :: net::ERR_ABORTED",
+    "fetch http://127.0.0.1:4321/resume/ :: net::ERR_ABORTED",
+    "fetch http://127.0.0.1:4321/work/ :: net::ERR_ABORTED",
+    "fetch http://127.0.0.1:4321/portfolio/ :: net::ERR_ABORTED",
+    "fetch http://127.0.0.1:4321/experience/ :: net::ERR_ABORTED",
+    "fetch http://127.0.0.1:4321/about/ :: net::ERR_ABORTED",
+    "fetch http://127.0.0.1:4321/experience/2040/ :: net::ERR_ABORTED",
+    "fetch http://127.0.0.1:4321/experience/2030/ :: net::ERR_ABORTED",
+    "fetch http://127.0.0.1:4321/experience/2020/ :: net::ERR_ABORTED",
+    "fetch http://127.0.0.1:4321/experience/2010/ :: net::ERR_ABORTED",
+    "fetch http://127.0.0.1:4321/experience/2000/ :: net::ERR_ABORTED",
+    "fetch http://127.0.0.1:4321/experience/1990/ :: net::ERR_ABORTED",
+    "fetch http://127.0.0.1:4321/portfolio/ :: net::ERR_ABORTED",
+    "fetch http://127.0.0.1:4321/experience/ :: net::ERR_ABORTED",
+    "fetch http://127.0.0.1:4321/contact/ :: net::ERR_ABORTED",
+    "fetch http://127.0.0.1:4321/about/ :: net::ERR_ABORTED",
+    "fetch http://127.0.0.1:4321/resume/ :: net::ERR_ABORTED",
+    "fetch http://127.0.0.1:4321/work/ :: net::ERR_ABORTED",
+    "fetch http://127.0.0.1:4321/experience/2000/ :: net::ERR_ABORTED",
+    "fetch http://127.0.0.1:4321/experience/1990/ :: net::ERR_ABORTED",
+    "fetch http://127.0.0.1:4321/contact/ :: net::ERR_ABORTED",
+    "fetch http://127.0.0.1:4321/resume/ :: net::ERR_ABORTED",
+    "fetch http://127.0.0.1:4321/work/ :: net::ERR_ABORTED",
+    "fetch http://127.0.0.1:4321/portfolio/ :: net::ERR_ABORTED",
+    "fetch http://127.0.0.1:4321/experience/ :: net::ERR_ABORTED",
+    "fetch http://127.0.0.1:4321/experience/2000/ :: net::ERR_ABORTED",
+    "fetch http://127.0.0.1:4321/experience/2010/ :: net::ERR_ABORTED",
+    "fetch http://127.0.0.1:4321/experience/1990/ :: net::ERR_ABORTED",
+    "fetch http://127.0.0.1:4321/contact/ :: net::ERR_ABORTED",
+    "fetch http://127.0.0.1:4321/resume/ :: net::ERR_ABORTED",
+    "fetch http://127.0.0.1:4321/work/ :: net::ERR_ABORTED",
+    "fetch http://127.0.0.1:4321/portfolio/ :: net::ERR_ABORTED",
+    "fetch http://127.0.0.1:4321/experience/ :: net::ERR_ABORTED",
+    "fetch http://127.0.0.1:4321/work/kevin-online/ :: net::ERR_ABORTED",
+    "fetch http://127.0.0.1:4321/work/kevinception/ :: net::ERR_ABORTED",
+    "fetch http://127.0.0.1:4321/portfolio/ :: net::ERR_ABORTED",
+    "fetch http://127.0.0.1:4321/work/kevin-online/ :: net::ERR_ABORTED",
+    "fetch http://127.0.0.1:4321/work/kevinception/ :: net::ERR_ABORTED",
+    "fetch http://127.0.0.1:4321/portfolio/ :: net::ERR_ABORTED",
+    "fetch http://127.0.0.1:4321/work/kevinception/ :: net::ERR_ABORTED",
+    "fetch http://127.0.0.1:4321/portfolio/ :: net::ERR_ABORTED",
+    "fetch http://127.0.0.1:4321/work/tokenpak/ :: net::ERR_ABORTED",
+    "fetch http://127.0.0.1:4321/work/tokenpak/ :: net::ERR_ABORTED",
+    "fetch http://127.0.0.1:4321/work/kevinception/ :: net::ERR_ABORTED",
+    "fetch http://127.0.0.1:4321/portfolio/ :: net::ERR_ABORTED",
+    "fetch http://127.0.0.1:4321/work/mcp-knowledge-logistics/ :: net::ERR_ABORTED",
+    "fetch http://127.0.0.1:4321/work/agentic-work-fleet/ :: net::ERR_ABORTED",
+    "fetch http://127.0.0.1:4321/portfolio/ :: net::ERR_ABORTED",
+    "fetch http://127.0.0.1:4321/work/tokenpak/ :: net::ERR_ABORTED",
+    "fetch http://127.0.0.1:4321/work/kevinception/ :: net::ERR_ABORTED",
+    "fetch http://127.0.0.1:4321/portfolio/ :: net::ERR_ABORTED",
+    "fetch http://127.0.0.1:4321/work/mcp-knowledge-logistics/ :: net::ERR_ABORTED",
+    "fetch http://127.0.0.1:4321/work/agentic-work-fleet/ :: net::ERR_ABORTED",
+    "fetch http://127.0.0.1:4321/portfolio/ :: net::ERR_ABORTED",
+    "fetch http://127.0.0.1:4321/work/kevin-online/ :: net::ERR_ABORTED",
+    "fetch http://127.0.0.1:4321/work/kevinception/ :: net::ERR_ABORTED",
+    "fetch http://127.0.0.1:4321/portfolio/ :: net::ERR_ABORTED",
+    "fetch http://127.0.0.1:4321/work/kevin-online/ :: net::ERR_ABORTED",
+    "fetch http://127.0.0.1:4321/work/kevinception/ :: net::ERR_ABORTED",
+    "fetch http://127.0.0.1:4321/portfolio/ :: net::ERR_ABORTED",
+    "fetch http://127.0.0.1:4321/work/kevin-online/ :: net::ERR_ABORTED",
+    "fetch http://127.0.0.1:4321/work/kevinception/ :: net::ERR_ABORTED",
+    "fetch http://127.0.0.1:4321/portfolio/ :: net::ERR_ABORTED",
+    "fetch http://127.0.0.1:4321/work/kevinception/ :: net::ERR_ABORTED",
+    "fetch http://127.0.0.1:4321/portfolio/ :: net::ERR_ABORTED",
+    "fetch http://127.0.0.1:4321/work/tokenpak/ :: net::ERR_ABORTED",
+    "fetch http://127.0.0.1:4321/work/kevinception/ :: net::ERR_ABORTED",
+    "fetch http://127.0.0.1:4321/portfolio/ :: net::ERR_ABORTED",
+    "fetch http://127.0.0.1:4321/work/tokenpak/ :: net::ERR_ABORTED",
+    "fetch http://127.0.0.1:4321/contact/ :: net::ERR_ABORTED",
+    "fetch http://127.0.0.1:4321/about/ :: net::ERR_ABORTED",
+    "fetch http://127.0.0.1:4321/resume/ :: net::ERR_ABORTED",
+    "fetch http://127.0.0.1:4321/work/ :: net::ERR_ABORTED",
+    "fetch http://127.0.0.1:4321/ :: net::ERR_ABORTED",
+    "fetch http://127.0.0.1:4321/experience/ :: net::ERR_ABORTED",
+    "fetch http://127.0.0.1:4321/contact/ :: net::ERR_ABORTED",
+    "fetch http://127.0.0.1:4321/experience/1990/ :: net::ERR_ABORTED",
+    "fetch http://127.0.0.1:4321/resume/ :: net::ERR_ABORTED",
+    "fetch http://127.0.0.1:4321/about/ :: net::ERR_ABORTED",
+    "fetch http://127.0.0.1:4321/work/ :: net::ERR_ABORTED",
+    "fetch http://127.0.0.1:4321/portfolio/ :: net::ERR_ABORTED",
+    "fetch http://127.0.0.1:4321/experience/ :: net::ERR_ABORTED",
+    "fetch http://127.0.0.1:4321/ :: net::ERR_ABORTED",
+    "fetch http://127.0.0.1:4321/about/ :: net::ERR_ABORTED",
+    "fetch http://127.0.0.1:4321/resume/ :: net::ERR_ABORTED",
+    "fetch http://127.0.0.1:4321/work/ :: net::ERR_ABORTED",
+    "fetch http://127.0.0.1:4321/portfolio/ :: net::ERR_ABORTED",
+    "fetch http://127.0.0.1:4321/experience/ :: net::ERR_ABORTED",
+    "fetch http://127.0.0.1:4321/ :: net::ERR_ABORTED",
+    "fetch http://127.0.0.1:4321/work/kevin-online/ :: net::ERR_ABORTED",
+    "fetch http://127.0.0.1:4321/work/kevinception/ :: net::ERR_ABORTED",
+    "fetch http://127.0.0.1:4321/portfolio/ :: net::ERR_ABORTED",
+    "fetch http://127.0.0.1:4321/work/kevin-online/ :: net::ERR_ABORTED",
+    "fetch http://127.0.0.1:4321/work/kevinception/ :: net::ERR_ABORTED",
+    "fetch http://127.0.0.1:4321/about/ :: net::ERR_ABORTED",
+    "fetch http://127.0.0.1:4321/contact/ :: net::ERR_ABORTED",
+    "fetch http://127.0.0.1:4321/resume/ :: net::ERR_ABORTED",
+    "fetch http://127.0.0.1:4321/portfolio/ :: net::ERR_ABORTED",
+    "fetch http://127.0.0.1:4321/experience/ :: net::ERR_ABORTED",
+    "fetch http://127.0.0.1:4321/ :: net::ERR_ABORTED",
+    "fetch http://127.0.0.1:4321/contact/ :: net::ERR_ABORTED",
+    "fetch http://127.0.0.1:4321/about/ :: net::ERR_ABORTED",
+    "fetch http://127.0.0.1:4321/portfolio/ :: net::ERR_ABORTED",
+    "fetch http://127.0.0.1:4321/work/ :: net::ERR_ABORTED",
+    "fetch http://127.0.0.1:4321/experience/ :: net::ERR_ABORTED",
+    "fetch http://127.0.0.1:4321/ :: net::ERR_ABORTED",
+    "fetch http://127.0.0.1:4321/contact/ :: net::ERR_ABORTED",
+    "fetch http://127.0.0.1:4321/work/ :: net::ERR_ABORTED",
+    "fetch http://127.0.0.1:4321/resume/ :: net::ERR_ABORTED",
+    "fetch http://127.0.0.1:4321/portfolio/ :: net::ERR_ABORTED",
+    "fetch http://127.0.0.1:4321/experience/ :: net::ERR_ABORTED",
+    "fetch http://127.0.0.1:4321/ :: net::ERR_ABORTED"
+  ],
+  "screenshots": [
+    "docs/previews/v8/home-1440x900.png",
+    "docs/previews/v8/home-1920x1080.png",
+    "docs/previews/v8/home-2560x1080.png",
+    "docs/previews/v8/home-390x844.png",
+    "docs/previews/v8/mobile-navigation-430x932.png",
+    "docs/previews/v8/1990-environment-1440x900.png",
+    "docs/previews/v8/2000-environment-1440x900.png",
+    "docs/previews/v8/2010-environment-1440x900.png",
+    "docs/previews/v8/2020-environment-1440x900.png",
+    "docs/previews/v8/2030-environment-1440x900.png",
+    "docs/previews/v8/2040-environment-1440x900.png",
+    "docs/previews/v8/2040-provenance-payoff-1440x900.png",
+    "docs/previews/v8/settings-lite-reduced-1440x900.png",
+    "docs/previews/v8/text-mode-1440x900.png",
+    "docs/previews/v8/2020-interface-1920x1080.png",
+    "docs/previews/v8/2020-interface-2560x1080.png",
+    "docs/previews/v8/2020-environment-390x844.png",
+    "docs/previews/v8/2020-interface-390x844.png",
+    "docs/previews/v8/2030-environment-430x932.png",
+    "docs/previews/v8/portfolio-1440x900.png",
+    "docs/previews/v8/case-study-1440x900.png",
+    "docs/previews/v8/contact-1440x900.png"
+  ],
+  "summary": {
+    "passed": 77,
+    "failed": 0
+  }
+}
