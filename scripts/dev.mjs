@@ -19,7 +19,7 @@ function isFree(port) {
 let port = requested;
 while (!(await isFree(port))) port += 1;
 if (port !== requested) console.log(`Port ${requested} is already in use; using ${port} instead.`);
-console.log(`Kevinception V7 dev: http://127.0.0.1:${port}`);
+console.log(`Kevinception V8 dev: http://127.0.0.1:${port}`);
 
 const child = spawn(process.execPath, [nextCli, 'dev', '-H', '127.0.0.1', '-p', String(port)], {
   stdio: 'inherit',

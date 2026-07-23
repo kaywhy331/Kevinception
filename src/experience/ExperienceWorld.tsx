@@ -59,6 +59,10 @@ export function ExperienceWorld() {
   const activeYear = useExperienceStore((state) => state.activeYear);
   const viewMode = useExperienceStore((state) => state.viewMode);
   const quality = useExperienceStore((state) => state.quality);
+  const artifactProgress = useExperienceStore((state) => state.artifacts);
+  const activeArt = eraConfigs[activeYear].artDirection;
+  const continuityCount = Object.values(artifactProgress).reduce((total, artifact) => total + artifact.discoveredYears.length, 0);
+  const continuitySignals = Object.values(artifactProgress).flatMap((artifact) => artifact.discoveredYears);
   const timeline = viewMode === 'timeline';
   const index = YEAR_ORDER.indexOf(activeYear);
   const visibleYears = new Set<YearId>([activeYear]);
@@ -88,24 +92,41 @@ export function ExperienceWorld() {
 
   return (
     <>
-      <color attach="background" args={[quality === 'lite' ? '#090b10' : '#05070b']} />
-      <fog attach="fog" args={['#05070b', 20, quality === 'lite' ? 62 : 104]} />
-      <ambientLight intensity={quality === 'lite' ? 0.72 : 0.38} color="#b8c7e8" />
+      <color attach="background" args={[quality === 'lite' ? activeArt.palette.surface : activeArt.palette.background]} />
+      <fog attach="fog" args={[activeArt.fog[0], activeArt.fog[1], quality === 'lite' ? Math.min(activeArt.fog[2], 62) : activeArt.fog[2]]} />
+      <ambientLight intensity={quality === 'lite' ? 0.72 : activeArt.lighting.ambient} color={activeArt.palette.haze} />
       <directionalLight
         position={[5, 14, 10]}
-        intensity={quality === 'high' ? 2.35 : 1.55}
-        color="#fff4df"
+        intensity={(quality === 'high' ? 2.35 : 1.55) * activeArt.lighting.key}
+        color={activeArt.lighting.temperature}
         castShadow={quality === 'high'}
         shadow-mapSize-width={quality === 'high' ? 1536 : 768}
         shadow-mapSize-height={quality === 'high' ? 1536 : 768}
         shadow-bias={-0.00045}
       />
-      <hemisphereLight args={['#a8bee4', '#251c19', 0.6]} />
+      <hemisphereLight args={['#a8bee4', '#251c19', activeYear === '2040' ? 0.34 : 0.6]} />
       <TimelineArchitecture />
       {[...visibleYears].filter((year) => year !== activeYear).map((year) => <EraProxy key={`proxy-${year}`} year={year} />)}
       <Suspense fallback={<EraProxy year={activeYear} />}>
         <ActiveScene active timeline={timeline} detail />
       </Suspense>
+      {(activeYear === '2030' || activeYear === '2040') && continuityCount > 0 && (
+        <group position={[eraConfigs[activeYear].stationX, 2.8, -1.8]}>
+          {continuitySignals.slice(0, 12).map((sourceYear, index) => (
+            <mesh key={index} position={[Math.sin(index * 1.7) * (1.2 + index * .08), Math.cos(index * 1.1) * 1.15, index * -.12]}>
+              <octahedronGeometry args={[.08 + (index % 3) * .025]} />
+              <meshStandardMaterial color={eraConfigs[sourceYear].accent} emissive={eraConfigs[sourceYear].accent} emissiveIntensity={1.4} />
+            </mesh>
+          ))}
+          {activeYear === '2040' && continuitySignals.slice(0, 3).map((sourceYear, index) => (
+            <mesh key={`continuity-ring-${sourceYear}-${index}`} position={[0, -.35, -.45 - index * .08]} rotation={[0, 0, index * .14]}>
+              <torusGeometry args={[1.18 + index * .34, .022 + index * .004, 8, 72]} />
+              <meshBasicMaterial color={eraConfigs[sourceYear].accent} transparent opacity={.52 - index * .1} depthWrite={false} />
+            </mesh>
+          ))}
+          <pointLight color={activeArt.palette.accent} intensity={Math.min(2.8, .4 + continuityCount * .16)} distance={7} />
+        </group>
+      )}
       {[...visibleYears].map((year) => <NeighborVeil key={`veil-${year}`} year={year} active={year === activeYear} viewMode={viewMode} />)}
     </>
   );

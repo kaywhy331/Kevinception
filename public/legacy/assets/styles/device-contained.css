@@ -1,0 +1,64 @@
+/* Embedded applications stay subordinate to their physical Kevinception device. */
+html[data-kevinception-frame="true"],html[data-kevinception-frame="true"] body{width:100%;height:100%;overflow:hidden}
+html[data-kevinception-frame="true"] .era-stage{min-height:100%;height:100%;overflow:auto}
+html[data-kevinception-frame="true"] :focus-visible{outline:3px solid #fff!important;outline-offset:2px!important}
+
+html[data-kevinception-frame="true"] .kb-stage{background:linear-gradient(145deg,#9eb9dc,#d6e2f0 48%,#7795ba)}
+html[data-kevinception-frame="true"] .kb-browser{min-height:100%;height:100%;overflow:auto;border-radius:.35rem;background:#e8edf4;box-shadow:0 10px 28px rgba(16,35,65,.3)}
+html[data-kevinception-frame="true"] .kb-topbar{position:sticky!important;top:0!important}
+
+html[data-kevinception-frame="true"] .kt-stage{background:#050507}
+html[data-kevinception-frame="true"] .kt-app{width:100%;height:100%!important}
+html[data-kevinception-frame="true"] .kt-clip__visual{max-width:none}
+
+html[data-kevinception-frame="true"] .nexus-stage{background:radial-gradient(circle at 50% 0,rgba(100,232,255,.16),transparent 34%),#020a0e}
+html[data-kevinception-frame="true"] .nexus-shell{width:100%;min-height:100%!important;padding:clamp(.55rem,1.2vw,1rem)}
+html[data-kevinception-frame="true"] .nexus-header{padding:.3rem 0 .6rem}
+html[data-kevinception-frame="true"] .nexus-header h1{font-size:clamp(1.35rem,3vw,2.6rem)}
+html[data-kevinception-frame="true"] .nexus-grid{grid-template-columns:minmax(13rem,.72fr) minmax(18rem,1.2fr) minmax(12rem,.7fr);gap:.45rem;padding-top:.45rem}
+html[data-kevinception-frame="true"] .nexus-grid header{padding:.55rem}
+html[data-kevinception-frame="true"] .nexus-mission form{gap:.55rem;padding:.55rem}
+html[data-kevinception-frame="true"] .nexus-mission textarea{min-height:4.4rem}
+html[data-kevinception-frame="true"] .nexus-agents article{padding:.45rem .55rem}
+html[data-kevinception-frame="true"] .nexus-output{grid-template-rows:auto 6rem 1fr}
+html[data-kevinception-frame="true"] .nexus-memory>p{margin:.55rem 0;padding:0 .55rem}
+html[data-kevinception-frame="true"] .nexus-gate>div{grid-template-columns:repeat(3,minmax(0,1fr))}
+html[data-kevinception-frame="true"] .nexus-projections{display:none!important}
+
+html[data-kevinception-frame="true"] .echo-stage{background:radial-gradient(circle at 50% 38%,rgba(168,140,255,.2),transparent 32%),#03020a}
+html[data-kevinception-frame="true"] .echo-space{min-height:100%!important;height:100%;padding:.4rem;overflow:auto}
+html[data-kevinception-frame="true"] .echo-header,html[data-kevinception-frame="true"] .echo-memories,html[data-kevinception-frame="true"] .echo-source,html[data-kevinception-frame="true"] .echo-paradox{display:none!important}
+html[data-kevinception-frame="true"] .echo-layout{display:grid;grid-template-columns:minmax(17rem,1.45fr) minmax(12rem,.55fr);align-items:center;gap:.55rem;height:100%;padding:0}
+html[data-kevinception-frame="true"] .echo-layout>section{border:0;background:transparent;backdrop-filter:none}
+html[data-kevinception-frame="true"] .echo-presence{min-height:0;height:100%;padding:.25rem}
+html[data-kevinception-frame="true"] .echo-hologram{width:min(22rem,74%)}
+html[data-kevinception-frame="true"] .echo-interpreter{align-self:center;min-height:0;max-height:58%;grid-template-rows:auto auto auto minmax(4rem,1fr);overflow:auto;border:1px solid rgba(168,140,255,.24)!important;border-radius:.7rem!important;background:rgba(7,4,20,.78)!important;box-shadow:0 0 32px rgba(168,140,255,.12)}
+html[data-kevinception-frame="true"] .echo-interpreter>header{padding:.55rem}
+html[data-kevinception-frame="true"] .echo-interpreter h2{font-size:clamp(1rem,2vw,1.35rem)}
+html[data-kevinception-frame="true"] .echo-prompts{padding:.55rem}
+html[data-kevinception-frame="true"] .echo-interpreter form{padding:0 .55rem .55rem}
+html[data-kevinception-frame="true"] .echo-interpreter textarea{min-height:3.5rem}
+html[data-kevinception-frame="true"] .echo-response{padding:.65rem}
+html[data-kevinception-frame="true"] .echo-response>p:not(.eyebrow){font-size:.82rem;line-height:1.45}
+html[data-kevinception-frame="true"] .echo-provenance{display:block;margin:.55rem 0;padding:.45rem;border-left:2px solid #64e8ff;color:#9ebac4;font:600 .58rem/1.45 ui-monospace,SFMono-Regular,Consolas,monospace}
+html[data-kevinception-frame="true"] .echo-hologram:focus-visible{outline:2px solid #a88cff!important;outline-offset:-8px!important;border-radius:50%}
+
+@media(max-width:760px){
+  html[data-kevinception-frame="true"] .kt-header{gap:.15rem;padding-inline:.3rem}
+  html[data-kevinception-frame="true"] .kt-header nav{gap:0;justify-content:space-between;overflow:visible}
+  html[data-kevinception-frame="true"] .kt-header nav button{min-width:0;padding:.32rem .18rem;font-size:.48rem;letter-spacing:-.015em}
+  html[data-kevinception-frame="true"] .nexus-grid{grid-template-columns:1fr}
+  html[data-kevinception-frame="true"] .nexus-header{display:flex}
+  html[data-kevinception-frame="true"] .nexus-agents>div{grid-template-columns:repeat(5,minmax(5.5rem,1fr));overflow:auto}
+  html[data-kevinception-frame="true"] .nexus-agents article{grid-template-columns:1.5rem 1fr;min-width:8rem}
+  html[data-kevinception-frame="true"] .nexus-agents article p{display:none}
+  html[data-kevinception-frame="true"] .nexus-output{min-height:25rem}
+  html[data-kevinception-frame="true"] .echo-layout{grid-template-columns:1fr;grid-template-rows:minmax(15rem,1fr) auto}
+  html[data-kevinception-frame="true"] .echo-presence{min-height:16rem}
+  html[data-kevinception-frame="true"] .echo-hologram{width:min(16rem,64vw)}
+  html[data-kevinception-frame="true"] .echo-presence>p{display:none}
+  html[data-kevinception-frame="true"] .echo-interpreter{width:94%;max-height:15rem;margin:0 auto .35rem}
+  html[data-kevinception-frame="true"] .echo-prompts{flex-wrap:nowrap;overflow:auto}
+}
+
+@media(prefers-reduced-motion:reduce){html[data-kevinception-frame="true"] *,html[data-kevinception-frame="true"] *::before,html[data-kevinception-frame="true"] *::after{animation-duration:.01ms!important;animation-iteration-count:1!important;scroll-behavior:auto!important}}

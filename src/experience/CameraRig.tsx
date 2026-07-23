@@ -4,7 +4,7 @@ import { useEffect, useMemo, useRef } from 'react';
 import { useFrame, useThree } from '@react-three/fiber';
 import gsap from 'gsap';
 import * as THREE from 'three';
-import { eraConfigs } from './config';
+import { eraConfigs, type Vec3 } from './config';
 import { useExperienceStore } from './store';
 
 const TARGET_HORIZONTAL_FOV = THREE.MathUtils.degToRad(68);
@@ -18,30 +18,27 @@ export function ExperienceCameraRig() {
   const base = useRef({ x: 0, y: 6, z: 16 });
   const target = useRef({ x: 0, y: 1.7, z: 0 });
   const lookTarget = useRef(new THREE.Vector3());
-  const stationX = eraConfigs[activeYear].stationX;
+  const config = eraConfigs[activeYear];
   const aspect = size.width / Math.max(1, size.height);
   const futureRoom = activeYear === '2030' || activeYear === '2040';
 
   const pose = useMemo(() => {
     const narrow = size.width < 760;
     const ultraWide = aspect > 2.15;
-    if (viewMode === 'timeline') return {
-      position: [stationX, narrow ? 6.55 : ultraWide ? 6.25 : 6.5],
-      target: [stationX, ultraWide ? 2.45 : 2.3, -0.15]
-    };
-    if (viewMode === 'interface') return {
-      position: [stationX, narrow ? 4.5 : 3.85, narrow ? 12.2 : 8.6],
-      target: [stationX, 1.8, 0]
-    };
-    if (viewMode === 'text') return {
-      position: [stationX, 5.8, 12.8],
-      target: [stationX, 1.8, 0]
-    };
-    return {
-      position: [stationX, narrow ? 5.75 : ultraWide ? 4.95 : 5.1, narrow ? 14.5 : futureRoom ? 11.9 : ultraWide ? 10.75 : 11.25],
-      target: [stationX, futureRoom ? 2.2 : ultraWide ? 2.3 : 2.15, -0.1]
-    };
-  }, [aspect, futureRoom, stationX, viewMode, size.width]);
+    const key = viewMode === 'interface' || viewMode === 'text' || viewMode === 'timeline' ? viewMode : 'environment';
+    const authored = config.artDirection.camera[key];
+    const position: Vec3 = [
+      authored.position[0],
+      authored.position[1] + (narrow ? 0.7 : ultraWide ? -0.15 : 0),
+      authored.position[2] + (narrow ? 2.5 : ultraWide ? -0.5 : 0)
+    ];
+    const target: Vec3 = [
+      authored.target[0],
+      authored.target[1] + (ultraWide ? 0.15 : 0),
+      authored.target[2]
+    ];
+    return { position, target };
+  }, [aspect, config, viewMode, size.width]);
 
   useEffect(() => {
     if (transition?.id === 'time-jump') {

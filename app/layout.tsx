@@ -2,6 +2,8 @@ import type { Metadata } from 'next';
 import './globals.css';
 import './environment-pass.css';
 import './device-native-pass.css';
+import './v8.css';
+import './device-stage.css';
 import { site } from '@/content/data';
 import { narrativeSite } from '@/content/narrative';
 
@@ -10,6 +12,7 @@ export const metadata: Metadata = {
   title: { default: narrativeSite.title, template: `%s | ${site.name}` },
   description: narrativeSite.description,
   applicationName: site.name,
+  alternates: { canonical: '/' },
   openGraph: { title: narrativeSite.title, description: narrativeSite.description, url: site.domain, siteName: site.name, type: 'website' },
   twitter: { card: 'summary_large_image', title: narrativeSite.title, description: narrativeSite.description },
   robots: { index: true, follow: true },

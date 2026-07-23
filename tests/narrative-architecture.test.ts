@@ -9,7 +9,7 @@ const read = (relative: string) => fs.readFileSync(path.join(process.cwd(), rela
 const expectedChapters = ['Curiosity', 'Connection', 'Presence', 'Creation', 'Delegation', 'Continuity'];
 const expectedExperiences = ['KevinVision', 'Kevin Online', 'KevinBook', 'KevTok', 'Kevin Nexus', 'Kevin Echo'];
 
-describe('V7.6 narrative architecture', () => {
+describe('V8 narrative architecture', () => {
   it('defines one ordered conceptual chapter and one in-world experience per year', () => {
     expect(CHAPTER_ORDER).toEqual(['1990', '2000', '2010', '2020', '2030', '2040']);
     expect(CHAPTER_ORDER.map((year) => chapterNarrative[year].chapterName)).toEqual(expectedChapters);
@@ -33,7 +33,7 @@ describe('V7.6 narrative architecture', () => {
     const about = read('app/about/page.tsx');
     const overlay = read('src/experience/ExperienceOverlay.tsx');
     expect(home).toContain('chapter.chapterName');
-    expect(home).toContain('/experience/?year=');
+    expect(home).toContain('/experience/${chapter.id}/');
     expect(about).toContain('kevinOriginNarrative');
     expect(overlay).toContain('Chapter {config.chapterNumber}');
     expect(overlay).toContain('Experienced through');
@@ -42,8 +42,8 @@ describe('V7.6 narrative architecture', () => {
     expect(overlay).toContain('from.chapterName} → ${to.chapterName}');
   });
 
-  it('updates site positioning from six technologies to six digital eras', () => {
-    expect(narrativeSite.title).toContain('Six Digital Eras');
+  it('uses one canonical evolving-mind positioning', () => {
+    expect(narrativeSite.title).toContain('One Evolving Mind');
     expect(narrativeSite.description).toContain('Curiosity, Connection, Presence, Creation, Delegation, and Continuity');
     const layout = read('app/layout.tsx');
     expect(layout).toContain('narrativeSite.title');

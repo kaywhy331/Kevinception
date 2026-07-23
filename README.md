@@ -1,6 +1,6 @@
-# Kevinception V7 — R3F-first hybrid rebuild
+# Kevinception V8 — award-ready statement experience
 
-Kevinception V7 is a persistent React Three Fiber experience wrapped around functional, semantic portfolio applications.
+Kevinception V8 follows one evolving mind through six defining interfaces. The persistent React Three Fiber journey and direct semantic portfolio routes share one narrative, one evidence model, and one accessible interaction system.
 
 ## Windows package-root check
 
@@ -29,30 +29,29 @@ The six technology years are:
 - 2030 — Kevin Nexus
 - 2040 — Kevin Echo
 
-## Current release status
+## V8 release status
 
-V7.1 implements the R3F-first architecture as a connected physical timeline and a functional six-era vertical slice:
+V8 extends the connected physical timeline into an authored, testable portfolio system:
 
-- one persistent R3F canvas across `/experience`
-- six connected physical era environments with walls, floors, lighting, props, and authored environmental cameras
-- authored camera and transition system, including a physically connected 2030/2040 future wing
-- environment and focused-interface modes
-- five cross-era artifacts
-- WebGL, reduced-motion, Lite, and text fallbacks
-- semantic direct portfolio routes
-- static deployment output
-- preserved functional V6 era applications inside the new world
+- one canonical master statement across the homepage, experience, portfolio, metadata, About, and closing CTA
+- a data-driven art-direction contract for typography, palette, materials, lighting, fog, camera, motion, evidence, sound intent, and responsive composition
+- canonical chapter URLs and unique title, description, canonical, Open Graph, and share metadata for every era
+- authored adjacent transitions, one-chapter wheel/swipe commits, and stable browser history
+- semantic evidence hotspots with pointer, touch, keyboard, screen-reader, and text-mode access
+- cross-era artifact provenance that visibly changes the 2030/2040 continuity layer
+- complete mobile navigation, recomposed chapter narrative, Lite/reduced-motion/text fallbacks, and accessible modal behavior
+- evidence-rich project cards and case studies with role, artifact, decision, and outcome clarity
 
-The next bespoke GLB and texture pass, original environmental soundscape, render-to-texture portals, confirmed résumé chronology, and secure open-ended AI backend remain production follow-up work. The current release replaces the black-void display stands with inhabitable era dioramas and establishes the art-direction standard for future asset production. See `docs/IMPLEMENTATION_STATUS_V7.md`.
+The next bespoke GLB and texture pass, original environmental soundscape, render-to-texture portals, confirmed résumé chronology, an approved contact endpoint, and a secure open-ended AI backend remain production follow-up work.
 
 ## Run locally
 
-Node.js 20.9 or newer is required.
+Node.js 22.12 or newer is required. This matches the engine floor of the locked browser-review and 3D control dependencies.
 
 ```powershell
-npm install
+npm ci --no-audit --no-fund
 npm run verify
-npm run dev
+npm run preview
 ```
 
 The dev command automatically selects the next open port if 4321 is already occupied.

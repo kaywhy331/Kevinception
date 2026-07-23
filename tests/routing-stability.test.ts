@@ -5,7 +5,7 @@ import { describe, expect, it } from 'vitest';
 const read = (relative: string) => fs.readFileSync(path.join(process.cwd(), relative), 'utf8');
 
 describe('timeline routing stability', () => {
-  it('uses same-document history updates for query-only experience navigation', () => {
+  it('uses same-document history updates for canonical chapter navigation', () => {
     const shell = read('src/experience/ExperienceShell.tsx');
     expect(shell).toContain("type HistoryMode = 'push' | 'replace'");
     expect(shell).toContain('window.history[method]');
@@ -19,7 +19,8 @@ describe('timeline routing stability', () => {
     expect(shell).toContain('navigationVersion.current !== version');
     expect(shell).toContain('const wheelCommitTimer');
     expect(shell).toContain('window.setTimeout(commitWheelNavigation, 90)');
-    expect(shell).toContain('const steps = Math.min');
+    expect(shell).toContain('const target = getAdjacentYear(currentYear, direction)');
+    expect(shell).not.toContain('const steps = Math.min');
   });
 
   it('serves /experience without an absolute nginx redirect that drops mapped ports', () => {
@@ -27,5 +28,44 @@ describe('timeline routing stability', () => {
     expect(nginx).toContain('absolute_redirect off;');
     expect(nginx).toContain('location = /experience');
     expect(nginx).toContain('try_files /experience/index.html =404;');
+  });
+
+  it('returns a real 404 status from the production preview fallback', () => {
+    const server = read('scripts/serve.mjs');
+    expect(server).toContain('let status = 200');
+    expect(server).toContain('status = 404');
+    expect(server).toContain('fs.existsSync(file) ? status : 404');
+  });
+
+  it('serves the static social image with a PNG content type', () => {
+    expect(read('scripts/serve.mjs')).toContain("url.pathname === '/opengraph-image' ? 'image/png'");
+    expect(read('deploy/nginx.conf')).toContain('default_type image/png');
+    expect(read('public/_headers')).toContain('/opengraph-image');
+    expect(read('public/_headers')).toContain('Content-Type: image/png');
+    expect(read('vercel.json')).toContain('"source": "/opengraph-image"');
+  });
+
+  it('finalizes Next static-export prefetch payloads for ordinary static hosts', () => {
+    const pkg = read('package.json');
+    const finalizer = read('scripts/finalize-static-export.mjs');
+    const buildCheck = read('scripts/check-build.mjs');
+    expect(pkg).toContain('next build && node scripts/finalize-static-export.mjs');
+    expect(finalizer).toContain("entry.name.startsWith('__next.')");
+    expect(finalizer).toContain("join('.')");
+    expect(buildCheck).toContain('Missing RSC prefetch aliases');
+  });
+
+  it('accepts standards-compliant cached document revalidation in the hosted runtime review', () => {
+    const runtimeReview = read('scripts/runtime-review-v8.mjs');
+    expect(runtimeReview).toContain('status === 200 || status === 304');
+    expect(runtimeReview).toContain('HTTP 200 or a valid browser-cache 304');
+  });
+
+  it('keeps security headers inherited while assigning immutable asset caching in nginx', () => {
+    const nginx = read('deploy/nginx.conf');
+    expect(nginx).toContain('map $uri $kevinception_cache_control');
+    expect(nginx).toContain('add_header Cache-Control $kevinception_cache_control always;');
+    expect(nginx.match(/add_header Cache-Control/g)).toHaveLength(1);
+    expect(nginx).not.toContain('expires 1y;');
   });
 });

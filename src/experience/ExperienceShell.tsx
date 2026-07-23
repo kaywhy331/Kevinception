@@ -35,19 +35,17 @@ function isYear(value: string | null): value is YearId {
 function readLocation(pathname: string, search: string): LocationState {
   const params = new URLSearchParams(search);
   const queryYear = params.get('year');
-  const legacyYear = getYearFromPath(pathname);
-  const year = isYear(queryYear) ? queryYear : legacyYear ?? '1990';
+  const pathYear = getYearFromPath(pathname);
+  const year = isYear(queryYear) ? queryYear : pathYear ?? '1990';
   const requestedView = params.get('view');
-  const legacyRoute = Boolean(legacyYear && pathname !== '/experience' && pathname !== '/experience/');
-  if (legacyRoute) return { year, view: 'interface', legacyRoute: true };
-  if (!isYear(queryYear)) return { year, view: 'timeline', legacyRoute: false };
+  if (!pathYear && !isYear(queryYear)) return { year, view: 'timeline', legacyRoute: false };
   if (requestedView === 'interface' || requestedView === 'text') return { year, view: requestedView, legacyRoute: false };
   return { year, view: 'environment', legacyRoute: false };
 }
 
 function experienceUrl(year: YearId, view: Exclude<UrlView, 'timeline'> = 'environment') {
-  const suffix = view === 'environment' ? '' : `&view=${view}`;
-  return `/experience/?year=${year}${suffix}`;
+  const suffix = view === 'environment' ? '' : `?view=${view}`;
+  return `/experience/${year}/${suffix}`;
 }
 
 function shouldIgnoreGesture(target: EventTarget | null) {
@@ -177,7 +175,7 @@ export function ExperienceShell({ children }: { children: React.ReactNode }) {
     }
     clearTransitionTimers();
     const distance = yearDistance(fromYear, year);
-    const id = distance > 1 ? 'time-jump' : 'timeline-fade';
+    const id = transitionBetween(fromYear, year);
     const duration = motion === 'reduced' ? 24 : distance > 1 ? 300 : 420;
     const version = ++navigationVersion.current;
     setTransition({ from: fromYear, to: year, id, startedAt: Date.now() });
@@ -280,13 +278,10 @@ export function ExperienceShell({ children }: { children: React.ReactNode }) {
       const total = wheelDistance.current;
       wheelDistance.current = 0;
       if (Math.abs(total) < 45) return;
-      const currentYear = useExperienceStore.getState().activeYear;
-      const currentIndex = YEAR_ORDER.indexOf(currentYear);
-      const steps = Math.min(YEAR_ORDER.length - 1, Math.max(1, Math.ceil(Math.abs(total) / 180)));
       const direction = total > 0 ? 1 : -1;
-      const targetIndex = Math.max(0, Math.min(YEAR_ORDER.length - 1, currentIndex + direction * steps));
-      const target = YEAR_ORDER[targetIndex];
-      if (target && target !== currentYear) navigateToYearInternal(target, 'replace');
+      const currentYear = useExperienceStore.getState().activeYear;
+      const target = getAdjacentYear(currentYear, direction);
+      if (target) navigateToYearInternal(target, 'replace');
     };
     const onTouchStart = (event: TouchEvent) => {
       if (!timelineInputAvailable() || shouldIgnoreGesture(event.target) || event.touches.length !== 1) return;
@@ -326,7 +321,7 @@ export function ExperienceShell({ children }: { children: React.ReactNode }) {
   useEffect(() => {
     const onKey = (event: KeyboardEvent) => {
       const target = event.target as HTMLElement | null;
-      if (target?.matches('input, textarea, select, [contenteditable="true"]')) return;
+      if (target?.closest('button, a, input, textarea, select, summary, iframe, dialog, [contenteditable="true"], [role="button"], [role="link"]')) return;
       if (event.key === 'Escape') {
         if (settingsOpen) setSettingsOpen(false);
         else if (helpOpen) setHelpOpen(false);

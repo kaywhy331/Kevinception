@@ -2,13 +2,13 @@
   "name": "kevinception-v7-r3f",
   "version": "0.8.0",
   "private": true,
-  "description": "Kevinception V7.1 — connected physical era environments with a shared 2030/2040 future wing, persistent R3F timeline, and semantic portfolio applications.",
+  "description": "Kevinception V8 — one evolving mind across six authored interfaces, with accessible evidence, canonical chapter routes, and a persistent R3F timeline.",
   "engines": {
-    "node": ">=20.9.0"
+    "node": ">=22.12.0"
   },
   "scripts": {
     "dev": "node scripts/dev.mjs",
-    "build": "next build",
+    "build": "next build && node scripts/finalize-static-export.mjs",
     "preview": "node scripts/serve.mjs out 4321",
     "start": "npm run preview",
     "typecheck": "tsc --noEmit",
@@ -18,6 +18,8 @@
     "check:links": "node scripts/check-links.mjs",
     "check:security": "node scripts/check-security.mjs",
     "test:runtime": "node scripts/runtime-check.mjs",
+    "test:runtime:v8": "node scripts/runtime-review-v8.mjs",
+    "review:device-framing": "node scripts/capture-device-framing.mjs",
     "doctor": "node scripts/doctor.mjs",
     "audit": "npm audit --audit-level=moderate",
     "verify:full": "npm run doctor && npm run audit && npm run verify"

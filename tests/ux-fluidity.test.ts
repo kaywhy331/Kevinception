@@ -4,13 +4,13 @@ import { describe, expect, it } from 'vitest';
 
 const read = (relative: string) => fs.readFileSync(path.join(process.cwd(), relative), 'utf8');
 
-describe('V7 fluid experience pass', () => {
+describe('V8 fluid experience pass', () => {
   it('keeps year selection and interface entry inside the persistent experience route', () => {
     const shell = read('src/experience/ExperienceShell.tsx');
     const overlay = read('src/experience/ExperienceOverlay.tsx');
-    expect(shell).toContain('/experience/?year=');
+    expect(shell).toContain('`/experience/${year}/${suffix}`');
     expect(shell).toContain("writeExperienceHistory(year, 'interface')");
-    expect(shell).toContain("writeExperienceHistory(location.year, 'interface', 'replace')");
+    expect(shell).toContain("if (!pathYear && !isYear(queryYear))");
     expect(shell).toContain('window.history[method]');
     expect(overlay).toContain('onClick={() => enterYear(activeYear)}');
   });
@@ -21,8 +21,9 @@ describe('V7 fluid experience pass', () => {
     expect(shell).toContain("window.addEventListener('touchstart'");
     expect(shell).toContain("window.addEventListener('wheel'");
     expect(shell).toContain('wheelCommitTimer');
-    expect(shell).toContain('Math.ceil(Math.abs(total) / 180)');
-    expect(shell).toContain("navigateToYearInternal(target, 'replace')");
+    expect(shell).toContain('const target = getAdjacentYear(currentYear, direction)');
+    expect(shell).not.toContain('Math.ceil(Math.abs(total) / 180)');
+    expect(shell).toContain("if (target) navigateToYearInternal(target, 'replace')");
     expect(shell).toContain('if (settingsOpen) setSettingsOpen(false)');
     expect(shell).toContain("else if (machine.matches('environment')) showTimeline()");
   });
@@ -33,7 +34,7 @@ describe('V7 fluid experience pass', () => {
     const camera = read('src/experience/CameraRig.tsx');
     const styles = read('app/environment-pass.css');
     expect(config).toContain("return 'time-jump'");
-    expect(shell).toContain("distance > 1 ? 'time-jump'");
+    expect(shell).toContain('const id = transitionBetween(fromYear, year)');
     expect(shell).toContain('distance > 1 ? 300 : 420');
     expect(camera).toContain("transition?.id === 'time-jump'");
     expect(styles).toContain('.transition-time-jump');

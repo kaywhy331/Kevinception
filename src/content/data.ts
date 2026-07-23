@@ -4,8 +4,8 @@ export const site = {
   "name": "Kevinception",
   "owner": "Kevin Yang",
   "domain": "https://kevinception.com",
-  "title": "Kevinception — One Life Through Six Technologies",
-  "description": "Kevin Yang’s interactive portfolio: strategy, systems, products, operations, automation, and invention explored through six technology interfaces from 1990 to 2040.",
+  "title": "Kevinception — One Evolving Mind Through Six Defining Interfaces",
+  "description": "Kevin Yang’s interactive portfolio follows one evolving mind through Curiosity, Connection, Presence, Creation, Delegation, and Continuity—and connects every era to practical systems, products, and evidence.",
   "primaryConversion": "Start a conversation about a difficult system, ambitious product, operational challenge, or unconventional idea.",
   "githubUrl": "https://github.com/kaywhy331",
   "repositoryUrl": "https://github.com/kaywhy331/Kevinception",
@@ -14,7 +14,7 @@ export const site = {
   "tokenPakUrl": "https://tokenpak.ai",
   "tokenPakGithubUrl": "https://github.com/tokenpak",
   "draftContent": false,
-  "socialImage": "/assets/og-card.png",
+  "socialImage": "/opengraph-image",
   "themeColor": "#09090d"
 } as const;
 

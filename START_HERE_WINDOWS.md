@@ -1,4 +1,4 @@
-# Kevinception V7.1 — Windows Quick Start
+# Kevinception V8 — Windows Quick Start
 
 This release is packaged with `package.json` at the project root. After extraction, open PowerShell directly in the extracted folder.
 

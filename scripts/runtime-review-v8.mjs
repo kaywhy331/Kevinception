@@ -1,0 +1,304 @@
+import fs from 'node:fs';
+import path from 'node:path';
+import puppeteer from 'puppeteer-core';
+
+const base = process.env.BASE_URL ?? 'http://127.0.0.1:4321';
+const outputDir = 'docs/previews/v8';
+const routes = ['/', '/experience/', '/experience/1990/', '/experience/2000/', '/experience/2010/', '/experience/2020/', '/experience/2030/', '/experience/2040/', '/portfolio/', '/work/', '/resume/', '/about/', '/contact/'];
+const chapterRoutes = routes.filter((route) => /^\/experience\/\d{4}\/$/.test(route));
+const sleep = (milliseconds) => new Promise((resolve) => setTimeout(resolve, milliseconds));
+
+const candidates = [
+  process.env.CHROME_PATH,
+  process.env.CHROMIUM_PATH,
+  process.platform === 'win32' ? 'C:\\Program Files\\Google\\Chrome\\Application\\chrome.exe' : '/usr/bin/google-chrome',
+  process.platform === 'win32' ? 'C:\\Program Files (x86)\\Microsoft\\Edge\\Application\\msedge.exe' : '/usr/bin/chromium'
+].filter(Boolean);
+const executablePath = candidates.find((candidate) => fs.existsSync(candidate));
+if (!executablePath) throw new Error('No supported Chrome or Chromium executable was found.');
+
+fs.mkdirSync(outputDir, { recursive: true });
+const report = {
+  generatedAt: new Date().toISOString(), node: process.version, browser: executablePath, base,
+  pages: [], assertions: [], consoleErrors: [], pageErrors: [], requestFailures: [], abortedPrefetches: [], screenshots: []
+};
+const assert = (name, condition, detail = '') => report.assertions.push({ name, passed: Boolean(condition), detail });
+
+async function openDeviceApplicationIfPresent() {
+  const launcher = await page.$('.device-home button');
+  if (launcher) await launcher.click();
+  await page.waitForSelector('.interface-mode__frame.is-active', { timeout: 30000 });
+}
+
+async function deviceBounds() {
+  return page.evaluate(() => {
+    const stage = document.querySelector('[data-device-stage]')?.getBoundingClientRect();
+    const frame = document.querySelector('[data-device-frame-visible="true"]')?.getBoundingClientRect();
+    const application = document.querySelector('.interface-mode__frame.is-active')?.getBoundingClientRect();
+    return {
+      stage: stage && { left: stage.left, top: stage.top, right: stage.right, bottom: stage.bottom, width: stage.width, height: stage.height },
+      frame: frame && { left: frame.left, top: frame.top, right: frame.right, bottom: frame.bottom, width: frame.width, height: frame.height },
+      application: application && { left: application.left, top: application.top, right: application.right, bottom: application.bottom, width: application.width, height: application.height },
+      viewport: { width: innerWidth, height: innerHeight },
+      environmentVisible: document.querySelector('[data-device-stage]')?.getAttribute('data-environment-visible'),
+      overflow: document.documentElement.scrollWidth - document.documentElement.clientWidth
+    };
+  });
+}
+
+const browser = await puppeteer.launch({ executablePath, headless: true, args: ['--no-sandbox', '--disable-dev-shm-usage', '--ignore-gpu-blocklist', '--enable-webgl', '--use-angle=swiftshader', '--enable-unsafe-swiftshader'] });
+const page = await browser.newPage();
+page.on('console', (message) => { if (message.type() === 'error') report.consoleErrors.push(message.text()); });
+page.on('pageerror', (error) => report.pageErrors.push(String(error)));
+page.on('requestfailed', (request) => {
+  const failure = `${request.resourceType()} ${request.url()} :: ${request.failure()?.errorText ?? 'unknown'}`;
+  if (failure.includes('net::ERR_ABORTED')) report.abortedPrefetches.push(failure);
+  else report.requestFailures.push(failure);
+});
+
+async function setViewport(width, height) {
+  await page.setViewport({ width, height, deviceScaleFactor: 1 });
+}
+
+async function shot(name, fullPage = false) {
+  const file = path.join(outputDir, name);
+  await page.screenshot({ path: file, fullPage });
+  report.screenshots.push(file.replaceAll('\\', '/'));
+}
+
+async function visit(route, { waitForExperience = false } = {}) {
+  const response = await page.goto(`${base}${route}`, { waitUntil: 'networkidle2', timeout: 60000 });
+  if (waitForExperience) {
+    await page.waitForSelector('.experience-overlay', { timeout: 30000 });
+    await sleep(650);
+  }
+  const pageResult = await page.evaluate(() => ({ title: document.title, overflow: document.documentElement.scrollWidth - document.documentElement.clientWidth }));
+  const status = response?.status() ?? null;
+  const validDocumentResponse = status === 200 || status === 304;
+  report.pages.push({ route, status, ...pageResult, viewport: page.viewport() });
+  assert(`${route} returns HTTP 200 or a valid browser-cache 304`, validDocumentResponse, `status ${status}`);
+  assert(`${route} has no horizontal overflow`, pageResult.overflow <= 1, `${pageResult.overflow}px`);
+  return pageResult;
+}
+
+try {
+  await setViewport(1440, 900);
+  const home = await visit('/');
+  await shot('home-1440x900.png');
+  const threshold = await page.evaluate(() => {
+    const statement = document.querySelector('.threshold-copy h1')?.getBoundingClientRect();
+    const action = document.querySelector('.threshold-copy .primary-action')?.getBoundingClientRect();
+    const thresholdObject = document.querySelector('.authored-threshold')?.getBoundingClientRect();
+    const lastEra = document.querySelector('.authored-threshold li:last-child a')?.getBoundingClientRect();
+    return { statement: document.querySelector('.threshold-copy h1')?.textContent?.trim(), statementBottom: statement?.bottom ?? Infinity, actionBottom: action?.bottom ?? Infinity, allErasFit: Boolean(thresholdObject && lastEra && lastEra.bottom <= thresholdObject.bottom + 1) };
+  });
+  assert('Homepage exposes the canonical master statement', threshold.statement?.startsWith('One evolving mind. Six defining interfaces.'), threshold.statement ?? 'missing');
+  assert('Homepage primary action is visible in the first 1440×900 viewport', threshold.actionBottom <= 900, `${threshold.actionBottom}px`);
+  assert('Homepage threshold keeps all six era cards inside the authored object at 1440×900', threshold.allErasFit, JSON.stringify(threshold));
+  assert('Homepage title is the canonical metadata identity', home.title.includes('One Evolving Mind Through Six Defining Interfaces'), home.title);
+
+  for (const [width, height, file] of [[1920, 1080, 'home-1920x1080.png'], [2560, 1080, 'home-2560x1080.png']]) {
+    await setViewport(width, height); await visit('/');
+    const allErasFit = await page.evaluate(() => {
+      const thresholdObject = document.querySelector('.authored-threshold')?.getBoundingClientRect();
+      const lastEra = document.querySelector('.authored-threshold li:last-child a')?.getBoundingClientRect();
+      return Boolean(thresholdObject && lastEra && lastEra.bottom <= thresholdObject.bottom + 1);
+    });
+    assert(`Homepage threshold keeps all six era cards inside the authored object at ${width}×${height}`, allErasFit);
+    await shot(file);
+  }
+  await setViewport(390, 844); await visit('/'); await shot('home-390x844.png');
+  await setViewport(430, 932); await visit('/');
+  await page.click('.mobile-nav summary');
+  const mobileLinks = await page.$$eval('.mobile-nav nav a', (links) => links.filter((link) => getComputedStyle(link).display !== 'none').map((link) => link.textContent?.trim()));
+  assert('Mobile navigation exposes every primary destination', mobileLinks.length === 6, mobileLinks.join(', '));
+  await shot('mobile-navigation-430x932.png');
+
+  await setViewport(1440, 900);
+  const chapterTitles = [];
+  for (const route of chapterRoutes) {
+    const result = await visit(route, { waitForExperience: true });
+    chapterTitles.push(result.title);
+    await page.waitForSelector('.environment-panel', { timeout: 15000 });
+    await shot(`${route.match(/\d{4}/)?.[0]}-environment-1440x900.png`);
+  }
+  assert('All six chapters have unique page titles', new Set(chapterTitles).size === 6, chapterTitles.join(' | '));
+  const roleLabels = await page.goto(`${base}/experience/2030/`, { waitUntil: 'networkidle2', timeout: 60000 }).then(async () => {
+    await page.waitForSelector('.agent-role-legend');
+    return page.$$eval('.agent-role-legend b', (labels) => labels.map((label) => label.textContent?.trim()));
+  });
+  assert('2030 keeps all five agent roles legible', roleLabels.join('|') === 'Clarifier|Researcher|Architect|Builder|Governor', roleLabels.join(', '));
+
+  await visit('/experience/1990/', { waitForExperience: true });
+  await page.click('.semantic-hotspots button');
+  await page.click('.year-selector button[aria-label^="2040"]');
+  await page.waitForFunction(() => window.location.pathname === '/experience/2040/' && Boolean(document.querySelector('.continuity-summary')), { timeout: 5000 });
+  const continuityText = await page.$eval('.continuity-summary', (node) => node.textContent?.replace(/\s+/g, ' ').trim());
+  assert('A discovered artifact visibly affects the 2040 reconstruction', /^1 discovered form is/.test(continuityText ?? ''), continuityText ?? 'missing');
+  await shot('2040-provenance-payoff-1440x900.png');
+
+  await visit('/experience/1990/', { waitForExperience: true });
+  await page.evaluate(() => window.dispatchEvent(new WheelEvent('wheel', { deltaY: 2400, bubbles: true })));
+  await sleep(650);
+  assert('One wheel gesture advances only one adjacent chapter', new URL(page.url()).pathname === '/experience/2000/', page.url());
+  await visit('/experience/1990/', { waitForExperience: true });
+  const firstSelectorButton = await page.$('.year-selector button[aria-label^="2000"]');
+  await firstSelectorButton?.click();
+  await sleep(30);
+  assert('The 1990→2000 transition uses the authored static-to-modem treatment', Boolean(await page.$('.transition-static-modem')));
+  await sleep(500);
+  await page.goBack({ waitUntil: 'networkidle2' });
+  await sleep(450);
+  assert('Browser Back restores the prior canonical chapter', new URL(page.url()).pathname === '/experience/1990/', page.url());
+
+  await visit('/experience/2020/', { waitForExperience: true });
+  const hotspot = await page.$('.semantic-hotspots button');
+  await hotspot?.focus();
+  const beforeKey = page.url();
+  await page.keyboard.press('ArrowRight');
+  await page.keyboard.press('Enter');
+  await sleep(250);
+  assert('Focused hotspot keys do not trigger global chapter navigation', new URL(page.url()).pathname === new URL(beforeKey).pathname, page.url());
+
+  const menuTrigger = await page.$('.experience-menu__trigger');
+  await menuTrigger?.click();
+  await page.click('.experience-menu__popover button:nth-of-type(3)');
+  await page.waitForSelector('.modal-card[role="dialog"]');
+  const inert = await page.$eval('.experience-root', (root) => root.inert && root.getAttribute('aria-hidden') === 'true');
+  assert('Dialog makes the background inert and hidden to assistive technology', inert);
+  await page.$$eval('.modal-card a[href], .modal-card button:not([disabled]), .modal-card input:not([disabled]), .modal-card select:not([disabled]), .modal-card textarea:not([disabled]), .modal-card [tabindex]:not([tabindex="-1"])', (elements) => elements.at(-1)?.focus());
+  await page.keyboard.press('Tab');
+  const focusContained = await page.evaluate(() => Boolean(document.activeElement?.closest('.modal-card')));
+  assert('Dialog keeps Tab focus contained inside the modal', focusContained);
+  await page.keyboard.press('Escape');
+  await sleep(120);
+  const restored = await page.evaluate(() => document.activeElement?.classList.contains('experience-menu__trigger'));
+  assert('Dialog Escape restores focus to its opener', restored);
+
+  await menuTrigger?.click();
+  await page.click('.experience-menu__popover button:nth-of-type(3)');
+  await page.waitForSelector('.modal-card');
+  await page.$$eval('.modal-card fieldset:nth-of-type(1) input', (inputs) => inputs[2]?.click());
+  await page.$$eval('.modal-card fieldset:nth-of-type(2) input', (inputs) => inputs[1]?.click());
+  const preferences = await page.evaluate(() => JSON.parse(localStorage.getItem('kevinception-v7') ?? '{}').state ?? {});
+  assert('Lite mode can be selected and persisted', preferences.quality === 'lite', String(preferences.quality));
+  assert('Reduced-motion mode can be selected and persisted', preferences.motion === 'reduced', String(preferences.motion));
+  await shot('settings-lite-reduced-1440x900.png');
+  const openedText = await page.$$eval('.modal-card > button', (buttons) => {
+    const button = buttons.find((candidate) => candidate.textContent?.includes('Use text experience'));
+    button?.click();
+    return Boolean(button);
+  });
+  assert('Text mode is available from settings', openedText);
+  await page.waitForSelector('.text-mode');
+  await shot('text-mode-1440x900.png');
+
+  await setViewport(1920, 1080);
+  await visit('/experience/2020/?view=interface', { waitForExperience: true });
+  await page.waitForSelector('.interface-mode.is-visible');
+  await openDeviceApplicationIfPresent();
+  const interfaceLayout = await page.evaluate(() => {
+    const device = document.querySelector('.interface-mode__device')?.getBoundingClientRect();
+    const context = document.querySelector('.interface-context')?.getBoundingClientRect();
+    return { deviceWidth: device?.width ?? 0, contextWidth: context?.width ?? 0, contextText: document.querySelector('.interface-context')?.textContent?.replace(/\s+/g, ' ').trim() };
+  });
+  assert('2020 desktop keeps KevTok inside a portrait physical phone', interfaceLayout.deviceWidth > interfaceLayout.contextWidth && interfaceLayout.deviceWidth < 560, JSON.stringify(interfaceLayout));
+  assert('2020 desktop context names the creator studio and environmental response', Boolean(interfaceLayout.contextText?.includes('Creator studio') && interfaceLayout.contextText?.includes('ring light')), interfaceLayout.contextText ?? 'missing');
+  const desktopPhone = await deviceBounds();
+  assert('2020 desktop leaves the physical phone frame and environment visible', desktopPhone.environmentVisible === 'true' && desktopPhone.frame.width > desktopPhone.application.width && desktopPhone.frame.height > desktopPhone.application.height && desktopPhone.application.width < desktopPhone.viewport.width * .5, JSON.stringify(desktopPhone));
+  await shot('2020-interface-1920x1080.png');
+  await setViewport(2560, 1080); await shot('2020-interface-2560x1080.png');
+
+  await setViewport(390, 844);
+  await visit('/experience/2020/', { waitForExperience: true });
+  const overlap = await page.evaluate(() => {
+    const hint = document.querySelector('.experience-hint')?.getBoundingClientRect();
+    const hotspots = document.querySelector('.semantic-hotspots')?.getBoundingClientRect();
+    if (!hint || !hotspots) return 0;
+    return Math.max(0, Math.min(hint.bottom, hotspots.bottom) - Math.max(hint.top, hotspots.top));
+  });
+  assert('Mobile first-run orientation does not cover semantic hotspots', overlap <= 1, `${overlap}px overlap`);
+  await shot('2020-environment-390x844.png');
+  await visit('/experience/2020/?view=interface', { waitForExperience: true });
+  await page.waitForSelector('.interface-context');
+  await openDeviceApplicationIfPresent();
+  const mobileInterface = await page.evaluate(() => ({
+    contextVisible: document.querySelector('.interface-context')?.getBoundingClientRect().height > 0,
+    overflow: document.documentElement.scrollWidth - document.documentElement.clientWidth
+  }));
+  assert('Mobile interface recomposes rather than deleting chapter context', mobileInterface.contextVisible && mobileInterface.overflow <= 1, JSON.stringify(mobileInterface));
+  const channelLayout = await page.$eval('.interface-mode__frame.is-active', (frame) => {
+    const nav = frame.contentDocument?.querySelector('.kt-header nav');
+    return nav ? { clientWidth: nav.clientWidth, scrollWidth: nav.scrollWidth, labels: [...nav.querySelectorAll('button')].map((button) => button.textContent?.trim()) } : null;
+  });
+  assert('2020 mobile header keeps every channel visible without clipping', Boolean(channelLayout && channelLayout.scrollWidth <= channelLayout.clientWidth + 1), JSON.stringify(channelLayout));
+  const mobilePhone = await deviceBounds();
+  assert('2020 mobile retains a physical phone frame and contextual environment without overflow', mobilePhone.environmentVisible === 'true' && mobilePhone.frame.width > mobilePhone.application.width && mobilePhone.frame.height > mobilePhone.application.height && mobilePhone.overflow <= 1, JSON.stringify(mobilePhone));
+  await shot('2020-interface-390x844.png');
+  await setViewport(430, 932); await visit('/experience/2030/', { waitForExperience: true });
+  const mobileRoles = await page.$$eval('.agent-role-legend li', (roles) => roles.filter((role) => {
+    const rect = role.getBoundingClientRect();
+    return getComputedStyle(role).display !== 'none' && rect.width > 0 && rect.height >= 32 && rect.left >= 0 && rect.right <= window.innerWidth;
+  }).length);
+  assert('2030 keeps all five orchestration roles visibly composed on mobile', mobileRoles === 5, `${mobileRoles}/5 visible roles`);
+  await shot('2030-environment-430x932.png');
+
+  await setViewport(1440, 900);
+  for (const year of ['1990', '2000', '2010', '2030', '2040']) {
+    await visit(`/experience/${year}/?view=interface`, { waitForExperience: true });
+    await page.waitForSelector(`[data-device-stage="${year}"]`);
+    await openDeviceApplicationIfPresent();
+    const bounds = await deviceBounds();
+    assert(`${year} interface is contained by a visible physical device with environmental context`, bounds.environmentVisible === 'true' && bounds.frame.width > bounds.application.width && bounds.frame.height > bounds.application.height && bounds.application.width < bounds.viewport.width * .96 && bounds.application.height < bounds.viewport.height * .92, JSON.stringify(bounds));
+    await shot(`${year}-device-interface-1440x900.png`);
+  }
+
+  await visit('/experience/2030/?view=interface', { waitForExperience: true });
+  await page.waitForSelector('.device-voice-console');
+  await page.click('.device-voice-console > button:nth-of-type(2)');
+  const nexusFallback = await page.$eval('.device-voice-console form', (form) => Boolean(form.querySelector('textarea[name="device-command"]')));
+  assert('2030 voice-first briefing always exposes a text fallback', nexusFallback);
+  await shot('2030-mission-interaction-1440x900.png');
+
+  await visit('/experience/2040/?view=interface', { waitForExperience: true });
+  await page.waitForSelector('.device-voice-console');
+  await page.click('.device-voice-console > button:nth-of-type(2)');
+  const echoComposition = await page.evaluate(() => {
+    const frame = document.querySelector('.interface-mode__frame.is-active');
+    const hologram = frame?.contentDocument?.querySelector('.echo-hologram')?.getBoundingClientRect();
+    const interpreter = frame?.contentDocument?.querySelector('.echo-interpreter')?.getBoundingClientRect();
+    return { hologram: hologram && { width: hologram.width, height: hologram.height }, interpreter: interpreter && { width: interpreter.width, height: interpreter.height }, textFallback: Boolean(document.querySelector('.device-voice-console form')) };
+  });
+  assert('2040 keeps the hologram primary with compact optional text input', Boolean(echoComposition.textFallback && echoComposition.hologram && echoComposition.interpreter && echoComposition.hologram.height > echoComposition.interpreter.height * .7), JSON.stringify(echoComposition));
+  await shot('2040-compact-text-fallback-1440x900.png');
+
+  await setViewport(1440, 900);
+  await visit('/portfolio/');
+  const proofTop = await page.$eval('.portfolio-proof', (proof) => proof.getBoundingClientRect().top);
+  assert('Portfolio places recruiter-facing proof in the first desktop viewport', proofTop < 900, `${proofTop}px`);
+  await shot('portfolio-1440x900.png');
+  await visit('/work/kevinception/'); await shot('case-study-1440x900.png');
+  await visit('/contact/');
+  const builderTop = await page.$eval('.contact-builder', (builder) => builder.getBoundingClientRect().top);
+  assert('Contact brief builder begins in the first desktop viewport', builderTop < 900, `${builderTop}px`);
+  await shot('contact-1440x900.png');
+  const contact = await page.evaluate(() => ({ mailto: Boolean(document.querySelector('a[href^="mailto:"]')), note: document.body.textContent?.includes('A public contact email has not been assumed.') }));
+  assert('Contact path does not invent an email address', !contact.mailto && contact.note, JSON.stringify(contact));
+
+  for (const route of routes) {
+    if (!report.pages.some((entry) => entry.route === route)) await visit(route, { waitForExperience: route.startsWith('/experience/') });
+  }
+} catch (error) {
+  report.fatalError = String(error?.stack ?? error);
+} finally {
+  await browser.close();
+}
+
+assert('No browser console errors occurred', report.consoleErrors.length === 0, report.consoleErrors.join(' | '));
+assert('No uncaught page errors occurred', report.pageErrors.length === 0, report.pageErrors.join(' | '));
+assert('No non-aborted network requests failed', report.requestFailures.length === 0, report.requestFailures.join(' | '));
+const failed = report.assertions.filter((item) => !item.passed);
+const completedReport = { ...report, summary: { passed: report.assertions.length - failed.length, failed: failed.length } };
+fs.writeFileSync('docs/RUNTIME_REVIEW_V8.json', JSON.stringify(completedReport, null, 2));
+console.log(JSON.stringify(completedReport, null, 2));
+if (report.fatalError || failed.length) process.exit(1);
