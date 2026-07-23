@@ -1,8 +1,8 @@
 {
-  "generatedAt": "2026-07-22T20:16:04.182Z",
+  "generatedAt": "2026-07-23T18:10:45.006Z",
   "node": "v22.23.1",
   "browser": "C:\\Program Files\\Google\\Chrome\\Application\\chrome.exe",
-  "base": "http://127.0.0.1:4322",
+  "base": "http://127.0.0.1:4323",
   "pages": [
     {
       "route": "/",
@@ -214,6 +214,83 @@
       }
     },
     {
+      "route": "/experience/1990/?view=interface",
+      "status": 200,
+      "title": "1990 Curiosity — KevinVision | Kevinception",
+      "overflow": 0,
+      "viewport": {
+        "width": 1440,
+        "height": 900,
+        "deviceScaleFactor": 1
+      }
+    },
+    {
+      "route": "/experience/2000/?view=interface",
+      "status": 200,
+      "title": "2000 Connection — Kevin Online | Kevinception",
+      "overflow": 0,
+      "viewport": {
+        "width": 1440,
+        "height": 900,
+        "deviceScaleFactor": 1
+      }
+    },
+    {
+      "route": "/experience/2010/?view=interface",
+      "status": 200,
+      "title": "2010 Presence — KevinBook | Kevinception",
+      "overflow": 0,
+      "viewport": {
+        "width": 1440,
+        "height": 900,
+        "deviceScaleFactor": 1
+      }
+    },
+    {
+      "route": "/experience/2030/?view=interface",
+      "status": 200,
+      "title": "2030 Delegation — Kevin Nexus | Kevinception",
+      "overflow": 0,
+      "viewport": {
+        "width": 1440,
+        "height": 900,
+        "deviceScaleFactor": 1
+      }
+    },
+    {
+      "route": "/experience/2040/?view=interface",
+      "status": 200,
+      "title": "2040 Continuity — Kevin Echo | Kevinception",
+      "overflow": 0,
+      "viewport": {
+        "width": 1440,
+        "height": 900,
+        "deviceScaleFactor": 1
+      }
+    },
+    {
+      "route": "/experience/2030/?view=interface",
+      "status": 200,
+      "title": "2030 Delegation — Kevin Nexus | Kevinception",
+      "overflow": 0,
+      "viewport": {
+        "width": 1440,
+        "height": 900,
+        "deviceScaleFactor": 1
+      }
+    },
+    {
+      "route": "/experience/2040/?view=interface",
+      "status": 200,
+      "title": "2040 Continuity — Kevin Echo | Kevinception",
+      "overflow": 0,
+      "viewport": {
+        "width": 1440,
+        "height": 900,
+        "deviceScaleFactor": 1
+      }
+    },
+    {
       "route": "/portfolio/",
       "status": 200,
       "title": "Portfolio | Kevinception",
@@ -293,7 +370,7 @@
   ],
   "assertions": [
     {
-      "name": "/ returns HTTP 200",
+      "name": "/ returns HTTP 200 or a valid browser-cache 304",
       "passed": true,
       "detail": "status 200"
     },
@@ -323,7 +400,7 @@
       "detail": "Kevinception — One Evolving Mind Through Six Defining Interfaces"
     },
     {
-      "name": "/ returns HTTP 200",
+      "name": "/ returns HTTP 200 or a valid browser-cache 304",
       "passed": true,
       "detail": "status 200"
     },
@@ -338,7 +415,7 @@
       "detail": ""
     },
     {
-      "name": "/ returns HTTP 200",
+      "name": "/ returns HTTP 200 or a valid browser-cache 304",
       "passed": true,
       "detail": "status 200"
     },
@@ -353,7 +430,7 @@
       "detail": ""
     },
     {
-      "name": "/ returns HTTP 200",
+      "name": "/ returns HTTP 200 or a valid browser-cache 304",
       "passed": true,
       "detail": "status 200"
     },
@@ -363,7 +440,7 @@
       "detail": "0px"
     },
     {
-      "name": "/ returns HTTP 200",
+      "name": "/ returns HTTP 200 or a valid browser-cache 304",
       "passed": true,
       "detail": "status 200"
     },
@@ -378,7 +455,7 @@
       "detail": "Experience, Portfolio, Work, Resume, About, Contact"
     },
     {
-      "name": "/experience/1990/ returns HTTP 200",
+      "name": "/experience/1990/ returns HTTP 200 or a valid browser-cache 304",
       "passed": true,
       "detail": "status 200"
     },
@@ -388,7 +465,7 @@
       "detail": "0px"
     },
     {
-      "name": "/experience/2000/ returns HTTP 200",
+      "name": "/experience/2000/ returns HTTP 200 or a valid browser-cache 304",
       "passed": true,
       "detail": "status 200"
     },
@@ -398,7 +475,7 @@
       "detail": "0px"
     },
     {
-      "name": "/experience/2010/ returns HTTP 200",
+      "name": "/experience/2010/ returns HTTP 200 or a valid browser-cache 304",
       "passed": true,
       "detail": "status 200"
     },
@@ -408,7 +485,7 @@
       "detail": "0px"
     },
     {
-      "name": "/experience/2020/ returns HTTP 200",
+      "name": "/experience/2020/ returns HTTP 200 or a valid browser-cache 304",
       "passed": true,
       "detail": "status 200"
     },
@@ -418,7 +495,7 @@
       "detail": "0px"
     },
     {
-      "name": "/experience/2030/ returns HTTP 200",
+      "name": "/experience/2030/ returns HTTP 200 or a valid browser-cache 304",
       "passed": true,
       "detail": "status 200"
     },
@@ -428,7 +505,7 @@
       "detail": "0px"
     },
     {
-      "name": "/experience/2040/ returns HTTP 200",
+      "name": "/experience/2040/ returns HTTP 200 or a valid browser-cache 304",
       "passed": true,
       "detail": "status 200"
     },
@@ -445,10 +522,10 @@
     {
       "name": "2030 keeps all five agent roles legible",
       "passed": true,
-      "detail": "Strategist, Researcher, Builder, Governor, Archivist"
+      "detail": "Clarifier, Researcher, Architect, Builder, Governor"
     },
     {
-      "name": "/experience/1990/ returns HTTP 200",
+      "name": "/experience/1990/ returns HTTP 200 or a valid browser-cache 304",
       "passed": true,
       "detail": "status 200"
     },
@@ -463,7 +540,7 @@
       "detail": "1 discovered form is shaping this reconstruction."
     },
     {
-      "name": "/experience/1990/ returns HTTP 200",
+      "name": "/experience/1990/ returns HTTP 200 or a valid browser-cache 304",
       "passed": true,
       "detail": "status 200"
     },
@@ -475,10 +552,10 @@
     {
       "name": "One wheel gesture advances only one adjacent chapter",
       "passed": true,
-      "detail": "http://127.0.0.1:4322/experience/2000/"
+      "detail": "http://127.0.0.1:4323/experience/2000/"
     },
     {
-      "name": "/experience/1990/ returns HTTP 200",
+      "name": "/experience/1990/ returns HTTP 200 or a valid browser-cache 304",
       "passed": true,
       "detail": "status 200"
     },
@@ -495,10 +572,10 @@
     {
       "name": "Browser Back restores the prior canonical chapter",
       "passed": true,
-      "detail": "http://127.0.0.1:4322/experience/1990/"
+      "detail": "http://127.0.0.1:4323/experience/1990/"
     },
     {
-      "name": "/experience/2020/ returns HTTP 200",
+      "name": "/experience/2020/ returns HTTP 200 or a valid browser-cache 304",
       "passed": true,
       "detail": "status 200"
     },
@@ -510,7 +587,7 @@
     {
       "name": "Focused hotspot keys do not trigger global chapter navigation",
       "passed": true,
-      "detail": "http://127.0.0.1:4322/experience/2020/"
+      "detail": "http://127.0.0.1:4323/experience/2020/"
     },
     {
       "name": "Dialog makes the background inert and hidden to assistive technology",
@@ -543,7 +620,7 @@
       "detail": ""
     },
     {
-      "name": "/experience/2020/?view=interface returns HTTP 200",
+      "name": "/experience/2020/?view=interface returns HTTP 200 or a valid browser-cache 304",
       "passed": true,
       "detail": "status 200"
     },
@@ -553,17 +630,22 @@
       "detail": "0px"
     },
     {
-      "name": "2020 desktop gives the portrait interface an authored evidence field",
+      "name": "2020 desktop keeps KevTok inside a portrait physical phone",
       "passed": true,
-      "detail": "{\"deviceWidth\":748.796875,\"contextWidth\":1171.203125,\"contextText\":\"Creation in practiceclip, proof card, and behind-the-scenes decisionKevin carried forward a creator’s bias toward making ideas tangible, communicating quickly, testing signals, and building experiences people choose to engage with.Motion intentportrait snap, signal streak, intentional creator rhythmHuman capabilityProduct creation · Storytelling · Branding · Audience behaviorProject evidenceCreatorKevinceptionKevinception PRDProduct thesis, information architecture, experience layers, requirements, and acceptance criteria.Six connected worldsThe interface may change completely; the evidence and project facts do not.Product directionTokenPakTokenPak strategic planProduct thesis, wedge, architecture, open-source/paid split, roadmap, and risk decisions.Context logisticsLocal-first is a product boundary, not just a deployment option.Carried into 2030Creation becomes delegated capability.Continue to Delegation →\"}"
+      "detail": "{\"deviceWidth\":390,\"contextWidth\":352,\"contextText\":\"You are standing in front ofKevOS creator phone on a ring-light mountCreator studio · mounted phone · ring lightInteractionTouch, swipe, local drafts and transcriptsEnvironment responseActive clips drive the ring light, signal rhythm, and evidence display.\"}"
     },
     {
-      "name": "2020 desktop context names chapter-relevant project evidence",
+      "name": "2020 desktop context names the creator studio and environmental response",
       "passed": true,
-      "detail": "Creation in practiceclip, proof card, and behind-the-scenes decisionKevin carried forward a creator’s bias toward making ideas tangible, communicating quickly, testing signals, and building experiences people choose to engage with.Motion intentportrait snap, signal streak, intentional creator rhythmHuman capabilityProduct creation · Storytelling · Branding · Audience behaviorProject evidenceCreatorKevinceptionKevinception PRDProduct thesis, information architecture, experience layers, requirements, and acceptance criteria.Six connected worldsThe interface may change completely; the evidence and project facts do not.Product directionTokenPakTokenPak strategic planProduct thesis, wedge, architecture, open-source/paid split, roadmap, and risk decisions.Context logisticsLocal-first is a product boundary, not just a deployment option.Carried into 2030Creation becomes delegated capability.Continue to Delegation →"
+      "detail": "You are standing in front ofKevOS creator phone on a ring-light mountCreator studio · mounted phone · ring lightInteractionTouch, swipe, local drafts and transcriptsEnvironment responseActive clips drive the ring light, signal rhythm, and evidence display."
     },
     {
-      "name": "/experience/2020/ returns HTTP 200",
+      "name": "2020 desktop leaves the physical phone frame and environment visible",
+      "passed": true,
+      "detail": "{\"stage\":{\"left\":0,\"top\":37.59375,\"right\":1920,\"bottom\":1080,\"width\":1920,\"height\":1042.40625},\"frame\":{\"left\":707.4000244140625,\"top\":188,\"right\":1097.4000244140625,\"bottom\":908,\"width\":390,\"height\":720},\"application\":{\"left\":729.9688720703125,\"top\":220.99124145507812,\"right\":1074.8311767578125,\"bottom\":851.8213195800781,\"width\":344.8623046875,\"height\":630.830078125},\"viewport\":{\"width\":1920,\"height\":1080},\"environmentVisible\":\"true\",\"overflow\":0}"
+    },
+    {
+      "name": "/experience/2020/ returns HTTP 200 or a valid browser-cache 304",
       "passed": true,
       "detail": "status 200"
     },
@@ -578,7 +660,7 @@
       "detail": "0px overlap"
     },
     {
-      "name": "/experience/2020/?view=interface returns HTTP 200",
+      "name": "/experience/2020/?view=interface returns HTTP 200 or a valid browser-cache 304",
       "passed": true,
       "detail": "status 200"
     },
@@ -595,10 +677,15 @@
     {
       "name": "2020 mobile header keeps every channel visible without clipping",
       "passed": true,
-      "detail": "{\"clientWidth\":331,\"scrollWidth\":331,\"labels\":[\"For You\",\"Kevin\",\"Systems\",\"Projects\",\"AI\",\"Drafts\"]}"
+      "detail": "{\"clientWidth\":264,\"scrollWidth\":264,\"labels\":[\"For You\",\"Kevin\",\"Systems\",\"Projects\",\"AI\",\"Drafts\"]}"
     },
     {
-      "name": "/experience/2030/ returns HTTP 200",
+      "name": "2020 mobile retains a physical phone frame and contextual environment without overflow",
+      "passed": true,
+      "detail": "{\"stage\":{\"left\":0,\"top\":41.59375,\"right\":390,\"bottom\":796.015625,\"width\":390,\"height\":754.421875},\"frame\":{\"left\":23.40625,\"top\":131.1875,\"right\":366.59375,\"bottom\":730.421875,\"width\":343.1875,\"height\":599.234375},\"application\":{\"left\":42.871307373046875,\"top\":157.47222900390625,\"right\":347.1286926269531,\"bottom\":680.9496459960938,\"width\":304.25738525390625,\"height\":523.4774169921875},\"viewport\":{\"width\":390,\"height\":844},\"environmentVisible\":\"true\",\"overflow\":0}"
+    },
+    {
+      "name": "/experience/2030/ returns HTTP 200 or a valid browser-cache 304",
       "passed": true,
       "detail": "status 200"
     },
@@ -613,7 +700,112 @@
       "detail": "5/5 visible roles"
     },
     {
-      "name": "/portfolio/ returns HTTP 200",
+      "name": "/experience/1990/?view=interface returns HTTP 200 or a valid browser-cache 304",
+      "passed": true,
+      "detail": "status 200"
+    },
+    {
+      "name": "/experience/1990/?view=interface has no horizontal overflow",
+      "passed": true,
+      "detail": "0px"
+    },
+    {
+      "name": "1990 interface is contained by a visible physical device with environmental context",
+      "passed": true,
+      "detail": "{\"stage\":{\"left\":0,\"top\":37.59375,\"right\":1440,\"bottom\":900,\"width\":1440,\"height\":862.40625},\"frame\":{\"left\":307,\"top\":167.296875,\"right\":1277,\"bottom\":752.296875,\"width\":970,\"height\":585},\"application\":{\"left\":339,\"top\":186.296875,\"right\":1245,\"bottom\":717.296875,\"width\":906,\"height\":531},\"viewport\":{\"width\":1440,\"height\":900},\"environmentVisible\":\"true\",\"overflow\":0}"
+    },
+    {
+      "name": "/experience/2000/?view=interface returns HTTP 200 or a valid browser-cache 304",
+      "passed": true,
+      "detail": "status 200"
+    },
+    {
+      "name": "/experience/2000/?view=interface has no horizontal overflow",
+      "passed": true,
+      "detail": "0px"
+    },
+    {
+      "name": "2000 interface is contained by a visible physical device with environmental context",
+      "passed": true,
+      "detail": "{\"stage\":{\"left\":0,\"top\":37.59375,\"right\":1440,\"bottom\":900,\"width\":1440,\"height\":862.40625},\"frame\":{\"left\":302,\"top\":171.796875,\"right\":1282,\"bottom\":747.796875,\"width\":980,\"height\":576},\"application\":{\"left\":335,\"top\":199.796875,\"right\":1249,\"bottom\":706.796875,\"width\":914,\"height\":507},\"viewport\":{\"width\":1440,\"height\":900},\"environmentVisible\":\"true\",\"overflow\":0}"
+    },
+    {
+      "name": "/experience/2010/?view=interface returns HTTP 200 or a valid browser-cache 304",
+      "passed": true,
+      "detail": "status 200"
+    },
+    {
+      "name": "/experience/2010/?view=interface has no horizontal overflow",
+      "passed": true,
+      "detail": "0px"
+    },
+    {
+      "name": "2010 interface is contained by a visible physical device with environmental context",
+      "passed": true,
+      "detail": "{\"stage\":{\"left\":0,\"top\":37.59375,\"right\":1440,\"bottom\":900,\"width\":1440,\"height\":862.40625},\"frame\":{\"left\":331.1968688964844,\"top\":189.796875,\"right\":1281.5874938964844,\"bottom\":729.796875,\"width\":950.390625,\"height\":540},\"application\":{\"left\":399.6719055175781,\"top\":283.209716796875,\"right\":1213.1124572753906,\"bottom\":663.5563354492188,\"width\":813.4405517578125,\"height\":380.34661865234375},\"viewport\":{\"width\":1440,\"height\":900},\"environmentVisible\":\"true\",\"overflow\":0}"
+    },
+    {
+      "name": "/experience/2030/?view=interface returns HTTP 200 or a valid browser-cache 304",
+      "passed": true,
+      "detail": "status 200"
+    },
+    {
+      "name": "/experience/2030/?view=interface has no horizontal overflow",
+      "passed": true,
+      "detail": "0px"
+    },
+    {
+      "name": "2030 interface is contained by a visible physical device with environmental context",
+      "passed": true,
+      "detail": "{\"stage\":{\"left\":0,\"top\":37.59375,\"right\":1440,\"bottom\":900,\"width\":1440,\"height\":862.40625},\"frame\":{\"left\":271.8137512207031,\"top\":195.44076538085938,\"right\":1312.7447814941406,\"bottom\":726.2611999511719,\"width\":1040.9310302734375,\"height\":530.8204345703125},\"application\":{\"left\":287.98785400390625,\"top\":206.35182189941406,\"right\":1296.5338134765625,\"bottom\":709.1358184814453,\"width\":1008.5459594726562,\"height\":502.78399658203125},\"viewport\":{\"width\":1440,\"height\":900},\"environmentVisible\":\"true\",\"overflow\":0}"
+    },
+    {
+      "name": "/experience/2040/?view=interface returns HTTP 200 or a valid browser-cache 304",
+      "passed": true,
+      "detail": "status 200"
+    },
+    {
+      "name": "/experience/2040/?view=interface has no horizontal overflow",
+      "passed": true,
+      "detail": "0px"
+    },
+    {
+      "name": "2040 interface is contained by a visible physical device with environmental context",
+      "passed": true,
+      "detail": "{\"stage\":{\"left\":0,\"top\":37.59375,\"right\":1440,\"bottom\":900,\"width\":1440,\"height\":862.40625},\"frame\":{\"left\":333.20001220703125,\"top\":158.296875,\"right\":1193.199951171875,\"bottom\":761.296875,\"width\":859.9999389648438,\"height\":603},\"application\":{\"left\":334.20001220703125,\"top\":159.296875,\"right\":1192.199951171875,\"bottom\":760.296875,\"width\":857.9999389648438,\"height\":601},\"viewport\":{\"width\":1440,\"height\":900},\"environmentVisible\":\"true\",\"overflow\":0}"
+    },
+    {
+      "name": "/experience/2030/?view=interface returns HTTP 200 or a valid browser-cache 304",
+      "passed": true,
+      "detail": "status 200"
+    },
+    {
+      "name": "/experience/2030/?view=interface has no horizontal overflow",
+      "passed": true,
+      "detail": "0px"
+    },
+    {
+      "name": "2030 voice-first briefing always exposes a text fallback",
+      "passed": true,
+      "detail": ""
+    },
+    {
+      "name": "/experience/2040/?view=interface returns HTTP 200 or a valid browser-cache 304",
+      "passed": true,
+      "detail": "status 200"
+    },
+    {
+      "name": "/experience/2040/?view=interface has no horizontal overflow",
+      "passed": true,
+      "detail": "0px"
+    },
+    {
+      "name": "2040 keeps the hologram primary with compact optional text input",
+      "passed": true,
+      "detail": "{\"hologram\":{\"width\":352,\"height\":352},\"interpreter\":{\"width\":230.03125,\"height\":377.765625},\"textFallback\":true}"
+    },
+    {
+      "name": "/portfolio/ returns HTTP 200 or a valid browser-cache 304",
       "passed": true,
       "detail": "status 200"
     },
@@ -628,7 +820,7 @@
       "detail": "307.75px"
     },
     {
-      "name": "/work/kevinception/ returns HTTP 200",
+      "name": "/work/kevinception/ returns HTTP 200 or a valid browser-cache 304",
       "passed": true,
       "detail": "status 200"
     },
@@ -638,7 +830,7 @@
       "detail": "0px"
     },
     {
-      "name": "/contact/ returns HTTP 200",
+      "name": "/contact/ returns HTTP 200 or a valid browser-cache 304",
       "passed": true,
       "detail": "status 200"
     },
@@ -658,7 +850,7 @@
       "detail": "{\"mailto\":false,\"note\":true}"
     },
     {
-      "name": "/experience/ returns HTTP 200",
+      "name": "/experience/ returns HTTP 200 or a valid browser-cache 304",
       "passed": true,
       "detail": "status 200"
     },
@@ -668,7 +860,7 @@
       "detail": "0px"
     },
     {
-      "name": "/work/ returns HTTP 200",
+      "name": "/work/ returns HTTP 200 or a valid browser-cache 304",
       "passed": true,
       "detail": "status 200"
     },
@@ -678,7 +870,7 @@
       "detail": "0px"
     },
     {
-      "name": "/resume/ returns HTTP 200",
+      "name": "/resume/ returns HTTP 200 or a valid browser-cache 304",
       "passed": true,
       "detail": "status 200"
     },
@@ -688,7 +880,7 @@
       "detail": "0px"
     },
     {
-      "name": "/about/ returns HTTP 200",
+      "name": "/about/ returns HTTP 200 or a valid browser-cache 304",
       "passed": true,
       "detail": "status 200"
     },
@@ -717,135 +909,117 @@
   "pageErrors": [],
   "requestFailures": [],
   "abortedPrefetches": [
-    "fetch http://127.0.0.1:4322/experience/2040/ :: net::ERR_ABORTED",
-    "fetch http://127.0.0.1:4322/experience/2030/ :: net::ERR_ABORTED",
-    "fetch http://127.0.0.1:4322/experience/2020/ :: net::ERR_ABORTED",
-    "fetch http://127.0.0.1:4322/experience/2010/ :: net::ERR_ABORTED",
-    "fetch http://127.0.0.1:4322/experience/1990/ :: net::ERR_ABORTED",
-    "fetch http://127.0.0.1:4322/contact/ :: net::ERR_ABORTED",
-    "fetch http://127.0.0.1:4322/experience/2000/ :: net::ERR_ABORTED",
-    "fetch http://127.0.0.1:4322/resume/ :: net::ERR_ABORTED",
-    "fetch http://127.0.0.1:4322/work/ :: net::ERR_ABORTED",
-    "fetch http://127.0.0.1:4322/portfolio/ :: net::ERR_ABORTED",
-    "fetch http://127.0.0.1:4322/experience/ :: net::ERR_ABORTED",
-    "fetch http://127.0.0.1:4322/about/ :: net::ERR_ABORTED",
-    "fetch http://127.0.0.1:4322/experience/2040/ :: net::ERR_ABORTED",
-    "fetch http://127.0.0.1:4322/experience/2030/ :: net::ERR_ABORTED",
-    "fetch http://127.0.0.1:4322/experience/2020/ :: net::ERR_ABORTED",
-    "fetch http://127.0.0.1:4322/experience/2010/ :: net::ERR_ABORTED",
-    "fetch http://127.0.0.1:4322/experience/2000/ :: net::ERR_ABORTED",
-    "fetch http://127.0.0.1:4322/experience/1990/ :: net::ERR_ABORTED",
-    "fetch http://127.0.0.1:4322/resume/ :: net::ERR_ABORTED",
-    "fetch http://127.0.0.1:4322/contact/ :: net::ERR_ABORTED",
-    "fetch http://127.0.0.1:4322/work/ :: net::ERR_ABORTED",
-    "fetch http://127.0.0.1:4322/portfolio/ :: net::ERR_ABORTED",
-    "fetch http://127.0.0.1:4322/experience/ :: net::ERR_ABORTED",
-    "fetch http://127.0.0.1:4322/about/ :: net::ERR_ABORTED",
-    "fetch http://127.0.0.1:4322/experience/2040/ :: net::ERR_ABORTED",
-    "fetch http://127.0.0.1:4322/experience/2030/ :: net::ERR_ABORTED",
-    "fetch http://127.0.0.1:4322/experience/2020/ :: net::ERR_ABORTED",
-    "fetch http://127.0.0.1:4322/experience/2010/ :: net::ERR_ABORTED",
-    "fetch http://127.0.0.1:4322/experience/2000/ :: net::ERR_ABORTED",
-    "fetch http://127.0.0.1:4322/experience/1990/ :: net::ERR_ABORTED",
-    "fetch http://127.0.0.1:4322/contact/ :: net::ERR_ABORTED",
-    "fetch http://127.0.0.1:4322/resume/ :: net::ERR_ABORTED",
-    "fetch http://127.0.0.1:4322/work/ :: net::ERR_ABORTED",
-    "fetch http://127.0.0.1:4322/portfolio/ :: net::ERR_ABORTED",
-    "fetch http://127.0.0.1:4322/experience/ :: net::ERR_ABORTED",
-    "fetch http://127.0.0.1:4322/about/ :: net::ERR_ABORTED",
-    "fetch http://127.0.0.1:4322/experience/2000/ :: net::ERR_ABORTED",
-    "fetch http://127.0.0.1:4322/experience/1990/ :: net::ERR_ABORTED",
-    "fetch http://127.0.0.1:4322/contact/ :: net::ERR_ABORTED",
-    "fetch http://127.0.0.1:4322/resume/ :: net::ERR_ABORTED",
-    "fetch http://127.0.0.1:4322/work/ :: net::ERR_ABORTED",
-    "fetch http://127.0.0.1:4322/portfolio/ :: net::ERR_ABORTED",
-    "fetch http://127.0.0.1:4322/experience/ :: net::ERR_ABORTED",
-    "fetch http://127.0.0.1:4322/experience/2010/ :: net::ERR_ABORTED",
-    "fetch http://127.0.0.1:4322/experience/2000/ :: net::ERR_ABORTED",
-    "fetch http://127.0.0.1:4322/experience/1990/ :: net::ERR_ABORTED",
-    "fetch http://127.0.0.1:4322/contact/ :: net::ERR_ABORTED",
-    "fetch http://127.0.0.1:4322/resume/ :: net::ERR_ABORTED",
-    "fetch http://127.0.0.1:4322/work/ :: net::ERR_ABORTED",
-    "fetch http://127.0.0.1:4322/portfolio/ :: net::ERR_ABORTED",
-    "fetch http://127.0.0.1:4322/experience/ :: net::ERR_ABORTED",
-    "fetch http://127.0.0.1:4322/portfolio/ :: net::ERR_ABORTED",
-    "fetch http://127.0.0.1:4322/work/kevinception/ :: net::ERR_ABORTED",
-    "fetch http://127.0.0.1:4322/work/kevin-online/ :: net::ERR_ABORTED",
-    "fetch http://127.0.0.1:4322/work/kevin-online/ :: net::ERR_ABORTED",
-    "fetch http://127.0.0.1:4322/work/kevinception/ :: net::ERR_ABORTED",
-    "fetch http://127.0.0.1:4322/portfolio/ :: net::ERR_ABORTED",
-    "fetch http://127.0.0.1:4322/work/tokenpak/ :: net::ERR_ABORTED",
-    "fetch http://127.0.0.1:4322/work/kevinception/ :: net::ERR_ABORTED",
-    "fetch http://127.0.0.1:4322/portfolio/ :: net::ERR_ABORTED",
-    "fetch http://127.0.0.1:4322/work/kevinception/ :: net::ERR_ABORTED",
-    "fetch http://127.0.0.1:4322/portfolio/ :: net::ERR_ABORTED",
-    "fetch http://127.0.0.1:4322/work/tokenpak/ :: net::ERR_ABORTED",
-    "fetch http://127.0.0.1:4322/work/agentic-work-fleet/ :: net::ERR_ABORTED",
-    "fetch http://127.0.0.1:4322/work/mcp-knowledge-logistics/ :: net::ERR_ABORTED",
-    "fetch http://127.0.0.1:4322/portfolio/ :: net::ERR_ABORTED",
-    "fetch http://127.0.0.1:4322/work/kevinception/ :: net::ERR_ABORTED",
-    "fetch http://127.0.0.1:4322/portfolio/ :: net::ERR_ABORTED",
-    "fetch http://127.0.0.1:4322/work/mcp-knowledge-logistics/ :: net::ERR_ABORTED",
-    "fetch http://127.0.0.1:4322/portfolio/ :: net::ERR_ABORTED",
-    "fetch http://127.0.0.1:4322/work/agentic-work-fleet/ :: net::ERR_ABORTED",
-    "fetch http://127.0.0.1:4322/work/kevin-online/ :: net::ERR_ABORTED",
-    "fetch http://127.0.0.1:4322/work/kevinception/ :: net::ERR_ABORTED",
-    "fetch http://127.0.0.1:4322/portfolio/ :: net::ERR_ABORTED",
-    "fetch http://127.0.0.1:4322/work/kevin-online/ :: net::ERR_ABORTED",
-    "fetch http://127.0.0.1:4322/work/kevinception/ :: net::ERR_ABORTED",
-    "fetch http://127.0.0.1:4322/portfolio/ :: net::ERR_ABORTED",
-    "fetch http://127.0.0.1:4322/work/kevin-online/ :: net::ERR_ABORTED",
-    "fetch http://127.0.0.1:4322/work/kevinception/ :: net::ERR_ABORTED",
-    "fetch http://127.0.0.1:4322/portfolio/ :: net::ERR_ABORTED",
-    "fetch http://127.0.0.1:4322/work/tokenpak/ :: net::ERR_ABORTED",
-    "fetch http://127.0.0.1:4322/work/kevinception/ :: net::ERR_ABORTED",
-    "fetch http://127.0.0.1:4322/portfolio/ :: net::ERR_ABORTED",
-    "fetch http://127.0.0.1:4322/work/tokenpak/ :: net::ERR_ABORTED",
-    "fetch http://127.0.0.1:4322/work/kevinception/ :: net::ERR_ABORTED",
-    "fetch http://127.0.0.1:4322/work/kevinception/ :: net::ERR_ABORTED",
-    "fetch http://127.0.0.1:4322/experience/ :: net::ERR_ABORTED",
-    "fetch http://127.0.0.1:4322/contact/ :: net::ERR_ABORTED",
-    "fetch http://127.0.0.1:4322/work/ :: net::ERR_ABORTED",
-    "fetch http://127.0.0.1:4322/about/ :: net::ERR_ABORTED",
-    "fetch http://127.0.0.1:4322/resume/ :: net::ERR_ABORTED",
-    "fetch http://127.0.0.1:4322/ :: net::ERR_ABORTED",
-    "fetch http://127.0.0.1:4322/contact/ :: net::ERR_ABORTED",
-    "fetch http://127.0.0.1:4322/resume/ :: net::ERR_ABORTED",
-    "fetch http://127.0.0.1:4322/about/ :: net::ERR_ABORTED",
-    "fetch http://127.0.0.1:4322/experience/1990/ :: net::ERR_ABORTED",
-    "fetch http://127.0.0.1:4322/work/ :: net::ERR_ABORTED",
-    "fetch http://127.0.0.1:4322/portfolio/ :: net::ERR_ABORTED",
-    "fetch http://127.0.0.1:4322/experience/ :: net::ERR_ABORTED",
-    "fetch http://127.0.0.1:4322/ :: net::ERR_ABORTED",
-    "fetch http://127.0.0.1:4322/about/ :: net::ERR_ABORTED",
-    "fetch http://127.0.0.1:4322/resume/ :: net::ERR_ABORTED",
-    "fetch http://127.0.0.1:4322/work/ :: net::ERR_ABORTED",
-    "fetch http://127.0.0.1:4322/portfolio/ :: net::ERR_ABORTED",
-    "fetch http://127.0.0.1:4322/experience/ :: net::ERR_ABORTED",
-    "fetch http://127.0.0.1:4322/ :: net::ERR_ABORTED",
-    "fetch http://127.0.0.1:4322/work/kevin-online/ :: net::ERR_ABORTED",
-    "fetch http://127.0.0.1:4322/work/kevinception/ :: net::ERR_ABORTED",
-    "fetch http://127.0.0.1:4322/portfolio/ :: net::ERR_ABORTED",
-    "fetch http://127.0.0.1:4322/work/kevin-online/ :: net::ERR_ABORTED",
-    "fetch http://127.0.0.1:4322/work/kevinception/ :: net::ERR_ABORTED",
-    "fetch http://127.0.0.1:4322/about/ :: net::ERR_ABORTED",
-    "fetch http://127.0.0.1:4322/contact/ :: net::ERR_ABORTED",
-    "fetch http://127.0.0.1:4322/resume/ :: net::ERR_ABORTED",
-    "fetch http://127.0.0.1:4322/portfolio/ :: net::ERR_ABORTED",
-    "fetch http://127.0.0.1:4322/experience/ :: net::ERR_ABORTED",
-    "fetch http://127.0.0.1:4322/ :: net::ERR_ABORTED",
-    "fetch http://127.0.0.1:4322/contact/ :: net::ERR_ABORTED",
-    "fetch http://127.0.0.1:4322/portfolio/ :: net::ERR_ABORTED",
-    "fetch http://127.0.0.1:4322/about/ :: net::ERR_ABORTED",
-    "fetch http://127.0.0.1:4322/work/ :: net::ERR_ABORTED",
-    "fetch http://127.0.0.1:4322/experience/ :: net::ERR_ABORTED",
-    "fetch http://127.0.0.1:4322/ :: net::ERR_ABORTED",
-    "fetch http://127.0.0.1:4322/contact/ :: net::ERR_ABORTED",
-    "fetch http://127.0.0.1:4322/work/ :: net::ERR_ABORTED",
-    "fetch http://127.0.0.1:4322/portfolio/ :: net::ERR_ABORTED",
-    "fetch http://127.0.0.1:4322/resume/ :: net::ERR_ABORTED",
-    "fetch http://127.0.0.1:4322/experience/ :: net::ERR_ABORTED",
-    "fetch http://127.0.0.1:4322/ :: net::ERR_ABORTED"
+    "fetch http://127.0.0.1:4323/experience/2040/ :: net::ERR_ABORTED",
+    "fetch http://127.0.0.1:4323/experience/2030/ :: net::ERR_ABORTED",
+    "fetch http://127.0.0.1:4323/experience/2020/ :: net::ERR_ABORTED",
+    "fetch http://127.0.0.1:4323/experience/2010/ :: net::ERR_ABORTED",
+    "fetch http://127.0.0.1:4323/experience/2000/ :: net::ERR_ABORTED",
+    "fetch http://127.0.0.1:4323/experience/1990/ :: net::ERR_ABORTED",
+    "fetch http://127.0.0.1:4323/contact/ :: net::ERR_ABORTED",
+    "fetch http://127.0.0.1:4323/resume/ :: net::ERR_ABORTED",
+    "fetch http://127.0.0.1:4323/work/ :: net::ERR_ABORTED",
+    "fetch http://127.0.0.1:4323/portfolio/ :: net::ERR_ABORTED",
+    "fetch http://127.0.0.1:4323/experience/ :: net::ERR_ABORTED",
+    "fetch http://127.0.0.1:4323/about/ :: net::ERR_ABORTED",
+    "fetch http://127.0.0.1:4323/experience/2040/ :: net::ERR_ABORTED",
+    "fetch http://127.0.0.1:4323/experience/2030/ :: net::ERR_ABORTED",
+    "fetch http://127.0.0.1:4323/experience/2020/ :: net::ERR_ABORTED",
+    "fetch http://127.0.0.1:4323/experience/2010/ :: net::ERR_ABORTED",
+    "fetch http://127.0.0.1:4323/experience/2000/ :: net::ERR_ABORTED",
+    "fetch http://127.0.0.1:4323/experience/1990/ :: net::ERR_ABORTED",
+    "fetch http://127.0.0.1:4323/contact/ :: net::ERR_ABORTED",
+    "fetch http://127.0.0.1:4323/resume/ :: net::ERR_ABORTED",
+    "fetch http://127.0.0.1:4323/work/ :: net::ERR_ABORTED",
+    "fetch http://127.0.0.1:4323/portfolio/ :: net::ERR_ABORTED",
+    "fetch http://127.0.0.1:4323/experience/ :: net::ERR_ABORTED",
+    "fetch http://127.0.0.1:4323/about/ :: net::ERR_ABORTED",
+    "fetch http://127.0.0.1:4323/experience/2030/ :: net::ERR_ABORTED",
+    "fetch http://127.0.0.1:4323/experience/2040/ :: net::ERR_ABORTED",
+    "fetch http://127.0.0.1:4323/experience/2010/ :: net::ERR_ABORTED",
+    "fetch http://127.0.0.1:4323/experience/2020/ :: net::ERR_ABORTED",
+    "fetch http://127.0.0.1:4323/experience/2000/ :: net::ERR_ABORTED",
+    "fetch http://127.0.0.1:4323/experience/1990/ :: net::ERR_ABORTED",
+    "fetch http://127.0.0.1:4323/contact/ :: net::ERR_ABORTED",
+    "fetch http://127.0.0.1:4323/resume/ :: net::ERR_ABORTED",
+    "fetch http://127.0.0.1:4323/portfolio/ :: net::ERR_ABORTED",
+    "fetch http://127.0.0.1:4323/work/ :: net::ERR_ABORTED",
+    "fetch http://127.0.0.1:4323/experience/ :: net::ERR_ABORTED",
+    "fetch http://127.0.0.1:4323/about/ :: net::ERR_ABORTED",
+    "fetch http://127.0.0.1:4323/experience/2000/ :: net::ERR_ABORTED",
+    "fetch http://127.0.0.1:4323/experience/1990/ :: net::ERR_ABORTED",
+    "fetch http://127.0.0.1:4323/resume/ :: net::ERR_ABORTED",
+    "fetch http://127.0.0.1:4323/contact/ :: net::ERR_ABORTED",
+    "fetch http://127.0.0.1:4323/work/ :: net::ERR_ABORTED",
+    "fetch http://127.0.0.1:4323/portfolio/ :: net::ERR_ABORTED",
+    "fetch http://127.0.0.1:4323/experience/ :: net::ERR_ABORTED",
+    "fetch http://127.0.0.1:4323/experience/2010/ :: net::ERR_ABORTED",
+    "fetch http://127.0.0.1:4323/experience/2010/ :: net::ERR_ABORTED",
+    "fetch http://127.0.0.1:4323/experience/2000/ :: net::ERR_ABORTED",
+    "fetch http://127.0.0.1:4323/experience/1990/ :: net::ERR_ABORTED",
+    "fetch http://127.0.0.1:4323/contact/ :: net::ERR_ABORTED",
+    "fetch http://127.0.0.1:4323/resume/ :: net::ERR_ABORTED",
+    "fetch http://127.0.0.1:4323/work/ :: net::ERR_ABORTED",
+    "fetch http://127.0.0.1:4323/portfolio/ :: net::ERR_ABORTED",
+    "fetch http://127.0.0.1:4323/experience/ :: net::ERR_ABORTED",
+    "fetch http://127.0.0.1:4323/about/ :: net::ERR_ABORTED",
+    "fetch http://127.0.0.1:4323/experience/2040/ :: net::ERR_ABORTED",
+    "fetch http://127.0.0.1:4323/experience/2030/ :: net::ERR_ABORTED",
+    "fetch http://127.0.0.1:4323/experience/2020/ :: net::ERR_ABORTED",
+    "fetch http://127.0.0.1:4323/portfolio/ :: net::ERR_ABORTED",
+    "fetch http://127.0.0.1:4323/portfolio/ :: net::ERR_ABORTED",
+    "fetch http://127.0.0.1:4323/portfolio/ :: net::ERR_ABORTED",
+    "fetch http://127.0.0.1:4323/portfolio/ :: net::ERR_ABORTED",
+    "fetch http://127.0.0.1:4323/portfolio/ :: net::ERR_ABORTED",
+    "fetch http://127.0.0.1:4323/portfolio/ :: net::ERR_ABORTED",
+    "fetch http://127.0.0.1:4323/portfolio/ :: net::ERR_ABORTED",
+    "fetch http://127.0.0.1:4323/portfolio/ :: net::ERR_ABORTED",
+    "fetch http://127.0.0.1:4323/portfolio/ :: net::ERR_ABORTED",
+    "fetch http://127.0.0.1:4323/portfolio/ :: net::ERR_ABORTED",
+    "fetch http://127.0.0.1:4323/portfolio/ :: net::ERR_ABORTED",
+    "fetch http://127.0.0.1:4323/portfolio/ :: net::ERR_ABORTED",
+    "fetch http://127.0.0.1:4323/portfolio/ :: net::ERR_ABORTED",
+    "fetch http://127.0.0.1:4323/work/kevinception/ :: net::ERR_ABORTED",
+    "fetch http://127.0.0.1:4323/experience/ :: net::ERR_ABORTED",
+    "fetch http://127.0.0.1:4323/contact/ :: net::ERR_ABORTED",
+    "fetch http://127.0.0.1:4323/work/ :: net::ERR_ABORTED",
+    "fetch http://127.0.0.1:4323/about/ :: net::ERR_ABORTED",
+    "fetch http://127.0.0.1:4323/resume/ :: net::ERR_ABORTED",
+    "fetch http://127.0.0.1:4323/ :: net::ERR_ABORTED",
+    "fetch http://127.0.0.1:4323/experience/1990/ :: net::ERR_ABORTED",
+    "fetch http://127.0.0.1:4323/contact/ :: net::ERR_ABORTED",
+    "fetch http://127.0.0.1:4323/about/ :: net::ERR_ABORTED",
+    "fetch http://127.0.0.1:4323/resume/ :: net::ERR_ABORTED",
+    "fetch http://127.0.0.1:4323/work/ :: net::ERR_ABORTED",
+    "fetch http://127.0.0.1:4323/portfolio/ :: net::ERR_ABORTED",
+    "fetch http://127.0.0.1:4323/experience/ :: net::ERR_ABORTED",
+    "fetch http://127.0.0.1:4323/ :: net::ERR_ABORTED",
+    "fetch http://127.0.0.1:4323/about/ :: net::ERR_ABORTED",
+    "fetch http://127.0.0.1:4323/resume/ :: net::ERR_ABORTED",
+    "fetch http://127.0.0.1:4323/work/ :: net::ERR_ABORTED",
+    "fetch http://127.0.0.1:4323/portfolio/ :: net::ERR_ABORTED",
+    "fetch http://127.0.0.1:4323/experience/ :: net::ERR_ABORTED",
+    "fetch http://127.0.0.1:4323/ :: net::ERR_ABORTED",
+    "fetch http://127.0.0.1:4323/portfolio/ :: net::ERR_ABORTED",
+    "fetch http://127.0.0.1:4323/about/ :: net::ERR_ABORTED",
+    "fetch http://127.0.0.1:4323/work/kevinception/ :: net::ERR_ABORTED",
+    "fetch http://127.0.0.1:4323/contact/ :: net::ERR_ABORTED",
+    "fetch http://127.0.0.1:4323/work/kevin-online/ :: net::ERR_ABORTED",
+    "fetch http://127.0.0.1:4323/resume/ :: net::ERR_ABORTED",
+    "fetch http://127.0.0.1:4323/portfolio/ :: net::ERR_ABORTED",
+    "fetch http://127.0.0.1:4323/experience/ :: net::ERR_ABORTED",
+    "fetch http://127.0.0.1:4323/ :: net::ERR_ABORTED",
+    "fetch http://127.0.0.1:4323/contact/ :: net::ERR_ABORTED",
+    "fetch http://127.0.0.1:4323/about/ :: net::ERR_ABORTED",
+    "fetch http://127.0.0.1:4323/work/ :: net::ERR_ABORTED",
+    "fetch http://127.0.0.1:4323/portfolio/ :: net::ERR_ABORTED",
+    "fetch http://127.0.0.1:4323/experience/ :: net::ERR_ABORTED",
+    "fetch http://127.0.0.1:4323/ :: net::ERR_ABORTED",
+    "fetch http://127.0.0.1:4323/contact/ :: net::ERR_ABORTED",
+    "fetch http://127.0.0.1:4323/work/ :: net::ERR_ABORTED",
+    "fetch http://127.0.0.1:4323/portfolio/ :: net::ERR_ABORTED",
+    "fetch http://127.0.0.1:4323/resume/ :: net::ERR_ABORTED",
+    "fetch http://127.0.0.1:4323/experience/ :: net::ERR_ABORTED",
+    "fetch http://127.0.0.1:4323/ :: net::ERR_ABORTED"
   ],
   "screenshots": [
     "docs/previews/v8/home-1440x900.png",
@@ -867,12 +1041,19 @@
     "docs/previews/v8/2020-environment-390x844.png",
     "docs/previews/v8/2020-interface-390x844.png",
     "docs/previews/v8/2030-environment-430x932.png",
+    "docs/previews/v8/1990-device-interface-1440x900.png",
+    "docs/previews/v8/2000-device-interface-1440x900.png",
+    "docs/previews/v8/2010-device-interface-1440x900.png",
+    "docs/previews/v8/2030-device-interface-1440x900.png",
+    "docs/previews/v8/2040-device-interface-1440x900.png",
+    "docs/previews/v8/2030-mission-interaction-1440x900.png",
+    "docs/previews/v8/2040-compact-text-fallback-1440x900.png",
     "docs/previews/v8/portfolio-1440x900.png",
     "docs/previews/v8/case-study-1440x900.png",
     "docs/previews/v8/contact-1440x900.png"
   ],
   "summary": {
-    "passed": 84,
+    "passed": 107,
     "failed": 0
   }
 }

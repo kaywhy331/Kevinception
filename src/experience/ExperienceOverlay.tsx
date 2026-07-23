@@ -9,6 +9,7 @@ import { artifacts } from './artifacts';
 import { eraConfigs, getAdjacentYear, YEAR_ORDER } from './config';
 import { useExperienceActions } from './ExperienceContext';
 import { useExperienceStore } from './store';
+import { DeviceStage } from './device/DeviceStage';
 
 function canPrewarmInterface() {
   if (typeof navigator === 'undefined') return false;
@@ -101,7 +102,7 @@ function SemanticHotspots() {
       <p className="eyebrow">Evidence hotspots</p>
       {activeYear === '2030' && (
         <ol className="agent-role-legend" aria-label="Agent roles in the 2030 orchestration room">
-          {['Strategist', 'Researcher', 'Builder', 'Governor', 'Archivist'].map((role, index) => (
+          {['Clarifier', 'Researcher', 'Architect', 'Builder', 'Governor'].map((role, index) => (
             <li key={role}><span>{String(index + 1).padStart(2, '0')}</span><b>{role}</b>{role === 'Governor' && <em>Human gate</em>}</li>
           ))}
         </ol>
@@ -140,6 +141,14 @@ function injectEmbeddedFrameChrome(year: YearId, frame: HTMLIFrameElement) {
       document.head.append(style);
     }
 
+    if (!document.querySelector('link[data-device-contained-style]')) {
+      const link = document.createElement('link');
+      link.rel = 'stylesheet';
+      link.href = '/legacy/assets/styles/device-contained.css';
+      link.dataset.deviceContainedStyle = 'true';
+      document.head.append(link);
+    }
+
     if (year === '2020') {
       if (!document.querySelector('link[data-kevtok-native-style]')) {
         const link = document.createElement('link');
@@ -168,16 +177,6 @@ function InterfaceLayer({ visible }: { visible: boolean }) {
   const [loadedYears, setLoadedYears] = useState<Partial<Record<YearId, boolean>>>({});
   const [takeawayOpen, setTakeawayOpen] = useState(false);
   const next = getAdjacentYear(activeYear, 1);
-  const projectSlugsByChapter: Record<YearId, readonly string[]> = {
-    '1990': ['kevinception', 'kevin-online'],
-    '2000': ['kevin-online', 'kevinception'],
-    '2010': ['kevinception', 'tokenpak'],
-    '2020': ['kevinception', 'tokenpak'],
-    '2030': ['agentic-work-fleet', 'mcp-knowledge-logistics'],
-    '2040': ['kevinception', 'tokenpak']
-  };
-  const chapterProjects = projectSlugsByChapter[activeYear].map((slug) => projects.find((project) => project.slug === slug)).filter((project) => project !== undefined);
-
   const mountYear = (year: YearId) => {
     if (year === '2000') return;
     setMountedYears((current) => {
@@ -257,36 +256,7 @@ function InterfaceLayer({ visible }: { visible: boolean }) {
           {next && <button className="primary-action" type="button" onClick={() => enterYear(next)}>Continue to {eraConfigs[next].chapterName}</button>}
         </aside>
       )}
-      <div className={`interface-mode__workspace interface-mode__workspace--${activeYear}`}>
-      <div className="interface-mode__device" style={{ '--era-accent': config.accent } as React.CSSProperties}>
-        {!loadedYears[activeYear] && visible && <div className="interface-loading" role="status"><span></span><p>Starting {config.experienceName}…</p></div>}
-        {mountedYears.map((year) => {
-          const yearConfig = eraConfigs[year];
-          const isActive = visible && year === activeYear;
-          return (
-            <iframe
-              key={year}
-              className={`interface-mode__frame ${isActive ? 'is-active' : 'is-cached'}`}
-              src={yearConfig.legacyPath}
-              title={`${yearConfig.experienceName} functional application for the ${yearConfig.chapterName} chapter`}
-              sandbox="allow-scripts allow-forms allow-same-origin allow-popups allow-modals allow-downloads allow-top-navigation-by-user-activation"
-              loading={year === activeYear ? 'eager' : 'lazy'}
-              tabIndex={isActive ? 0 : -1}
-              onLoad={(event) => onFrameLoad(year, event.currentTarget)}
-            />
-          );
-        })}
-      </div>
-      <aside className="interface-context" aria-label={`${activeYear} chapter context and project evidence`}>
-        <p className="eyebrow">{config.chapterName} in practice</p>
-        <h2>{config.artDirection.evidenceMetaphor}</h2>
-        <p>{config.lesson}</p>
-        <dl><div><dt>Motion intent</dt><dd>{config.artDirection.motion}</dd></div><div><dt>Human capability</dt><dd>{config.capabilityLinks.join(' · ')}</dd></div></dl>
-        <p className="eyebrow">Project evidence</p>
-        <div className="interface-context__projects">{chapterProjects.map((project) => <Link key={project.slug} href={`/work/${project.slug}/`}><small>{project.roles[0]}</small><b>{project.title}</b><span>{project.artifacts[0]?.label}</span><p>{project.artifacts[0]?.description}</p><em>{project.outcomes[0]?.value}</em><q>{project.decisions[0]}</q></Link>)}</div>
-        {next && <footer className="interface-context__bridge"><small>Carried into {next}</small><b>{config.bridgeToNext}</b><button className="text-link" type="button" onClick={() => enterYear(next)}>Continue to {eraConfigs[next].chapterName} →</button></footer>}
-      </aside>
-      </div>
+      <DeviceStage activeYear={activeYear} mountedYears={mountedYears} loadedYears={loadedYears} visible={visible} onFrameLoad={onFrameLoad} />
     </section>
   );
 }

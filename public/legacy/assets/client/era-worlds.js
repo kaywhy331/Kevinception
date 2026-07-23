@@ -648,7 +648,7 @@ function runNexusMission(objective) {
   document.querySelector('[data-nexus-plan]').innerHTML = '<p>Agent team is working...</p>';
   document.querySelector('[data-nexus-gate-state]').textContent = 'PROCESSING';
   document.querySelector('[data-nexus-gate-copy]').textContent = 'The team is preparing a plan and checking where human judgment is required.';
-  document.querySelector('[data-nexus-approve]').disabled = true; document.querySelector('[data-nexus-revise]').disabled = true;
+  document.querySelector('[data-nexus-approve]').disabled = true; document.querySelector('[data-nexus-revise]').disabled = true; document.querySelector('[data-nexus-reject]').disabled = true;
   const agents = [...document.querySelectorAll('[data-nexus-agent]')];
   agents.forEach((agent)=>{ agent.classList.remove('is-active','is-complete'); agent.querySelector('small').textContent='IDLE'; });
   const delay = reducedMotion() ? 60 : 620;
@@ -665,7 +665,7 @@ function runNexusMission(objective) {
           renderNexusPlan(activeMission, objective);
           document.querySelector('[data-nexus-gate-state]').textContent='REVIEW REQUIRED';
           document.querySelector('[data-nexus-gate-copy]').textContent='This next step changes scope and public commitments. Human approval is required.';
-          document.querySelector('[data-nexus-approve]').disabled=false; document.querySelector('[data-nexus-revise]').disabled=false;
+          document.querySelector('[data-nexus-approve]').disabled=false; document.querySelector('[data-nexus-revise]').disabled=false; document.querySelector('[data-nexus-reject]').disabled=false;
           state.y2030.completed += 1; saveState(); beep('success');
         }, delay));
       }
@@ -679,8 +679,9 @@ function init2030() {
   document.querySelectorAll('[data-nexus-preset]').forEach((button) => button.addEventListener('click', () => { const mission = data.timelineContent['2030'].missions.find((item)=>item.id===button.dataset.nexusPreset); form.elements.objective.value = mission.objective; form.elements.objective.focus(); }));
   form.addEventListener('submit', (event) => { event.preventDefault(); const objective = form.elements.objective.value.trim(); if (!objective) return; runNexusMission(objective); });
   document.querySelector('[data-nexus-autonomy]')?.addEventListener('input', (event) => { event.target.nextElementSibling.textContent = `${event.target.value} / 5`; });
-  document.querySelector('[data-nexus-approve]')?.addEventListener('click', () => { state.y2030.approvals += 1; saveState(); document.querySelector('[data-nexus-gate-state]').textContent='APPROVED'; document.querySelector('[data-nexus-gate-copy]').textContent='Human approval recorded. The Archivist preserved the decision and evidence receipt.'; beep('success'); toast('The simulated mission was approved.'); });
+  document.querySelector('[data-nexus-approve]')?.addEventListener('click', () => { state.y2030.approvals += 1; saveState(); document.querySelector('[data-nexus-gate-state]').textContent='APPROVED'; document.querySelector('[data-nexus-gate-copy]').textContent='Human approval recorded. The Governor preserved the decision and evidence receipt.'; beep('success'); toast('The simulated mission was approved.'); });
   document.querySelector('[data-nexus-revise]')?.addEventListener('click', () => { document.querySelector('[data-nexus-gate-state]').textContent='REVISION REQUESTED'; document.querySelector('[data-nexus-gate-copy]').textContent='The team will narrow scope, reduce irreversible automation, and return with a smaller experiment.'; nexusLog('Human requested a smaller reversible first step.'); beep('message'); });
+  document.querySelector('[data-nexus-reject]')?.addEventListener('click', () => { document.querySelector('[data-nexus-gate-state]').textContent='REJECTED'; document.querySelector('[data-nexus-gate-copy]').textContent='The mission stopped. No public commitment, permission change, or external action was taken.'; nexusLog('Human rejected the mission. Agent pathways returned to standby.'); beep('message'); });
   document.querySelector('[data-nexus-command-form]')?.addEventListener('submit', (event) => {
     event.preventDefault(); const command = event.currentTarget.elements.command.value.trim().toLowerCase();
     if (/future|echo|handoff|2040/.test(command)) { const hidden = document.querySelector('[data-nexus-hidden-agent]'); hidden.hidden=false; hidden.classList.add('is-visible'); discoverArtifact('agent-memory'); nexusLog('Unknown agent ECHO mounted a future-dated handoff packet.'); }
@@ -722,7 +723,9 @@ function respondEcho(promptId) {
   const response = data.timelineContent['2040'].responses[promptId] || data.timelineContent['2040'].responses.shaped;
   lastEchoResponse = response;
   const node = document.querySelector('[data-echo-response]');
-  node.innerHTML = `<p class="eyebrow">Translated signal · ${escapeHtml(promptId)}</p><p>${escapeHtml(response)}</p><div>${echoActions(promptId)}</div>`;
+  const recovered = state.artifacts.length;
+  const provenance = promptId === 'real' ? 'Verified disclosure: this is a speculative interface, not the biological Kevin.' : `Source: approved profile and project records · modeled interpretation · ${recovered} recovered cross-era ${recovered === 1 ? 'artifact' : 'artifacts'}.`;
+  node.innerHTML = `<p class="eyebrow">Translated signal · ${escapeHtml(promptId)}</p><p>${escapeHtml(response)}</p><small class="echo-provenance">${escapeHtml(provenance)}</small><div>${echoActions(promptId)}</div>`;
   node.querySelectorAll('[data-project-slug]').forEach((button) => button.addEventListener('click', () => openProject(button.dataset.projectSlug)));
   node.querySelectorAll('[data-echo-memory]').forEach((button) => button.addEventListener('click', () => selectEchoMemory(button.dataset.echoMemory)));
   root.classList.remove('is-echo-speaking'); requestAnimationFrame(()=>root.classList.add('is-echo-speaking'));
@@ -730,6 +733,7 @@ function respondEcho(promptId) {
   state.y2040.resonance = Math.min(100, state.y2040.prompts.length * 14 + state.artifacts.length * 4);
   document.querySelector('[data-echo-resonance]').textContent = `RESONANCE ${state.y2040.resonance}%`;
   saveState(); beep('message'); track('echo_prompt_interpreted',{prompt:promptId});
+  node.scrollIntoView({ behavior: reducedMotion() ? 'auto' : 'smooth', block: 'nearest' });
   if (promptId === 'real') discoverArtifact('echo-shard');
 }
 function selectEchoMemory(year) {

@@ -16,7 +16,7 @@ describe('V8 device-native navigation', () => {
     expect(camera).not.toContain('futureTargetOffset');
   });
 
-  it('uses a slim frame bar and removes duplicated interface navigation', () => {
+  it('uses a slim spatial control bar and removes duplicated interface navigation', () => {
     const overlay = read('src/experience/ExperienceOverlay.tsx');
     const styles = read('app/device-native-pass.css');
     expect(overlay).toContain('interface-mode__chapter');
@@ -26,6 +26,7 @@ describe('V8 device-native navigation', () => {
     expect(overlay).toContain(".era-utility{display:none!important}");
     expect(styles).toContain('grid-template-rows: 2.35rem minmax(0,1fr)');
     expect(styles).toContain('.mode-interface .experience-toolbar { display: none; }');
+    expect(overlay).toContain('<DeviceStage');
   });
 
   it('condenses global utilities behind one menu', () => {

@@ -88,7 +88,7 @@ const technicalConfig: Record<YearId, TechnicalConfig> = {
     accent: '#64e8ff', stationX: 18, legacyPath: '/legacy/experience/2030/index.html?embed=1', transitionToNext: 'agents-to-echo',
     art: { typography: { display: 'precise orchestration sans', body: 'calm systems sans', label: 'evidence mono' }, palette: { background: '#031014', surface: '#10262c', accent: '#64e8ff', text: '#eaffff', haze: '#06242a' }, materials: ['etched ceramic', 'transparent display glass', 'recycled alloy'], lighting: { ambient: .28, key: 1.8, temperature: 'cyan evidence lab' }, fog: ['#03171b', 19, 88], motion: 'agent handoff, evidence routing, explicit approval pause', evidenceMetaphor: 'mission graph, role station, evidence packet, human gate', soundIntent: 'spatial routing ticks, restrained synthesis, approval tone', responsiveComposition: 'Agent roles remain labeled beside the active station; cards stack into a legible mission order on mobile.' },
     hotspots: [
-      { id: 'agent-roles', label: 'Inspect agent roles', description: 'Review strategist, researcher, builder, governor, and archivist responsibilities.', artifact: 'next-layer-message' },
+      { id: 'agent-roles', label: 'Inspect agent roles', description: 'Review clarifier, researcher, architect, builder, and governor responsibilities.', artifact: 'next-layer-message' },
       { id: 'approval-gate', label: 'Exercise the human gate', description: 'Keep intent, evidence, and authority visible inside autonomy.', artifact: 'human-gate' }
     ]
   },

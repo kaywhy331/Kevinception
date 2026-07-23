@@ -3,6 +3,7 @@ import './globals.css';
 import './environment-pass.css';
 import './device-native-pass.css';
 import './v8.css';
+import './device-stage.css';
 import { site } from '@/content/data';
 import { narrativeSite } from '@/content/narrative';
 

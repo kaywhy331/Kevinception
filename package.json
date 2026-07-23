@@ -19,6 +19,7 @@
     "check:security": "node scripts/check-security.mjs",
     "test:runtime": "node scripts/runtime-check.mjs",
     "test:runtime:v8": "node scripts/runtime-review-v8.mjs",
+    "review:device-framing": "node scripts/capture-device-framing.mjs",
     "doctor": "node scripts/doctor.mjs",
     "audit": "npm audit --audit-level=moderate",
     "verify:full": "npm run doctor && npm run audit && npm run verify"

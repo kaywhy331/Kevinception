@@ -24,6 +24,28 @@ const report = {
 };
 const assert = (name, condition, detail = '') => report.assertions.push({ name, passed: Boolean(condition), detail });
 
+async function openDeviceApplicationIfPresent() {
+  const launcher = await page.$('.device-home button');
+  if (launcher) await launcher.click();
+  await page.waitForSelector('.interface-mode__frame.is-active', { timeout: 30000 });
+}
+
+async function deviceBounds() {
+  return page.evaluate(() => {
+    const stage = document.querySelector('[data-device-stage]')?.getBoundingClientRect();
+    const frame = document.querySelector('[data-device-frame-visible="true"]')?.getBoundingClientRect();
+    const application = document.querySelector('.interface-mode__frame.is-active')?.getBoundingClientRect();
+    return {
+      stage: stage && { left: stage.left, top: stage.top, right: stage.right, bottom: stage.bottom, width: stage.width, height: stage.height },
+      frame: frame && { left: frame.left, top: frame.top, right: frame.right, bottom: frame.bottom, width: frame.width, height: frame.height },
+      application: application && { left: application.left, top: application.top, right: application.right, bottom: application.bottom, width: application.width, height: application.height },
+      viewport: { width: innerWidth, height: innerHeight },
+      environmentVisible: document.querySelector('[data-device-stage]')?.getAttribute('data-environment-visible'),
+      overflow: document.documentElement.scrollWidth - document.documentElement.clientWidth
+    };
+  });
+}
+
 const browser = await puppeteer.launch({ executablePath, headless: true, args: ['--no-sandbox', '--disable-dev-shm-usage', '--ignore-gpu-blocklist', '--enable-webgl', '--use-angle=swiftshader', '--enable-unsafe-swiftshader'] });
 const page = await browser.newPage();
 page.on('console', (message) => { if (message.type() === 'error') report.consoleErrors.push(message.text()); });
@@ -105,7 +127,7 @@ try {
     await page.waitForSelector('.agent-role-legend');
     return page.$$eval('.agent-role-legend b', (labels) => labels.map((label) => label.textContent?.trim()));
   });
-  assert('2030 keeps all five agent roles legible', roleLabels.join('|') === 'Strategist|Researcher|Builder|Governor|Archivist', roleLabels.join(', '));
+  assert('2030 keeps all five agent roles legible', roleLabels.join('|') === 'Clarifier|Researcher|Architect|Builder|Governor', roleLabels.join(', '));
 
   await visit('/experience/1990/', { waitForExperience: true });
   await page.click('.semantic-hotspots button');
@@ -174,13 +196,16 @@ try {
   await setViewport(1920, 1080);
   await visit('/experience/2020/?view=interface', { waitForExperience: true });
   await page.waitForSelector('.interface-mode.is-visible');
+  await openDeviceApplicationIfPresent();
   const interfaceLayout = await page.evaluate(() => {
     const device = document.querySelector('.interface-mode__device')?.getBoundingClientRect();
     const context = document.querySelector('.interface-context')?.getBoundingClientRect();
     return { deviceWidth: device?.width ?? 0, contextWidth: context?.width ?? 0, contextText: document.querySelector('.interface-context')?.textContent?.replace(/\s+/g, ' ').trim() };
   });
-  assert('2020 desktop gives the portrait interface an authored evidence field', interfaceLayout.contextWidth > interfaceLayout.deviceWidth, JSON.stringify(interfaceLayout));
-  assert('2020 desktop context names chapter-relevant project evidence', Boolean(interfaceLayout.contextText?.includes('Project evidence') && interfaceLayout.contextText?.includes('Kevinception')), interfaceLayout.contextText ?? 'missing');
+  assert('2020 desktop keeps KevTok inside a portrait physical phone', interfaceLayout.deviceWidth > interfaceLayout.contextWidth && interfaceLayout.deviceWidth < 560, JSON.stringify(interfaceLayout));
+  assert('2020 desktop context names the creator studio and environmental response', Boolean(interfaceLayout.contextText?.includes('Creator studio') && interfaceLayout.contextText?.includes('ring light')), interfaceLayout.contextText ?? 'missing');
+  const desktopPhone = await deviceBounds();
+  assert('2020 desktop leaves the physical phone frame and environment visible', desktopPhone.environmentVisible === 'true' && desktopPhone.frame.width > desktopPhone.application.width && desktopPhone.frame.height > desktopPhone.application.height && desktopPhone.application.width < desktopPhone.viewport.width * .5, JSON.stringify(desktopPhone));
   await shot('2020-interface-1920x1080.png');
   await setViewport(2560, 1080); await shot('2020-interface-2560x1080.png');
 
@@ -196,6 +221,7 @@ try {
   await shot('2020-environment-390x844.png');
   await visit('/experience/2020/?view=interface', { waitForExperience: true });
   await page.waitForSelector('.interface-context');
+  await openDeviceApplicationIfPresent();
   const mobileInterface = await page.evaluate(() => ({
     contextVisible: document.querySelector('.interface-context')?.getBoundingClientRect().height > 0,
     overflow: document.documentElement.scrollWidth - document.documentElement.clientWidth
@@ -206,6 +232,8 @@ try {
     return nav ? { clientWidth: nav.clientWidth, scrollWidth: nav.scrollWidth, labels: [...nav.querySelectorAll('button')].map((button) => button.textContent?.trim()) } : null;
   });
   assert('2020 mobile header keeps every channel visible without clipping', Boolean(channelLayout && channelLayout.scrollWidth <= channelLayout.clientWidth + 1), JSON.stringify(channelLayout));
+  const mobilePhone = await deviceBounds();
+  assert('2020 mobile retains a physical phone frame and contextual environment without overflow', mobilePhone.environmentVisible === 'true' && mobilePhone.frame.width > mobilePhone.application.width && mobilePhone.frame.height > mobilePhone.application.height && mobilePhone.overflow <= 1, JSON.stringify(mobilePhone));
   await shot('2020-interface-390x844.png');
   await setViewport(430, 932); await visit('/experience/2030/', { waitForExperience: true });
   const mobileRoles = await page.$$eval('.agent-role-legend li', (roles) => roles.filter((role) => {
@@ -214,6 +242,35 @@ try {
   }).length);
   assert('2030 keeps all five orchestration roles visibly composed on mobile', mobileRoles === 5, `${mobileRoles}/5 visible roles`);
   await shot('2030-environment-430x932.png');
+
+  await setViewport(1440, 900);
+  for (const year of ['1990', '2000', '2010', '2030', '2040']) {
+    await visit(`/experience/${year}/?view=interface`, { waitForExperience: true });
+    await page.waitForSelector(`[data-device-stage="${year}"]`);
+    await openDeviceApplicationIfPresent();
+    const bounds = await deviceBounds();
+    assert(`${year} interface is contained by a visible physical device with environmental context`, bounds.environmentVisible === 'true' && bounds.frame.width > bounds.application.width && bounds.frame.height > bounds.application.height && bounds.application.width < bounds.viewport.width * .96 && bounds.application.height < bounds.viewport.height * .92, JSON.stringify(bounds));
+    await shot(`${year}-device-interface-1440x900.png`);
+  }
+
+  await visit('/experience/2030/?view=interface', { waitForExperience: true });
+  await page.waitForSelector('.device-voice-console');
+  await page.click('.device-voice-console > button:nth-of-type(2)');
+  const nexusFallback = await page.$eval('.device-voice-console form', (form) => Boolean(form.querySelector('textarea[name="device-command"]')));
+  assert('2030 voice-first briefing always exposes a text fallback', nexusFallback);
+  await shot('2030-mission-interaction-1440x900.png');
+
+  await visit('/experience/2040/?view=interface', { waitForExperience: true });
+  await page.waitForSelector('.device-voice-console');
+  await page.click('.device-voice-console > button:nth-of-type(2)');
+  const echoComposition = await page.evaluate(() => {
+    const frame = document.querySelector('.interface-mode__frame.is-active');
+    const hologram = frame?.contentDocument?.querySelector('.echo-hologram')?.getBoundingClientRect();
+    const interpreter = frame?.contentDocument?.querySelector('.echo-interpreter')?.getBoundingClientRect();
+    return { hologram: hologram && { width: hologram.width, height: hologram.height }, interpreter: interpreter && { width: interpreter.width, height: interpreter.height }, textFallback: Boolean(document.querySelector('.device-voice-console form')) };
+  });
+  assert('2040 keeps the hologram primary with compact optional text input', Boolean(echoComposition.textFallback && echoComposition.hologram && echoComposition.interpreter && echoComposition.hologram.height > echoComposition.interpreter.height * .7), JSON.stringify(echoComposition));
+  await shot('2040-compact-text-fallback-1440x900.png');
 
   await setViewport(1440, 900);
   await visit('/portfolio/');
