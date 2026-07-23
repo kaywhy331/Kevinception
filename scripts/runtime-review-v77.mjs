@@ -69,8 +69,11 @@ async function visit(route, screenshot, viewport) {
 }
 
 async function kevtokFrame() {
+  await page.waitForSelector('[data-device-stage="2020"]', { timeout: 30000 });
+  const launcher = await page.$('[data-device-stage="2020"] button[aria-label="Open KevTok in KevOS"]');
+  if (launcher) await launcher.click();
   await page.waitForFunction(() => [...document.querySelectorAll('iframe')].some((frame) => frame.src.includes('/legacy/experience/2020/')), { timeout: 30000 });
-  const frame = page.frames().find((candidate) => candidate.url().includes('/legacy/experience/2020/'));
+  const frame = await page.waitForFrame((candidate) => candidate.url().includes('/legacy/experience/2020/'), { timeout: 30000 });
   if (!frame) throw new Error('The KevTok iframe was not found.');
   await frame.waitForSelector('.kt-app[data-device-native="true"]', { timeout: 30000 });
   return frame;
