@@ -1,7 +1,7 @@
 # Kevinception V7 — Implementation Status
 
-**Version:** 0.8.0  
-**Date:** July 20, 2026  
+**Version:** 0.8.2
+**Date:** August 11, 2026
 **Architecture:** Next.js App Router + React + React Three Fiber + semantic DOM applications
 
 ## Executive status
@@ -20,7 +20,10 @@ The build should be treated as a **complete connected-environment implementation
 - Static export to `out/`
 - Persistent `/experience` layout and client-side R3F canvas
 - Shareable routes for all six years
-- Semantic Portfolio, Work, Resume, About, and Contact routes
+- Semantic Profile, Case studies, Resume, About, and Contact routes
+- Viewport-locked homepage era portal with one contextual entry action and no page scrolling
+- URL-shareable case-study search and discipline filters
+- Static contact brief with client validation, privacy disclosure, mailto handoff, and direct email fallback
 - Canonical Kevin profile, project, capability, and experience content
 - Windows-safe development and preview commands with automatic port fallback
 - Netlify, Vercel, Cloudflare Pages, S3, and CloudFront-compatible output
@@ -88,7 +91,7 @@ The build should be treated as a **complete connected-environment implementation
 - Five stable artifact identities
 - Era-specific transformations for every artifact
 - Local discovery state
-- Artifact drawer with current form and discovery history
+- Artifact drawer with five-slot progress, discovery guidance, and a completion payoff
 - Authored transition identities:
   - TV static to modem noise
   - Profile flattening
@@ -101,8 +104,8 @@ The build should be treated as a **complete connected-environment implementation
 
 - Semantic direct pages
 - Skip link and visible focus styles
-- Keyboard timeline controls
-- Text experience
+- Keyboard timeline controls and DOM equivalents for WebGL hotspots
+- Text experience with canonical content and artifact recovery in all six eras
 - Reduced-motion support, including automatic first-visit OS preference detection
 - No-WebGL fallback
 - Canvas failure recovery
@@ -145,7 +148,7 @@ The embedded applications are same-origin and include a small parent-navigation 
 
 ### Content
 
-- Confirm exact work chronology, employers, titles, dates, education, credentials, metrics, and public contact information
+- Confirm exact work chronology, employers, titles, dates, education, credentials, and metrics
 - Replace evidence-safe generalized chronology with approved facts
 - Add approved project media and artifacts
 - Recover any private-repository Easter eggs that should be preserved
@@ -161,6 +164,6 @@ The embedded applications are same-origin and include a small parent-navigation 
 
 ## Definition of the current release
 
-V7.1 is complete when evaluated as a connected physical-environment rebuild and working vertical slice: it demonstrates the persistent R3F world, all six physical technology environments, route continuity, functional interface preservation, semantic portfolio access, fallbacks, and deployable static output.
+V7.7 is complete when evaluated as a connected physical-environment portfolio and hardened static release: it demonstrates the persistent R3F world, all six physical technology environments, route continuity, functional interface preservation, semantic portfolio access, complete fallbacks, searchable evidence, artifact completion, and verified deployment output.
 
 It is not represented as the final cinematic art, final soundscape, or final AI-enabled release.

@@ -1,7 +1,7 @@
 'use client';
 
 import { useEffect, useMemo, useRef, useState } from 'react';
-import { RoundedBox, useCursor } from '@react-three/drei';
+import { Html, RoundedBox, useCursor } from '@react-three/drei';
 import { useFrame } from '@react-three/fiber';
 import * as THREE from 'three';
 import type { ArtifactId } from '../artifacts';
@@ -21,6 +21,9 @@ export function Hoverable({ children, onClick, label }: { children: React.ReactN
       scale={hovered ? 1.025 : 1}
     >
       {children}
+      <Html center className="scene-hotspot-control" zIndexRange={[8, 0]}>
+        <button type="button" onClick={onClick}>{label}</button>
+      </Html>
     </group>
   );
 }

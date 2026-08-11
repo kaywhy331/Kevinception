@@ -9,18 +9,20 @@ export const site = {
   "primaryConversion": "Start a conversation about a difficult system, ambitious product, operational challenge, or unconventional idea.",
   "githubUrl": "https://github.com/kaywhy331",
   "repositoryUrl": "https://github.com/kaywhy331/Kevinception",
-  "contactEmail": "",
+  "contactEmail": "kevinception331@gmail.com",
   "contactUrl": "https://github.com/kaywhy331",
   "tokenPakUrl": "https://tokenpak.ai",
   "tokenPakGithubUrl": "https://github.com/tokenpak",
   "draftContent": false,
-  "socialImage": "/assets/og-card.png",
+  "socialImage": "/og-card.png",
   "themeColor": "#09090d"
 } as const;
 
 export const profile = {
   "name": "Kevin Yang",
   "shortName": "Kevin",
+  // Corrected and confirmed by Kevin 2026-08-10 as the public contact address.
+  "contactEmail": "kevinception331@gmail.com",
   "headline": "I turn ambitious ideas into practical systems, products, and execution.",
   "roles": [
     "Entrepreneur",
@@ -29,21 +31,21 @@ export const profile = {
     "Systems Builder"
   ],
   "quote": "Anticipate tomorrow, live for today, but never forget yesterday—for the past shapes who we are in the present and who we become in the future.",
-  "origin": "Growing up in the 1990s, Kevin was instantly hooked by the early internet. Dial-up tones became the soundtrack to countless hours exploring online communities, designing ASCII art chatroom scrollers, experimenting with punter bots and small scripts, and discovering that technology could turn imagination into an interactive world.",
-  "originContinuation": "By 2000, curiosity had become a durable passion for technology, systems, design, automation, and invention. That same pattern still drives his work: explore widely, recognize the underlying structure, and convert possibility into something people can actually use.",
-  "currentFocus": "Strategy, operations, product design, workflow automation, AI-enabled systems, knowledge architecture, and turning complex ideas into clear execution.",
+  "origin": "Growing up in the 1990s, I was instantly hooked by the early internet. Dial-up tones became the soundtrack to countless hours exploring online communities, designing ASCII art chatroom scrollers, experimenting with punter bots and small scripts, and discovering that technology could turn imagination into an interactive world.",
+  "originContinuation": "By 2000, curiosity had become a durable passion for technology, systems, design, automation, and invention. The same pattern still drives my work: explore widely, recognize the underlying structure, and convert possibility into something people can actually use.",
+  "currentFocus": "I work across strategy, operations, product design, workflow automation, AI-enabled systems, and knowledge architecture to turn complex ideas into clear execution.",
   "currentWork": [
     {
       "title": "Independent strategy, product, and systems practice",
-      "text": "Helps shape ambiguous opportunities into operating models, requirements, roadmaps, workflows, prototypes, and practical next moves."
+      "text": "I shape ambiguous opportunities into operating models, requirements, roadmaps, workflows, prototypes, and practical next moves."
     },
     {
       "title": "TokenPak",
-      "text": "Leads product direction and operating decisions for a local-first AI context logistics project focused on packaging, routing, reusing, governing, dispatching, and recording context."
+      "text": "I lead product direction for a local-first AI project that packages, routes, governs, and records the information AI tools need."
     },
     {
       "title": "Kevinception",
-      "text": "Designs and builds an interactive portfolio engine that renders one verified body of work through technology interfaces from 1990 through 2040."
+      "text": "I design and build an interactive portfolio engine that renders one verified body of work through technology interfaces from 1990 through 2040."
     }
   ],
   "bestAt": [
@@ -57,11 +59,11 @@ export const profile = {
     "Explaining complex systems through clear interfaces, specifications, and stories"
   ],
   "workingStyle": [
-    "Starts with the real objective, constraints, and decision surface.",
-    "Builds a shared model before adding tools or automation.",
-    "Makes ownership, dependencies, evidence, and tradeoffs visible.",
-    "Moves quickly through prototypes while preserving a path to production quality.",
-    "Treats documentation, governance, and feedback loops as part of the product."
+    "I start with the real objective, the constraints, and the choices that have to be made.",
+    "I build a shared model before adding tools or automation.",
+    "I make ownership, dependencies, evidence, and tradeoffs visible.",
+    "I move quickly through prototypes while preserving a path to production quality.",
+    "I treat documentation, governance, and feedback loops as part of the product."
   ],
   "philosophy": [
     {
@@ -139,7 +141,7 @@ export const capabilityGroups = [
       "AI systems",
       "Technical translation",
       "Tool architecture",
-      "Human-in-the-loop design"
+      "Human approval design"
     ]
   },
   {
@@ -150,7 +152,7 @@ export const capabilityGroups = [
       "Content systems",
       "Taxonomy",
       "Decision logs",
-      "Context engineering"
+      "Context design"
     ]
   },
   {
@@ -166,23 +168,24 @@ export const capabilityGroups = [
   }
 ] as const;
 
+// Editorial guard: add exact employers, titles, dates, education, credentials, or private client details only after Kevin confirms them; never fabricate missing evidence.
 export const experienceItems = [
   {
     "period": "Current",
     "title": "Entrepreneur, Project & Product Leader, Technology / Business Consultant",
     "organization": "Independent practice",
-    "summary": "Works across strategy, operations, product design, automation, systems thinking, workflow optimization, and AI-enabled product development.",
+    "summary": "Work across strategy, operations, product design, automation, systems thinking, workflow optimization, and AI-enabled product development.",
     "highlights": [
-      "Turns ambiguous opportunities into structured decisions, requirements, roadmaps, operating models, and executable plans.",
-      "Connects business goals with technology, process, user experience, governance, and adoption.",
-      "Builds reusable frameworks and systems designed to create leverage beyond a single engagement."
+      "Turn ambiguous opportunities into structured decisions, requirements, roadmaps, operating models, and executable plans.",
+      "Connect business goals with technology, process, user experience, governance, and adoption.",
+      "Build reusable frameworks and systems designed to create leverage beyond a single engagement."
     ]
   },
   {
     "period": "Current venture",
     "title": "Product Lead & Systems Operator",
     "organization": "TokenPak",
-    "summary": "Shapes product direction and operating decisions for a local-first AI context logistics project and its open-source ecosystem.",
+    "summary": "Shape product direction and operating decisions for a local-first AI project that packages and routes the information AI tools need.",
     "highlights": [
       "Defines product architecture, positioning, capability boundaries, release priorities, and evidence standards.",
       "Coordinates a multi-repository product system spanning runtime, documentation, release governance, telemetry, and commercialization planning.",
@@ -193,7 +196,7 @@ export const experienceItems = [
     "period": "Ongoing personal project",
     "title": "Creator & Experience Architect",
     "organization": "Kevinception",
-    "summary": "Designs an immersive portfolio platform that presents one verified body of work through six culturally distinct technology years.",
+    "summary": "Design an immersive portfolio platform that presents one verified body of work through six culturally distinct technology years.",
     "highlights": [
       "Created the Kevin Online Xennial layer as a functioning Windows/AOL/Xanga-inspired environment inside a CRT.",
       "Designed a canonical content model so biography, projects, experience, and evidence remain consistent across every era.",

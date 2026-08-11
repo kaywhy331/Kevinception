@@ -9,20 +9,41 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
       - uses: actions/setup-node@v4
         with:
           node-version: 22
           cache: npm
       - name: Install locked dependencies
         run: npm ci
+      - name: Production dependency audit
+        run: npm run audit
+      - name: Patch whitespace
+        shell: bash
+        run: |
+          if [ "${{ github.event_name }}" = "pull_request" ]; then
+            git diff --check "origin/${{ github.base_ref }}...HEAD"
+          else
+            base="${{ github.event.before }}"
+            if [[ "$base" =~ ^0+$ ]]; then
+              git show --check --format=fuller "${{ github.sha }}"
+            else
+              git diff --check "$base..${{ github.sha }}"
+            fi
+          fi
       - name: TypeScript
         run: npm run typecheck
       - name: Unit tests
         run: npm run test
+      - name: Validate canonical content and configuration
+        run: npm run check:content
       - name: Production build
         run: npm run build
       - name: Validate generated routes
         run: npm run check:build
+      - name: Enforce JavaScript bundle budgets
+        run: npm run check:bundle
       - name: Validate local links
         run: npm run check:links
       - name: Validate security configuration

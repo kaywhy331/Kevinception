@@ -9,6 +9,11 @@ import { useExperienceStore } from './store';
 
 const TARGET_HORIZONTAL_FOV = THREE.MathUtils.degToRad(68);
 
+type CameraPose = {
+  position: [number, number, number];
+  target: [number, number, number];
+};
+
 export function ExperienceCameraRig() {
   const { camera, pointer, size, invalidate } = useThree();
   const activeYear = useExperienceStore((state) => state.activeYear);
@@ -22,11 +27,11 @@ export function ExperienceCameraRig() {
   const aspect = size.width / Math.max(1, size.height);
   const futureRoom = activeYear === '2030' || activeYear === '2040';
 
-  const pose = useMemo(() => {
+  const pose = useMemo<CameraPose>(() => {
     const narrow = size.width < 760;
     const ultraWide = aspect > 2.15;
     if (viewMode === 'timeline') return {
-      position: [stationX, narrow ? 6.55 : ultraWide ? 6.25 : 6.5],
+      position: [stationX, narrow ? 6.55 : ultraWide ? 6.25 : 6.5, narrow ? 15.5 : ultraWide ? 12.5 : 13.25],
       target: [stationX, ultraWide ? 2.45 : 2.3, -0.15]
     };
     if (viewMode === 'interface') return {

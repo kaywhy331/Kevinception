@@ -1,4 +1,4 @@
-# Kevinception V7.1 — Windows Quick Start
+# Kevinception V7.7 — Windows Quick Start
 
 This release is packaged with `package.json` at the project root. After extraction, open PowerShell directly in the extracted folder.
 
@@ -13,7 +13,7 @@ npm run doctor
 The doctor command must report:
 
 ```text
-Package: kevinception-v7-r3f@0.8.0
+Package: kevinception-v7-r3f@0.8.2
 ```
 
 ## Clean installation and verification

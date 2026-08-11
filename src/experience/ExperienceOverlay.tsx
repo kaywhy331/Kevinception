@@ -2,7 +2,7 @@
 
 import Link from 'next/link';
 import { useEffect, useMemo, useState } from 'react';
-import { projects, timelineContent, type YearId } from '@/content/data';
+import { projects, timelineContent, xennialLegacy, type YearId } from '@/content/data';
 import { artifacts } from './artifacts';
 import { eraConfigs, getAdjacentYear, YEAR_ORDER } from './config';
 import { useExperienceActions } from './ExperienceContext';
@@ -216,7 +216,7 @@ function InterfaceLayer({ visible }: { visible: boolean }) {
         </aside>
       )}
       <div className="interface-mode__device" style={{ '--era-accent': config.accent } as React.CSSProperties}>
-        {!loadedYears[activeYear] && visible && <div className="interface-loading" role="status"><span></span><p>Starting {config.experienceName}…</p></div>}
+        {!loadedYears[activeYear] && visible && <div className="interface-loading" role="status"><div className="power-on-mark power-on-mark--small" aria-hidden="true"><span>K</span><i></i></div><p>Starting {config.experienceName}…</p><div className="power-on-meter" aria-hidden="true"><i></i></div></div>}
         {mountedYears.map((year) => {
           const yearConfig = eraConfigs[year];
           const isActive = visible && year === activeYear;
@@ -241,13 +241,16 @@ function InterfaceLayer({ visible }: { visible: boolean }) {
 function TextMode() {
   const activeYear = useExperienceStore((state) => state.activeYear);
   const config = eraConfigs[activeYear];
-  const { closeTextMode, navigateToYear } = useExperienceActions();
-  const yearData = timelineContent[activeYear as keyof typeof timelineContent] as unknown as Record<string, unknown>;
+  const artifactProgress = useExperienceStore((state) => state.artifacts);
+  const { closeTextMode, discover, navigateToYear } = useExperienceActions();
+  const yearData = timelineContent[activeYear as keyof typeof timelineContent] as unknown as Record<string, unknown> | undefined;
   const featured = projects.slice(0, 3);
   const next = getAdjacentYear(activeYear, 1);
+  const discoveryArtifact = artifacts.find((artifact) => artifact.discoveryYear === activeYear);
+  const artifactFound = discoveryArtifact ? artifactProgress[discoveryArtifact.id].discoveredYears.length > 0 : false;
   return (
     <section className="text-mode" aria-label={`${activeYear} ${config.chapterName} text experience`}>
-      <header><button type="button" onClick={closeTextMode}>Return to 3D</button><Link href="/portfolio/">Portfolio</Link></header>
+      <header><button type="button" onClick={closeTextMode}>Return to visual timeline</button><Link href="/portfolio/">Portfolio</Link></header>
       <article>
         <p className="eyebrow">Chapter {config.chapterNumber} of {YEAR_ORDER.length} · {activeYear}</p>
         <h1>{config.chapterName}</h1>
@@ -255,18 +258,59 @@ function TextMode() {
         <h2>{config.transformation}</h2>
         <p>{config.lesson}</p>
         <ul className="chapter-capability-list">{config.capabilityLinks.map((capability) => <li key={capability}>{capability}</li>)}</ul>
-        {activeYear === '1990' && 'channels' in yearData && (
+        {discoveryArtifact && (
+          <section className={`text-mode__artifact ${artifactFound ? 'is-found' : ''}`} aria-label={`${discoveryArtifact.title} discovery`}>
+            <p className="eyebrow">Cross-era artifact</p>
+            <h2>{discoveryArtifact.title}</h2>
+            <p>{discoveryArtifact.meaning}</p>
+            {artifactFound
+              ? <p role="status">Recovered · {discoveryArtifact.transformations[activeYear]}</p>
+              : <button type="button" onClick={() => discover(discoveryArtifact.id, activeYear)}>Recover {discoveryArtifact.title}</button>}
+          </section>
+        )}
+        {activeYear === '1990' && yearData && 'channels' in yearData && (
           <div className="text-mode__grid">
             {(yearData.channels as Array<{ number: number; name: string; title: string; body: string }>).map((channel) => (
               <section key={channel.number}><h3>Channel {channel.number}: {channel.name}</h3><b>{channel.title}</b><p>{channel.body}</p></section>
             ))}
           </div>
         )}
-        {activeYear === '2020' && 'clips' in yearData && (
+        {activeYear === '2000' && (
+          <div className="text-mode__grid">
+            <section><p className="eyebrow">Kevin Online origin</p><h3>The internet becomes a place</h3><p>{xennialLegacy.intro.lead}</p><p>{xennialLegacy.intro.bridge}</p></section>
+            <section><p className="eyebrow">Dial-up identity</p><h3>Choose a screen name and connection</h3><p>Available screen names: {xennialLegacy.signOn.screenNames.join(', ')}.</p><p>Connection profiles: {xennialLegacy.signOn.locations.join(', ')}.</p></section>
+            <section><p className="eyebrow">Welcome screen</p><h3>{xennialLegacy.welcome.heading}</h3><p>{xennialLegacy.welcome.announcement}</p><p>{xennialLegacy.welcome.freeHours}</p></section>
+          </div>
+        )}
+        {activeYear === '2010' && yearData && 'posts' in yearData && (
+          <div className="text-mode__grid">
+            {(yearData.posts as Array<{ id: string; author: string; time: string; text: string; reactions: number }>).map((post) => (
+              <section key={post.id}><p className="eyebrow">{post.time}</p><h3>{post.author}</h3><p>{post.text}</p><small>{post.reactions} recorded reactions</small></section>
+            ))}
+          </div>
+        )}
+        {activeYear === '2020' && yearData && 'clips' in yearData && (
           <div className="text-mode__grid">
             {(yearData.clips as Array<{ hook: string; body: string; category: string }>).map((clip) => (
               <section key={clip.hook}><p className="eyebrow">{clip.category}</p><h3>{clip.hook}</h3><p>{clip.body}</p></section>
             ))}
+          </div>
+        )}
+        {activeYear === '2030' && yearData && 'agents' in yearData && 'missions' in yearData && (
+          <>
+            <h2>Agent team</h2>
+            <div className="text-mode__grid">
+              {(yearData.agents as Array<{ id: string; name: string; function: string }>).map((agent) => <section key={agent.id}><h3>{agent.name}</h3><p>{agent.function}</p></section>)}
+            </div>
+            <h2>Mission board</h2>
+            <div className="text-mode__grid">
+              {(yearData.missions as Array<{ id: string; label: string; objective: string; projects: string[] }>).map((mission) => <section key={mission.id}><h3>{mission.label}</h3><p>{mission.objective}</p><small>Related projects: {mission.projects.join(', ')}</small></section>)}
+            </div>
+          </>
+        )}
+        {activeYear === '2040' && yearData && 'prompts' in yearData && 'responses' in yearData && (
+          <div className="text-mode__grid">
+            {(yearData.prompts as Array<{ id: string; label: string }>).map((prompt) => <section key={prompt.id}><h3>{prompt.label}</h3><p>{(yearData.responses as Record<string, string>)[prompt.id]}</p></section>)}
           </div>
         )}
         <h2>Kevin’s work in this layer</h2>
@@ -310,15 +354,18 @@ function ArtifactDrawer() {
   const setOpen = useExperienceStore((state) => state.setArtifactsOpen);
   const activeYear = useExperienceStore((state) => state.activeYear);
   const progress = useExperienceStore((state) => state.artifacts);
+  const foundCount = artifacts.filter((artifact) => progress[artifact.id].discoveredYears.length > 0).length;
   if (!open) return null;
   return (
     <aside className="artifact-drawer" aria-label="Cross-era artifacts">
       <header><div><p className="eyebrow">Kevinception continuity</p><h2>Artifacts</h2></div><button type="button" autoFocus onClick={() => setOpen(false)} aria-label="Close artifacts">×</button></header>
-      <p>These objects transform as the interface changes. Progress remains in this browser only.</p>
+      <p>Recover one artifact in each of the first five chapters. Their forms change with the active era; progress remains in this browser only.</p>
+      <div className="artifact-drawer__progress"><progress max={artifacts.length} value={foundCount}>{foundCount} of {artifacts.length}</progress><b>{foundCount}/{artifacts.length} recovered</b></div>
       {artifacts.map((artifact) => {
         const years = progress[artifact.id].discoveredYears;
-        return <section key={artifact.id} className={years.length ? 'is-found' : ''}><h3>{artifact.title}</h3><p>{artifact.meaning}</p><b>{activeYear}: {artifact.transformations[activeYear]}</b><small>{years.length}/6 forms discovered {years.length ? `· ${years.join(', ')}` : ''}</small></section>;
+        return <section key={artifact.id} className={years.length ? 'is-found' : ''}><h3>{artifact.title}</h3><p>{artifact.meaning}</p><b>{activeYear}: {artifact.transformations[activeYear]}</b><small>{years.length ? `Recovered in ${years.join(', ')}` : `Not yet recovered · ${artifact.discoveryHint}`}</small></section>;
       })}
+      {foundCount === artifacts.length && <section className="artifact-drawer__complete" role="status"><p className="eyebrow">Continuity restored</p><h3>Five signals, one connected story.</h3><p>The containers changed; curiosity, identity, ideas, future signals, and human judgment carried forward.</p><Link href="/work/kevinception/">Read how Kevinception connects the eras →</Link></section>}
     </aside>
   );
 }
@@ -333,7 +380,7 @@ function HelpPanel() {
         <header><h2>How to explore</h2><button type="button" autoFocus onClick={() => setOpen(false)} aria-label="Close help">×</button></header>
         <p>Swipe, scroll, use the chapter timeline, or press the arrow keys to preview a chapter. Press Enter—or the primary chapter button—to open its functional era interface immediately.</p>
         <dl><dt>← / →</dt><dd>Previous or next chapter</dd><dt>Enter</dt><dd>Open the selected interface</dd><dt>Escape</dt><dd>Close the top layer or return to the timeline</dd><dt>T</dt><dd>Return to the timeline</dd></dl>
-        <p>Essential portfolio content is also available through Portfolio, Work, Resume, About, and Contact.</p>
+        <p>Essential portfolio content is also available through Portfolio, Case studies, Resume, About, and Contact.</p>
       </section>
     </div>
   );
@@ -386,7 +433,7 @@ function UtilityMenu({ foundCount }: { foundCount: number }) {
       <button type="button" className="experience-menu__trigger" onClick={() => setOpen((value) => !value)} aria-expanded={open} aria-haspopup="menu">Menu</button>
       {open && (
         <div className="experience-menu__popover" role="menu">
-          <button type="button" role="menuitem" onClick={() => activate(() => setArtifactsOpen(true))}>Artifacts <span>{foundCount}</span></button>
+          <button type="button" role="menuitem" onClick={() => activate(() => setArtifactsOpen(true))}>Artifacts <span>{foundCount}/{artifacts.length}</span></button>
           <button type="button" role="menuitem" onClick={() => activate(toggleSound)}>Sound {sound ? 'on' : 'off'}</button>
           <button type="button" role="menuitem" onClick={() => activate(() => setSettingsOpen(true))}>Settings</button>
           <button type="button" role="menuitem" onClick={() => activate(() => setHelpOpen(true))}>Help</button>
@@ -431,7 +478,7 @@ export function ExperienceOverlay() {
         <button className="experience-mark" type="button" onClick={showTimeline} aria-label="Open chapter timeline"><span>K</span><b>Kevinception</b></button>
         <nav aria-label="Global experience controls">
           <button type="button" onClick={showTimeline}>Chapters</button>
-          <Link href="/portfolio/">Portfolio</Link>
+          <Link className="hide-below-640" href="/portfolio/">Portfolio</Link>
           <UtilityMenu foundCount={foundCount} />
         </nav>
       </header>

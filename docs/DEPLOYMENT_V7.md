@@ -65,6 +65,10 @@ Node version: 20.9 or later
 
 Cloudflare Pages reads the exported `_headers` file.
 
+`npm run check:security` validates the root `_headers` policy used by Cloudflare Pages/Netlify, Vercel JSON, Docker/nginx, the CloudFront response-header policy, and the embedded-app policy. The Plausible script and event endpoint are allowed consistently by production CSPs.
+
+The contact experience is deliberately static: it validates and prepares a `mailto:` brief in the browser and never claims to persist or transmit form data from this deployment.
+
 ## Future AI deployment
 
 The current build is entirely static. A future AI guide should be added as a separately secured server-side endpoint. Never place provider API keys or private portfolio records in the browser bundle.

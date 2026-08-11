@@ -77,6 +77,8 @@ describe('V7 fluid experience pass', () => {
   it('keeps the current room visually dominant on ultrawide screens', () => {
     const camera = read('src/experience/CameraRig.tsx');
     const world = read('src/experience/ExperienceWorld.tsx');
+    expect(camera).toContain('position: [number, number, number]');
+    expect(camera).toContain('target: [number, number, number]');
     expect(camera).toContain('TARGET_HORIZONTAL_FOV');
     expect(camera).toContain('THREE.MathUtils.clamp(responsiveFov, 32, 48)');
     expect(world).toContain('function NeighborVeil');

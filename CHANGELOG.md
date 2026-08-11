@@ -1,5 +1,15 @@
 # Changelog
 
+## 0.8.2 — V7.7 audit completion and production hardening
+
+- Simplified the code-native six-era homepage portal into a no-scroll, single-entry splash; Profile, Case studies, Resume, and Contact remain available through the site navigation.
+- Added shareable URL-backed project search and discipline filtering.
+- Expanded the static contact brief with identity, reply email, context, desired outcome, validation, privacy disclosure, and accessible status feedback.
+- Added canonical selected projects and public contact links to the print-ready résumé.
+- Kept experience utilities and Step Back available on small screens, repaired the skip target, and added semantic keyboard controls for WebGL hotspots.
+- Made all five artifacts independently reachable, added persistent 5/5 progress and a completion payoff, and completed text-mode content parity across all six eras.
+- Upgraded Next.js and its transitive security chain, aligned every deployment CSP, and added production audit, content/configuration, bundle-budget, and patch-hygiene CI gates.
+
 ## 0.8.1 — V7.2 flow and performance pass
 
 - Kept year previews and interface entry inside the persistent `/experience/` route.

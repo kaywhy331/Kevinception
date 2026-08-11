@@ -4,7 +4,7 @@ Kevinception V7 is a persistent React Three Fiber experience wrapped around func
 
 ## Windows package-root check
 
-This 0.8.0 archive is flat-rooted: `package.json` is directly inside the extracted folder. Run `npm run doctor` before installation to confirm PowerShell is in the correct directory. See `START_HERE_WINDOWS.md`.
+This 0.8.2 archive is flat-rooted: `package.json` is directly inside the extracted folder. Run `npm run doctor` before installation to confirm PowerShell is in the correct directory. See `START_HERE_WINDOWS.md`.
 
 ## Product architecture
 
@@ -31,19 +31,21 @@ The six technology years are:
 
 ## Current release status
 
-V7.1 implements the R3F-first architecture as a connected physical timeline and a functional six-era vertical slice:
+V7.7 implements the R3F-first architecture as a connected physical timeline and a hardened six-era portfolio:
 
 - one persistent R3F canvas across `/experience`
 - six connected physical era environments with walls, floors, lighting, props, and authored environmental cameras
 - authored camera and transition system, including a physically connected 2030/2040 future wing
 - environment and focused-interface modes
-- five cross-era artifacts
-- WebGL, reduced-motion, Lite, and text fallbacks
-- semantic direct portfolio routes
+- five independently recoverable cross-era artifacts with persistent completion feedback
+- WebGL, reduced-motion, Lite, and content-complete text fallbacks
+- a no-scroll, code-native homepage portal with one contextual entry action; direct Profile, Case studies, Resume, and Contact paths remain available inside the site
+- a searchable, filterable, URL-shareable case-study archive
+- a validated contact brief that stays static by opening the visitor’s own email app
 - static deployment output
 - preserved functional V6 era applications inside the new world
 
-The next bespoke GLB and texture pass, original environmental soundscape, render-to-texture portals, confirmed résumé chronology, and secure open-ended AI backend remain production follow-up work. The current release replaces the black-void display stands with inhabitable era dioramas and establishes the art-direction standard for future asset production. See `docs/IMPLEMENTATION_STATUS_V7.md`.
+The next bespoke GLB and texture pass, original environmental soundscape, render-to-texture portals, confirmed résumé chronology, and secure server-side contact/AI infrastructure remain production follow-up work. The static release never claims to submit contact data itself. See `docs/IMPLEMENTATION_STATUS_V7.md`.
 
 ## Run locally
 
@@ -111,7 +113,7 @@ The functional V6 applications are preserved under `public/legacy/` and embedded
 npm run verify
 ```
 
-This runs TypeScript, unit tests, production export, route checks, local-link validation, and security-configuration checks.
+This runs TypeScript, unit tests, canonical content/config checks, production export, route and metadata checks, JavaScript bundle budgets, local-link validation, and security checks for every supported deployment configuration.
 
 See:
 

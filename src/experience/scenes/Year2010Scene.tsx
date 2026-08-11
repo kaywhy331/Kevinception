@@ -9,7 +9,7 @@ import { DESK_SURFACE_Y, GroundedDesk } from './SceneLayout';
 
 export function Year2010Scene({ active }: { active: boolean; timeline: boolean }) {
   const config = eraConfigs['2010'];
-  const { enterYear } = useExperienceActions();
+  const { enterYear, discover } = useExperienceActions();
 
   return (
     <group position={[config.stationX, 0, 0]}>
@@ -20,7 +20,9 @@ export function Year2010Scene({ active }: { active: boolean; timeline: boolean }
       <GlassPanel position={[-2.6, 4.05, -3.34]} size={[3.8, 2.4, 0.055]} color="#b9dcff" opacity={active ? 0.18 : 0.07} frameColor="#7d8794" />
       <mesh position={[-2.6, 4.05, -3.38]}><planeGeometry args={[3.58, 2.18]} /><meshBasicMaterial color="#c8dff1" transparent opacity={0.26} /></mesh>
       <mesh position={[-2.6, 3.1, -3.26]}><boxGeometry args={[3.65, 0.08, 0.08]} /><meshStandardMaterial color="#7f8892" metalness={0.35} /></mesh>
-      <PictureFrame position={[3.55, 4.15, -3.35]} size={[1.55, 1.2]} frameColor="#34373d" imageColor="#6d8fb8" accent="#8db7ff" />
+      <Hoverable label="Discover Project Blueprint" onClick={() => discover('project-blueprint', '2010')}>
+        <PictureFrame position={[3.55, 4.15, -3.35]} size={[1.55, 1.2]} frameColor="#34373d" imageColor="#6d8fb8" accent="#8db7ff" />
+      </Hoverable>
       <PictureFrame position={[3.0, 2.85, -3.35]} size={[1.25, 0.9]} frameColor="#48413a" imageColor="#a87c69" accent="#e8a58c" />
       <PictureFrame position={[4.15, 2.72, -3.35]} size={[1.05, 1.3]} frameColor="#2e3034" imageColor="#779178" accent="#9ad39d" />
 

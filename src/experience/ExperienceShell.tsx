@@ -5,8 +5,9 @@ import { usePathname, useRouter } from 'next/navigation';
 import { useCallback, useEffect, useMemo, useRef } from 'react';
 import { useMachine } from '@xstate/react';
 import type { YearId } from '@/content/data';
+import { trackAnalyticsEvent } from '@/lib/analytics';
 import type { ArtifactId } from './artifacts';
-import { transitionBetween, getAdjacentYear, getYearFromPath, yearDistance, YEAR_ORDER } from './config';
+import { eraConfigs, transitionBetween, getAdjacentYear, getYearFromPath, yearDistance, YEAR_ORDER } from './config';
 import { ExperienceActionsProvider } from './ExperienceContext';
 import { experienceMachine } from './machine';
 import { useExperienceStore } from './store';
@@ -16,7 +17,7 @@ import { playInterfaceTone } from './audio';
 
 const ExperienceCanvas = dynamic(() => import('./ExperienceCanvas'), {
   ssr: false,
-  loading: () => <div className="canvas-loading" role="status"><span></span><p>Loading the technology timeline…</p></div>
+  loading: () => <div className="canvas-loading" role="status" aria-live="polite"><div className="power-on-mark" aria-hidden="true"><span>K</span><i></i></div><p className="eyebrow">Kevinception system</p><strong>Reconstructing six eras</strong><div className="power-on-meter" aria-hidden="true"><i></i></div><small>Signal · memory · interface</small></div>
 });
 
 type UrlView = 'timeline' | 'environment' | 'interface' | 'text';
@@ -202,6 +203,7 @@ export function ExperienceShell({ children }: { children: React.ReactNode }) {
     setTransition({ from: fromYear, to: year, id, startedAt: Date.now() });
     setActiveYear(year);
     recordVisit(year);
+    trackAnalyticsEvent('chapter_enter', { year, chapter: eraConfigs[year].chapterName });
     send({ type: 'START_TRANSITION' });
     writeExperienceHistory(year, 'interface');
     playInterfaceTone(changingYear ? 'transition' : 'click', sound);
@@ -247,7 +249,9 @@ export function ExperienceShell({ children }: { children: React.ReactNode }) {
   }, [send, writeExperienceHistory]);
 
   const discover = useCallback((id: ArtifactId, year: YearId) => {
+    const alreadyFound = useExperienceStore.getState().artifacts[id].discoveredYears.includes(year);
     discoverArtifact(id, year);
+    if (!alreadyFound) trackAnalyticsEvent('artifact_find', { artifact: id, year });
     playInterfaceTone('discover', sound);
   }, [discoverArtifact, sound]);
 
@@ -358,7 +362,7 @@ export function ExperienceShell({ children }: { children: React.ReactNode }) {
 
   return (
     <ExperienceActionsProvider value={actions}>
-      <main className="experience-root" data-mode={machine.value}>
+      <main id="main-content" className="experience-root" data-mode={machine.value} tabIndex={-1}>
         {webgl !== false && (
           <CanvasErrorBoundary onError={() => { setWebgl(false); send({ type: 'SHOW_TEXT' }); }}>
             <ExperienceCanvas />

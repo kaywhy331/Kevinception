@@ -1,9 +1,10 @@
+import { Suspense } from 'react';
 import { projects } from '@/content/data';
-import { ProjectCard } from '@/components/ProjectCard';
 import { SiteChrome } from '@/components/SiteChrome';
+import { WorkArchive } from '@/components/WorkArchive';
 
-export const metadata = { title: 'Work', description: 'Selected Kevin Yang projects and case studies.' };
+export const metadata = { title: 'Case studies', description: 'Selected Kevin Yang projects and case studies.' };
 
 export default function WorkPage() {
-  return <SiteChrome><section id="main-content" className="simple-hero section-shell"><p className="eyebrow">Work archive</p><h1>Projects that make systems, decisions, and possibilities tangible.</h1><p className="lead">Every case study has a direct URL and supplies the same canonical facts used inside the immersive timeline.</p></section><section className="section-shell"><div className="project-grid">{projects.map((project) => <ProjectCard key={project.slug} project={project} />)}</div></section></SiteChrome>;
+  return <SiteChrome><section id="main-content" className="simple-hero section-shell"><p className="eyebrow">Case study archive</p><h1>Projects that make systems, decisions, and possibilities tangible.</h1><p className="lead">Search, filter, and share a focused archive. Every result has a direct URL and draws from the same source facts used inside the immersive timeline.</p></section><Suspense fallback={<p className="section-shell" role="status">Loading case studies…</p>}><WorkArchive projects={projects} /></Suspense></SiteChrome>;
 }

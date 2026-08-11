@@ -9,7 +9,7 @@ export default function ContactPage() {
     <SiteChrome>
       <section id="main-content" className="contact-page section-shell">
         <div className="contact-intro"><p className="eyebrow">Start a conversation</p><h1>Bring the difficult system, ambitious product, or unconventional idea.</h1><p className="lead">{site.primaryConversion}</p><div className="contact-principles">{profile.workingStyle.slice(0, 4).map((item) => <p key={item}>{item}</p>)}</div></div>
-        <ContactForm />
+        <ContactForm email={profile.contactEmail} />
       </section>
     </SiteChrome>
   );

@@ -28,12 +28,26 @@ describe('V7.6 narrative architecture', () => {
     expect(kevinOriginNarrative.continuation).toContain('AOL');
   });
 
-  it('uses the conceptual chapters on the landing, about, timeline, interface, and transition surfaces', () => {
+  it('keeps the landing page focused while preserving direct and immersive paths', () => {
     const home = read('app/page.tsx');
+    const portal = read('src/components/EraPortalCanvas.tsx');
+    const globals = read('app/globals.css');
+    expect(home).toContain('One life.');
+    expect(home).toContain('Six eras of technology.');
+    expect(home).toContain('<EraPortalCanvas />');
+    expect(home).not.toContain('directRoutes');
+    expect(home).not.toContain('landing-page__summary');
+    expect((home.match(/<Link\b/g) ?? [])).toHaveLength(0);
+    expect((portal.match(/<Link\b/g) ?? [])).toHaveLength(1);
+    expect(portal).toContain('Enter {active.experienceName}');
+    expect(globals).toMatch(/\.landing-page \{[^}]*height: 100svh;[^}]*overflow: hidden;/);
+    expect(globals).toContain('@media (max-width: 900px) and (orientation: landscape)');
+    expect(home).not.toContain('SiteChrome');
+  });
+
+  it('uses the conceptual chapters on the about, timeline, interface, and transition surfaces', () => {
     const about = read('app/about/page.tsx');
     const overlay = read('src/experience/ExperienceOverlay.tsx');
-    expect(home).toContain('chapter.chapterName');
-    expect(home).toContain('/experience/?year=');
     expect(about).toContain('kevinOriginNarrative');
     expect(overlay).toContain('Chapter {config.chapterNumber}');
     expect(overlay).toContain('Experienced through');

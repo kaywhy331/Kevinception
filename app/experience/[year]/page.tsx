@@ -21,7 +21,7 @@ export default async function EraPage({ params }: { params: Promise<{ year: stri
   const year = rawYear as YearId;
   const config = eraConfigs[year];
   return (
-    <article id="main-content">
+    <article>
       <p>Chapter {config.chapterNumber} of {YEAR_ORDER.length} · {config.medium}</p>
       <h1>{year}: {config.chapterName}</h1>
       <p>Experienced through {config.experienceName}. {config.chapterThesis}</p>

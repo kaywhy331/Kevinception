@@ -15,4 +15,10 @@ if (legacy.length) {
   console.error('Missing embedded legacy eras:', legacy.join(', '));
   process.exit(1);
 }
+const requiredAssets = ['_headers', 'og-card.png', 'robots.txt', 'sitemap.xml', 'site.webmanifest'];
+const missingAssets = requiredAssets.filter((file) => !fs.existsSync(path.join('out', file)));
+if (missingAssets.length) {
+  console.error('Missing deployment/metadata assets:', missingAssets.join(', '));
+  process.exit(1);
+}
 console.log(`Build check passed: ${required.length} routes and 6 legacy applications.`);

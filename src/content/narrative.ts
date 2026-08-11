@@ -94,7 +94,7 @@ export const chapterNarrative: Record<YearId, ChapterNarrative> = {
     chapterThesis: 'Intelligent systems no longer wait for every click. Specialized agents receive objectives, coordinate tasks, gather evidence, and prepare decisions while humans retain intent, judgment, and authority.',
     transformation: 'Creation becomes delegated capability.',
     lesson: 'Kevin carries forward a systems approach to orchestration, governance, evidence, recoverability, and human control over increasingly autonomous work.',
-    capabilityLinks: ['Agent workflows', 'Orchestration', 'Governance', 'Human-in-the-loop systems'],
+    capabilityLinks: ['Agent workflows', 'Orchestration', 'Governance', 'Human approval systems'],
     bridgeToNext: 'Delegated intelligence becomes continuity.',
     transitionLine: 'Agent memories reconstruct a digital perspective.',
     emotionalGoal: 'Orchestration, evidence, and human control',
@@ -124,6 +124,6 @@ export const narrativeSite = {
 } as const;
 
 export const kevinOriginNarrative = {
-  origin: 'Kevin’s relationship with technology began through television, cartridge games, and interactive worlds. Games taught him to recognize patterns, test strategies, optimize limited resources, explore systems, and experience stories through action rather than observation.',
-  continuation: 'By 2000, the personal computer and early internet expanded that curiosity into connection. AOL, chatrooms, screen names, personal pages, scripts, and online communities revealed that technology could connect people, knowledge, identity, and imagination. The interfaces kept changing, but the pattern remained: explore widely, recognize the underlying system, and turn possibility into something people can use.'
+  origin: 'My relationship with technology began through television, cartridge games, and interactive worlds. Games taught me to recognize patterns, test strategies, optimize limited resources, explore systems, and experience stories through action rather than observation.',
+  continuation: 'By 2000, the personal computer and early internet expanded that curiosity into connection. AOL, chatrooms, screen names, personal pages, scripts, and online communities showed me that technology could connect people, knowledge, identity, and imagination. The interfaces kept changing, but the pattern remained: explore widely, recognize the underlying system, and turn possibility into something people can use.'
 } as const;
