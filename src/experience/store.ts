@@ -28,11 +28,13 @@ type ExperienceStore = {
   artifacts: ArtifactProgress;
   yearVisits: Record<YearId, number>;
   webglAvailable: boolean | null;
+  preferencesConfigured: boolean;
   setActiveYear: (year: YearId) => void;
   setViewMode: (mode: ViewMode) => void;
   setTransition: (transition: TransitionState) => void;
   setQuality: (quality: Quality) => void;
   setMotion: (motion: MotionPreference) => void;
+  applyAdaptivePreferences: (preferences: Partial<Pick<ExperienceStore, 'quality' | 'motion'>>) => void;
   toggleSound: () => void;
   setHelpOpen: (open: boolean) => void;
   setSettingsOpen: (open: boolean) => void;
@@ -42,6 +44,10 @@ type ExperienceStore = {
   recordVisit: (year: YearId) => void;
   resetProgress: () => void;
 };
+
+type PersistedExperienceState = Pick<ExperienceStore,
+  'activeYear' | 'lastVisitedYear' | 'quality' | 'motion' | 'sound' | 'artifacts' | 'yearVisits' | 'preferencesConfigured'
+>;
 
 export const useExperienceStore = create<ExperienceStore>()(
   persist(
@@ -59,11 +65,16 @@ export const useExperienceStore = create<ExperienceStore>()(
       artifacts: emptyArtifacts,
       yearVisits: { '1990': 0, '2000': 0, '2010': 0, '2020': 0, '2030': 0, '2040': 0 },
       webglAvailable: null,
+      preferencesConfigured: false,
       setActiveYear: (activeYear) => set({ activeYear, lastVisitedYear: activeYear }),
       setViewMode: (viewMode) => set({ viewMode: (viewMode as string) === 'transitioning' ? 'transition' : viewMode }),
       setTransition: (transition) => set({ transition }),
-      setQuality: (quality) => set({ quality }),
-      setMotion: (motion) => set({ motion }),
+      setQuality: (quality) => set({ quality, preferencesConfigured: true }),
+      setMotion: (motion) => set({ motion, preferencesConfigured: true }),
+      applyAdaptivePreferences: (preferences) => set((state) => {
+        if (state.preferencesConfigured || (!preferences.quality && !preferences.motion)) return state;
+        return { ...state, ...preferences };
+      }),
       toggleSound: () => set((state) => ({ sound: !state.sound })),
       setHelpOpen: (helpOpen) => set({ helpOpen }),
       setSettingsOpen: (settingsOpen) => set({ settingsOpen }),
@@ -87,8 +98,17 @@ export const useExperienceStore = create<ExperienceStore>()(
     }),
     {
       name: 'kevinception-v7',
-      version: 1,
+      version: 2,
       storage: createJSONStorage(() => localStorage),
+      migrate: (persistedState, version) => {
+        const state = persistedState && typeof persistedState === 'object'
+          ? persistedState as Partial<PersistedExperienceState>
+          : {};
+        return {
+          ...state,
+          preferencesConfigured: version < 2 ? true : Boolean(state.preferencesConfigured)
+        } as PersistedExperienceState;
+      },
       partialize: (state) => ({
         activeYear: state.activeYear,
         lastVisitedYear: state.lastVisitedYear,
@@ -96,7 +116,8 @@ export const useExperienceStore = create<ExperienceStore>()(
         motion: state.motion,
         sound: state.sound,
         artifacts: state.artifacts,
-        yearVisits: state.yearVisits
+        yearVisits: state.yearVisits,
+        preferencesConfigured: state.preferencesConfigured
       })
     }
   )

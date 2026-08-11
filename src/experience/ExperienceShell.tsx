@@ -14,6 +14,7 @@ import { useExperienceStore } from './store';
 import { ExperienceOverlay } from './ExperienceOverlay';
 import { CanvasErrorBoundary } from './CanvasErrorBoundary';
 import { playInterfaceTone } from './audio';
+import { getWebGLRendererName, resolveAdaptivePreferences } from './performanceProfile';
 
 const ExperienceCanvas = dynamic(() => import('./ExperienceCanvas'), {
   ssr: false,
@@ -71,8 +72,7 @@ export function ExperienceShell({ children }: { children: React.ReactNode }) {
   const recordVisit = useExperienceStore((state) => state.recordVisit);
   const discoverArtifact = useExperienceStore((state) => state.discoverArtifact);
   const setWebgl = useExperienceStore((state) => state.setWebglAvailable);
-  const setMotion = useExperienceStore((state) => state.setMotion);
-  const setQuality = useExperienceStore((state) => state.setQuality);
+  const applyAdaptivePreferences = useExperienceStore((state) => state.applyAdaptivePreferences);
   const settingsOpen = useExperienceStore((state) => state.settingsOpen);
   const helpOpen = useExperienceStore((state) => state.helpOpen);
   const artifactsOpen = useExperienceStore((state) => state.artifactsOpen);
@@ -116,22 +116,27 @@ export function ExperienceShell({ children }: { children: React.ReactNode }) {
   }, [machine.value, setViewMode]);
 
   useEffect(() => {
-    if (!window.localStorage.getItem('kevinception-v7') && window.matchMedia('(prefers-reduced-motion: reduce)').matches) setMotion('reduced');
-  }, [setMotion]);
-
-  useEffect(() => {
-    if (window.localStorage.getItem('kevinception-v7')) return;
     const device = navigator as Navigator & { deviceMemory?: number; connection?: { saveData?: boolean } };
-    const lowPower = window.innerWidth < 760 || (device.deviceMemory ?? 8) <= 4 || navigator.hardwareConcurrency <= 4 || Boolean(device.connection?.saveData);
-    if (lowPower) setQuality('lite');
-  }, [setQuality]);
+    applyAdaptivePreferences(resolveAdaptivePreferences({
+      viewportWidth: window.innerWidth,
+      deviceMemory: device.deviceMemory,
+      hardwareConcurrency: navigator.hardwareConcurrency,
+      saveData: Boolean(device.connection?.saveData),
+      prefersReducedMotion: window.matchMedia('(prefers-reduced-motion: reduce)').matches
+    }));
+  }, [applyAdaptivePreferences]);
 
   useEffect(() => {
     const canvas = document.createElement('canvas');
-    const available = Boolean(canvas.getContext('webgl2') || canvas.getContext('webgl'));
+    const context = canvas.getContext('webgl2') || canvas.getContext('webgl');
+    const available = Boolean(context);
+    if (context) {
+      applyAdaptivePreferences(resolveAdaptivePreferences({ rendererName: getWebGLRendererName(context) }));
+      context.getExtension('WEBGL_lose_context')?.loseContext();
+    }
     setWebgl(available);
     if (!available) send({ type: 'SHOW_TEXT' });
-  }, [setWebgl, send]);
+  }, [applyAdaptivePreferences, setWebgl, send]);
 
   useEffect(() => {
     const syncFromBrowser = () => {

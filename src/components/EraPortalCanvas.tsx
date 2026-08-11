@@ -1,8 +1,13 @@
 'use client';
 
 import Link from 'next/link';
+import { useRouter } from 'next/navigation';
 import { useEffect, useRef, useState } from 'react';
 import { eraConfigs, YEAR_ORDER } from '@/experience/config';
+import { isLowPowerDevice } from '@/experience/performanceProfile';
+
+const ANIMATED_ERAS = new Set([0, 3, 4, 5]);
+const PORTAL_FRAME_INTERVAL = 1000 / 20;
 
 const palettes = [
   ['#07130e', '#69ffb0', '#173425'],
@@ -189,11 +194,13 @@ function drawEra(context: CanvasRenderingContext2D, width: number, height: numbe
 }
 
 export function EraPortalCanvas() {
+  const router = useRouter();
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const [activeIndex, setActiveIndex] = useState(0);
   const [reducedMotion, setReducedMotion] = useState(false);
   const activeYear = YEAR_ORDER[activeIndex];
   const active = eraConfigs[activeYear];
+  const experienceHref = `/experience/?year=${activeYear}`;
 
   useEffect(() => {
     const query = window.matchMedia('(prefers-reduced-motion: reduce)');
@@ -215,10 +222,23 @@ export function EraPortalCanvas() {
     const context = canvas.getContext('2d');
     if (!context) return;
     let frame = 0;
-    let start = performance.now();
-    const render = (now: number) => {
+    let inViewport = true;
+    let lastRender = Number.NEGATIVE_INFINITY;
+    const start = performance.now();
+    const device = navigator as Navigator & { deviceMemory?: number; connection?: { saveData?: boolean } };
+    const lowPower = isLowPowerDevice({
+      viewportWidth: window.innerWidth,
+      deviceMemory: device.deviceMemory,
+      hardwareConcurrency: navigator.hardwareConcurrency,
+      saveData: Boolean(device.connection?.saveData)
+    });
+    const ratioCap = lowPower ? 1 : 1.5;
+    const animated = !reducedMotion && ANIMATED_ERAS.has(activeIndex);
+
+    const paint = (now: number) => {
       const rect = canvas.getBoundingClientRect();
-      const ratio = Math.min(window.devicePixelRatio || 1, 2);
+      if (rect.width <= 0 || rect.height <= 0) return;
+      const ratio = Math.min(window.devicePixelRatio || 1, ratioCap);
       const pixelWidth = Math.max(1, Math.round(rect.width * ratio));
       const pixelHeight = Math.max(1, Math.round(rect.height * ratio));
       if (canvas.width !== pixelWidth || canvas.height !== pixelHeight) {
@@ -227,13 +247,34 @@ export function EraPortalCanvas() {
       }
       context.setTransform(ratio, 0, 0, ratio, 0, 0);
       drawEra(context, rect.width, rect.height, activeIndex, reducedMotion ? 0 : (now - start) / 1000);
-      if (!reducedMotion) frame = window.requestAnimationFrame(render);
+      lastRender = now;
     };
-    const observer = new ResizeObserver(() => render(performance.now()));
-    observer.observe(canvas);
-    render(start);
+    const render = (now: number) => {
+      if (now - lastRender >= PORTAL_FRAME_INTERVAL) paint(now);
+      frame = window.requestAnimationFrame(render);
+    };
+    const restart = () => {
+      window.cancelAnimationFrame(frame);
+      if (document.hidden || !inViewport) return;
+      paint(performance.now());
+      if (animated) frame = window.requestAnimationFrame(render);
+    };
+    const resizeObserver = new ResizeObserver(() => {
+      if (!document.hidden && inViewport) paint(performance.now());
+    });
+    const intersectionObserver = typeof IntersectionObserver === 'undefined' ? null : new IntersectionObserver(([entry]) => {
+      inViewport = entry.isIntersecting;
+      restart();
+    });
+    const onVisibility = () => restart();
+    resizeObserver.observe(canvas);
+    intersectionObserver?.observe(canvas);
+    document.addEventListener('visibilitychange', onVisibility);
+    restart();
     return () => {
-      observer.disconnect();
+      resizeObserver.disconnect();
+      intersectionObserver?.disconnect();
+      document.removeEventListener('visibilitychange', onVisibility);
       window.cancelAnimationFrame(frame);
     };
   }, [activeIndex, reducedMotion]);
@@ -251,7 +292,7 @@ export function EraPortalCanvas() {
         <div role="group" aria-label="Preview an era">
           {YEAR_ORDER.map((year, index) => <button key={year} type="button" className={index === activeIndex ? 'is-active' : ''} onClick={() => setActiveIndex(index)} aria-label={`Preview ${year}: ${eraConfigs[year].chapterName}`} aria-pressed={index === activeIndex}><span>{year}</span></button>)}
         </div>
-        <Link href={`/experience/?year=${activeYear}`} data-analytics-event="timeline_enter" data-analytics-source="home_portal" data-analytics-year={activeYear}>Enter {active.experienceName} <span aria-hidden="true">↗</span></Link>
+        <Link href={experienceHref} prefetch={false} onPointerEnter={() => router.prefetch(experienceHref)} onFocus={() => router.prefetch(experienceHref)} onTouchStart={() => router.prefetch(experienceHref)} data-analytics-event="timeline_enter" data-analytics-source="home_portal" data-analytics-year={activeYear}>Enter {active.experienceName} <span aria-hidden="true">↗</span></Link>
       </div>
     </div>
   );
