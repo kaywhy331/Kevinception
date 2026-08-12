@@ -1,55 +1,335 @@
 {
-  "generatedAt": "2026-08-12T14:14:42.875Z",
+  "generatedAt": "2026-08-12T19:37:57.621Z",
   "browser": "/home/trix/.cache/ms-playwright/chromium-1234/chrome-linux64/chrome",
-  "base": "https://kevinception.netlify.app",
+  "base": "http://127.0.0.1:4321",
   "assertions": [
     {
-      "name": "The dashboard exposes the full vendor-to-customer lifecycle",
-      "passed": true,
-      "detail": "01VendorsTerms + lead times | 02Purchase OrdersJIT + MOQ rules | 03InventoryIncoming + allocated | 04Catalog1.5M records | 05Marketplaces20+ channels | 06Customer OrdersPayment + state | 07WarehousePick + pack + ship | 08CustomerOne promise"
-    },
-    {
-      "name": "A lifecycle stage exposes its representative operation",
+      "name": "The direct dashboard module URL opens the Commerce interface",
       "passed": true,
       "detail": ""
     },
     {
-      "name": "An order advances through the fulfillment workflow",
-      "passed": true,
-      "detail": "Packed"
-    },
-    {
-      "name": "Global search routes a matching SKU into the catalog",
-      "passed": true,
-      "detail": "1 matching rows"
-    },
-    {
-      "name": "Marketplace management exposes 20+ representative channels on demand",
-      "passed": true,
-      "detail": "23 channels"
-    },
-    {
-      "name": "FBA confirmation completes the inbound plan",
+      "name": "The reconstructed product is branded StealStreet Commerce OS",
       "passed": true,
       "detail": ""
     },
     {
-      "name": "The integration check records a cross-system receipt",
+      "name": "The shell exposes exactly 12 working modules",
       "passed": true,
       "detail": ""
     },
     {
-      "name": "Kevazon artifact recovery reaches the persistent experience store",
+      "name": "The dashboard presents the full eight-stage operating flow",
       "passed": true,
       "detail": ""
     },
     {
-      "name": "The Coexistence roster contains explicit human and AI collaborators",
+      "name": "The dashboard includes an actionable company homebase",
+      "passed": true,
+      "detail": ""
+    },
+    {
+      "name": "Operations Dashboard renders from sidebar navigation",
+      "passed": true,
+      "detail": "Operations Dashboard"
+    },
+    {
+      "name": "Orders renders from sidebar navigation",
+      "passed": true,
+      "detail": "Orders"
+    },
+    {
+      "name": "Purchase Orders renders from sidebar navigation",
+      "passed": true,
+      "detail": "Purchase Orders"
+    },
+    {
+      "name": "Catalog · 1.5M Records renders from sidebar navigation",
+      "passed": true,
+      "detail": "Catalog · 1.5M Records"
+    },
+    {
+      "name": "Inventory renders from sidebar navigation",
+      "passed": true,
+      "detail": "Inventory"
+    },
+    {
+      "name": "Marketplaces · 20+ renders from sidebar navigation",
+      "passed": true,
+      "detail": "Marketplaces · 20+"
+    },
+    {
+      "name": "Vendors renders from sidebar navigation",
+      "passed": true,
+      "detail": "Vendors"
+    },
+    {
+      "name": "Customer Service renders from sidebar navigation",
+      "passed": true,
+      "detail": "Customer Service"
+    },
+    {
+      "name": "Warehouse renders from sidebar navigation",
+      "passed": true,
+      "detail": "Warehouse"
+    },
+    {
+      "name": "Returns renders from sidebar navigation",
+      "passed": true,
+      "detail": "Returns"
+    },
+    {
+      "name": "Reports & Intelligence renders from sidebar navigation",
+      "passed": true,
+      "detail": "Reports & Intelligence"
+    },
+    {
+      "name": "Settings / Administration renders from sidebar navigation",
+      "passed": true,
+      "detail": "Settings / Administration"
+    },
+    {
+      "name": "Browser Back restores the previous Commerce module",
+      "passed": true,
+      "detail": ""
+    },
+    {
+      "name": "Browser Forward restores the next Commerce module",
+      "passed": true,
+      "detail": ""
+    },
+    {
+      "name": "Refreshing preserves the active Commerce module",
+      "passed": true,
+      "detail": ""
+    },
+    {
+      "name": "Sidebar modules support native keyboard activation",
+      "passed": true,
+      "detail": ""
+    },
+    {
+      "name": "Global search routes a marketplace match to its inspector",
+      "passed": true,
+      "detail": ""
+    },
+    {
+      "name": "Receiving a PO updates its received quantity and state",
+      "passed": true,
+      "detail": ""
+    },
+    {
+      "name": "Receiving a PO updates available and incoming inventory",
+      "passed": true,
+      "detail": ""
+    },
+    {
+      "name": "Receiving a PO closes or advances linked warehouse work",
+      "passed": true,
+      "detail": ""
+    },
+    {
+      "name": "Receiving a PO creates an audit receipt",
+      "passed": true,
+      "detail": ""
+    },
+    {
+      "name": "Order actions advance from exception through shipment",
+      "passed": true,
+      "detail": ""
+    },
+    {
+      "name": "Shipping closes linked physical warehouse work",
+      "passed": true,
+      "detail": ""
+    },
+    {
+      "name": "Shipping updates the marketplace connection",
+      "passed": true,
+      "detail": ""
+    },
+    {
+      "name": "Shipping updates the customer-service timeline and tracking",
+      "passed": true,
+      "detail": ""
+    },
+    {
+      "name": "Fix Listing resolves catalog data health and mappings",
+      "passed": true,
+      "detail": ""
+    },
+    {
+      "name": "Fix Listing updates connected marketplace health",
+      "passed": true,
+      "detail": "3 → 0"
+    },
+    {
+      "name": "Dashboard exception counts recalculate from connected state",
+      "passed": true,
+      "detail": "0"
+    },
+    {
+      "name": "Restocking a return increments inventory",
+      "passed": true,
+      "detail": ""
+    },
+    {
+      "name": "Restocking a return updates its linked order timeline",
+      "passed": true,
+      "detail": ""
+    },
+    {
+      "name": "Restocking a return creates an audit entry",
+      "passed": true,
+      "detail": ""
+    },
+    {
+      "name": "Warehouse Receiving tab renders",
+      "passed": true,
+      "detail": ""
+    },
+    {
+      "name": "Warehouse Putaway tab renders",
+      "passed": true,
+      "detail": ""
+    },
+    {
+      "name": "Warehouse Picking tab renders",
+      "passed": true,
+      "detail": ""
+    },
+    {
+      "name": "Warehouse Packing tab renders",
+      "passed": true,
+      "detail": ""
+    },
+    {
+      "name": "Warehouse Shipments tab renders",
+      "passed": true,
+      "detail": ""
+    },
+    {
+      "name": "Warehouse Amazon FBA tab renders",
+      "passed": true,
+      "detail": ""
+    },
+    {
+      "name": "Warehouse Exceptions tab renders",
+      "passed": true,
+      "detail": ""
+    },
+    {
+      "name": "Confirm Carton Labels completes the FBA workflow",
+      "passed": true,
+      "detail": ""
+    },
+    {
+      "name": "Reports Inventory tab renders chart and metrics",
+      "passed": true,
+      "detail": ""
+    },
+    {
+      "name": "Reports Sales Trends tab renders chart and metrics",
+      "passed": true,
+      "detail": ""
+    },
+    {
+      "name": "Reports Product Trajectory tab renders chart and metrics",
+      "passed": true,
+      "detail": ""
+    },
+    {
+      "name": "Reports Marketplace Health tab renders chart and metrics",
+      "passed": true,
+      "detail": ""
+    },
+    {
+      "name": "Reports Finance tab renders chart and metrics",
+      "passed": true,
+      "detail": ""
+    },
+    {
+      "name": "Reports Customer Service tab renders chart and metrics",
+      "passed": true,
+      "detail": ""
+    },
+    {
+      "name": "Reports Warehouse tab renders chart and metrics",
+      "passed": true,
+      "detail": ""
+    },
+    {
+      "name": "Settings Users & Roles tab renders",
+      "passed": true,
+      "detail": ""
+    },
+    {
+      "name": "Settings Integrations tab renders",
+      "passed": true,
+      "detail": ""
+    },
+    {
+      "name": "Settings Warehouses tab renders",
+      "passed": true,
+      "detail": ""
+    },
+    {
+      "name": "Settings Shipping tab renders",
+      "passed": true,
+      "detail": ""
+    },
+    {
+      "name": "Settings Marketplace Rules tab renders",
+      "passed": true,
+      "detail": ""
+    },
+    {
+      "name": "Settings Automation tab renders",
+      "passed": true,
+      "detail": ""
+    },
+    {
+      "name": "Settings Notifications tab renders",
+      "passed": true,
+      "detail": ""
+    },
+    {
+      "name": "Settings Audit History tab renders",
+      "passed": true,
+      "detail": ""
+    },
+    {
+      "name": "Settings Demo Controls tab renders",
+      "passed": true,
+      "detail": ""
+    },
+    {
+      "name": "Automation switches persist local demo state",
+      "passed": true,
+      "detail": ""
+    },
+    {
+      "name": "Reset Demo Data restores orders, POs, listings, returns, warehouse, and automation",
+      "passed": true,
+      "detail": ""
+    },
+    {
+      "name": "Archive recovery reaches the persistent Kevinception artifact store",
+      "passed": true,
+      "detail": ""
+    },
+    {
+      "name": "The Commerce shell contains content without narrow-screen overflow",
+      "passed": true,
+      "detail": "{\"outer\":0,\"inner\":0}"
+    },
+    {
+      "name": "The Coexistence roster retains explicit human and AI collaborators",
       "passed": true,
       "detail": "Kevin · Human Lead | AI Researcher | AI Builder | Human Governor | AI Archivist"
     },
     {
-      "name": "The consequential Nexus action requires and records human approval",
+      "name": "A consequential Nexus action still records human approval",
       "passed": true,
       "detail": ""
     },

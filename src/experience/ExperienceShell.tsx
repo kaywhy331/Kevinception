@@ -24,14 +24,36 @@ const ExperienceCanvas = dynamic(() => import('./ExperienceCanvas'), {
 type UrlView = 'timeline' | 'environment' | 'interface' | 'text';
 type HistoryMode = 'push' | 'replace';
 
+const COMMERCE_MODULES = new Set([
+  'dashboard',
+  'orders',
+  'purchase-orders',
+  'catalog',
+  'inventory',
+  'marketplaces',
+  'vendors',
+  'customer-service',
+  'warehouse',
+  'returns',
+  'reports',
+  'settings'
+]);
+
 type LocationState = {
   year: YearId;
   view: UrlView;
   legacyRoute: boolean;
+  module: string | null;
 };
 
 function isYear(value: string | null): value is YearId {
   return Boolean(value && YEAR_ORDER.includes(value as YearId));
+}
+
+function normalizeCommerceModule(value: string | null) {
+  if (!value) return null;
+  const normalized = value === 'administration' ? 'settings' : value;
+  return COMMERCE_MODULES.has(normalized) ? normalized : null;
 }
 
 function readLocation(pathname: string, search: string): LocationState {
@@ -40,16 +62,21 @@ function readLocation(pathname: string, search: string): LocationState {
   const legacyYear = getYearFromPath(pathname);
   const year = isYear(queryYear) ? queryYear : legacyYear ?? '1990';
   const requestedView = params.get('view');
+  const module = year === '2010' ? normalizeCommerceModule(params.get('module')) : null;
   const legacyRoute = Boolean(legacyYear && pathname !== '/experience' && pathname !== '/experience/');
-  if (legacyRoute) return { year, view: 'interface', legacyRoute: true };
-  if (!isYear(queryYear)) return { year, view: 'timeline', legacyRoute: false };
-  if (requestedView === 'interface' || requestedView === 'text') return { year, view: requestedView, legacyRoute: false };
-  return { year, view: 'environment', legacyRoute: false };
+  if (legacyRoute) return { year, view: 'interface', legacyRoute: true, module };
+  if (!isYear(queryYear)) return { year, view: 'timeline', legacyRoute: false, module };
+  if (requestedView === 'text') return { year, view: 'text', legacyRoute: false, module };
+  if (requestedView === 'interface' || module) return { year, view: 'interface', legacyRoute: false, module };
+  return { year, view: 'environment', legacyRoute: false, module };
 }
 
-function experienceUrl(year: YearId, view: Exclude<UrlView, 'timeline'> = 'environment') {
-  const suffix = view === 'environment' ? '' : `&view=${view}`;
-  return `/experience/?year=${year}${suffix}`;
+function experienceUrl(year: YearId, view: Exclude<UrlView, 'timeline'> = 'environment', module: string | null = null) {
+  const params = new URLSearchParams({ year });
+  const commerceModule = year === '2010' && view === 'interface' ? normalizeCommerceModule(module) : null;
+  if (view !== 'environment' && !commerceModule) params.set('view', view);
+  if (commerceModule) params.set('module', commerceModule);
+  return `/experience/?${params.toString()}`;
 }
 
 function shouldIgnoreGesture(target: EventTarget | null) {
@@ -88,6 +115,11 @@ export function ExperienceShell({ children }: { children: React.ReactNode }) {
   const wheelCommitTimer = useRef<number | null>(null);
   const navigationVersion = useRef(0);
 
+  const syncLegacyModule = useCallback((module: string | null) => {
+    const frame = document.querySelector<HTMLIFrameElement>('.interface-mode__frame[src*="/legacy/experience/2010/"]');
+    frame?.contentWindow?.postMessage({ type: 'kevinception:module-sync', module }, window.location.origin);
+  }, []);
+
   const clearTransitionTimers = useCallback(() => {
     timers.current.forEach((timer) => window.clearTimeout(timer));
     timers.current = [];
@@ -98,11 +130,11 @@ export function ExperienceShell({ children }: { children: React.ReactNode }) {
     wheelCommitTimer.current = null;
   }, []);
 
-  const writeExperienceHistory = useCallback((year: YearId | null, view: UrlView, historyMode: HistoryMode = 'push') => {
-    const href = view === 'timeline' || !year ? '/experience/' : experienceUrl(year, view);
+  const writeExperienceHistory = useCallback((year: YearId | null, view: UrlView, historyMode: HistoryMode = 'push', module: string | null = null) => {
+    const href = view === 'timeline' || !year ? '/experience/' : experienceUrl(year, view, module);
     const method = historyMode === 'replace' ? 'replaceState' : 'pushState';
     const previousState = window.history.state && typeof window.history.state === 'object' ? window.history.state : {};
-    window.history[method]({ ...previousState, kevinception: { year, view } }, '', href);
+    window.history[method]({ ...previousState, kevinception: { year, view, module } }, '', href);
   }, []);
 
   useEffect(() => () => {
@@ -147,12 +179,13 @@ export function ExperienceShell({ children }: { children: React.ReactNode }) {
         recordVisit(location.year);
       }
       send({ type: 'SYNC_VIEW', destination: location.view });
-      if (location.legacyRoute) writeExperienceHistory(location.year, 'interface', 'replace');
+      if (location.legacyRoute) writeExperienceHistory(location.year, 'interface', 'replace', location.module);
+      window.setTimeout(() => syncLegacyModule(location.year === '2010' ? location.module : null), 60);
     };
     syncFromBrowser();
     window.addEventListener('popstate', syncFromBrowser);
     return () => window.removeEventListener('popstate', syncFromBrowser);
-  }, [pathname, recordVisit, send, setActiveYear, writeExperienceHistory]);
+  }, [pathname, recordVisit, send, setActiveYear, syncLegacyModule, writeExperienceHistory]);
 
   const completeTransition = useCallback((destination: 'timeline' | 'environment' | 'interface', delay: number, version: number) => {
     timers.current.push(window.setTimeout(() => {
@@ -269,6 +302,21 @@ export function ExperienceShell({ children }: { children: React.ReactNode }) {
         if (artifacts.some((artifact) => artifact.id === id) && YEAR_ORDER.includes(year)) discover(id, year);
         return;
       }
+      if (event.data.type === 'kevinception:legacy-ready') {
+        const location = readLocation(window.location.pathname, window.location.search);
+        if (location.year === '2010') syncLegacyModule(location.module);
+        return;
+      }
+      if (event.data.type === 'kevinception:module') {
+        if (useExperienceStore.getState().activeYear !== '2010') return;
+        const module = normalizeCommerceModule(String(event.data.module ?? 'dashboard')) ?? 'dashboard';
+        const href = experienceUrl('2010', 'interface', module);
+        const method = event.data.history === 'replace' ? 'replaceState' : 'pushState';
+        const previousState = window.history.state && typeof window.history.state === 'object' ? window.history.state : {};
+        window.history[method]({ ...previousState, kevinception: { year: '2010', view: 'interface', module } }, '', href);
+        syncLegacyModule(module);
+        return;
+      }
       if (event.data.type !== 'kevinception:navigate') return;
       const href = String(event.data.href ?? '');
       const year = getYearFromPath(href);
@@ -278,7 +326,7 @@ export function ExperienceShell({ children }: { children: React.ReactNode }) {
     };
     window.addEventListener('message', listener);
     return () => window.removeEventListener('message', listener);
-  }, [discover, enterYear, router, showTimeline]);
+  }, [discover, enterYear, router, showTimeline, syncLegacyModule]);
 
   useEffect(() => {
     const move = (direction: -1 | 1, historyMode: HistoryMode = 'replace') => {

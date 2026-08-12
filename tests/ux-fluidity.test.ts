@@ -8,9 +8,9 @@ describe('V7 fluid experience pass', () => {
   it('keeps year selection and interface entry inside the persistent experience route', () => {
     const shell = read('src/experience/ExperienceShell.tsx');
     const overlay = read('src/experience/ExperienceOverlay.tsx');
-    expect(shell).toContain('/experience/?year=');
+    expect(shell).toContain("return `/experience/?${params.toString()}`");
     expect(shell).toContain("writeExperienceHistory(year, 'interface')");
-    expect(shell).toContain("writeExperienceHistory(location.year, 'interface', 'replace')");
+    expect(shell).toContain("writeExperienceHistory(location.year, 'interface', 'replace', location.module)");
     expect(shell).toContain('window.history[method]');
     expect(overlay).toContain('onClick={() => enterYear(activeYear)}');
   });

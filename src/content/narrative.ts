@@ -57,7 +57,7 @@ export const chapterNarrative: Record<YearId, ChapterNarrative> = {
   '2010': {
     chapterNumber: 3,
     chapterName: 'Commerce',
-    experienceName: 'Kevazon Marketplace',
+    experienceName: 'StealStreet Commerce OS',
     medium: 'Proprietary commerce operating system and fulfillment workstation',
     chapterThesis: 'Co-founding a multi-channel commerce operation taught Kevin to architect one proprietary system connecting vendor purchasing, inventory, 1.5 million catalog records, 20+ sales channels, customer orders, warehouse fulfillment, service, finance, reporting, automation, and the team.',
     transformation: 'Connection becomes commerce.',

@@ -21,6 +21,10 @@ function serializeForHtml(value) {
     .replaceAll('\u2029', '\\u2029');
 }
 
+function synchronizeEraLabels(html) {
+  return html.replaceAll('Kevazon Marketplace', 'StealStreet Commerce OS');
+}
+
 const canonical = {
   eras: parseJsonExport('eras', '] as const;'),
   projects: parseJsonExport('projects', '] as const;'),
@@ -72,6 +76,6 @@ for (const year of targetYears) {
   payload.timelineContent = canonical.timelineContent;
 
   const replacement = `<script type="application/json" id="era-world-data">${serializeForHtml(payload)}</script>`;
-  fs.writeFileSync(filePath, html.replace(pattern, replacement));
+  fs.writeFileSync(filePath, synchronizeEraLabels(html.replace(pattern, replacement)));
   console.log(`Synchronized ${filePath}`);
 }

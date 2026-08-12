@@ -7,7 +7,7 @@ import { eraConfigs } from '@/experience/config';
 const read = (relative: string) => fs.readFileSync(path.join(process.cwd(), relative), 'utf8');
 
 const expectedChapters = ['Curiosity', 'Connection', 'Commerce', 'Creation', 'Coexistence', 'Continuity'];
-const expectedExperiences = ['KevinVision', 'Kevin Online', 'Kevazon Marketplace', 'KevTok', 'Kevin Nexus', 'Kevin Echo'];
+const expectedExperiences = ['KevinVision', 'Kevin Online', 'StealStreet Commerce OS', 'KevTok', 'Kevin Nexus', 'Kevin Echo'];
 
 describe('V7.6 narrative architecture', () => {
   it('defines one ordered conceptual chapter and one in-world experience per year', () => {

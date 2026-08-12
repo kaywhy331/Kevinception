@@ -751,12 +751,12 @@ export const eras = [
     "id": "2010",
     "label": "Commerce",
     "anchorYear": 2010,
-    "subtitle": "Kevazon Marketplace",
+    "subtitle": "StealStreet Commerce OS",
     "metaphor": "A reconstructed proprietary commerce operating system inside Kevin’s fulfillment workstation, connecting vendors, purchase orders, inventory, 1.5 million catalog records, 20+ marketplaces, customer orders, warehouse fulfillment, service, finance, reporting, and the team.",
     "emotionalTarget": "Operational scale, systems thinking, automation, and customer commitment.",
     "status": "live",
     "contentMode": "historical",
-    "accent": "#8db7ff",
+    "accent": "#b9862f",
     "motifs": [
       "vendor-to-customer lifecycle",
       "1.5M catalog records",
@@ -1480,7 +1480,7 @@ export const timelineContent = {
         "id": "kevinception",
         "category": "Projects",
         "hook": "What if a portfolio changed with the technology era?",
-        "body": "Kevinception presents one verified body of work through six interfaces: television, Kevin Online, Kevazon Marketplace, KevTok, a human-AI collaboration workspace, and a holographic digital self.",
+        "body": "Kevinception presents one verified body of work through six interfaces: television, Kevin Online, StealStreet Commerce OS, KevTok, a human-AI collaboration workspace, and a holographic digital self.",
         "cta": "Open case study",
         "action": "project",
         "slug": "kevinception"
