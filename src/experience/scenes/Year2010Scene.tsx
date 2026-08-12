@@ -7,11 +7,9 @@ import { DeviceScreen, Dust, Hoverable } from './SceneUtils';
 import { LightBar, PictureFrame, RoomShell, Shelf } from './EnvironmentPrimitives';
 import { DESK_SURFACE_Y, GroundedDesk } from './SceneLayout';
 
-const trendPoints: Array<[number, number, number]> = [
-  [-1.32, -0.42, 0.13], [-1.04, -0.37, 0.13], [-0.76, -0.31, 0.13],
-  [-0.48, -0.34, 0.13], [-0.2, -0.24, 0.13], [0.08, -0.14, 0.13],
-  [0.36, -0.04, 0.13], [0.64, 0.05, 0.13], [0.88, 0.16, 0.13],
-  [1.06, 0.42, 0.13], [1.22, 0.7, 0.13], [1.36, 0.9, 0.13]
+const systemMapPoints: Array<[number, number, number]> = [
+  [-0.72, 0.28, 0.267], [-0.42, 0.12, 0.267], [-0.12, 0.28, 0.267], [0.18, 0.12, 0.267],
+  [0.48, 0.28, 0.267], [0.78, 0.12, 0.267], [1.08, 0.28, 0.267], [1.38, 0.12, 0.267]
 ];
 
 function Parcel({ position, size, color = '#b9874f', tape = '#e7d2a1', rotation = [0, 0, 0] }: {
@@ -75,7 +73,7 @@ export function Year2010Scene({ active }: { active: boolean; timeline: boolean }
         </group>
       </Hoverable>
 
-      <Hoverable label="Open Kevazon Marketplace" onClick={() => enterYear('2010')}>
+      <Hoverable label="Open Commerce Operations" onClick={() => enterYear('2010')}>
         <group position={[0.82, DESK_SURFACE_Y + 0.22, 0.58]} rotation={[0, -0.035, 0]}>
           <RoundedBox args={[3.8, 0.16, 1.82]} radius={0.075} smoothness={3} castShadow><meshStandardMaterial color="#4d5359" metalness={0.35} roughness={0.36} /></RoundedBox>
           <mesh position={[0, 0.09, 0.36]}><boxGeometry args={[1.08, 0.026, 0.67]} /><meshStandardMaterial color="#363b3f" metalness={0.42} /></mesh>
@@ -87,9 +85,10 @@ export function Year2010Scene({ active }: { active: boolean; timeline: boolean }
             <mesh position={[-1.22, 0.27, 0.24]}><boxGeometry args={[0.62, 0.48, 0.018]} /><meshBasicMaterial color="#e7edf1" /></mesh>
             {[-0.22, 0.02, 0.26].map((y, index) => <mesh key={y} position={[-1.22, y, 0.255]}><boxGeometry args={[0.42 - index * 0.05, 0.035, 0.01]} /><meshBasicMaterial color={index === 0 ? '#5d91bd' : '#8698a5'} /></mesh>)}
             <mesh position={[0.62, 0.06, 0.24]}><boxGeometry args={[1.9, 1.12, 0.018]} /><meshBasicMaterial color="#edf1f3" /></mesh>
-            {[-0.26, 0, 0.26].map((y) => <mesh key={y} position={[0.62, y + 0.02, 0.255]}><boxGeometry args={[1.65, 0.014, 0.01]} /><meshBasicMaterial color="#d1d9de" /></mesh>)}
-            <Line points={trendPoints} color="#e58d2f" lineWidth={2.3} transparent opacity={0.98} />
-            {trendPoints.slice(-3).map((point, index) => <mesh key={index} position={point}><sphereGeometry args={[0.045, 12, 12]} /><meshBasicMaterial color="#f0703c" /></mesh>)}
+            <Line points={systemMapPoints} color="#8b9da7" lineWidth={1.4} transparent opacity={0.98} />
+            {systemMapPoints.map((point, index) => <mesh key={index} position={point}><boxGeometry args={[0.16, 0.11, 0.014]} /><meshBasicMaterial color={index === 3 || index === 4 ? '#e58d2f' : '#557c9c'} /></mesh>)}
+            <Line points={[[-0.72, -0.27, 0.267], [1.38, -0.27, 0.267]]} color="#c4cfd4" lineWidth={1} transparent opacity={0.9} />
+            {[-0.55, -0.05, 0.45, 0.95].map((x, index) => <mesh key={x} position={[x, -0.27, 0.27]}><boxGeometry args={[0.24, 0.07, 0.014]} /><meshBasicMaterial color={index === 3 ? '#e5a144' : '#7791a0'} /></mesh>)}
           </group>
         </group>
       </Hoverable>

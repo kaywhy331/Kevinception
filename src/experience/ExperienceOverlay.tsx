@@ -291,16 +291,21 @@ function TextMode() {
         )}
         {activeYear === '2010' && yearData && 'orders' in yearData && 'catalog' in yearData && (
           <>
-            <h2>Marketplace operations</h2>
+            <h2>One commerce operating system</h2>
             <div className="text-mode__grid">
-              {(yearData.orders as Array<{ id: string; customer: string; channel: string; status: string; items: number; total: string }>).map((order) => (
-                <section key={order.id}><p className="eyebrow">{order.channel} · {order.status}</p><h3>{order.id}</h3><p>{order.customer} · {order.items} item{order.items === 1 ? '' : 's'} · {order.total}</p></section>
+              <section><p className="eyebrow">Verified operating scale</p><h3>1.5M catalog records · 20+ commerce channels</h3><p>One Stop Deals and StealStreet operations spanned direct-to-consumer, wholesale, Amazon FBA, direct fulfillment, international marketplaces, vendor purchasing, and warehouse fulfillment.</p></section>
+              <section><p className="eyebrow">End-to-end lifecycle</p><h3>Vendor → PO → inventory → catalog → marketplace → order → warehouse → customer</h3><p>Customer service, returns, finance, reporting, employees, projects, administration, and automation connected to the same proprietary platform.</p></section>
+            </div>
+            <h2>Representative cross-channel records</h2>
+            <div className="text-mode__grid">
+              {(yearData.orders as Array<{ id: string; customer: string; channel: string; payment: string; status: string; fulfillment: string; tracking: string }>).map((order) => (
+                <section key={order.id}><p className="eyebrow">{order.channel} · {order.status}</p><h3>{order.id}</h3><p>{order.customer} · {order.payment} · {order.fulfillment} · {order.tracking}</p></section>
               ))}
             </div>
-            <h2>Catalog and demand planning</h2>
+            <h2>Operational intelligence</h2>
             <div className="text-mode__grid">
-              <section><p className="eyebrow">Catalog scale</p><h3>1.5 million SKUs</h3><p>Searchable product records connect inventory health to marketplace, FBA, and ERP workflows.</p></section>
-              <section><p className="eyebrow">Illustrative projection</p><h3>Q4 holiday peak</h3><p>The planning index rises sharply through October, November, and December. It is a labeled demonstration, not a historical performance claim.</p></section>
+              <section><p className="eyebrow">Exception-driven operations</p><h3>Needs Attention</h3><p>Orders, purchase orders, inventory, catalog, marketplaces, warehouse, customer service, and finance surface the work that requires operator judgment.</p></section>
+              <section><p className="eyebrow">Forecasting and reporting</p><h3>Analysis supports the operating system</h3><p>Demand forecasting, product trajectory, projected stockouts, order lateness, marketplace health, settlements, margin, and COGS inform operational decisions.</p></section>
             </div>
           </>
         )}

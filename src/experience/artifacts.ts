@@ -25,7 +25,7 @@ export const artifacts: ArtifactDefinition[] = [
     }
   },
   {
-    id: 'project-blueprint', title: 'Project Blueprint', meaning: 'The same idea can become a manual, attachment, workflow, clip, graph, or memory.', discoveryYear: '2010', discoveryHint: 'Inspect the fulfillment flow map beside Kevazon Marketplace.',
+    id: 'project-blueprint', title: 'Project Blueprint', meaning: 'The same idea can become a manual, attachment, workflow, clip, graph, or memory.', discoveryYear: '2010', discoveryHint: 'Inspect the commerce operating-system map beside the fulfillment workstation.',
     transformations: {
       '1990': 'cartridge manual', '2000': 'ZIP attachment', '2010': 'fulfillment process map', '2020': 'behind-the-scenes clip', '2030': 'architecture graph', '2040': 'reconstructed memory'
     }

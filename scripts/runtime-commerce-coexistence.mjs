@@ -52,25 +52,38 @@ try {
   const kevazon = await page.waitForFrame((frame) => frame.url().includes('/legacy/experience/2010/'), { timeout: 30000 });
   await kevazon.waitForSelector('[data-kevazon]', { timeout: 30000 });
 
+  const lifecycleStages = await kevazon.$$eval('[data-kz-flow-node]', (nodes) => nodes.map((node) => node.textContent?.trim()));
+  assert('The dashboard exposes the full vendor-to-customer lifecycle', lifecycleStages.length === 8 && lifecycleStages[0]?.includes('Vendors') && lifecycleStages[7]?.includes('Customer'), lifecycleStages.join(' | '));
+
+  await kevazon.click('[data-kz-flow-node="catalog"]');
+  assert('A lifecycle stage exposes its representative operation', await kevazon.$eval('[data-kz-flow-title]', (node) => node.textContent?.includes('1.5M')));
+
   await kevazon.click('[data-kz-tab="orders"]');
   await kevazon.waitForSelector('[data-kz-panel="orders"].is-active');
-  await kevazon.click('[data-kz-order-advance="KVZ-10482"]');
-  const progressed = await kevazon.$eval('[data-kz-order="KVZ-10482"] .kz-status', (node) => node.textContent?.trim());
+  await kevazon.click('[data-kz-order-advance="ORD-10482"]');
+  const progressed = await kevazon.$eval('[data-kz-order="ORD-10482"] .kz-status', (node) => node.textContent?.trim());
   assert('An order advances through the fulfillment workflow', progressed === 'Packed', progressed);
 
   await kevazon.type('[data-kz-search]', 'KV-225190');
+  await kevazon.click('[data-kz-search-form] button[type="submit"]');
   await kevazon.waitForSelector('[data-kz-panel="catalog"].is-active');
   const catalogRows = await kevazon.$$eval('[data-kz-catalog] .kz-catalog-row', (rows) => rows.length);
   assert('Global search routes a matching SKU into the catalog', catalogRows === 1, `${catalogRows} matching rows`);
 
-  await kevazon.click('[data-kz-tab="fulfillment"]');
+  await kevazon.click('[data-kz-tab="marketplaces"]');
+  await kevazon.waitForSelector('[data-kz-panel="marketplaces"].is-active');
+  await kevazon.click('[data-kz-channel-toggle]');
+  const channels = await kevazon.$$eval('[data-kz-channel]', (nodes) => nodes.map((node) => node.textContent?.trim()));
+  assert('Marketplace management exposes 20+ representative channels on demand', channels.length >= 20 && channels.some((channel) => channel?.includes('Amazon FBA')), `${channels.length} channels`);
+
+  await kevazon.click('[data-kz-tab="warehouse"]');
   await kevazon.click('[data-kz-fba-confirm]');
   assert('FBA confirmation completes the inbound plan', await kevazon.$eval('[data-kz-fba-percent]', (node) => node.textContent === '100'));
 
-  await kevazon.click('[data-kz-tab="erp"]');
+  await kevazon.click('[data-kz-tab="reports"]');
   await kevazon.click('[data-kz-sync]');
-  await kevazon.waitForFunction(() => document.querySelector('[data-kz-sync-log]')?.textContent?.includes('Orders, inventory, and receipts reconciled'), { timeout: 3000 });
-  assert('ERP synchronization records a receipt', true);
+  await kevazon.waitForFunction(() => document.querySelector('[data-kz-sync-log]')?.textContent?.includes('Purchasing, catalog, channels, orders, warehouse, and finance reconciled'), { timeout: 3000 });
+  assert('The integration check records a cross-system receipt', true);
 
   await kevazon.click('[data-kz-archive]');
   await kevazon.waitForSelector('[data-kz-dialog="archive"][open]');

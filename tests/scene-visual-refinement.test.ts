@@ -25,10 +25,10 @@ describe('V7.5 visual scene refinements', () => {
 
   it('turns 2010 into a fulfillment workstation without expensive image assets or wires', () => {
     const scene = read('src/experience/scenes/Year2010Scene.tsx');
-    expect(scene).toContain('Open Kevazon Marketplace');
+    expect(scene).toContain('Open Commerce Operations');
     expect(scene).toContain('function Parcel');
     expect(scene).toContain('<Shelf');
-    expect(scene).toContain('<Line points={trendPoints}');
+    expect(scene).toContain('<Line points={systemMapPoints}');
     expect(scene).toContain('Discover Project Blueprint');
     expect(scene).not.toContain('phone');
     expect(scene).not.toContain('Camera');

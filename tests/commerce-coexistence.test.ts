@@ -7,33 +7,50 @@ import { eras, timelineContent } from '@/content/data';
 const read = (relative: string) => fs.readFileSync(path.join(process.cwd(), relative), 'utf8');
 
 describe('Commerce and Coexistence chapters', () => {
-  it('defines the 2010 Commerce contract and illustrative operating data', () => {
+  it('defines the 2010 Commerce operating-system contract and verified scale', () => {
     expect(chapterNarrative['2010'].chapterName).toBe('Commerce');
     expect(chapterNarrative['2010'].experienceName).toBe('Kevazon Marketplace');
     expect(eras.find((era) => era.id === '2010')?.label).toBe('Commerce');
-    expect(timelineContent['2010'].operations.catalogScale).toBe('1.5M SKUs');
-    expect(timelineContent['2010'].operations.q4Projection).toContain('Projected');
+    expect(timelineContent['2010'].operations.catalogScale).toBe('1.5M catalog records');
+    expect(timelineContent['2010'].operations.channelScale).toBe('20+ commerce channels');
+    expect(timelineContent['2010'].operations.lifecycle.map((stage) => stage.label)).toEqual([
+      'Vendors', 'Purchase Orders', 'Inventory', 'Catalog', 'Marketplaces', 'Customer Orders', 'Warehouse', 'Customer'
+    ]);
+    expect(timelineContent['2010'].modules).toHaveLength(12);
+    expect(timelineContent['2010'].marketplaces).toContain('Amazon FBA');
+    expect(timelineContent['2010'].marketplaces).toContain('BuyGiftsWholesale.com');
     expect(timelineContent['2010'].orders.some((order) => order.status === 'Exception')).toBe(true);
+    expect(timelineContent['2010'].purchaseOrders.some((po) => po.status === 'Exception')).toBe(true);
+    expect(timelineContent['2010'].exceptions.map((exception) => exception.type)).toContain('Finance');
   });
 
-  it('ships a functional, accessible Kevazon application without external assets', () => {
+  it('ships a functional, accessible commerce operating system without external assets', () => {
     const html = read('public/legacy/experience/2010/index.html');
     const script = read('public/legacy/assets/client/kevazon.js');
     const styles = read('public/legacy/assets/styles/kevazon.css');
     expect(html).toContain('Kevazon Marketplace');
-    expect(html).toContain('1.5 million SKUs');
-    expect(html).toContain('PROJECTED HOLIDAY PEAK');
-    expect(html).toContain('Projection ≠ historical performance');
+    expect(html).toContain('Operations command center');
+    expect(html).toContain('One operating system connecting purchasing, catalog, marketplaces, fulfillment, customers, and the team.');
+    expect(html).toContain('One system from vendor purchase to customer promise');
+    expect(html).toContain('Built in-house · proprietary platform');
+    expect(html).toContain('Settings / Administration');
+    expect(html).toContain('1.5M</strong> searchable product records');
+    expect(html).toContain('20+ commerce channels, one operations layer');
+    expect(html).toContain('Needs Attention');
+    expect(html).toContain('Company homebase');
+    expect(html).toContain('Amazon FBA');
     expect(html).toContain('role="table"');
-    expect(html).toContain('aria-label="Illustrative monthly order index');
+    expect(html).toContain('aria-label="Commerce lifecycle"');
+    expect(html).toContain('aria-label="Illustrative eight-period inventory velocity index');
     expect(script).toContain("function advanceOrder(id)");
     expect(script).toContain("function runGlobalSearch(query)");
     expect(script).toContain("setTab('catalog')");
     expect(script).toContain("function runSync()");
     expect(script).toContain("function recoverArchive()");
     expect(script).toContain("kevinception:artifact");
-    expect(styles).toContain('@media(max-width:760px)');
-    expect(html).not.toMatch(/amazon/i);
+    expect(script).toContain("function renderMarketplaces(query = '')");
+    expect(script).toContain("function renderModule(id)");
+    expect(styles).toContain('@media (max-width: 720px)');
     expect(html).not.toMatch(/https?:\/\/(?!kevinception\.com)/);
   });
 
@@ -68,7 +85,8 @@ describe('Commerce and Coexistence chapters', () => {
       const payload = JSON.parse(html.match(/id="era-world-data">([\s\S]*?)<\/script>/)?.[1] || '{}');
       expect(payload.eras.find((era: { id: string }) => era.id === '2010')).toMatchObject({ label: 'Commerce', subtitle: 'Kevazon Marketplace' });
       expect(payload.eras.find((era: { id: string }) => era.id === '2030')).toMatchObject({ label: 'Coexistence', subtitle: 'Kevin Nexus' });
-      expect(payload.timelineContent['2010'].operations.catalogScale).toBe('1.5M SKUs');
+      expect(payload.timelineContent['2010'].operations.catalogScale).toBe('1.5M catalog records');
+      expect(payload.timelineContent['2010'].operations.channelScale).toBe('20+ commerce channels');
       expect(payload.timelineContent['2040'].responses.memory).toContain('Commerce, Creation, Coexistence');
       expect(payload.temporalArtifacts['2010']).toMatchObject({ id: 'project-blueprint', name: 'Project Blueprint' });
     }

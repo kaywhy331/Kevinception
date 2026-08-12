@@ -8,7 +8,7 @@
 
 The V7 architecture is implemented as a working, statically exportable application. One persistent React Three Fiber canvas now powers a connected sequence of six physical era environments, authored camera travel, environment/interface modes, cross-era artifacts, motion and quality controls, and WebGL fallback behavior.
 
-The focused interface layer preserves the playable 1990 experience, Kevin Online and Xanga, KevTok, Kevin Nexus, and Kevin Echo while adding the purpose-built Kevazon Marketplace commerce application for 2010.
+The focused interface layer preserves the playable 1990 experience, Kevin Online and Xanga, KevTok, Kevin Nexus, and Kevin Echo while presenting the 2010 Kevazon chapter as a reconstructed proprietary commerce operating system.
 
 The build should be treated as a **complete connected-environment implementation and functional vertical slice**, not the final artist-authored GLB and texture pass. Bespoke GLB environments, final environmental sound design, render-to-texture screen portals, and a secure open-ended AI service remain later production work.
 
@@ -57,10 +57,15 @@ The build should be treated as a **complete connected-environment implementation
 
 ### 2010 — Commerce / Kevazon Marketplace
 
-- Fulfillment workstation with marketplace laptop, packing bench, parcels, inventory shelving, label equipment, and projected Q4 trend display
-- Searchable order and catalog workflows, FBA confirmation, ERP sync, and operator exception decisions
-- Project Blueprint artifact
-- Focused interface embedding Kevazon Marketplace with portfolio evidence and discoverable archive inventory
+- Fulfillment workstation with an in-house commerce system map, packing bench, parcels, inventory shelving, and label equipment
+- Cross-entity search, order and purchase-order state, catalog operations, expandable marketplace management, warehouse/FBA handoffs, reports, and operator exception decisions
+- Project Blueprint artifact represented as the commerce operating-system map
+- Focused interface reconstructing the One Stop Deals / StealStreet operations platform as an explorable enterprise command center
+- End-to-end Vendor → Purchase Order → Inventory → Catalog → Marketplace → Customer Order → Warehouse → Customer lifecycle
+- Verified scale signals for approximately 1.5 million catalog records and 20+ commerce channels
+- Representative Orders, Purchase Orders, Catalog, Marketplaces, Warehouse, and Reports workspaces with cross-entity search and actionable exception routing
+- Secondary company hub, customer service, returns, finance, automation, permissions, audit, vendor, inventory, and administration evidence
+- Discoverable archive inventory and persistent Project Blueprint recovery
 
 ### 2020 — KevTok
 

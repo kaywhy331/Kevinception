@@ -1,8 +1,18 @@
 {
-  "generatedAt": "2026-08-12T12:22:13.996Z",
+  "generatedAt": "2026-08-12T14:01:59.136Z",
   "browser": "/home/trix/.cache/ms-playwright/chromium-1234/chrome-linux64/chrome",
-  "base": "https://kevinception.netlify.app",
+  "base": "http://127.0.0.1:4321",
   "assertions": [
+    {
+      "name": "The dashboard exposes the full vendor-to-customer lifecycle",
+      "passed": true,
+      "detail": "01VendorsTerms + lead times | 02Purchase OrdersJIT + MOQ rules | 03InventoryIncoming + allocated | 04Catalog1.5M records | 05Marketplaces20+ channels | 06Customer OrdersPayment + state | 07WarehousePick + pack + ship | 08CustomerOne promise"
+    },
+    {
+      "name": "A lifecycle stage exposes its representative operation",
+      "passed": true,
+      "detail": ""
+    },
     {
       "name": "An order advances through the fulfillment workflow",
       "passed": true,
@@ -14,12 +24,17 @@
       "detail": "1 matching rows"
     },
     {
+      "name": "Marketplace management exposes 20+ representative channels on demand",
+      "passed": true,
+      "detail": "23 channels"
+    },
+    {
       "name": "FBA confirmation completes the inbound plan",
       "passed": true,
       "detail": ""
     },
     {
-      "name": "ERP synchronization records a receipt",
+      "name": "The integration check records a cross-system receipt",
       "passed": true,
       "detail": ""
     },

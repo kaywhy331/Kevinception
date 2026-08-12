@@ -752,16 +752,16 @@ export const eras = [
     "label": "Commerce",
     "anchorYear": 2010,
     "subtitle": "Kevazon Marketplace",
-    "metaphor": "An e-commerce operations dashboard inside Kevin’s fulfillment workstation, connecting customer orders, a 1.5-million-SKU catalog, marketplace and FBA workflows, ERP sync, and a projected Q4 peak.",
-    "emotionalTarget": "Momentum, operational clarity, customer commitment.",
+    "metaphor": "A reconstructed proprietary commerce operating system inside Kevin’s fulfillment workstation, connecting vendors, purchase orders, inventory, 1.5 million catalog records, 20+ marketplaces, customer orders, warehouse fulfillment, service, finance, reporting, and the team.",
+    "emotionalTarget": "Operational scale, systems thinking, automation, and customer commitment.",
     "status": "live",
     "contentMode": "historical",
     "accent": "#8db7ff",
     "motifs": [
-      "customer orders",
-      "marketplace fulfillment",
-      "catalog and inventory",
-      "Q4 demand planning"
+      "vendor-to-customer lifecycle",
+      "1.5M catalog records",
+      "20+ commerce channels",
+      "exception-driven operations"
     ],
     "route": "/experience/2010/"
   },
@@ -1266,100 +1266,197 @@ export const timelineContent = {
   },
   "2010": {
     "operations": {
-      "catalogScale": "1.5M SKUs",
-      "annualTrendLabel": "Illustrative order-index projection",
-      "q4Projection": "Projected holiday peak",
-      "channels": [
-        "Direct marketplace",
-        "FBA",
-        "ERP"
+      "company": "One Stop Deals / StealStreet Commerce Operations",
+      "catalogScale": "1.5M catalog records",
+      "channelScale": "20+ commerce channels",
+      "systemStatus": "Systems healthy · 20+ channels connected",
+      "lifecycle": [
+        { "id": "vendors", "label": "Vendors", "operation": "Terms, pricing, minimums, lead times, and purchasing history." },
+        { "id": "purchase-orders", "label": "Purchase Orders", "operation": "JIT buying, MOQ rules, expected inventory, tracking, and receiving." },
+        { "id": "inventory", "label": "Inventory", "operation": "Available, allocated, incoming, reserved, damaged, and aging stock." },
+        { "id": "catalog", "label": "Catalog", "operation": "1.5M searchable product records, taxonomy, pricing, and data quality." },
+        { "id": "marketplaces", "label": "Marketplaces", "operation": "Listings, feeds, repricing, promotions, and channel health across 20+ connections." },
+        { "id": "orders", "label": "Customer Orders", "operation": "Payments, source, status, tracking, fulfillment state, and exceptions." },
+        { "id": "warehouse", "label": "Warehouse", "operation": "Receiving, pick routes, packing slips, shipments, carriers, and fulfillment exceptions." },
+        { "id": "customer", "label": "Customer", "operation": "One coordinated promise across direct, wholesale, domestic, and international channels." }
+      ],
+      "supportingSystems": [
+        "Customer Service",
+        "Returns",
+        "Finance",
+        "Reporting",
+        "Employees",
+        "Projects",
+        "Administration",
+        "Automation"
+      ],
+      "operatingModes": [
+        "Direct-to-consumer",
+        "Wholesale / B2B",
+        "Amazon FBA",
+        "Direct fulfillment",
+        "International marketplaces",
+        "Vendor JIT purchasing"
       ]
     },
+    "modules": [
+      { "id": "dashboard", "label": "Dashboard", "description": "Company operations homebase and cross-system exception queue." },
+      { "id": "orders", "label": "Orders", "description": "Customer orders, payments, tracking, marketplace source, fulfillment state, and exceptions." },
+      { "id": "purchase-orders", "label": "Purchase Orders", "description": "Vendor purchasing, JIT ordering, MOQ rules, incoming quantities, tracking, and receiving." },
+      { "id": "catalog", "label": "Catalog · 1.5M", "description": "Product information, taxonomy, pricing, listings, bulk actions, and imports or exports." },
+      { "id": "inventory", "label": "Inventory", "description": "Available, allocated, incoming, reserved, damaged, aging, and replenishment views." },
+      { "id": "marketplaces", "label": "Marketplaces · 20+", "description": "Channel connections, feed health, listing status, pricing, and account issues." },
+      { "id": "vendors", "label": "Vendors", "description": "Directory, categories, terms, minimums, lead times, history, and scorecards." },
+      { "id": "customer-service", "label": "Customer Service", "description": "Cross-channel support for orders, payments, refunds, escalations, and chargebacks." },
+      { "id": "warehouse", "label": "Warehouse", "description": "Receiving, pick routes, packing, shipment creation, carrier handoff, and exceptions." },
+      { "id": "returns", "label": "Returns", "description": "RMAs, refunds, replacements, restocking, damage, and vendor returns." },
+      { "id": "reports", "label": "Reports", "description": "Forecasting, inventory analysis, settlements, ratings, lateness, and performance." },
+      { "id": "administration", "label": "Settings / Administration", "description": "Users, roles, permissions, integrations, reference data, automation, and audit history." }
+    ],
     "orders": [
       {
-        "id": "KVZ-10482",
+        "id": "ORD-10482",
         "customer": "Maya C.",
-        "channel": "Marketplace",
+        "channel": "StealStreet.com",
+        "payment": "Authorized",
         "status": "Ready to pick",
-        "items": 3,
-        "total": "$86.40"
+        "fulfillment": "Direct",
+        "tracking": "Pending"
       },
       {
-        "id": "KVZ-10477",
+        "id": "ORD-10477",
         "customer": "Jordan R.",
-        "channel": "FBA",
+        "channel": "Amazon FBA",
+        "payment": "Settled",
         "status": "Packed",
-        "items": 1,
-        "total": "$42.00"
+        "fulfillment": "FBA",
+        "tracking": "FBA transfer"
       },
       {
-        "id": "KVZ-10465",
+        "id": "ORD-10465",
         "customer": "Avery S.",
-        "channel": "ERP",
+        "channel": "Walmart",
+        "payment": "Review",
         "status": "Exception",
-        "items": 6,
-        "total": "$214.18"
+        "fulfillment": "Direct",
+        "tracking": "Held"
       },
       {
-        "id": "KVZ-10441",
+        "id": "ORD-10441",
         "customer": "Sam T.",
-        "channel": "Marketplace",
+        "channel": "BuyGiftsWholesale.com",
+        "payment": "Invoice",
         "status": "Shipped",
-        "items": 2,
-        "total": "$63.75"
+        "fulfillment": "Wholesale",
+        "tracking": "Carrier scan"
       }
+    ],
+    "purchaseOrders": [
+      { "id": "PO-7814", "vendor": "Northstar Housewares", "method": "JIT · MOQ met", "expected": "In transit", "quantity": "Sample 240", "receiving": "Awaiting dock", "status": "Open" },
+      { "id": "PO-7809", "vendor": "Atlas Tool Supply", "method": "Replenishment", "expected": "Overdue", "quantity": "Sample 96", "receiving": "Vendor follow-up", "status": "Exception" },
+      { "id": "PO-7802", "vendor": "Brightline Electronics", "method": "Minimum order", "expected": "Confirmed", "quantity": "Sample 180", "receiving": "Partial receipt", "status": "Receiving" },
+      { "id": "PO-7798", "vendor": "Heritage Collectibles", "method": "Forecast buy", "expected": "Scheduled", "quantity": "Sample 60", "receiving": "Not started", "status": "Open" }
     ],
     "catalog": [
       {
         "sku": "KV-100042",
+        "upc": "000000100042",
         "name": "Modular packing station labels",
         "category": "Fulfillment",
         "stock": 284,
+        "listings": "8 active",
         "health": "Healthy"
       },
       {
         "sku": "KV-225190",
+        "upc": "000000225190",
         "name": "Low-profile inventory scanner cradle",
         "category": "Operations",
         "stock": 12,
+        "listings": "5 active",
         "health": "Low"
       },
       {
         "sku": "KV-331990",
+        "upc": "000000331990",
         "name": "Circuit of Time collector cartridge",
         "category": "Archive",
         "stock": 3,
+        "listings": "Not listed",
         "health": "Hidden"
       },
       {
         "sku": "KV-740204",
+        "upc": "000000740204",
         "name": "Reusable fulfillment tote — blue",
         "category": "Fulfillment",
         "stock": 864,
+        "listings": "12 active",
         "health": "Healthy"
       },
       {
         "sku": "KV-910331",
+        "upc": "000000910331",
         "name": "Marketplace integration field guide",
         "category": "Systems",
         "stock": 47,
+        "listings": "3 active",
         "health": "Healthy"
       }
     ],
-    "annualTrend": [
-      { "month": "Jan", "index": 28, "projected": false },
-      { "month": "Feb", "index": 31, "projected": false },
-      { "month": "Mar", "index": 35, "projected": false },
-      { "month": "Apr", "index": 33, "projected": false },
-      { "month": "May", "index": 39, "projected": false },
-      { "month": "Jun", "index": 44, "projected": false },
-      { "month": "Jul", "index": 48, "projected": false },
-      { "month": "Aug", "index": 52, "projected": false },
-      { "month": "Sep", "index": 58, "projected": false },
-      { "month": "Oct", "index": 82, "projected": true },
-      { "month": "Nov", "index": 168, "projected": true },
-      { "month": "Dec", "index": 214, "projected": true }
-    ]
+    "inventory": [
+      { "sku": "KV-225190", "available": 12, "allocated": 8, "incoming": 96, "reserved": 2, "damaged": 0, "state": "Replenish" },
+      { "sku": "KV-100042", "available": 284, "allocated": 31, "incoming": 0, "reserved": 12, "damaged": 4, "state": "Healthy" },
+      { "sku": "KV-740204", "available": 864, "allocated": 64, "incoming": 240, "reserved": 24, "damaged": 7, "state": "Healthy" },
+      { "sku": "KV-910331", "available": 47, "allocated": 18, "incoming": 60, "reserved": 4, "damaged": 1, "state": "Watch" }
+    ],
+    "marketplaces": [
+      "StealStreet.com",
+      "BuyGiftsWholesale.com",
+      "Amazon",
+      "Amazon FBA",
+      "Amazon Direct",
+      "Amazon Canada",
+      "Amazon Canada Direct",
+      "Amazon Canada FBA",
+      "Amazon Mexico",
+      "Amazon Mexico FBA",
+      "Amazon Europe",
+      "Rakuten",
+      "Houzz",
+      "Sears Marketplace",
+      "Walmart",
+      "Target.com",
+      "eBay",
+      "Craigslist",
+      "Newegg",
+      "Overstock",
+      "Wayfair",
+      "Bed Bath & Beyond",
+      "Home Depot"
+    ],
+    "exceptions": [
+      { "type": "Order", "module": "orders", "issue": "Payment review required", "detail": "Cross-channel order held before allocation." },
+      { "type": "PO", "module": "purchase-orders", "issue": "Vendor shipment overdue", "detail": "Expected inventory needs vendor follow-up." },
+      { "type": "Inventory", "module": "inventory", "issue": "SKU projected to stock out", "detail": "Replenishment rule recommends intervention." },
+      { "type": "Catalog", "module": "catalog", "issue": "Products awaiting categorization", "detail": "Records cannot publish until taxonomy is assigned." },
+      { "type": "Marketplace", "module": "marketplaces", "issue": "Listing rejected by channel", "detail": "Feed response identifies a data-quality exception." },
+      { "type": "Warehouse", "module": "warehouse", "issue": "Shipment exception", "detail": "Carrier label and package state do not match." },
+      { "type": "Customer Service", "module": "customer-service", "issue": "Escalation awaiting response", "detail": "Order, payment, and marketplace context are linked." },
+      { "type": "Finance", "module": "reports", "issue": "Marketplace settlement mismatch", "detail": "Remittance does not reconcile to recorded fees." }
+    ],
+    "companyHub": {
+      "announcement": "Operations update and SOP changes are published from the company homebase.",
+      "tasks": ["Review PO exception", "Approve catalog mapping", "Confirm warehouse handoff"],
+      "events": ["Vendor review", "Marketplace feed window", "Warehouse planning"],
+      "employeeStates": ["In", "Out", "Away"],
+      "resources": ["Time-Off Request", "Onboarding", "Training Material", "SOPs", "Company Resources"]
+    },
+    "intelligence": {
+      "label": "Illustrative inventory-velocity index",
+      "series": [42, 48, 45, 58, 64, 61, 72, 78],
+      "capabilities": ["Demand forecasting", "Product trajectory", "Projected stockouts", "Order lateness", "Marketplace health", "Settlement reconciliation"]
+    }
   },
   "2020": {
     "clips": [

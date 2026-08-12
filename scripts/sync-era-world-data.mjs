@@ -37,7 +37,7 @@ const temporalArtifacts = {
   '2010': {
     id: 'project-blueprint',
     name: 'Project Blueprint',
-    description: 'A fulfillment process map connecting marketplace orders, inventory, packing, carrier handoff, and the customer promise.'
+    description: 'A commerce operating-system map connecting vendors, purchasing, inventory, catalog, marketplaces, orders, fulfillment, and the customer promise.'
   },
   '2020': {
     id: 'unposted-loop',

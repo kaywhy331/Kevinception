@@ -30,7 +30,9 @@ describe('artifact completion and text fallback parity', () => {
     expect(timelineContent['1990'].channels.length).toBeGreaterThan(0);
     expect(timelineContent['2010'].orders.length).toBeGreaterThan(0);
     expect(timelineContent['2010'].catalog.length).toBeGreaterThan(0);
-    expect(timelineContent['2010'].annualTrend[timelineContent['2010'].annualTrend.length - 1]?.projected).toBe(true);
+    expect(timelineContent['2010'].operations.lifecycle).toHaveLength(8);
+    expect(timelineContent['2010'].marketplaces.length).toBeGreaterThanOrEqual(20);
+    expect(timelineContent['2010'].exceptions.length).toBeGreaterThan(0);
     expect(timelineContent['2020'].clips.length).toBeGreaterThan(0);
     expect(timelineContent['2030'].collaborators.length).toBeGreaterThan(0);
     expect(timelineContent['2030'].missions.length).toBeGreaterThan(0);
