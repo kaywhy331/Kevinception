@@ -2,7 +2,7 @@
 
 ## Product statement
 
-Kevinception is a journey through six stages of Kevin’s relationship with technology: **Curiosity, Connection, Presence, Creation, Delegation, and Continuity**—each experienced through a defining interface of its era.
+Kevinception is a journey through six stages of Kevin’s relationship with technology: **Curiosity, Connection, Commerce, Creation, Coexistence, and Continuity**—each experienced through a defining interface of its era.
 
 The conceptual chapter name explains the life story. The in-world experience name preserves the era fiction and interface personality.
 
@@ -10,10 +10,10 @@ The conceptual chapter name explains the life story. The in-world experience nam
 |---|---:|---|---|
 | Curiosity | 1990 | KevinVision | Play becomes systems thinking. |
 | Connection | 2000 | Kevin Online | Curiosity finds a network. |
-| Presence | 2010 | KevinBook | Connection becomes presence. |
-| Creation | 2020 | KevTok | Presence becomes creation. |
-| Delegation | 2030 | Kevin Nexus | Creation becomes delegated capability. |
-| Continuity | 2040 | Kevin Echo | Delegated intelligence becomes continuity. |
+| Commerce | 2010 | Kevazon Marketplace | Connection becomes commerce. |
+| Creation | 2020 | KevTok | Commerce becomes creation. |
+| Coexistence | 2030 | Kevin Nexus | Creation becomes coexistence. |
+| Continuity | 2040 | Kevin Echo | Coexistence becomes continuity. |
 
 ## Presentation rules
 
@@ -49,7 +49,7 @@ Select chapter
 ## Review checklist
 
 - [ ] The six conceptual names are immediately understandable without opening Help.
-- [ ] KevinVision, Kevin Online, KevinBook, KevTok, Kevin Nexus, and Kevin Echo remain visible as interface brands.
+- [ ] KevinVision, Kevin Online, Kevazon Marketplace, KevTok, Kevin Nexus, and Kevin Echo remain visible as interface brands.
 - [ ] The chapter card does not change structure between timeline and environment states.
 - [ ] The persistent timeline rail always shows the active chapter outside interface/text mode.
 - [ ] The interface header clearly states chapter number, chapter name, year, and experience name.

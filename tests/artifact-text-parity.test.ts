@@ -28,9 +28,11 @@ describe('artifact completion and text fallback parity', () => {
     const overlay = read('src/experience/ExperienceOverlay.tsx');
     for (const year of ['1990', '2000', '2010', '2020', '2030', '2040']) expect(overlay).toContain(`activeYear === '${year}'`);
     expect(timelineContent['1990'].channels.length).toBeGreaterThan(0);
-    expect(timelineContent['2010'].posts.length).toBeGreaterThan(0);
+    expect(timelineContent['2010'].orders.length).toBeGreaterThan(0);
+    expect(timelineContent['2010'].catalog.length).toBeGreaterThan(0);
+    expect(timelineContent['2010'].annualTrend[timelineContent['2010'].annualTrend.length - 1]?.projected).toBe(true);
     expect(timelineContent['2020'].clips.length).toBeGreaterThan(0);
-    expect(timelineContent['2030'].agents.length).toBeGreaterThan(0);
+    expect(timelineContent['2030'].collaborators.length).toBeGreaterThan(0);
     expect(timelineContent['2030'].missions.length).toBeGreaterThan(0);
     expect(timelineContent['2040'].prompts.length).toBeGreaterThan(0);
     expect(Object.keys(timelineContent['2040'].responses)).toHaveLength(timelineContent['2040'].prompts.length);

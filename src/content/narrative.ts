@@ -1,6 +1,6 @@
 import type { YearId } from './data';
 
-export type ChapterName = 'Curiosity' | 'Connection' | 'Presence' | 'Creation' | 'Delegation' | 'Continuity';
+export type ChapterName = 'Curiosity' | 'Connection' | 'Commerce' | 'Creation' | 'Coexistence' | 'Continuity';
 
 export type ChapterNarrative = {
   chapterNumber: number;
@@ -47,8 +47,8 @@ export const chapterNarrative: Record<YearId, ChapterNarrative> = {
     transformation: 'Curiosity finds a network.',
     lesson: 'Kevin carried forward an instinct to research widely, connect people and ideas, experiment in public, and turn information into useful action.',
     capabilityLinks: ['Research', 'Communication', 'Collaboration', 'Knowledge discovery'],
-    bridgeToNext: 'Connection becomes presence.',
-    transitionLine: 'Personal pages become a social identity layer.',
+    bridgeToNext: 'Connection becomes commerce.',
+    transitionLine: 'Personal pages resolve into a marketplace operations console.',
     emotionalGoal: 'Anticipation, discovery, and early-internet optimism',
     description: 'Boot a CRT computer, sign on through a dial-up connection, open K-Mail, message buddies, browse Kevin Explorer, and visit Kevin’s Xanga.',
     enterLabel: 'Sign On to Kevin Online',
@@ -56,19 +56,19 @@ export const chapterNarrative: Record<YearId, ChapterNarrative> = {
   },
   '2010': {
     chapterNumber: 3,
-    chapterName: 'Presence',
-    experienceName: 'KevinBook',
-    medium: 'Social network and connected laptop',
-    chapterThesis: 'Social platforms made identity, reputation, participation, and community visible—and taught a generation how to exist publicly online.',
-    transformation: 'Connection becomes presence.',
-    lesson: 'Kevin carried forward an understanding of positioning, audience, community, identity, and the human behavior behind digital products.',
-    capabilityLinks: ['Positioning', 'Community', 'User identity', 'Experience design'],
-    bridgeToNext: 'Presence becomes creation.',
-    transitionLine: 'The profile rotates into the creator feed.',
-    emotionalGoal: 'Participation, self-definition, and community',
-    description: 'Explore Kevin’s Wall, About, Projects, Photos, Notes, messages, and the social-product behaviors that reshaped the web.',
-    enterLabel: 'Open KevinBook',
-    deviceLabel: 'Connected laptop'
+    chapterName: 'Commerce',
+    experienceName: 'Kevazon Marketplace',
+    medium: 'E-commerce operations and fulfillment workstation',
+    chapterThesis: 'E-commerce taught Kevin to connect customer demand with catalog data, marketplace channels, inventory, fulfillment, enterprise systems, and the operational details that turn an order into a delivered promise.',
+    transformation: 'Connection becomes commerce.',
+    lesson: 'Kevin carried forward an operator’s view of customer experience: every storefront promise depends on coordinated data, inventory, workflows, systems, and people behind the screen.',
+    capabilityLinks: ['E-commerce operations', 'Catalog systems', 'Marketplace and FBA workflows', 'ERP coordination'],
+    bridgeToNext: 'Commerce becomes creation.',
+    transitionLine: 'Order signals accelerate into the creator feed.',
+    emotionalGoal: 'Momentum, operational clarity, and customer commitment',
+    description: 'Run Kevazon Marketplace from Kevin’s fulfillment workstation: triage customer orders, inspect a 1.5-million-SKU catalog, coordinate marketplace, FBA, and ERP workflows, and model a projected Q4 peak.',
+    enterLabel: 'Open Kevazon Marketplace',
+    deviceLabel: 'Fulfillment workstation'
   },
   '2020': {
     chapterNumber: 4,
@@ -76,11 +76,11 @@ export const chapterNarrative: Record<YearId, ChapterNarrative> = {
     experienceName: 'KevTok',
     medium: 'Short-form media and creator technology',
     chapterThesis: 'Digital media became faster, more visual, and more influential as creativity, branding, marketing, storytelling, commerce, and consumer behavior converged in the same feed.',
-    transformation: 'Presence becomes creation.',
+    transformation: 'Commerce becomes creation.',
     lesson: 'Kevin carried forward a creator’s bias toward making ideas tangible, communicating quickly, testing signals, and building experiences people choose to engage with.',
     capabilityLinks: ['Product creation', 'Storytelling', 'Branding', 'Audience behavior'],
-    bridgeToNext: 'Creation becomes delegated capability.',
-    transitionLine: 'Reactions reorganize into autonomous agents.',
+    bridgeToNext: 'Creation becomes coexistence.',
+    transitionLine: 'Reactions reorganize into a human-and-AI collaboration system.',
     emotionalGoal: 'Speed, signal, creativity, and proof',
     description: 'Navigate concise clips about Kevin, systems thinking, projects, automation, AI, branding, marketing, and changing consumer behavior.',
     enterLabel: 'Open KevTok',
@@ -88,19 +88,19 @@ export const chapterNarrative: Record<YearId, ChapterNarrative> = {
   },
   '2030': {
     chapterNumber: 5,
-    chapterName: 'Delegation',
+    chapterName: 'Coexistence',
     experienceName: 'Kevin Nexus',
-    medium: 'Autonomous-agent workspace',
-    chapterThesis: 'Intelligent systems no longer wait for every click. Specialized agents receive objectives, coordinate tasks, gather evidence, and prepare decisions while humans retain intent, judgment, and authority.',
-    transformation: 'Creation becomes delegated capability.',
-    lesson: 'Kevin carries forward a systems approach to orchestration, governance, evidence, recoverability, and human control over increasingly autonomous work.',
-    capabilityLinks: ['Agent workflows', 'Orchestration', 'Governance', 'Human approval systems'],
-    bridgeToNext: 'Delegated intelligence becomes continuity.',
-    transitionLine: 'Agent memories reconstruct a digital perspective.',
-    emotionalGoal: 'Orchestration, evidence, and human control',
-    description: 'Give specialized agents an objective, inspect context and evidence moving through the system, and exercise the human approval gate.',
-    enterLabel: 'Delegate a Mission',
-    deviceLabel: 'Agent memory core'
+    medium: 'Human-and-AI collaboration workspace',
+    chapterThesis: 'People and intelligent systems work side by side: AI collaborators extend research, synthesis, and execution while humans provide intent, lived context, judgment, accountability, and authority over consequential decisions.',
+    transformation: 'Creation becomes coexistence.',
+    lesson: 'Kevin carries forward a systems approach to collaboration, evidence, governance, recoverability, and clear boundaries between machine capability and human responsibility.',
+    capabilityLinks: ['Human-AI collaboration', 'Shared context', 'Evidence and governance', 'Human decision systems'],
+    bridgeToNext: 'Coexistence becomes continuity.',
+    transitionLine: 'Shared memories reconstruct a digital perspective.',
+    emotionalGoal: 'Partnership, evidence, and responsible agency',
+    description: 'Set a shared objective, watch human and AI roles coordinate through evidence, and make the consequential judgment at an explicit human decision gate.',
+    enterLabel: 'Enter Kevin Nexus',
+    deviceLabel: 'Collaboration core'
   },
   '2040': {
     chapterNumber: 6,
@@ -108,7 +108,7 @@ export const chapterNarrative: Record<YearId, ChapterNarrative> = {
     experienceName: 'Kevin Echo',
     medium: 'Holographic memory and values interpreter',
     chapterThesis: 'A transparent digital extension preserves an individual’s knowledge, memories, values, decisions, and perspective without pretending to be the biological person.',
-    transformation: 'Delegated intelligence becomes continuity.',
+    transformation: 'Coexistence becomes continuity.',
     lesson: 'Kevin’s final layer connects knowledge architecture, context, institutional memory, and values into a digital perspective that can remain useful over time.',
     capabilityLinks: ['Knowledge architecture', 'Context engineering', 'Institutional memory', 'Values preservation'],
     emotionalGoal: 'Continuity, identity, and reflection',
@@ -120,7 +120,7 @@ export const chapterNarrative: Record<YearId, ChapterNarrative> = {
 
 export const narrativeSite = {
   title: 'Kevinception — Six Digital Eras. One Evolving Mind.',
-  description: 'Kevin Yang’s interactive portfolio follows six stages of his relationship with technology—Curiosity, Connection, Presence, Creation, Delegation, and Continuity—each experienced through a defining interface of its era.'
+  description: 'Kevin Yang’s interactive portfolio follows six stages of his relationship with technology—Curiosity, Connection, Commerce, Creation, Coexistence, and Continuity—each experienced through a defining interface of its era.'
 } as const;
 
 export const kevinOriginNarrative = {

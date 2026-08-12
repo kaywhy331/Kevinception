@@ -13,7 +13,7 @@ const PORTAL_FRAME_INTERVAL = 1000 / 20;
 const palettes = [
   ['#07130e', '#69ffb0', '#173425'],
   ['#d6cfb8', '#275fa8', '#f5edd5'],
-  ['#dfeaff', '#3566b8', '#ffffff'],
+  ['#16222c', '#ffb548', '#eef2f3'],
   ['#100811', '#ff5c8a', '#5b2cff'],
   ['#031519', '#64e8ff', '#0d5662'],
   ['#080710', '#a88cff', '#64e8ff']
@@ -83,23 +83,29 @@ function draw2000(context: CanvasRenderingContext2D, width: number, height: numb
 }
 
 function draw2010(context: CanvasRenderingContext2D, width: number, height: number) {
-  context.fillStyle = '#dfeaff';
+  context.fillStyle = '#16222c';
   context.fillRect(0, 0, width, height);
-  context.fillStyle = '#3566b8';
-  context.fillRect(0, 0, width, height * .13);
-  context.fillStyle = '#fff';
-  roundedRect(context, width * .09, height * .18, width * .28, height * .67, 9);
+  context.fillStyle = '#253542';
+  context.fillRect(0, 0, width, height * .14);
+  context.fillStyle = '#ffb548';
+  context.fillRect(width * .07, height * .04, width * .16, height * .055);
+  context.fillStyle = '#eef2f3';
+  roundedRect(context, width * .06, height * .2, width * .18, height * .66, 7);
   context.fill();
-  roundedRect(context, width * .41, height * .18, width * .5, height * .28, 9);
+  roundedRect(context, width * .28, height * .2, width * .66, height * .27, 7);
   context.fill();
-  roundedRect(context, width * .41, height * .5, width * .5, height * .35, 9);
+  roundedRect(context, width * .28, height * .51, width * .66, height * .35, 7);
   context.fill();
-  context.fillStyle = '#3566b8';
+  context.fillStyle = '#dce3e7';
+  for (const y of [.28, .37, .59, .68, .77]) context.fillRect(width * .32, height * y, width * .56, 4);
+  const points = [[.34,.78],[.42,.75],[.5,.73],[.58,.69],[.66,.63],[.73,.58],[.8,.43],[.86,.3]];
+  context.strokeStyle = '#e58d2f';
+  context.lineWidth = 3;
   context.beginPath();
-  context.arc(width * .23, height * .34, width * .075, 0, Math.PI * 2);
-  context.fill();
-  context.fillStyle = '#aab9d0';
-  for (const y of [.27, .33, .59, .66, .73]) context.fillRect(width * .46, height * y, width * (y < .4 ? .34 : .37), 5);
+  points.forEach(([x,y], index) => index ? context.lineTo(width*x,height*y) : context.moveTo(width*x,height*y));
+  context.stroke();
+  context.fillStyle = '#365f78';
+  for (const y of [.3,.42,.54,.66]) context.fillRect(width * .1, height * y, width * .1, height * .055);
 }
 
 function draw2020(context: CanvasRenderingContext2D, width: number, height: number, time: number) {

@@ -18,9 +18,11 @@
     "check:links": "node scripts/check-links.mjs",
     "check:security": "node scripts/check-security.mjs",
     "check:content": "node scripts/check-content.mjs",
+    "sync:legacy-data": "node scripts/sync-era-world-data.mjs",
     "check:bundle": "node scripts/check-bundle.mjs",
     "check:diff": "git diff --check",
     "test:runtime": "node scripts/runtime-check.mjs",
+    "test:runtime:chapters": "node scripts/runtime-commerce-coexistence.mjs",
     "doctor": "node scripts/doctor.mjs",
     "audit": "npm audit --omit=dev --audit-level=moderate",
     "verify:full": "npm run doctor && npm run audit && npm run verify"

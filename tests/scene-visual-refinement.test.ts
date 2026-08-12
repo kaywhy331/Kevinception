@@ -23,9 +23,13 @@ describe('V7.5 visual scene refinements', () => {
     expect(scene).not.toContain('ArtifactMesh');
   });
 
-  it('keeps 2010 focused on one laptop without extra devices or wires', () => {
+  it('turns 2010 into a fulfillment workstation without expensive image assets or wires', () => {
     const scene = read('src/experience/scenes/Year2010Scene.tsx');
-    expect(scene).toContain('Open KevinBook');
+    expect(scene).toContain('Open Kevazon Marketplace');
+    expect(scene).toContain('function Parcel');
+    expect(scene).toContain('<Shelf');
+    expect(scene).toContain('<Line points={trendPoints}');
+    expect(scene).toContain('Discover Project Blueprint');
     expect(scene).not.toContain('phone');
     expect(scene).not.toContain('Camera');
     expect(scene).not.toContain('<Cable');

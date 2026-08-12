@@ -13,8 +13,8 @@ R3F / Three.js
   physical environments, devices, lighting, camera, transitions, artifacts
 
 React DOM / embedded applications
-  television channels, game, Kevin Online, K-Mail, Xanga, KevinBook, KevTok,
-  agent evidence, Kevin Echo interpreter, resume, case studies, contact
+  television channels, game, Kevin Online, K-Mail, Xanga, Kevazon Marketplace,
+  KevTok, collaboration evidence, Kevin Echo interpreter, resume, case studies, contact
 
 Canonical content
   one verified profile, experience, capability, and project source
@@ -24,9 +24,9 @@ The six technology years are:
 
 - 1990 — KevinVision
 - 2000 — Kevin Online
-- 2010 — KevinBook
+- 2010 — Kevazon Marketplace (Commerce)
 - 2020 — KevTok
-- 2030 — Kevin Nexus
+- 2030 — Kevin Nexus (Coexistence)
 - 2040 — Kevin Echo
 
 ## Current release status

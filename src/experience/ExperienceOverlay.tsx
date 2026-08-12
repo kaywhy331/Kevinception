@@ -106,6 +106,9 @@ function injectEmbeddedFrameChrome(year: YearId, frame: HTMLIFrameElement) {
         .era-guide{top:.65rem!important;max-height:calc(100svh - 1.3rem)!important}
         .kt-stage,.kt-app{height:100svh!important}
         .kb-topbar{top:0!important}
+        .kz-utility{display:none!important}
+        .kz-shell{min-height:100svh!important}
+        .kz-sidebar{top:0!important;height:100svh!important}
         .nexus-shell,.echo-space{min-height:100svh!important}
       `;
       document.head.append(style);
@@ -286,12 +289,20 @@ function TextMode() {
             <section><p className="eyebrow">Welcome screen</p><h3>{xennialLegacy.welcome.heading}</h3><p>{xennialLegacy.welcome.announcement}</p><p>{xennialLegacy.welcome.freeHours}</p></section>
           </div>
         )}
-        {activeYear === '2010' && yearData && 'posts' in yearData && (
-          <div className="text-mode__grid">
-            {(yearData.posts as Array<{ id: string; author: string; time: string; text: string; reactions: number }>).map((post) => (
-              <section key={post.id}><p className="eyebrow">{post.time}</p><h3>{post.author}</h3><p>{post.text}</p><small>{post.reactions} recorded reactions</small></section>
-            ))}
-          </div>
+        {activeYear === '2010' && yearData && 'orders' in yearData && 'catalog' in yearData && (
+          <>
+            <h2>Marketplace operations</h2>
+            <div className="text-mode__grid">
+              {(yearData.orders as Array<{ id: string; customer: string; channel: string; status: string; items: number; total: string }>).map((order) => (
+                <section key={order.id}><p className="eyebrow">{order.channel} · {order.status}</p><h3>{order.id}</h3><p>{order.customer} · {order.items} item{order.items === 1 ? '' : 's'} · {order.total}</p></section>
+              ))}
+            </div>
+            <h2>Catalog and demand planning</h2>
+            <div className="text-mode__grid">
+              <section><p className="eyebrow">Catalog scale</p><h3>1.5 million SKUs</h3><p>Searchable product records connect inventory health to marketplace, FBA, and ERP workflows.</p></section>
+              <section><p className="eyebrow">Illustrative projection</p><h3>Q4 holiday peak</h3><p>The planning index rises sharply through October, November, and December. It is a labeled demonstration, not a historical performance claim.</p></section>
+            </div>
+          </>
         )}
         {activeYear === '2020' && yearData && 'clips' in yearData && (
           <div className="text-mode__grid">
@@ -300,11 +311,11 @@ function TextMode() {
             ))}
           </div>
         )}
-        {activeYear === '2030' && yearData && 'agents' in yearData && 'missions' in yearData && (
+        {activeYear === '2030' && yearData && 'collaborators' in yearData && 'missions' in yearData && (
           <>
-            <h2>Agent team</h2>
+            <h2>Human and AI collaborators</h2>
             <div className="text-mode__grid">
-              {(yearData.agents as Array<{ id: string; name: string; function: string }>).map((agent) => <section key={agent.id}><h3>{agent.name}</h3><p>{agent.function}</p></section>)}
+              {(yearData.collaborators as Array<{ id: string; kind: string; name: string; function: string }>).map((collaborator) => <section key={collaborator.id}><p className="eyebrow">{collaborator.kind} collaborator</p><h3>{collaborator.name}</h3><p>{collaborator.function}</p></section>)}
             </div>
             <h2>Mission board</h2>
             <div className="text-mode__grid">

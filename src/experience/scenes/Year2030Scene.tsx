@@ -10,16 +10,16 @@ import { Dust, Hoverable } from './SceneUtils';
 import { ArchiveColumn, CylinderBetween, GlassPanel, LightBar, RoomShell } from './EnvironmentPrimitives';
 import { FloorPedestal, WallDisplay } from './SceneLayout';
 
-const agents = [
-  { id: 'clarifier', label: 'Clarifier', position: [-3.3, 0, -0.9] as [number, number, number], color: '#7de9ff' },
-  { id: 'researcher', label: 'Researcher', position: [-2.55, 0, 1.7] as [number, number, number], color: '#8da8ff' },
-  { id: 'architect', label: 'Architect', position: [0, 0, -2.9] as [number, number, number], color: '#79ffd1' },
-  { id: 'builder', label: 'Builder', position: [2.55, 0, 1.7] as [number, number, number], color: '#ffd66b' },
-  { id: 'governor', label: 'Governor', position: [3.3, 0, -0.9] as [number, number, number], color: '#ff7f9c' }
+const collaborators = [
+  { id: 'human', label: 'Kevin · Human Lead', position: [-3.3, 0, -0.9] as [number, number, number], color: '#fff1ce', human: true },
+  { id: 'researcher', label: 'AI Researcher', position: [-2.55, 0, 1.7] as [number, number, number], color: '#8da8ff' },
+  { id: 'architect', label: 'AI Architect', position: [0, 0, -2.9] as [number, number, number], color: '#79ffd1' },
+  { id: 'builder', label: 'AI Builder', position: [2.55, 0, 1.7] as [number, number, number], color: '#ffd66b' },
+  { id: 'governor', label: 'Human Governor', position: [3.3, 0, -0.9] as [number, number, number], color: '#ff7f9c', human: true }
 ];
 
 function AgentStation({ agent, selected, active, onSelect }: {
-  agent: typeof agents[number];
+  agent: typeof collaborators[number];
   selected: boolean;
   active: boolean;
   onSelect: () => void;
@@ -31,12 +31,12 @@ function AgentStation({ agent, selected, active, onSelect }: {
     avatar.current.position.y = 1.35 + Math.sin(clock.elapsedTime * 1.1 + agent.position[0]) * 0.035;
   });
   return (
-    <Hoverable label={`${agent.label} agent station`} onClick={onSelect}>
+    <Hoverable label={`${agent.label} collaboration station`} onClick={onSelect}>
       <group position={agent.position} scale={selected ? 1.04 : 1}>
         <FloorPedestal position={[0, 0, 0]} size={[1.05, 0.55, 0.9]} color="#d3dcdd" accent={agent.color} />
         <RoundedBox position={[0, 0.68, 0.06]} args={[1.08, 0.18, 0.82]} radius={0.08} smoothness={3} castShadow receiveShadow><meshStandardMaterial color="#c8d2d3" roughness={0.32} metalness={0.18} /></RoundedBox>
         <GlassPanel position={[0, 0.98, 0.42]} size={[0.86, 0.42, 0.03]} color={agent.color} opacity={active ? 0.14 : 0.045} frameColor="#819093" />
-        <mesh ref={avatar} position={[0, 1.35, -0.02]} castShadow><octahedronGeometry args={[0.3, 0]} /><meshStandardMaterial color={agent.color} emissive={agent.color} emissiveIntensity={active ? 0.75 : 0.08} metalness={0.34} roughness={0.22} /></mesh>
+        <mesh ref={avatar} position={[0, 1.35, -0.02]} castShadow>{agent.human ? <capsuleGeometry args={[0.22, 0.36, 5, 12]} /> : <octahedronGeometry args={[0.3, 0]} />}<meshStandardMaterial color={agent.color} emissive={agent.color} emissiveIntensity={active ? (agent.human ? 0.38 : 0.75) : 0.08} metalness={agent.human ? 0.12 : 0.34} roughness={agent.human ? 0.48 : 0.22} /></mesh>
         <mesh position={[0, 1.35, -0.02]} rotation={[Math.PI / 2, 0, 0]}><torusGeometry args={[0.44, 0.02, 8, 28]} /><meshStandardMaterial color={agent.color} emissive={agent.color} emissiveIntensity={selected && active ? 1.0 : 0.14} /></mesh>
       </group>
     </Hoverable>
@@ -48,7 +48,7 @@ export function Year2030Scene({ active, detail = true }: { active: boolean; time
   const { enterYear, discover } = useExperienceActions();
   const core = useRef<THREE.Mesh>(null);
   const packets = useRef<THREE.Group>(null);
-  const [selected, setSelected] = useState('architect');
+  const [selected, setSelected] = useState('human');
   const corePosition: [number, number, number] = [0, 1.55, 0];
   useFrame(({ clock }, delta) => {
     if (!active || !detail) return;
@@ -59,7 +59,7 @@ export function Year2030Scene({ active, detail = true }: { active: boolean; time
     if (packets.current) {
       packets.current.children.forEach((child, index) => {
         const t = (clock.elapsedTime * (0.12 + index * 0.01) + index * 0.16) % 1;
-        const node = agents[index % agents.length];
+        const node = collaborators[index % collaborators.length];
         child.position.set(corePosition[0] + (node.position[0] - corePosition[0]) * t, corePosition[1] + (1.32 - corePosition[1]) * t, corePosition[2] + (node.position[2] - corePosition[2]) * t);
       });
     }
@@ -101,20 +101,20 @@ export function Year2030Scene({ active, detail = true }: { active: boolean; time
         </group>
       </Hoverable>
 
-      {agents.map((agent) => (
+      {collaborators.map((agent) => (
         <group key={agent.id}>
           <CylinderBetween from={corePosition} to={[agent.position[0], 1.3, agent.position[2]]} radius={0.012} color={agent.color} emissiveIntensity={active ? (selected === agent.id ? 0.65 : 0.28) : 0.05} transparent opacity={active ? (selected === agent.id ? 0.55 : 0.24) : 0.1} />
           <AgentStation agent={agent} selected={selected === agent.id} active={active} onSelect={() => { setSelected(agent.id); if (agent.id === 'governor') discover('human-gate', '2030'); }} />
         </group>
       ))}
-      <group ref={packets} visible={active}>{agents.map((agent) => <mesh key={agent.id} position={corePosition}><boxGeometry args={[0.075, 0.075, 0.075]} /><meshStandardMaterial color={agent.color} emissive={agent.color} emissiveIntensity={1.0} /></mesh>)}</group>
+      <group ref={packets} visible={active}>{collaborators.map((agent) => <mesh key={agent.id} position={corePosition}><boxGeometry args={[0.075, 0.075, 0.075]} /><meshStandardMaterial color={agent.color} emissive={agent.color} emissiveIntensity={1.0} /></mesh>)}</group>
 
       <Hoverable label="Human approval node" onClick={() => { setSelected('governor'); discover('human-gate', '2030'); }}>
         <group position={[0, 0, 2.85]}>
           <FloorPedestal position={[0, 0, 0]} size={[1.05, 0.55, 0.9]} color="#d4dddd" accent="#ffffff" />
           <RoundedBox position={[0, 0.68, 0.06]} args={[1.08, 0.18, 0.82]} radius={0.08} smoothness={3} castShadow receiveShadow><meshStandardMaterial color="#c8d2d3" roughness={0.32} metalness={0.18} /></RoundedBox>
           <GlassPanel position={[0, 0.98, 0.42]} size={[0.86, 0.42, 0.03]} color="#efffff" opacity={active ? 0.14 : 0.045} frameColor="#819093" />
-          {agents.map((agent, index) => (
+          {collaborators.map((agent, index) => (
             <mesh key={agent.id} position={[-0.36 + index * 0.18, 0.79, 0.48]}>
               <sphereGeometry args={[0.045, 12, 12]} />
               <meshStandardMaterial color={agent.color} emissive={agent.color} emissiveIntensity={active ? 0.95 : 0.12} />

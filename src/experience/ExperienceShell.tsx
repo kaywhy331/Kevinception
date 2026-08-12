@@ -6,7 +6,7 @@ import { useCallback, useEffect, useMemo, useRef } from 'react';
 import { useMachine } from '@xstate/react';
 import type { YearId } from '@/content/data';
 import { trackAnalyticsEvent } from '@/lib/analytics';
-import type { ArtifactId } from './artifacts';
+import { artifacts, type ArtifactId } from './artifacts';
 import { eraConfigs, transitionBetween, getAdjacentYear, getYearFromPath, yearDistance, YEAR_ORDER } from './config';
 import { ExperienceActionsProvider } from './ExperienceContext';
 import { experienceMachine } from './machine';
@@ -263,6 +263,12 @@ export function ExperienceShell({ children }: { children: React.ReactNode }) {
   useEffect(() => {
     const listener = (event: MessageEvent) => {
       if (event.origin !== window.location.origin || !event.data || typeof event.data !== 'object') return;
+      if (event.data.type === 'kevinception:artifact') {
+        const id = String(event.data.id ?? '') as ArtifactId;
+        const year = String(event.data.year ?? '') as YearId;
+        if (artifacts.some((artifact) => artifact.id === id) && YEAR_ORDER.includes(year)) discover(id, year);
+        return;
+      }
       if (event.data.type !== 'kevinception:navigate') return;
       const href = String(event.data.href ?? '');
       const year = getYearFromPath(href);
@@ -272,7 +278,7 @@ export function ExperienceShell({ children }: { children: React.ReactNode }) {
     };
     window.addEventListener('message', listener);
     return () => window.removeEventListener('message', listener);
-  }, [enterYear, router, showTimeline]);
+  }, [discover, enterYear, router, showTimeline]);
 
   useEffect(() => {
     const move = (direction: -1 | 1, historyMode: HistoryMode = 'replace') => {

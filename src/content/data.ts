@@ -248,7 +248,7 @@ export const projects = [
       "Separated canonical portfolio content from the interfaces that render it.",
       "Designed a direct Portfolio Mode and an immersive Timeline Mode as equal entry paths.",
       "Defined era contracts for navigation, applications, emotional targets, interactions, and cross-era artifacts.",
-      "Built the year-2000 Kevin Online world as the reference implementation, then used the shared engine to create 1990 television, 2010 social, 2020 short-form, 2030 agent, and 2040 holographic experiences.",
+      "Built the year-2000 Kevin Online world as the reference implementation, then used the shared engine to create 1990 television, 2010 commerce, 2020 short-form, 2030 coexistence, and 2040 holographic experiences.",
       "Connected discoveries across timelines so the site behaves like one layered narrative rather than six isolated themes."
     ],
     "decisions": [
@@ -749,19 +749,19 @@ export const eras = [
   },
   {
     "id": "2010",
-    "label": "Social Web",
+    "label": "Commerce",
     "anchorYear": 2010,
-    "subtitle": "KevinBook",
-    "metaphor": "A social profile, Wall, photo albums, Notes, messages, Likes, and a networked view of Kevin’s evolving interests and work.",
-    "emotionalTarget": "Presence, connection, self-definition.",
+    "subtitle": "Kevazon Marketplace",
+    "metaphor": "An e-commerce operations dashboard inside Kevin’s fulfillment workstation, connecting customer orders, a 1.5-million-SKU catalog, marketplace and FBA workflows, ERP sync, and a projected Q4 peak.",
+    "emotionalTarget": "Momentum, operational clarity, customer commitment.",
     "status": "live",
     "contentMode": "historical",
     "accent": "#8db7ff",
     "motifs": [
-      "profile timeline",
-      "Wall posts",
-      "photo albums",
-      "social messages"
+      "customer orders",
+      "marketplace fulfillment",
+      "catalog and inventory",
+      "Q4 demand planning"
     ],
     "route": "/experience/2010/"
   },
@@ -785,19 +785,19 @@ export const eras = [
   },
   {
     "id": "2030",
-    "label": "Autonomous AI",
+    "label": "Coexistence",
     "anchorYear": 2030,
     "subtitle": "Kevin Nexus",
-    "metaphor": "A near-future objective-driven workspace where a simulated agent team plans work, retrieves context, shows evidence, and pauses at human decision gates.",
-    "emotionalTarget": "Intelligence, delegation, augmentation.",
+    "metaphor": "A near-future collaboration workspace where people and AI specialists share objectives, evidence, and context while consequential judgment remains explicitly human.",
+    "emotionalTarget": "Partnership, evidence, responsible agency.",
     "status": "live",
     "contentMode": "speculative",
     "accent": "#64e8ff",
     "motifs": [
-      "agent teams",
-      "shared memory",
-      "evidence",
-      "human decision gates"
+      "human-AI teams",
+      "shared context",
+      "evidence and governance",
+      "human judgment"
     ],
     "route": "/experience/2030/"
   },
@@ -945,9 +945,9 @@ export const technologyMoments = [
   },
   {
     "year": 2010,
-    "title": "The internet becomes identity and network",
-    "context": "Social profiles, smartphones, cloud tools, feeds, and always-on connectivity turn the web into everyday infrastructure.",
-    "kevinConnection": "Technology becomes less about visiting a destination and more about how people present themselves, organize relationships, and coordinate work.",
+    "title": "The internet becomes a marketplace",
+    "context": "Marketplaces, fulfillment networks, catalog platforms, mobile shopping, and enterprise systems connect customer demand to increasingly complex physical operations.",
+    "kevinConnection": "Kevin’s e-commerce journey links the storefront promise to the operational system behind it: customer orders, catalog data, inventory, fulfillment, marketplace channels, ERP workflows, and seasonal planning.",
     "trust": "drafted"
   },
   {
@@ -959,9 +959,9 @@ export const technologyMoments = [
   },
   {
     "year": 2030,
-    "title": "Projection: the interface becomes a team",
-    "context": "People state objectives while specialized agents retrieve context, plan, build, review, document, and hand off work under human-defined constraints.",
-    "kevinConnection": "This projection extends Kevin’s current work in context logistics, agent orchestration, governance, and practical human-plus-AI operating systems.",
+    "title": "Projection: the interface becomes coexistence",
+    "context": "People and AI specialists share objectives and persistent context, divide work by comparative strength, expose evidence, and return consequential choices to accountable humans.",
+    "kevinConnection": "This projection extends Kevin’s current work in context logistics, collaboration systems, governance, and practical human-plus-AI operating models.",
     "trust": "speculative"
   },
   {
@@ -1225,7 +1225,7 @@ export const timelineContent = {
         "name": "Home Video Timeline",
         "kicker": "RECORDED ON VHS",
         "title": "Explore. Understand. Reorganize. Build.",
-        "body": "Before the products and specifications, there was a recurring pattern: technology became a portal in the 1990s, the internet became a place in 2000, identity and networks reshaped products in the 2010s, and AI, automation, and knowledge systems converged in the 2020s."
+        "body": "Before the products and specifications, there was a recurring pattern: technology became a portal in the 1990s, the internet became a place in 2000, commerce connected digital promises to physical operations in the 2010s, and AI, automation, and knowledge systems converged in the 2020s."
       },
       {
         "number": 9,
@@ -1265,35 +1265,100 @@ export const timelineContent = {
     }
   },
   "2010": {
-    "posts": [
+    "operations": {
+      "catalogScale": "1.5M SKUs",
+      "annualTrendLabel": "Illustrative order-index projection",
+      "q4Projection": "Projected holiday peak",
+      "channels": [
+        "Direct marketplace",
+        "FBA",
+        "ERP"
+      ]
+    },
+    "orders": [
       {
-        "id": "web-personal",
-        "author": "Kevin Yang",
-        "time": "January 18, 2010 at 8:42 PM",
-        "text": "The internet used to feel like a destination. Now it feels like the layer everything else runs through. Profiles, messages, photos, events, work, and identity are becoming part of the same interface.",
-        "reactions": 12
+        "id": "KVZ-10482",
+        "customer": "Maya C.",
+        "channel": "Marketplace",
+        "status": "Ready to pick",
+        "items": 3,
+        "total": "$86.40"
       },
       {
-        "id": "mobile-product",
-        "author": "Kevin Yang",
-        "time": "March 26, 2010 at 7:15 AM",
-        "text": "A product that follows someone all day has different responsibilities than a product they visit occasionally. Speed, clarity, interruption, trust, and habit suddenly matter in a different way.",
-        "reactions": 18
+        "id": "KVZ-10477",
+        "customer": "Jordan R.",
+        "channel": "FBA",
+        "status": "Packed",
+        "items": 1,
+        "total": "$42.00"
       },
       {
-        "id": "behavior",
-        "author": "Kevin Yang",
-        "time": "June 4, 2010 at 11:03 PM",
-        "text": "A Like button looks small, but it changes what people create, what they notice, and what they think matters. Product decisions are behavior decisions.",
-        "reactions": 31
+        "id": "KVZ-10465",
+        "customer": "Avery S.",
+        "channel": "ERP",
+        "status": "Exception",
+        "items": 6,
+        "total": "$214.18"
       },
       {
-        "id": "systems",
-        "author": "Kevin Yang",
-        "time": "September 12, 2010 at 6:37 PM",
-        "text": "The interesting question is no longer “Which app should we use?” It is “How should the work move, what should people know, and what should the system make easier?”",
-        "reactions": 24
+        "id": "KVZ-10441",
+        "customer": "Sam T.",
+        "channel": "Marketplace",
+        "status": "Shipped",
+        "items": 2,
+        "total": "$63.75"
       }
+    ],
+    "catalog": [
+      {
+        "sku": "KV-100042",
+        "name": "Modular packing station labels",
+        "category": "Fulfillment",
+        "stock": 284,
+        "health": "Healthy"
+      },
+      {
+        "sku": "KV-225190",
+        "name": "Low-profile inventory scanner cradle",
+        "category": "Operations",
+        "stock": 12,
+        "health": "Low"
+      },
+      {
+        "sku": "KV-331990",
+        "name": "Circuit of Time collector cartridge",
+        "category": "Archive",
+        "stock": 3,
+        "health": "Hidden"
+      },
+      {
+        "sku": "KV-740204",
+        "name": "Reusable fulfillment tote — blue",
+        "category": "Fulfillment",
+        "stock": 864,
+        "health": "Healthy"
+      },
+      {
+        "sku": "KV-910331",
+        "name": "Marketplace integration field guide",
+        "category": "Systems",
+        "stock": 47,
+        "health": "Healthy"
+      }
+    ],
+    "annualTrend": [
+      { "month": "Jan", "index": 28, "projected": false },
+      { "month": "Feb", "index": 31, "projected": false },
+      { "month": "Mar", "index": 35, "projected": false },
+      { "month": "Apr", "index": 33, "projected": false },
+      { "month": "May", "index": 39, "projected": false },
+      { "month": "Jun", "index": 44, "projected": false },
+      { "month": "Jul", "index": 48, "projected": false },
+      { "month": "Aug", "index": 52, "projected": false },
+      { "month": "Sep", "index": 58, "projected": false },
+      { "month": "Oct", "index": 82, "projected": true },
+      { "month": "Nov", "index": 168, "projected": true },
+      { "month": "Dec", "index": 214, "projected": true }
     ]
   },
   "2020": {
@@ -1318,7 +1383,7 @@ export const timelineContent = {
         "id": "kevinception",
         "category": "Projects",
         "hook": "What if a portfolio changed with the technology era?",
-        "body": "Kevinception presents one verified body of work through six interfaces: television, Kevin Online, KevinBook, KevTok, an agent workspace, and a holographic digital self.",
+        "body": "Kevinception presents one verified body of work through six interfaces: television, Kevin Online, Kevazon Marketplace, KevTok, a human-AI collaboration workspace, and a holographic digital self.",
         "cta": "Open case study",
         "action": "project",
         "slug": "kevinception"
@@ -1369,31 +1434,36 @@ export const timelineContent = {
     ]
   },
   "2030": {
-    "agents": [
+    "collaborators": [
       {
-        "id": "strategist",
-        "name": "Strategist",
-        "function": "Clarifies the objective, constraints, success criteria, and options."
+        "id": "human-lead",
+        "kind": "Human",
+        "name": "Kevin · Human Lead",
+        "function": "Defines intent, contributes lived context, weighs tradeoffs, and owns the consequential decision."
       },
       {
         "id": "researcher",
-        "name": "Researcher",
-        "function": "Finds source-backed information and records uncertainty."
+        "kind": "AI",
+        "name": "AI Researcher",
+        "function": "Finds source-backed information, compares precedents, and records uncertainty."
       },
       {
         "id": "builder",
-        "name": "Builder",
-        "function": "Turns the plan into an artifact, workflow, prototype, or implementation."
+        "kind": "AI",
+        "name": "AI Builder",
+        "function": "Turns an approved direction into an artifact, workflow, prototype, or implementation."
       },
       {
-        "id": "governor",
-        "name": "Governor",
-        "function": "Checks evidence, permissions, risk, and objective fit."
+        "id": "human-governor",
+        "kind": "Human",
+        "name": "Human Governor",
+        "function": "Checks evidence, permissions, impact, and objective fit before authority is exercised."
       },
       {
         "id": "archivist",
-        "name": "Archivist",
-        "function": "Preserves decisions, context, receipts, and continuity."
+        "kind": "AI",
+        "name": "AI Archivist",
+        "function": "Preserves decisions, context, receipts, and continuity for the next collaboration."
       }
     ],
     "missions": [
@@ -1460,7 +1530,7 @@ export const timelineContent = {
       "shaped": "Curiosity came first. Technology responded to exploration: a channel changed, a character moved, and a script altered an online world. Connection came next—then identity, creation, intelligent collaboration, and the question of what can remain present through a system.",
       "build": "Systems that make ambitious work clearer and more executable: products, operating models, automation, context infrastructure, agent workflows, and interfaces that help people understand complexity.",
       "believe": "Technology should amplify judgment, creativity, and meaningful action. It should reduce unnecessary friction without hiding accountability. The most important interface is often the one that makes the real decision visible.",
-      "memory": "Select a signal: Curiosity, Connection, Presence, Creation, Delegation, or Continuity. Each is a different reconstruction of the same life.",
+      "memory": "Select a signal: Curiosity, Connection, Commerce, Creation, Coexistence, or Continuity. Each is a different reconstruction of the same life.",
       "human": "A system can preserve records, patterns, preferences, and language. It may simulate continuity. But responsibility, lived experience, embodied relationships, and the authority to define meaning cannot be assumed because the simulation is convincing.",
       "real": "No. I am a speculative interface built from approved evidence and modeled interpretation. I am not the biological Kevin, and I do not claim transferred consciousness. The distinction matters.",
       "beginning": "The first signal is waiting in 1990, on a tube television tuned to Channel 3."

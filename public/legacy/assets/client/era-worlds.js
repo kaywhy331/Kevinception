@@ -458,7 +458,7 @@ function init1990() {
 }
 
 // ---------------------------------------------------------------------------
-// 2010 — KevinBook
+// 2010 — archived social-world controller (the live Commerce page uses kevazon.js)
 // ---------------------------------------------------------------------------
 let y2010Initialized = false;
 function setKbTab(tab) {
@@ -520,7 +520,7 @@ function init2010() {
   });
   document.querySelector('[data-kb-poke]')?.addEventListener('click', () => {
     state.y2010.pokeCount += 1; saveState(); beep('message'); toast(`You poked Kevin${state.y2010.pokeCount > 1 ? ` ${state.y2010.pokeCount} times` : ''}.`);
-    if (state.y2010.pokeCount >= 3) discoverArtifact('cached-profile');
+    if (state.y2010.pokeCount >= 3) discoverArtifact('project-blueprint');
   });
   document.querySelector('[data-kb-farm]')?.addEventListener('click', (event) => { event.currentTarget.textContent = 'Request ignored'; event.currentTarget.disabled = true; toast('FarmField will ask again in 14 minutes.'); });
   document.querySelector('[data-kb-friend-request]')?.addEventListener('click', (event) => { event.currentTarget.innerHTML = 'Friends ✓'; toast('You are now connected across one additional timeline.'); beep('success'); });
@@ -621,7 +621,7 @@ function init2020() {
 }
 
 // ---------------------------------------------------------------------------
-// 2030 — Kevin Nexus
+// 2030 — Kevin Nexus coexistence workspace
 // ---------------------------------------------------------------------------
 let y2030Initialized = false;
 let activeMission = null;
@@ -637,7 +637,7 @@ function missionFromObjective(objective) {
 function renderNexusPlan(mission, objective) {
   const projectRecords = mission.projects.map(projectBySlug).filter(Boolean);
   const plan = document.querySelector('[data-nexus-plan]');
-  plan.innerHTML = `<ol><li><b>Clarify</b><span>Restate the objective, constraints, decision owner, and success evidence.</span></li><li><b>Retrieve</b><span>Mount ${projectRecords.map((project)=>project.title).join(' and ')} as verified precedent.</span></li><li><b>Design</b><span>Create a small reversible plan before committing to broad automation.</span></li><li><b>Govern</b><span>Expose assumptions, permissions, risk, and the human approval boundary.</span></li><li><b>Preserve</b><span>Store decisions, evidence, and a continuation packet for the next agent or session.</span></li></ol><div class="nexus-evidence"><p class="eyebrow">Relevant evidence</p>${projectRecords.map((project)=>`<button type="button" data-project-slug="${escapeHtml(project.slug)}"><b>${escapeHtml(project.title)}</b><span>${escapeHtml(project.summary)}</span></button>`).join('')}</div><p class="nexus-objective"><b>Objective interpreted:</b> ${escapeHtml(objective)}</p>`;
+  plan.innerHTML = `<ol><li><b>Frame together</b><span>Kevin defines intent, constraints, success evidence, and the decision he remains accountable for.</span></li><li><b>Retrieve</b><span>AI mounts ${projectRecords.map((project)=>project.title).join(' and ')} as verified precedent and labels uncertainty.</span></li><li><b>Co-create</b><span>Human context and machine synthesis produce a small reversible plan.</span></li><li><b>Govern</b><span>Both sides inspect assumptions, evidence, permissions, risk, and the human authority boundary.</span></li><li><b>Preserve</b><span>The collaboration stores decisions, receipts, and a continuation packet for the next session.</span></li></ol><div class="nexus-evidence"><p class="eyebrow">Relevant evidence</p>${projectRecords.map((project)=>`<button type="button" data-project-slug="${escapeHtml(project.slug)}"><b>${escapeHtml(project.title)}</b><span>${escapeHtml(project.summary)}</span></button>`).join('')}</div><p class="nexus-objective"><b>Shared objective:</b> ${escapeHtml(objective)}</p>`;
   plan.querySelectorAll('[data-project-slug]').forEach((button) => button.addEventListener('click', () => openProject(button.dataset.projectSlug)));
 }
 function runNexusMission(objective) {
@@ -645,9 +645,9 @@ function runNexusMission(objective) {
   activeMission = missionFromObjective(objective);
   document.querySelector('[data-nexus-output-title]').textContent = activeMission.label;
   document.querySelector('[data-nexus-log]').innerHTML = '';
-  document.querySelector('[data-nexus-plan]').innerHTML = '<p>Agent team is working...</p>';
+  document.querySelector('[data-nexus-plan]').innerHTML = '<p>Human and AI collaborators are working...</p>';
   document.querySelector('[data-nexus-gate-state]').textContent = 'PROCESSING';
-  document.querySelector('[data-nexus-gate-copy]').textContent = 'The team is preparing a plan and checking where human judgment is required.';
+  document.querySelector('[data-nexus-gate-copy]').textContent = 'The collaborators are preparing a plan and checking where human judgment is required.';
   document.querySelector('[data-nexus-approve]').disabled = true; document.querySelector('[data-nexus-revise]').disabled = true;
   const agents = [...document.querySelectorAll('[data-nexus-agent]')];
   agents.forEach((agent)=>{ agent.classList.remove('is-active','is-complete'); agent.querySelector('small').textContent='IDLE'; });
@@ -656,12 +656,12 @@ function runNexusMission(objective) {
     nexusTimers.push(setTimeout(() => {
       agents.forEach((item)=>item.classList.remove('is-active'));
       agent.classList.add('is-active'); agent.querySelector('small').textContent='RUNNING';
-      nexusLog(`${agent.querySelector('b').textContent} accepted the objective.`); beep('click');
+      nexusLog(`${agent.querySelector('b').textContent} joined the shared objective.`); beep('click');
       if (index > 0) { agents[index-1].classList.add('is-complete'); agents[index-1].querySelector('small').textContent='COMPLETE'; }
       if (index === agents.length-1) {
         nexusTimers.push(setTimeout(() => {
           agent.classList.remove('is-active'); agent.classList.add('is-complete'); agent.querySelector('small').textContent='COMPLETE';
-          nexusLog('Evidence packet ready. Human decision gate reached.');
+          nexusLog('Shared evidence packet ready. Human decision gate reached.');
           renderNexusPlan(activeMission, objective);
           document.querySelector('[data-nexus-gate-state]').textContent='REVIEW REQUIRED';
           document.querySelector('[data-nexus-gate-copy]').textContent='This next step changes scope and public commitments. Human approval is required.';
@@ -679,13 +679,13 @@ function init2030() {
   document.querySelectorAll('[data-nexus-preset]').forEach((button) => button.addEventListener('click', () => { const mission = data.timelineContent['2030'].missions.find((item)=>item.id===button.dataset.nexusPreset); form.elements.objective.value = mission.objective; form.elements.objective.focus(); }));
   form.addEventListener('submit', (event) => { event.preventDefault(); const objective = form.elements.objective.value.trim(); if (!objective) return; runNexusMission(objective); });
   document.querySelector('[data-nexus-autonomy]')?.addEventListener('input', (event) => { event.target.nextElementSibling.textContent = `${event.target.value} / 5`; });
-  document.querySelector('[data-nexus-approve]')?.addEventListener('click', () => { state.y2030.approvals += 1; saveState(); document.querySelector('[data-nexus-gate-state]').textContent='APPROVED'; document.querySelector('[data-nexus-gate-copy]').textContent='Human approval recorded. The Archivist preserved the decision and evidence receipt.'; beep('success'); toast('The simulated mission was approved.'); });
+  document.querySelector('[data-nexus-approve]')?.addEventListener('click', () => { state.y2030.approvals += 1; saveState(); document.querySelector('[data-nexus-gate-state]').textContent='APPROVED'; document.querySelector('[data-nexus-gate-copy]').textContent='Human approval recorded. The AI Archivist preserved the decision and evidence receipt without assuming authority.'; beep('success'); toast('The human-owned decision was approved.'); });
   document.querySelector('[data-nexus-revise]')?.addEventListener('click', () => { document.querySelector('[data-nexus-gate-state]').textContent='REVISION REQUESTED'; document.querySelector('[data-nexus-gate-copy]').textContent='The team will narrow scope, reduce irreversible automation, and return with a smaller experiment.'; nexusLog('Human requested a smaller reversible first step.'); beep('message'); });
   document.querySelector('[data-nexus-command-form]')?.addEventListener('submit', (event) => {
     event.preventDefault(); const command = event.currentTarget.elements.command.value.trim().toLowerCase();
     if (/future|echo|handoff|2040/.test(command)) { const hidden = document.querySelector('[data-nexus-hidden-agent]'); hidden.hidden=false; hidden.classList.add('is-visible'); discoverArtifact('agent-memory'); nexusLog('Unknown agent ECHO mounted a future-dated handoff packet.'); }
-    else if (/help/.test(command)) toast('Try “reveal future handoff” or run one of the prepared missions.');
-    else toast('Command routed to the mission console.');
+    else if (/help/.test(command)) toast('Try “reveal future handoff” or start one of the prepared collaborations.');
+    else toast('Command routed to the shared objective console.');
     event.currentTarget.reset();
   });
   const start = performance.now();
@@ -736,9 +736,9 @@ function selectEchoMemory(year) {
   const memories = {
     '1990': 'Curiosity: the first responsive screen. A channel changed, a character moved, and technology became a world with rules worth exploring.',
     '2000': 'Connection: the first online identity. Dial-up transformed a computer in one room into an entrance to people, scripts, pages, and communities.',
-    '2010': 'Presence: the public profile. Interfaces began shaping identity, relationships, attention, and behavior continuously.',
+    '2010': 'Commerce: the storefront promise became an operating system of orders, catalog data, inventory, fulfillment, marketplaces, and enterprise workflows.',
     '2020': 'Creation: the compressed story. Everyone gained publishing tools while AI began to move from specialist technology to collaborator.',
-    '2030': 'Delegation: the objective became the interface. Agent teams carried work through shared memory, evidence, and human decision gates.',
+    '2030': 'Coexistence: people and AI collaborators share objectives, context, and evidence while humans retain responsibility for consequential judgment.',
     '2040': 'Continuity: the persistent echo. The archive can preserve patterns and evidence, but it must remain honest about what it cannot preserve.'
   };
   lastEchoResponse = memories[year];

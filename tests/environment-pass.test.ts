@@ -27,10 +27,12 @@ describe('V7 connected physical environment pass', () => {
     expect(computerRoom).toContain('<GroundedDesk');
   });
 
-  it('models 2030 as a grounded autonomous systems lab', () => {
+  it('models 2030 as a grounded human-AI coexistence lab', () => {
     const scene = read('src/experience/scenes/Year2030Scene.tsx');
     expect(scene).toContain('<RoomShell');
     expect(scene).toContain('Human approval node');
+    expect(scene).toContain('Kevin · Human Lead');
+    expect(scene).toContain('Human Governor');
     expect(scene).toContain('<ArchiveColumn');
     expect(scene).toContain('<WallDisplay');
     expect(scene).toContain('<FloorPedestal');

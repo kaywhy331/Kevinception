@@ -19,11 +19,15 @@ This package consolidates the approved six-year technology timeline, the V7 stor
 
 When documents appear to conflict:
 
+- The **Narrative Architecture V7.6** document controls current chapter names, experience names, and chapter-to-chapter story language.
+- The **Implementation Status** document controls the surfaces shipped in the current release.
 - The **PRD** controls product behavior and user outcomes.
 - The **Technical Specification** controls architecture and implementation contracts.
 - The **Cross-Timeline Specification** controls continuity and transition behavior.
 - The **Completion Checklists** control release acceptance.
 - Canonical content records control all factual claims about Kevin.
+
+The original planning specifications retain the earlier 2010 social-profile and 2030 autonomous-workspace concepts as historical baselines. The current implementation replaces those concepts with **Commerce / Kevazon Marketplace** and **Coexistence / Kevin Nexus**; the narrative architecture and implementation status documents supersede the older chapter language.
 
 ## Core decision
 
@@ -35,7 +39,7 @@ R3F / Three.js
   spatial audio, transitions, artifacts, holograms
 
 React DOM
-  AOL windows, mail, chat, Xanga, KevinBook, KevTok,
+  AOL windows, mail, chat, Xanga, Kevazon Marketplace, KevTok,
   case studies, resume, forms, captions, transcripts
 
 Canonical content

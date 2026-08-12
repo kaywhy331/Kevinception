@@ -1,0 +1,76 @@
+{
+  "generatedAt": "2026-08-12T12:07:52.193Z",
+  "browser": "/home/trix/.cache/ms-playwright/chromium-1234/chrome-linux64/chrome",
+  "base": "http://127.0.0.1:4321",
+  "pages": [
+    {
+      "route": "/",
+      "status": 200,
+      "title": "Kevinception — Six Digital Eras. One Evolving Mind."
+    },
+    {
+      "route": "/experience/",
+      "status": 200,
+      "title": "Timeline | Kevinception"
+    },
+    {
+      "route": "/experience/?year=1990",
+      "status": 200,
+      "title": "Timeline | Kevinception"
+    },
+    {
+      "route": "/experience/?year=2000",
+      "status": 200,
+      "title": "Timeline | Kevinception"
+    },
+    {
+      "route": "/experience/?year=2010",
+      "status": 200,
+      "title": "Timeline | Kevinception"
+    },
+    {
+      "route": "/experience/?year=2020",
+      "status": 200,
+      "title": "Timeline | Kevinception"
+    },
+    {
+      "route": "/experience/?year=2030",
+      "status": 200,
+      "title": "Timeline | Kevinception"
+    },
+    {
+      "route": "/experience/?year=2040",
+      "status": 200,
+      "title": "Timeline | Kevinception"
+    },
+    {
+      "route": "/experience/2010/",
+      "status": 200,
+      "title": "2010 Commerce — Kevazon Marketplace | Kevinception"
+    },
+    {
+      "route": "/experience/2030/",
+      "status": 200,
+      "title": "2030 Coexistence — Kevin Nexus | Kevinception"
+    },
+    {
+      "route": "/portfolio/",
+      "status": 200,
+      "title": "Profile | Kevinception"
+    },
+    {
+      "route": "/work/kevinception/",
+      "status": 200,
+      "title": "Kevinception | Kevinception"
+    },
+    {
+      "route": "/experience/?year=2020",
+      "status": 200,
+      "title": "Timeline | Kevinception"
+    }
+  ],
+  "consoleErrors": [],
+  "pageErrors": [],
+  "requestFailures": [],
+  "mobileOverflow": 0
+}

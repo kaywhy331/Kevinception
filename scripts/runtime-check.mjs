@@ -24,6 +24,15 @@ function candidates() {
     );
   } else {
     list.push('/usr/bin/chromium', '/usr/bin/chromium-browser', '/usr/bin/google-chrome', '/usr/bin/google-chrome-stable');
+    const playwrightCache = path.join(os.homedir(), '.cache', 'ms-playwright');
+    if (fs.existsSync(playwrightCache)) {
+      for (const directory of fs.readdirSync(playwrightCache).sort().reverse()) {
+        list.push(
+          path.join(playwrightCache, directory, 'chrome-linux64', 'chrome'),
+          path.join(playwrightCache, directory, 'chrome-linux', 'chrome')
+        );
+      }
+    }
   }
   return list.filter(Boolean);
 }
@@ -44,31 +53,38 @@ const report = { generatedAt: new Date().toISOString(), browser: executablePath,
 const page = await browser.newPage();
 page.on('console', (message) => { if (message.type() === 'error') report.consoleErrors.push(message.text()); });
 page.on('pageerror', (error) => report.pageErrors.push(String(error)));
-page.on('requestfailed', (request) => report.requestFailures.push(`${request.url()} :: ${request.failure()?.errorText}`));
+page.on('requestfailed', (request) => {
+  const reason = request.failure()?.errorText ?? 'unknown';
+  // Navigating between pages legitimately cancels speculative Next.js prefetches.
+  if (reason === 'net::ERR_ABORTED') return;
+  report.requestFailures.push(`${request.url()} :: ${reason}`);
+});
 
-async function visit(route, screenshot) {
-  const response = await page.goto(`${base}${route}`, { waitUntil: 'networkidle0', timeout: 45000 });
+async function visit(route, screenshot, readySelector = 'body') {
+  console.log(`[runtime] ${route}`);
+  const response = await page.goto(`${base}${route}`, { waitUntil: 'domcontentloaded', timeout: 45000 });
+  await page.waitForSelector(readySelector, { timeout: 30000 });
   report.pages.push({ route, status: response?.status() ?? null, title: await page.title() });
+  if (!response || response.status() >= 400) throw new Error(`${route} returned ${response?.status() ?? 'no response'}.`);
   if (screenshot) await page.screenshot({ path: screenshot, fullPage: false });
 }
 
 await page.setViewport({ width: 1440, height: 900, deviceScaleFactor: 1 });
 await visit('/', 'docs/previews/v7-threshold.png');
-await visit('/experience/', 'docs/previews/v7-timeline.png');
-await page.waitForSelector('canvas', { timeout: 30000 });
+await visit('/experience/', 'docs/previews/v7-timeline.png', 'canvas');
 for (const year of ['1990', '2000', '2010', '2020', '2030', '2040']) {
-  await visit(`/experience/${year}/`, `docs/previews/v7-${year}-environment.png`);
-  await page.waitForSelector('.environment-panel', { timeout: 15000 });
+  await visit(`/experience/?year=${year}`, `docs/previews/v7-${year}-environment.png`, '.environment-panel');
 }
+await visit('/experience/2010/', null, '.interface-mode.is-visible');
+await visit('/experience/2030/', null, '.interface-mode.is-visible');
 await visit('/portfolio/', 'docs/previews/v7-portfolio.png');
 await visit('/work/kevinception/', 'docs/previews/v7-case-study.png');
 
 await page.setViewport({ width: 390, height: 844, deviceScaleFactor: 1 });
-await visit('/experience/2020/', 'docs/previews/v7-2020-mobile.png');
-await page.waitForSelector('.environment-panel', { timeout: 15000 });
+await visit('/experience/?year=2020', 'docs/previews/v7-2020-mobile.png', '.environment-panel');
 report.mobileOverflow = await page.evaluate(() => document.documentElement.scrollWidth - document.documentElement.clientWidth);
 
 await browser.close();
 fs.writeFileSync('docs/RUNTIME_VERIFICATION_V7.json', JSON.stringify(report, null, 2));
 console.log(JSON.stringify(report, null, 2));
-if (report.pageErrors.length || report.consoleErrors.length || report.mobileOverflow > 1) process.exit(1);
+if (report.pageErrors.length || report.consoleErrors.length || report.requestFailures.length || report.mobileOverflow > 1) process.exit(1);

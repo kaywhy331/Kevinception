@@ -1,0 +1,58 @@
+{
+  "generatedAt": "2026-08-12T12:09:20.794Z",
+  "assertions": [
+    {
+      "name": "An order advances through the fulfillment workflow",
+      "passed": true,
+      "detail": "Packed"
+    },
+    {
+      "name": "Global search routes a matching SKU into the catalog",
+      "passed": true,
+      "detail": "1 matching rows"
+    },
+    {
+      "name": "FBA confirmation completes the inbound plan",
+      "passed": true,
+      "detail": ""
+    },
+    {
+      "name": "ERP synchronization records a receipt",
+      "passed": true,
+      "detail": ""
+    },
+    {
+      "name": "Kevazon artifact recovery reaches the persistent experience store",
+      "passed": true,
+      "detail": ""
+    },
+    {
+      "name": "The Coexistence roster contains explicit human and AI collaborators",
+      "passed": true,
+      "detail": "Kevin · Human Lead | AI Researcher | AI Builder | Human Governor | AI Archivist"
+    },
+    {
+      "name": "The consequential Nexus action requires and records human approval",
+      "passed": true,
+      "detail": ""
+    },
+    {
+      "name": "The reviewed flows emit no console errors",
+      "passed": true,
+      "detail": ""
+    },
+    {
+      "name": "The reviewed flows emit no page errors",
+      "passed": true,
+      "detail": ""
+    },
+    {
+      "name": "The reviewed flows emit no unexpected request failures",
+      "passed": true,
+      "detail": ""
+    }
+  ],
+  "consoleErrors": [],
+  "pageErrors": [],
+  "requestFailures": []
+}

@@ -29,7 +29,7 @@ Third person is reserved for neutral metadata, conventional resume/case-study ev
 | **Timeline** | The immersive route at `/experience/` | Global navigation label. “Chapters” is allowed inside the experience for its chapter chooser. |
 | **Profile** | Kevin's approach and capabilities at `/portfolio/` | Global navigation label. It is not a second work archive. |
 | **Case studies** | The project archive at `/work/` | The only surface that lists every project card. |
-| **KevinVision / Kevin Online / KevinBook / KevTok / Kevin Nexus / Kevin Echo** | Era-native interfaces or speculative personas | Keep exact capitalization. Kevin Echo must retain its simulated-representation disclosure. |
+| **KevinVision / Kevin Online / Kevazon Marketplace / KevTok / Kevin Nexus / Kevin Echo** | Era-native interfaces or speculative personas | Keep exact capitalization. Kevin Echo must retain its simulated-representation disclosure. |
 
 ## Plain-language glossary
 
