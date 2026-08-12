@@ -33,6 +33,7 @@ describe('Commerce and Coexistence chapters', () => {
     expect(html).toContain('One operating system connecting purchasing, catalog, marketplaces, fulfillment, customers, and the team.');
     expect(html).toContain('One system from vendor purchase to customer promise');
     expect(html).toContain('Built in-house · proprietary platform');
+    expect(html).toContain('Kevin · co-founder &amp; systems builder');
     expect(html).toContain('Settings / Administration');
     expect(html).toContain('1.5M</strong> searchable product records');
     expect(html).toContain('20+ commerce channels, one operations layer');

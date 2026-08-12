@@ -1,7 +1,7 @@
 {
-  "generatedAt": "2026-08-12T14:01:59.136Z",
+  "generatedAt": "2026-08-12T14:14:42.875Z",
   "browser": "/home/trix/.cache/ms-playwright/chromium-1234/chrome-linux64/chrome",
-  "base": "http://127.0.0.1:4321",
+  "base": "https://kevinception.netlify.app",
   "assertions": [
     {
       "name": "The dashboard exposes the full vendor-to-customer lifecycle",
