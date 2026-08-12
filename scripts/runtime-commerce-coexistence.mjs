@@ -31,7 +31,7 @@ const browser = await puppeteer.launch({
   args: ['--no-sandbox', '--disable-dev-shm-usage', '--enable-unsafe-swiftshader']
 });
 const page = await browser.newPage();
-const report = { generatedAt: new Date().toISOString(), assertions: [], consoleErrors: [], pageErrors: [], requestFailures: [] };
+const report = { generatedAt: new Date().toISOString(), browser: executablePath, base, assertions: [], consoleErrors: [], pageErrors: [], requestFailures: [] };
 
 function assert(name, condition, detail = '') {
   report.assertions.push({ name, passed: Boolean(condition), detail });
@@ -49,8 +49,7 @@ try {
   await page.goto(`${base}/experience/?year=2010&view=interface`, { waitUntil: 'domcontentloaded', timeout: 45000 });
   await page.waitForSelector('.interface-mode.is-visible', { timeout: 30000 });
   await page.waitForFunction(() => [...document.querySelectorAll('iframe')].some((frame) => frame.src.includes('/legacy/experience/2010/')), { timeout: 30000 });
-  const kevazon = page.frames().find((frame) => frame.url().includes('/legacy/experience/2010/'));
-  if (!kevazon) throw new Error('Kevazon iframe was not found.');
+  const kevazon = await page.waitForFrame((frame) => frame.url().includes('/legacy/experience/2010/'), { timeout: 30000 });
   await kevazon.waitForSelector('[data-kevazon]', { timeout: 30000 });
 
   await kevazon.click('[data-kz-tab="orders"]');
@@ -86,8 +85,7 @@ try {
 
   await page.goto(`${base}/experience/?year=2030&view=interface`, { waitUntil: 'domcontentloaded', timeout: 45000 });
   await page.waitForFunction(() => [...document.querySelectorAll('iframe')].some((frame) => frame.src.includes('/legacy/experience/2030/')), { timeout: 30000 });
-  const nexus = page.frames().find((frame) => frame.url().includes('/legacy/experience/2030/'));
-  if (!nexus) throw new Error('Kevin Nexus iframe was not found.');
+  const nexus = await page.waitForFrame((frame) => frame.url().includes('/legacy/experience/2030/'), { timeout: 30000 });
   await nexus.waitForSelector('[data-era-enter]', { timeout: 30000 });
   await nexus.$eval('[data-era-enter]', (button) => button.click());
   await nexus.waitForSelector('[data-era-stage]:not([hidden])');

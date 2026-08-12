@@ -1,5 +1,7 @@
 {
-  "generatedAt": "2026-08-12T12:09:20.794Z",
+  "generatedAt": "2026-08-12T12:22:13.996Z",
+  "browser": "/home/trix/.cache/ms-playwright/chromium-1234/chrome-linux64/chrome",
+  "base": "https://kevinception.netlify.app",
   "assertions": [
     {
       "name": "An order advances through the fulfillment workflow",

@@ -44,6 +44,8 @@ jobs:
 
           CHROME_PATH="$chrome_path" BASE_URL=http://127.0.0.1:4321 node scripts/runtime-review-v77.mjs
           CHROME_PATH="$chrome_path" BASE_URL=http://127.0.0.1:4321 node scripts/capture-future-ultrawide.mjs
+          CHROME_PATH="$chrome_path" BASE_URL=http://127.0.0.1:4321 npm run test:runtime
+          CHROME_PATH="$chrome_path" BASE_URL=http://127.0.0.1:4321 npm run test:runtime:chapters
       - name: Upload browser review
         if: always()
         uses: actions/upload-artifact@v4
@@ -52,5 +54,8 @@ jobs:
           if-no-files-found: warn
           path: |
             docs/previews/v77
+            docs/previews/v7-*.png
+            docs/RUNTIME_VERIFICATION_V7.json
+            docs/RUNTIME_COMMERCE_COEXISTENCE.json
             docs/RUNTIME_REVIEW_V77.json
             preview-server.log
