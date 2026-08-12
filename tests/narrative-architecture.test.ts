@@ -39,7 +39,8 @@ describe('V7.6 narrative architecture', () => {
     expect(home).not.toContain('landing-page__summary');
     expect((home.match(/<Link\b/g) ?? [])).toHaveLength(0);
     expect((portal.match(/<Link\b/g) ?? [])).toHaveLength(1);
-    expect(portal).toContain('Enter {active.experienceName}');
+    expect(portal).toContain('Enter {entry.experienceName}');
+    expect(portal).toContain('useState<YearId>(YEAR_ORDER[0])');
     expect(globals).toMatch(/\.landing-page \{[^}]*height: 100svh;[^}]*overflow: hidden;/);
     expect(globals).toContain('@media (max-width: 900px) and (orientation: landscape)');
     expect(home).not.toContain('SiteChrome');

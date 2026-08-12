@@ -6,16 +6,19 @@ import { projects, timelineContent, xennialLegacy, type YearId } from '@/content
 import { artifacts } from './artifacts';
 import { eraConfigs, getAdjacentYear, YEAR_ORDER } from './config';
 import { useExperienceActions } from './ExperienceContext';
+import { preloadExperienceScene } from './sceneLoaders';
 import { useExperienceStore } from './store';
 
-function canPrewarmInterface() {
+function canPrewarmInterface(year: YearId) {
   if (typeof navigator === 'undefined') return false;
   const device = navigator as Navigator & { deviceMemory?: number; connection?: { saveData?: boolean } };
-  return !device.connection?.saveData && (device.deviceMemory ?? 8) > 4 && navigator.hardwareConcurrency > 4;
+  const futureYear = year === '2030' || year === '2040';
+  return !device.connection?.saveData && (futureYear || ((device.deviceMemory ?? 8) > 4 && navigator.hardwareConcurrency > 4));
 }
 
-function requestInterfacePrewarm(year: YearId) {
-  if (!canPrewarmInterface()) return;
+function requestExperiencePrewarm(year: YearId) {
+  if (useExperienceStore.getState().quality !== 'lite') void preloadExperienceScene(year);
+  if (!canPrewarmInterface(year)) return;
   window.dispatchEvent(new CustomEvent('kevinception:prewarm', { detail: { year } }));
 }
 
@@ -34,8 +37,9 @@ function YearSelector() {
             className={activeYear === year ? 'is-active' : ''}
             style={{ '--era-accent': config.accent } as React.CSSProperties}
             onClick={() => navigateToYear(year)}
-            onPointerEnter={() => requestInterfacePrewarm(year)}
-            onFocus={() => requestInterfacePrewarm(year)}
+            onPointerEnter={() => requestExperiencePrewarm(year)}
+            onFocus={() => requestExperiencePrewarm(year)}
+            onTouchStart={() => requestExperiencePrewarm(year)}
             aria-current={activeYear === year ? 'step' : undefined}
             aria-label={`${year} ${config.chapterName}, experienced through ${config.experienceName}`}
           >
@@ -75,9 +79,9 @@ function ChapterCard({ mode }: { mode: 'timeline' | 'environment' }) {
         <button
           className="primary-action"
           type="button"
-          onPointerEnter={() => requestInterfacePrewarm(activeYear)}
-          onFocus={() => requestInterfacePrewarm(activeYear)}
-          onTouchStart={() => requestInterfacePrewarm(activeYear)}
+          onPointerEnter={() => requestExperiencePrewarm(activeYear)}
+          onFocus={() => requestExperiencePrewarm(activeYear)}
+          onTouchStart={() => requestExperiencePrewarm(activeYear)}
           onClick={() => enterYear(activeYear)}
         >
           {config.enterLabel}
@@ -166,7 +170,7 @@ function InterfaceLayer({ visible }: { visible: boolean }) {
   }, [loadedYears]);
 
   useEffect(() => {
-    if (visible || activeYear === '2000' || loadedYears[activeYear] || !canPrewarmInterface()) return;
+    if (visible || activeYear === '2000' || loadedYears[activeYear] || !canPrewarmInterface(activeYear)) return;
     const timer = window.setTimeout(() => mountYear(activeYear), 1100);
     return () => window.clearTimeout(timer);
   }, [activeYear, loadedYears, visible]);
@@ -227,7 +231,7 @@ function InterfaceLayer({ visible }: { visible: boolean }) {
               src={yearConfig.legacyPath}
               title={`${yearConfig.experienceName} functional application for the ${yearConfig.chapterName} chapter`}
               sandbox="allow-scripts allow-forms allow-same-origin allow-popups allow-modals allow-downloads allow-top-navigation-by-user-activation"
-              loading={year === activeYear ? 'eager' : 'lazy'}
+              loading="eager"
               tabIndex={isActive ? 0 : -1}
               onLoad={(event) => onFrameLoad(year, event.currentTarget)}
             />

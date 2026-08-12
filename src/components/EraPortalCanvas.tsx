@@ -3,6 +3,7 @@
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { useEffect, useRef, useState } from 'react';
+import type { YearId } from '@/content/data';
 import { eraConfigs, YEAR_ORDER } from '@/experience/config';
 import { isLowPowerDevice } from '@/experience/performanceProfile';
 
@@ -197,10 +198,17 @@ export function EraPortalCanvas() {
   const router = useRouter();
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const [activeIndex, setActiveIndex] = useState(0);
+  const [entryYear, setEntryYear] = useState<YearId>(YEAR_ORDER[0]);
   const [reducedMotion, setReducedMotion] = useState(false);
   const activeYear = YEAR_ORDER[activeIndex];
   const active = eraConfigs[activeYear];
-  const experienceHref = `/experience/?year=${activeYear}`;
+  const entry = eraConfigs[entryYear];
+  const experienceHref = `/experience/?year=${entryYear}`;
+
+  const selectEra = (year: YearId, index: number) => {
+    setActiveIndex(index);
+    setEntryYear(year);
+  };
 
   useEffect(() => {
     const query = window.matchMedia('(prefers-reduced-motion: reduce)');
@@ -290,9 +298,9 @@ export function EraPortalCanvas() {
       </div>
       <div className="era-portal__controls">
         <div role="group" aria-label="Preview an era">
-          {YEAR_ORDER.map((year, index) => <button key={year} type="button" className={index === activeIndex ? 'is-active' : ''} onClick={() => setActiveIndex(index)} aria-label={`Preview ${year}: ${eraConfigs[year].chapterName}`} aria-pressed={index === activeIndex}><span>{year}</span></button>)}
+          {YEAR_ORDER.map((year, index) => <button key={year} type="button" className={index === activeIndex ? 'is-active' : ''} onClick={() => selectEra(year, index)} aria-label={`Preview ${year}: ${eraConfigs[year].chapterName}`} aria-pressed={index === activeIndex}><span>{year}</span></button>)}
         </div>
-        <Link href={experienceHref} prefetch={false} onPointerEnter={() => router.prefetch(experienceHref)} onFocus={() => router.prefetch(experienceHref)} onTouchStart={() => router.prefetch(experienceHref)} data-analytics-event="timeline_enter" data-analytics-source="home_portal" data-analytics-year={activeYear}>Enter {active.experienceName} <span aria-hidden="true">↗</span></Link>
+        <Link href={experienceHref} prefetch={false} onPointerEnter={() => router.prefetch(experienceHref)} onFocus={() => router.prefetch(experienceHref)} onTouchStart={() => router.prefetch(experienceHref)} data-analytics-event="timeline_enter" data-analytics-source="home_portal" data-analytics-year={entryYear}>Enter {entry.experienceName} <span aria-hidden="true">↗</span></Link>
       </div>
     </div>
   );

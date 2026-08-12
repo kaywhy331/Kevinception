@@ -1,28 +1,17 @@
 'use client';
 
-import { lazy, Suspense, useEffect } from 'react';
+import { lazy, Suspense, useEffect, useState } from 'react';
 import type { ComponentType, LazyExoticComponent } from 'react';
 import { TimelineArchitecture } from './TimelineArchitecture';
 import { eraConfigs, YEAR_ORDER } from './config';
 import { useExperienceStore } from './store';
 import type { YearId } from '@/content/data';
 import type { ViewMode } from './types';
-
-type SceneProps = { active: boolean; timeline: boolean; detail?: boolean };
-type SceneModule = { default: ComponentType<SceneProps> };
-
-const sceneLoaders: Record<YearId, () => Promise<SceneModule>> = {
-  '1990': () => import('./scenes/Year1990Scene').then((module) => ({ default: module.Year1990Scene as ComponentType<SceneProps> })),
-  '2000': () => import('./scenes/Year2000Scene').then((module) => ({ default: module.Year2000Scene as ComponentType<SceneProps> })),
-  '2010': () => import('./scenes/Year2010Scene').then((module) => ({ default: module.Year2010Scene as ComponentType<SceneProps> })),
-  '2020': () => import('./scenes/Year2020Scene').then((module) => ({ default: module.Year2020Scene as ComponentType<SceneProps> })),
-  '2030': () => import('./scenes/Year2030Scene').then((module) => ({ default: module.Year2030Scene as ComponentType<SceneProps> })),
-  '2040': () => import('./scenes/Year2040Scene').then((module) => ({ default: module.Year2040Scene as ComponentType<SceneProps> }))
-};
+import { FUTURE_YEARS, preloadExperienceScene, sceneLoaders, type ExperienceSceneProps } from './sceneLoaders';
 
 const sceneComponents = Object.fromEntries(
   YEAR_ORDER.map((year) => [year, lazy(sceneLoaders[year])])
-) as Record<YearId, LazyExoticComponent<ComponentType<SceneProps>>>;
+) as Record<YearId, LazyExoticComponent<ComponentType<ExperienceSceneProps>>>;
 
 function EraProxy({ year }: { year: YearId }) {
   const config = eraConfigs[year];
@@ -59,6 +48,7 @@ export function ExperienceWorld() {
   const activeYear = useExperienceStore((state) => state.activeYear);
   const viewMode = useExperienceStore((state) => state.viewMode);
   const quality = useExperienceStore((state) => state.quality);
+  const [detailedFutureYear, setDetailedFutureYear] = useState<YearId | null>(null);
   const timeline = viewMode === 'timeline';
   const index = YEAR_ORDER.indexOf(activeYear);
   const visibleYears = new Set<YearId>([activeYear]);
@@ -71,16 +61,36 @@ export function ExperienceWorld() {
     visibleYears.add('2040');
   }
 
+  const futureYear = FUTURE_YEARS.includes(activeYear as (typeof FUTURE_YEARS)[number]);
+  const proxyOnly = quality === 'lite' && futureYear;
+  const renderDetailedScene = !futureYear || (quality !== 'lite' && detailedFutureYear === activeYear);
+
   useEffect(() => {
-    if (quality === 'lite') return;
-    const adjacent = [previous, next].filter(Boolean) as YearId[];
+    setDetailedFutureYear(null);
+    if (!futureYear || quality === 'lite') return;
     const idleWindow = window as Window & { requestIdleCallback?: (callback: () => void, options?: { timeout: number }) => number; cancelIdleCallback?: (id: number) => void };
-    const preload = () => adjacent.forEach((year) => { void sceneLoaders[year](); });
+    const reveal = () => setDetailedFutureYear(activeYear);
     if (idleWindow.requestIdleCallback) {
-      const id = idleWindow.requestIdleCallback(preload, { timeout: 1200 });
+      const id = idleWindow.requestIdleCallback(reveal, { timeout: 700 });
       return () => idleWindow.cancelIdleCallback?.(id);
     }
-    const timer = window.setTimeout(preload, 700);
+    const timer = window.setTimeout(reveal, 260);
+    return () => window.clearTimeout(timer);
+  }, [activeYear, futureYear, quality]);
+
+  useEffect(() => {
+    const device = navigator as Navigator & { connection?: { saveData?: boolean } };
+    if (device.connection?.saveData || quality === 'lite') return;
+    const adjacent = [previous, next].filter(Boolean) as YearId[];
+    const targets = new Set<YearId>(FUTURE_YEARS);
+    adjacent.forEach((year) => targets.add(year));
+    const idleWindow = window as Window & { requestIdleCallback?: (callback: () => void, options?: { timeout: number }) => number; cancelIdleCallback?: (id: number) => void };
+    const preload = () => targets.forEach((year) => { void preloadExperienceScene(year); });
+    if (idleWindow.requestIdleCallback) {
+      const id = idleWindow.requestIdleCallback(preload, { timeout: 1600 });
+      return () => idleWindow.cancelIdleCallback?.(id);
+    }
+    const timer = window.setTimeout(preload, 900);
     return () => window.clearTimeout(timer);
   }, [activeYear, next, previous, quality]);
 
@@ -103,9 +113,11 @@ export function ExperienceWorld() {
       <hemisphereLight args={['#a8bee4', '#251c19', 0.6]} />
       <TimelineArchitecture />
       {[...visibleYears].filter((year) => year !== activeYear).map((year) => <EraProxy key={`proxy-${year}`} year={year} />)}
-      <Suspense fallback={<EraProxy year={activeYear} />}>
-        <ActiveScene active timeline={timeline} detail />
-      </Suspense>
+      {!proxyOnly ? (
+        <Suspense fallback={<EraProxy year={activeYear} />}>
+          <ActiveScene active timeline={timeline} detail={renderDetailedScene} />
+        </Suspense>
+      ) : <EraProxy year={activeYear} />}
       {[...visibleYears].map((year) => <NeighborVeil key={`veil-${year}`} year={year} active={year === activeYear} viewMode={viewMode} />)}
     </>
   );

@@ -41,11 +41,13 @@ describe('V7 fluid experience pass', () => {
 
   it('loads one full scene and uses lightweight proxies for visible neighbors', () => {
     const world = read('src/experience/ExperienceWorld.tsx');
-    expect(world).toContain('const sceneLoaders');
+    const loaders = read('src/experience/sceneLoaders.ts');
+    expect(loaders).toContain('export const sceneLoaders');
     expect(world).toContain('lazy(sceneLoaders[year])');
     expect(world).toContain('function EraProxy');
     expect(world).toContain('const ActiveScene = sceneComponents[activeYear]');
-    expect(world).toContain('<ActiveScene active timeline={timeline} detail />');
+    expect(world).toContain('<ActiveScene active timeline={timeline} detail={renderDetailedScene} />');
+    expect(world).toContain("proxyOnly = quality === 'lite' && futureYear");
     expect(world).toContain("filter((year) => year !== activeYear)");
   });
 
@@ -54,7 +56,8 @@ describe('V7 fluid experience pass', () => {
     expect(overlay).toContain('const [mountedYears, setMountedYears]');
     expect(overlay).toContain("activeYear === '2000'");
     expect(overlay).toContain("window.addEventListener('kevinception:prewarm'");
-    expect(overlay).toContain('onPointerEnter={() => requestInterfacePrewarm(activeYear)}');
+    expect(overlay).toContain('onPointerEnter={() => requestExperiencePrewarm(activeYear)}');
+    expect(overlay).toContain('preloadExperienceScene(year)');
     expect(overlay).toContain("document?.querySelector<HTMLButtonElement>('[data-era-enter]')");
     expect(overlay).toContain("<InterfaceLayer visible={viewMode === 'interface'} />");
   });

@@ -48,6 +48,22 @@ describe('adaptive performance preferences', () => {
     expect(portal).toContain("document.addEventListener('visibilitychange'");
     expect(portal).toContain('prefetch={false}');
     expect(portal).toContain('router.prefetch(experienceHref)');
+    expect(portal).toContain('useState<YearId>(YEAR_ORDER[0])');
+    expect(portal).toContain('setEntryYear(year)');
+    expect(portal).toContain('`/experience/?year=${entryYear}`');
+  });
+
+  it('prewarms future scenes and keeps constrained rendering responsive', () => {
+    const world = read('src/experience/ExperienceWorld.tsx');
+    const overlay = read('src/experience/ExperienceOverlay.tsx');
+    const loaders = read('src/experience/sceneLoaders.ts');
+    expect(loaders).toContain("export const FUTURE_YEARS = ['2030', '2040']");
+    expect(world).toContain('targets = new Set<YearId>(FUTURE_YEARS)');
+    expect(world).toContain("proxyOnly = quality === 'lite' && futureYear");
+    expect(world).toContain('detail={renderDetailedScene}');
+    expect(overlay).toContain('preloadExperienceScene(year)');
+    expect(overlay).toContain('onTouchStart={() => requestExperiencePrewarm(year)}');
+    expect(overlay).toContain('loading="eager"');
   });
 
   it('loads postprocessing only when High quality actually renders it', () => {
