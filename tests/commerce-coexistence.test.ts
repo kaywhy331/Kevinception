@@ -36,6 +36,10 @@ describe('Commerce and Coexistence chapters', () => {
     expect(html).toContain('Settings / Administration');
     expect(html).toContain('PORTFOLIO RECONSTRUCTION');
     expect(html).toContain('Illustrative records');
+    expect(html).toContain('kevazon.css?v=20260813-dashboard2');
+    expect(html).toContain('kevazon.js?v=20260813-dashboard2');
+    expect(html).toContain('.kz-era-bar{display:none!important}');
+    expect(html).toContain('@media (min-width:761px){html[data-embedded="true"] .kz-sidebar{height:100svh!important}}');
     expect((html.match(/data-kz-tab=/g) ?? [])).toHaveLength(12);
     expect(script).toContain("const STORAGE_KEY = 'stealstreet-commerce-os-v4'");
     for (const renderer of ['renderDashboard', 'renderOrders', 'renderPurchaseOrders', 'renderCatalog', 'renderInventory', 'renderMarketplaces', 'renderVendors', 'renderCustomerService', 'renderWarehouse', 'renderReturns', 'renderReports', 'renderSettings']) {
@@ -52,10 +56,16 @@ describe('Commerce and Coexistence chapters', () => {
     expect(script).toContain("data-subtab=\"warehouse\"");
     expect(script).toContain("data-subtab=\"reports\"");
     expect(script).toContain("data-subtab=\"settings\"");
+    expect(script).toContain('kz-exception-table');
+    expect(script).toContain('kz-scale-ledger');
+    expect(script).toContain('Vendor-to-Customer Operating Flow');
     expect(styles).toContain('Tahoma, Verdana, Arial, sans-serif');
     expect(styles).toContain('--brown-dark: #2a1712');
     expect(styles).toContain('--gold: #b9862f');
     expect(styles).toContain('--teal: #1f6b6d');
+    expect(styles).toContain('grid-template-columns: repeat(8, minmax(0, 1fr))');
+    expect(styles).toContain('.kz-dashboard-main');
+    expect(styles).toContain('.kz-dashboard-main > *, .kz-dashboard-rail > *, .kz-exception-panel { min-width: 0; }');
     expect(styles).toContain('@media (max-width: 760px)');
     expect(html).not.toMatch(/https?:\/\/(?!kevinception\.com)/);
   });
@@ -83,6 +93,12 @@ describe('Commerce and Coexistence chapters', () => {
     expect(overlay).toContain('Human and AI collaborators');
     expect(scene).toContain('Kevin · Human Lead');
     expect(scene).toContain('Human Governor');
+  });
+
+  it('keeps mutable legacy assets revalidated across deployment targets', () => {
+    expect(read('public/_headers')).toContain('/legacy/assets/*\n  Cache-Control: public, max-age=0, must-revalidate');
+    expect(read('vercel.json')).toContain('public, max-age=0, must-revalidate');
+    expect(read('deploy/nginx.conf')).toContain('add_header Cache-Control "public, max-age=0, must-revalidate"');
   });
 
   it('keeps every shared legacy payload synchronized with the canonical chapters', () => {

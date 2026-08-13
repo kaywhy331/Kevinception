@@ -106,9 +106,12 @@ function injectEmbeddedFrameChrome(year: YearId, frame: HTMLIFrameElement) {
         .era-guide{top:.65rem!important;max-height:calc(100svh - 1.3rem)!important}
         .kt-stage,.kt-app{height:100svh!important}
         .kb-topbar{top:0!important}
-        .kz-utility{display:none!important}
-        .kz-shell{min-height:100svh!important}
-        .kz-sidebar{top:0!important;height:100svh!important}
+        .kz-utility,.kz-era-bar{display:none!important}
+        .kz-shell,.kz-app-shell{min-height:100svh!important}
+        .kz-sidebar{top:0!important}
+        @media (min-width:761px){.kz-sidebar{height:100svh!important}}
+        .kz-topbar{top:0!important}
+        .kz-workspace{min-height:calc(100svh - 72px)!important}
         .nexus-shell,.echo-space{min-height:100svh!important}
       `;
       document.head.append(style);
@@ -412,7 +415,7 @@ function FirstRunHint({ visible }: { visible: boolean }) {
     if (!visible || window.localStorage.getItem('kevinception:v7.6-hint')) return;
     setOpen(true);
   }, [visible]);
-  if (!open) return null;
+  if (!visible || !open) return null;
   const dismiss = () => {
     window.localStorage.setItem('kevinception:v7.6-hint', 'seen');
     setOpen(false);

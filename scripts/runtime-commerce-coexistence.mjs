@@ -64,10 +64,21 @@ async function commerceFrame() {
 }
 
 async function waitForModule(frame, module) {
-  await frame.waitForFunction((id) => {
-    const active = document.querySelector(`[data-kz-tab="${id}"]`);
-    return active?.classList.contains('is-active') && active.getAttribute('aria-current') === 'page' && document.querySelector('[data-kz-workspace] .kz-page-header h1');
-  }, { timeout: 10000 }, module);
+  const deadline = Date.now() + 10000;
+  let observed = null;
+  while (Date.now() < deadline) {
+    observed = await frame.evaluate((id) => {
+      const active = document.querySelector(`[data-kz-tab="${id}"]`);
+      return {
+        active: active?.classList.contains('is-active') ?? false,
+        current: active?.getAttribute('aria-current') ?? null,
+        heading: document.querySelector('[data-kz-workspace] .kz-page-header h1')?.textContent?.trim() ?? null
+      };
+    }, module);
+    if (observed.active && observed.current === 'page' && observed.heading) return;
+    await new Promise((resolve) => setTimeout(resolve, 50));
+  }
+  throw new Error(`Timed out waiting for Commerce module ${module}: ${JSON.stringify(observed)}`);
 }
 
 async function openModule(frame, module) {
@@ -103,6 +114,21 @@ try {
   assert('The reconstructed product is branded StealStreet Commerce OS', await commerce.$eval('.kz-brand-block', (node) => node.textContent.includes('StealStreet') && node.textContent.includes('Commerce OS') && node.textContent.includes('Co-founder')));
   assert('The shell exposes exactly 12 working modules', (await commerce.$$('[data-kz-tab]')).length === 12);
   assert('The dashboard presents the full eight-stage operating flow', await commerce.$$eval('.kz-flow button', (nodes) => nodes.length === 8 && nodes[0].textContent.includes('Vendors') && nodes[7].textContent.includes('Customer')));
+  assert('The dashboard presents a structured exception queue and verified scale ledger', await commerce.$eval('.kz-dashboard', (node) => Boolean(node.querySelector('.kz-exception-table') && node.querySelector('.kz-scale-ledger'))));
+  assert('The embedded dashboard removes duplicate era chrome', await commerce.evaluate(() => getComputedStyle(document.querySelector('.kz-era-bar')).display === 'none'));
+  assert('The canonical dashboard URL and document title identify the active module', new URL(page.url()).searchParams.get('module') === 'dashboard' && (await page.title()).startsWith('Operations Dashboard — 2010 StealStreet Commerce OS'));
+  const desktopGeometry = await commerce.evaluate(() => {
+    const flow = document.querySelector('.kz-flow');
+    const dashboard = document.querySelector('.kz-dashboard');
+    const buttons = [...document.querySelectorAll('.kz-flow button')];
+    return {
+      flowFits: buttons.every((button) => button.getBoundingClientRect().right <= flow.getBoundingClientRect().right + 1),
+      dashboardFitsViewport: dashboard.getBoundingClientRect().bottom <= document.documentElement.clientHeight + 1,
+      bodyWidth: document.body.scrollWidth,
+      viewportWidth: document.documentElement.clientWidth
+    };
+  });
+  assert('The desktop command center fits its viewport without clipping', desktopGeometry.flowFits && desktopGeometry.dashboardFitsViewport && desktopGeometry.bodyWidth <= desktopGeometry.viewportWidth + 1, JSON.stringify(desktopGeometry));
   assert('The dashboard includes an actionable company homebase', await commerce.$eval('.kz-company-hub', (node) => node.textContent.includes('Company Announcements') && node.textContent.includes('My Projects & Tasks') && node.textContent.includes('Employee Status') && node.querySelectorAll('button').length >= 3));
 
   const moduleHeadings = {
@@ -131,9 +157,11 @@ try {
   await waitForModule(commerce, 'dashboard');
   await openModule(commerce, 'orders');
   await page.goBack();
+  commerce = await commerceFrame();
   await waitForModule(commerce, 'dashboard');
   assert('Browser Back restores the previous Commerce module', new URL(page.url()).searchParams.get('module') === 'dashboard');
   await page.goForward();
+  commerce = await commerceFrame();
   await waitForModule(commerce, 'orders');
   assert('Browser Forward restores the next Commerce module', new URL(page.url()).searchParams.get('module') === 'orders');
 
@@ -260,8 +288,18 @@ try {
   commerce = await commerceFrame();
   await waitForModule(commerce, 'dashboard');
   const overflow = await page.evaluate(() => ({ outer: document.documentElement.scrollWidth - window.innerWidth }));
-  const commerceOverflow = await commerce.evaluate(() => ({ inner: document.documentElement.scrollWidth - document.documentElement.clientWidth }));
-  assert('The Commerce shell contains content without narrow-screen overflow', overflow.outer <= 1 && commerceOverflow.inner <= 1, JSON.stringify({ ...overflow, ...commerceOverflow }));
+  const commerceOverflow = await commerce.evaluate(() => {
+    const sidebar = document.querySelector('.kz-sidebar');
+    const exceptionWrap = document.querySelector('.kz-exception-table-wrap');
+    return {
+      body: document.body.scrollWidth - document.body.clientWidth,
+      sidebarHeight: Math.round(sidebar.getBoundingClientRect().height),
+      sidebarScrolls: sidebar.scrollWidth > sidebar.clientWidth,
+      exceptionContained: exceptionWrap.getBoundingClientRect().right <= document.documentElement.clientWidth + 1 && exceptionWrap.scrollWidth > exceptionWrap.clientWidth,
+      duplicateChrome: [...document.querySelectorAll('.kz-era-bar')].some((node) => getComputedStyle(node).display !== 'none')
+    };
+  });
+  assert('The Commerce shell contains mobile overflow inside its intended controls', overflow.outer <= 1 && commerceOverflow.body <= 1 && commerceOverflow.sidebarHeight < 50 && commerceOverflow.sidebarScrolls && commerceOverflow.exceptionContained && !commerceOverflow.duplicateChrome, JSON.stringify({ ...overflow, ...commerceOverflow }));
 
   await page.setViewport({ width: 1440, height: 1000, deviceScaleFactor: 1 });
   await page.goto(`${base}/experience/?year=2030&view=interface`, { waitUntil: 'domcontentloaded', timeout: 45000 });

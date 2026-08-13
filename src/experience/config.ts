@@ -20,7 +20,7 @@ export const YEAR_ORDER: YearId[] = CHAPTER_ORDER;
 const technicalConfig: Record<YearId, Pick<EraConfig, 'accent' | 'stationX' | 'legacyPath' | 'transitionToNext'>> = {
   '1990': { accent: '#ffd75a', stationX: -30, legacyPath: '/legacy/experience/1990/index.html?embed=1', transitionToNext: 'static-modem' },
   '2000': { accent: '#6bbcff', stationX: -18, legacyPath: '/legacy/experience/2000/index.html?embed=1', transitionToNext: 'profile-flatten' },
-  '2010': { accent: '#b9862f', stationX: -6, legacyPath: '/legacy/experience/2010/index.html?embed=1', transitionToNext: 'portrait-rotate' },
+  '2010': { accent: '#b9862f', stationX: -6, legacyPath: '/legacy/experience/2010/index.html?embed=1&module=dashboard&release=20260813', transitionToNext: 'portrait-rotate' },
   '2020': { accent: '#ff5c8a', stationX: 6, legacyPath: '/legacy/experience/2020/index.html?embed=1', transitionToNext: 'signals-to-agents' },
   '2030': { accent: '#64e8ff', stationX: 18, legacyPath: '/legacy/experience/2030/index.html?embed=1', transitionToNext: 'agents-to-echo' },
   '2040': { accent: '#a88cff', stationX: 30, legacyPath: '/legacy/experience/2040/index.html?embed=1' }

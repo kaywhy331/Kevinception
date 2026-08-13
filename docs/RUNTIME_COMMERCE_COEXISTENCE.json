@@ -1,7 +1,7 @@
 {
-  "generatedAt": "2026-08-12T19:48:19.457Z",
+  "generatedAt": "2026-08-13T21:19:08.718Z",
   "browser": "/home/trix/.cache/ms-playwright/chromium-1234/chrome-linux64/chrome",
-  "base": "https://kevinception.netlify.app",
+  "base": "http://127.0.0.1:4321",
   "assertions": [
     {
       "name": "The direct dashboard module URL opens the Commerce interface",
@@ -22,6 +22,26 @@
       "name": "The dashboard presents the full eight-stage operating flow",
       "passed": true,
       "detail": ""
+    },
+    {
+      "name": "The dashboard presents a structured exception queue and verified scale ledger",
+      "passed": true,
+      "detail": ""
+    },
+    {
+      "name": "The embedded dashboard removes duplicate era chrome",
+      "passed": true,
+      "detail": ""
+    },
+    {
+      "name": "The canonical dashboard URL and document title identify the active module",
+      "passed": true,
+      "detail": ""
+    },
+    {
+      "name": "The desktop command center fits its viewport without clipping",
+      "passed": true,
+      "detail": "{\"flowFits\":true,\"dashboardFitsViewport\":true,\"bodyWidth\":1440,\"viewportWidth\":1440}"
     },
     {
       "name": "The dashboard includes an actionable company homebase",
@@ -319,9 +339,9 @@
       "detail": ""
     },
     {
-      "name": "The Commerce shell contains content without narrow-screen overflow",
+      "name": "The Commerce shell contains mobile overflow inside its intended controls",
       "passed": true,
-      "detail": "{\"outer\":0,\"inner\":0}"
+      "detail": "{\"outer\":0,\"body\":0,\"sidebarHeight\":35,\"sidebarScrolls\":true,\"exceptionContained\":true,\"duplicateChrome\":false}"
     },
     {
       "name": "The Coexistence roster retains explicit human and AI collaborators",

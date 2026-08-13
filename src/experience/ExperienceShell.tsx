@@ -2,7 +2,7 @@
 
 import dynamic from 'next/dynamic';
 import { usePathname, useRouter } from 'next/navigation';
-import { useCallback, useEffect, useMemo, useRef } from 'react';
+import { useCallback, useEffect, useLayoutEffect, useMemo, useRef } from 'react';
 import { useMachine } from '@xstate/react';
 import type { YearId } from '@/content/data';
 import { trackAnalyticsEvent } from '@/lib/analytics';
@@ -56,13 +56,21 @@ function normalizeCommerceModule(value: string | null) {
   return COMMERCE_MODULES.has(normalized) ? normalized : null;
 }
 
+function moduleNameForTitle(module: string | null) {
+  if (!module || module === 'dashboard') return 'Operations Dashboard';
+  return module.split('-').map((word) => word.charAt(0).toUpperCase() + word.slice(1)).join(' ')
+    .replace('Settings', 'Settings / Administration');
+}
+
 function readLocation(pathname: string, search: string): LocationState {
   const params = new URLSearchParams(search);
   const queryYear = params.get('year');
   const legacyYear = getYearFromPath(pathname);
   const year = isYear(queryYear) ? queryYear : legacyYear ?? '1990';
   const requestedView = params.get('view');
-  const module = year === '2010' ? normalizeCommerceModule(params.get('module')) : null;
+  const module = year === '2010' && (requestedView === 'interface' || params.has('module') || Boolean(legacyYear))
+    ? normalizeCommerceModule(params.get('module')) ?? 'dashboard'
+    : null;
   const legacyRoute = Boolean(legacyYear && pathname !== '/experience' && pathname !== '/experience/');
   if (legacyRoute) return { year, view: 'interface', legacyRoute: true, module };
   if (!isYear(queryYear)) return { year, view: 'timeline', legacyRoute: false, module };
@@ -73,7 +81,7 @@ function readLocation(pathname: string, search: string): LocationState {
 
 function experienceUrl(year: YearId, view: Exclude<UrlView, 'timeline'> = 'environment', module: string | null = null) {
   const params = new URLSearchParams({ year });
-  const commerceModule = year === '2010' && view === 'interface' ? normalizeCommerceModule(module) : null;
+  const commerceModule = year === '2010' && view === 'interface' ? normalizeCommerceModule(module) ?? 'dashboard' : null;
   if (view !== 'environment' && !commerceModule) params.set('view', view);
   if (commerceModule) params.set('module', commerceModule);
   return `/experience/?${params.toString()}`;
@@ -115,6 +123,16 @@ export function ExperienceShell({ children }: { children: React.ReactNode }) {
   const wheelCommitTimer = useRef<number | null>(null);
   const navigationVersion = useRef(0);
 
+  const syncDocumentTitle = useCallback((year: YearId, view: UrlView, module: string | null) => {
+    if (view === 'timeline') {
+      document.title = 'Timeline | Kevinception';
+      return;
+    }
+    const config = eraConfigs[year];
+    const moduleLabel = year === '2010' && view === 'interface' ? moduleNameForTitle(module) : null;
+    document.title = `${moduleLabel ? `${moduleLabel} — ` : ''}${year} ${config.experienceName} | Kevinception`;
+  }, []);
+
   const syncLegacyModule = useCallback((module: string | null) => {
     const frame = document.querySelector<HTMLIFrameElement>('.interface-mode__frame[src*="/legacy/experience/2010/"]');
     frame?.contentWindow?.postMessage({ type: 'kevinception:module-sync', module }, window.location.origin);
@@ -135,7 +153,9 @@ export function ExperienceShell({ children }: { children: React.ReactNode }) {
     const method = historyMode === 'replace' ? 'replaceState' : 'pushState';
     const previousState = window.history.state && typeof window.history.state === 'object' ? window.history.state : {};
     window.history[method]({ ...previousState, kevinception: { year, view, module } }, '', href);
-  }, []);
+    if (year) syncDocumentTitle(year, view, module);
+    else document.title = 'Timeline | Kevinception';
+  }, [syncDocumentTitle]);
 
   useEffect(() => () => {
     clearTransitionTimers();
@@ -146,6 +166,38 @@ export function ExperienceShell({ children }: { children: React.ReactNode }) {
     const value = typeof machine.value === 'string' ? machine.value : 'environment';
     setViewMode(value as 'timeline' | 'environment' | 'interface' | 'transition' | 'text');
   }, [machine.value, setViewMode]);
+
+  useEffect(() => {
+    const location = readLocation(window.location.pathname, window.location.search);
+    syncDocumentTitle(location.year, location.view, location.module);
+  }, [activeYear, machine.value, syncDocumentTitle]);
+
+  useLayoutEffect(() => {
+    const location = readLocation(window.location.pathname, window.location.search);
+    const expectedTitle = location.view === 'timeline'
+      ? 'Timeline | Kevinception'
+      : `${location.year === '2010' && location.view === 'interface' ? `${moduleNameForTitle(location.module)} — ` : ''}${location.year} ${eraConfigs[location.year].experienceName} | Kevinception`;
+    if (document.title === expectedTitle) return;
+    document.title = expectedTitle;
+    const title = document.head.querySelector('title');
+    if (title) title.textContent = expectedTitle;
+  });
+
+  useEffect(() => {
+    const title = document.head.querySelector('title');
+    if (!title) return;
+    const observer = new MutationObserver(() => {
+      const location = readLocation(window.location.pathname, window.location.search);
+      if (location.view === 'timeline') {
+        if (document.title !== 'Timeline | Kevinception') document.title = 'Timeline | Kevinception';
+        return;
+      }
+      const expectedTitle = `${location.year === '2010' && location.view === 'interface' ? `${moduleNameForTitle(location.module)} — ` : ''}${location.year} ${eraConfigs[location.year].experienceName} | Kevinception`;
+      if (document.title !== expectedTitle) document.title = expectedTitle;
+    });
+    observer.observe(title, { childList: true, characterData: true, subtree: true });
+    return () => observer.disconnect();
+  }, []);
 
   useEffect(() => {
     const device = navigator as Navigator & { deviceMemory?: number; connection?: { saveData?: boolean } };
@@ -180,12 +232,16 @@ export function ExperienceShell({ children }: { children: React.ReactNode }) {
       }
       send({ type: 'SYNC_VIEW', destination: location.view });
       if (location.legacyRoute) writeExperienceHistory(location.year, 'interface', 'replace', location.module);
+      else if (location.year === '2010' && location.view === 'interface' && !new URLSearchParams(window.location.search).has('module')) {
+        writeExperienceHistory(location.year, 'interface', 'replace', location.module);
+      }
+      syncDocumentTitle(location.year, location.view, location.module);
       window.setTimeout(() => syncLegacyModule(location.year === '2010' ? location.module : null), 60);
     };
     syncFromBrowser();
     window.addEventListener('popstate', syncFromBrowser);
     return () => window.removeEventListener('popstate', syncFromBrowser);
-  }, [pathname, recordVisit, send, setActiveYear, syncLegacyModule, writeExperienceHistory]);
+  }, [pathname, recordVisit, send, setActiveYear, syncDocumentTitle, syncLegacyModule, writeExperienceHistory]);
 
   const completeTransition = useCallback((destination: 'timeline' | 'environment' | 'interface', delay: number, version: number) => {
     timers.current.push(window.setTimeout(() => {
@@ -314,6 +370,7 @@ export function ExperienceShell({ children }: { children: React.ReactNode }) {
         const method = event.data.history === 'replace' ? 'replaceState' : 'pushState';
         const previousState = window.history.state && typeof window.history.state === 'object' ? window.history.state : {};
         window.history[method]({ ...previousState, kevinception: { year: '2010', view: 'interface', module } }, '', href);
+        syncDocumentTitle('2010', 'interface', module);
         syncLegacyModule(module);
         return;
       }
@@ -326,7 +383,7 @@ export function ExperienceShell({ children }: { children: React.ReactNode }) {
     };
     window.addEventListener('message', listener);
     return () => window.removeEventListener('message', listener);
-  }, [discover, enterYear, router, showTimeline, syncLegacyModule]);
+  }, [discover, enterYear, router, showTimeline, syncDocumentTitle, syncLegacyModule]);
 
   useEffect(() => {
     const move = (direction: -1 | 1, historyMode: HistoryMode = 'replace') => {
