@@ -37,7 +37,7 @@ describe('Commerce and Coexistence chapters', () => {
     expect(html).toContain('PORTFOLIO RECONSTRUCTION');
     expect(html).toContain('Illustrative records');
     expect(html).toContain('kevazon.css?v=20260813-dashboard2');
-    expect(html).toContain('kevazon.js?v=20260813-dashboard2');
+    expect(html).toContain('kevazon.js?v=20260813-dashboard3');
     expect(html).toContain('.kz-era-bar{display:none!important}');
     expect(html).toContain('@media (min-width:761px){html[data-embedded="true"] .kz-sidebar{height:100svh!important}}');
     expect((html.match(/data-kz-tab=/g) ?? [])).toHaveLength(12);

@@ -131,12 +131,11 @@
       <div class="toast-region" aria-live="polite" aria-atomic="true" data-toast-region></div>
     </main>
 
-    <script type="module" src="/legacy/assets/client/kevazon.js?v=20260813-dashboard2"></script>
+    <script type="module" src="/legacy/assets/client/kevazon.js?v=20260813-dashboard3"></script>
     <script>
       (function(){
         if(window.parent!==window||new URLSearchParams(window.location.search).get('embed')==='1')document.documentElement.dataset.embedded='true';
         document.addEventListener('click',function(event){var anchor=event.target&&event.target.closest?event.target.closest('a[href^="/"]'):null;if(!anchor)return;var href=anchor.getAttribute('href');if(!href||href.indexOf('/legacy/')===0||href.indexOf('/assets/')===0)return;event.preventDefault();window.parent.postMessage({type:'kevinception:navigate',href:href},window.location.origin)},true);
-        window.parent.postMessage({type:'kevinception:legacy-ready',path:window.location.pathname},window.location.origin);
       })();
     </script>
   </body>

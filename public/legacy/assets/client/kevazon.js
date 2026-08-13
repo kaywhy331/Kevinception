@@ -803,3 +803,4 @@ const initialModule=new URLSearchParams(window.location.search).get('module')||s
 if(state.artifactRecovered){const recover=document.querySelector('[data-action="recover"]');recover.textContent='Recovered ✓';recover.disabled=true;}
 setModule(initialModule,{notify:false,history:'replace'});
 track('stealstreet_commerce_os_loaded',{era:'2010',chapter:'Commerce',version:state.version});
+if(window.parent!==window)window.parent.postMessage({type:'kevinception:legacy-ready',path:window.location.pathname},window.location.origin);
