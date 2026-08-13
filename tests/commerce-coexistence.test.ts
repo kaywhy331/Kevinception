@@ -59,6 +59,8 @@ describe('Commerce and Coexistence chapters', () => {
     expect(script).toContain('kz-exception-table');
     expect(script).toContain('kz-scale-ledger');
     expect(script).toContain('Vendor-to-Customer Operating Flow');
+    expect(script.indexOf("type:'kevinception:legacy-ready'")).toBeGreaterThan(script.indexOf('setModule(initialModule'));
+    expect(html).not.toContain("type:'kevinception:legacy-ready'");
     expect(styles).toContain('Tahoma, Verdana, Arial, sans-serif');
     expect(styles).toContain('--brown-dark: #2a1712');
     expect(styles).toContain('--gold: #b9862f');
