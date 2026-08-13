@@ -88,7 +88,7 @@ async function openModule(frame, module) {
 }
 
 async function commerceState(frame) {
-  return frame.evaluate(() => JSON.parse(localStorage.getItem('stealstreet-commerce-os-v4') || 'null'));
+  return frame.evaluate(() => JSON.parse(localStorage.getItem('stealstreet-commerce-os-v5') || 'null'));
 }
 
 async function setDialogValue(frame, selector, value) {
@@ -103,6 +103,7 @@ try {
   await page.goto(base, { waitUntil: 'domcontentloaded', timeout: 45000 });
   await page.evaluate(() => {
     localStorage.removeItem('stealstreet-commerce-os-v4');
+    localStorage.removeItem('stealstreet-commerce-os-v5');
     localStorage.removeItem('kevinception-v7');
   });
 
@@ -130,6 +131,18 @@ try {
   });
   assert('The desktop command center fits its viewport without clipping', desktopGeometry.flowFits && desktopGeometry.dashboardFitsViewport && desktopGeometry.bodyWidth <= desktopGeometry.viewportWidth + 1, JSON.stringify(desktopGeometry));
   assert('The dashboard includes an actionable company homebase', await commerce.$eval('.kz-company-hub', (node) => node.textContent.includes('Company Announcements') && node.textContent.includes('My Projects & Tasks') && node.textContent.includes('Employee Status') && node.querySelectorAll('button').length >= 3));
+  assert('The dashboard rewards skimming with restrained operational humor', await commerce.$eval('.kz-dashboard', (node) => node.textContent.includes('break-room fridge is not an inventory location') && node.textContent.includes('Located the missing carton') && node.textContent.includes('spreadsheet limbo') && node.textContent.includes('making systems talk')));
+  const personalityThread = await commerceState(commerce);
+  const characterSku = personalityThread.catalog.find((item) => item.sku === 'KV-910331');
+  assert('A recurring product story connects six Commerce workspaces', characterSku?.product === 'Executive Decision-Making Mug'
+    && personalityThread.inventory.find((item) => item.sku === characterSku.sku)?.product === characterSku.product
+    && personalityThread.purchaseOrders.some((item) => item.sku === characterSku.sku && item.vendor === 'Big Idea Ceramics')
+    && personalityThread.orders.find((item) => item.id === 'ORD-10482')?.itemNames.includes(characterSku.product)
+    && personalityThread.warehouseTasks.some((item) => item.record === 'ORD-10482' && item.note.includes('decisions may shift'))
+    && personalityThread.cases.some((item) => item.orderId === 'ORD-10482' && item.issue === 'Product expectations'));
+  await commerce.click('[data-action="sync-all"]');
+  await commerce.waitForSelector('[data-kevazon].is-delighted');
+  assert('System sync responds with a brief, characterful micro-delight', await commerce.$eval('[data-toast-region]', (node) => node.textContent.includes('Everything is talking again. Suspiciously cooperative.')));
 
   const moduleHeadings = {
     dashboard: 'Operations Dashboard',
@@ -189,7 +202,7 @@ try {
   await setDialogValue(commerce, '[data-dialog="record"][open] input[name="quantity"]', 10);
   await setDialogValue(commerce, '[data-dialog="record"][open] input[name="damaged"]', 1);
   await commerce.click('[data-dialog="record"][open] [data-action="submit-receive-po"]');
-  await commerce.waitForFunction(() => JSON.parse(localStorage.getItem('stealstreet-commerce-os-v4')).purchaseOrders.find((item) => item.id === 'PO-7814').received === 10);
+  await commerce.waitForFunction(() => JSON.parse(localStorage.getItem('stealstreet-commerce-os-v5')).purchaseOrders.find((item) => item.id === 'PO-7814').received === 10);
   const afterReceipt = await commerceState(commerce);
   const beforeReceiptInventory = beforeReceipt.inventory.find((item) => item.sku === 'KV-740204');
   const afterReceiptInventory = afterReceipt.inventory.find((item) => item.sku === 'KV-740204');
@@ -201,7 +214,7 @@ try {
   await openModule(commerce, 'orders');
   for (const expectedStatus of ['Ready to Pick', 'Picked', 'Packed', 'Shipped']) {
     await commerce.click('[data-row-id="ORD-10465"] [data-action="advance-order"]');
-    await commerce.waitForFunction((status) => JSON.parse(localStorage.getItem('stealstreet-commerce-os-v4')).orders.find((item) => item.id === 'ORD-10465').status === status, {}, expectedStatus);
+    await commerce.waitForFunction((status) => JSON.parse(localStorage.getItem('stealstreet-commerce-os-v5')).orders.find((item) => item.id === 'ORD-10465').status === status, {}, expectedStatus);
   }
   const afterShipment = await commerceState(commerce);
   const shippedOrder = afterShipment.orders.find((item) => item.id === 'ORD-10465');
@@ -214,7 +227,7 @@ try {
   const beforeCatalogFix = afterShipment.marketplaces.reduce((total, item) => total + item.errors, 0);
   await openModule(commerce, 'catalog');
   await commerce.click('[data-row-id="KV-820118"] [data-action="fix-listing"]');
-  await commerce.waitForFunction(() => JSON.parse(localStorage.getItem('stealstreet-commerce-os-v4')).catalog.find((item) => item.sku === 'KV-820118').health === 'Healthy');
+  await commerce.waitForFunction(() => JSON.parse(localStorage.getItem('stealstreet-commerce-os-v5')).catalog.find((item) => item.sku === 'KV-820118').health === 'Healthy');
   const afterCatalogFix = await commerceState(commerce);
   const afterChannelErrors = afterCatalogFix.marketplaces.reduce((total, item) => total + item.errors, 0);
   assert('Fix Listing resolves catalog data health and mappings', afterCatalogFix.catalog.find((item) => item.sku === 'KV-820118').mappings === '9 / 9');
@@ -226,7 +239,7 @@ try {
   await openModule(commerce, 'returns');
   const beforeRestock = (await commerceState(commerce)).inventory.find((item) => item.sku === 'KV-510046').onHand;
   await commerce.click('[data-row-id="RMA-4001"] [data-action="return-restock"]');
-  await commerce.waitForFunction(() => JSON.parse(localStorage.getItem('stealstreet-commerce-os-v4')).returns.find((item) => item.id === 'RMA-4001').status === 'Completed');
+  await commerce.waitForFunction(() => JSON.parse(localStorage.getItem('stealstreet-commerce-os-v5')).returns.find((item) => item.id === 'RMA-4001').status === 'Completed');
   const afterRestock = await commerceState(commerce);
   assert('Restocking a return increments inventory', afterRestock.inventory.find((item) => item.sku === 'KV-510046').onHand === beforeRestock + 1);
   assert('Restocking a return updates its linked order timeline', afterRestock.orders.find((item) => item.id === 'ORD-10402').timeline.some((item) => item.includes('RMA-4001 restocked')));
@@ -241,7 +254,7 @@ try {
   await commerce.click('[data-subtab="warehouse"][data-value="Amazon FBA"]');
   await commerce.waitForSelector('[data-row-id="WH-F-501"] [data-action="warehouse-complete"]');
   await commerce.click('[data-row-id="WH-F-501"] [data-action="warehouse-complete"]');
-  await commerce.waitForFunction(() => JSON.parse(localStorage.getItem('stealstreet-commerce-os-v4')).warehouseTasks.find((item) => item.id === 'WH-F-501').status === 'Complete');
+  await commerce.waitForFunction(() => JSON.parse(localStorage.getItem('stealstreet-commerce-os-v5')).warehouseTasks.find((item) => item.id === 'WH-F-501').status === 'Complete');
   const afterFba = await commerceState(commerce);
   assert('Confirm Carton Labels completes the FBA workflow', afterFba.warehouseTasks.find((item) => item.id === 'WH-F-501').label === 'Confirmed');
 

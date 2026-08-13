@@ -96,6 +96,8 @@ html { width: 100%; max-width: 100%; overflow-x: hidden; background: var(--brown
 .kz-system-line b { color: var(--success); }
 .kz-system-line i { color: #b1a58f; font-style: normal; }
 .kz-health-dot { width: 7px; height: 7px; border: 1px solid #195638; border-radius: 50%; background: #43a16e; box-shadow: 0 0 0 1px #d8ecd9; }
+.is-delighted .kz-health-dot { animation: kz-health-ping .62s ease-out 2; }
+.is-delighted .kz-system-line b { animation: kz-system-wink 1.1s ease both; }
 .kz-user-control { position: relative; }
 .kz-user-control > button { min-width: 72px; border-color: #6d503f; background: linear-gradient(#704c3d, #4d3026); color: #fff7e8; box-shadow: inset 0 1px rgba(255,255,255,.13); }
 .kz-user-control > div { position: absolute; z-index: 100; top: 29px; right: 0; display: grid; width: 145px; padding: 4px; border: 1px solid #6d503f; background: var(--panel); box-shadow: 2px 3px 8px rgba(42,23,18,.26); }
@@ -161,6 +163,7 @@ html { width: 100%; max-width: 100%; overflow-x: hidden; background: var(--brown
 .kz-table td.is-numeric, .kz-table th.is-numeric { text-align: right; }
 .kz-table td strong { color: var(--teal-dark); font-size: 10px; }
 .kz-table td small { display: block; color: var(--muted); font-size: 8px; }
+.kz-story-mark { display: inline-grid; width: 14px; height: 14px; margin-left: 4px; place-items: center; border: 1px solid #b58b38; border-radius: 50%; background: #f6e8c4; color: #8a641e; font-size: 8px; line-height: 1; vertical-align: middle; }
 .kz-table__actions { display: flex; gap: 3px; overflow: visible !important; }
 .kz-table__actions button { min-height: 21px; padding: 2px 5px; font-size: 8px; white-space: nowrap; }
 .kz-table-empty { padding: 24px !important; color: var(--muted); text-align: center; }
@@ -224,6 +227,7 @@ html { width: 100%; max-width: 100%; overflow-x: hidden; background: var(--brown
 .kz-company-hub p > button, .kz-resource-links button { min-height: 21px; padding: 2px 5px; border: 1px solid #978973; border-radius: 2px; background: linear-gradient(#fffdf7,#ded3c0); color: var(--teal-dark); font-weight: bold; }
 .kz-employee-status { display: flex; flex-wrap: wrap; gap: 3px; margin-top: 5px; }
 .kz-employee-status span { padding: 2px 4px; border: 1px solid #c8b99e; background: #f5eee2; color: var(--muted); font-size: 8px; }
+.kz-employee-status small { display: block; margin: 1px 0 0 9px; color: #8d7c68; font-size: 7px; }
 .kz-employee-status i { display: inline-block; width: 6px; height: 6px; margin-right: 3px; border-radius: 50%; background: #929292; }
 .kz-employee-status i.is-in { background: #3d8055; }
 .kz-employee-status i.is-away { background: var(--gold); }
@@ -284,6 +288,13 @@ html { width: 100%; max-width: 100%; overflow-x: hidden; background: var(--brown
 .kz-archive-record p { color: var(--muted); }
 .toast-region { position: fixed; z-index: 10000; right: 8px; bottom: 8px; display: grid; gap: 4px; pointer-events: none; }
 .toast { max-width: min(350px, calc(100vw - 16px)); padding: 7px 9px; border: 1px solid #281510; border-radius: 2px; background: #3c251d; color: #fff7e8; box-shadow: 2px 3px 8px rgba(0,0,0,.3); font-size: 10px; }
+
+@keyframes kz-health-ping {
+  50% { background: #91d3a6; box-shadow: 0 0 0 5px rgba(67,161,110,.18); transform: scale(1.22); }
+}
+@keyframes kz-system-wink {
+  45% { color: var(--teal); }
+}
 
 @media (max-width: 1100px) {
   .kz-app-shell { grid-template-columns: 198px minmax(0, 1fr); }

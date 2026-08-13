@@ -1,7 +1,7 @@
 {
-  "generatedAt": "2026-08-13T21:36:02.259Z",
+  "generatedAt": "2026-08-13T22:50:40.632Z",
   "browser": "/home/trix/.cache/ms-playwright/chromium-1234/chrome-linux64/chrome",
-  "base": "https://kevinception.netlify.app",
+  "base": "http://127.0.0.1:4321",
   "assertions": [
     {
       "name": "The direct dashboard module URL opens the Commerce interface",
@@ -45,6 +45,21 @@
     },
     {
       "name": "The dashboard includes an actionable company homebase",
+      "passed": true,
+      "detail": ""
+    },
+    {
+      "name": "The dashboard rewards skimming with restrained operational humor",
+      "passed": true,
+      "detail": ""
+    },
+    {
+      "name": "A recurring product story connects six Commerce workspaces",
+      "passed": true,
+      "detail": ""
+    },
+    {
+      "name": "System sync responds with a brief, characterful micro-delight",
       "passed": true,
       "detail": ""
     },

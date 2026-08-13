@@ -1,6 +1,6 @@
 import { toast, track } from './global.js';
 
-const STORAGE_KEY = 'stealstreet-commerce-os-v4';
+const STORAGE_KEY = 'stealstreet-commerce-os-v5';
 const MODULES = ['dashboard', 'orders', 'purchase-orders', 'catalog', 'inventory', 'marketplaces', 'vendors', 'customer-service', 'warehouse', 'returns', 'reports', 'settings'];
 const MODULE_LABELS = {
   dashboard: 'Dashboard', orders: 'Orders', 'purchase-orders': 'Purchase Orders', catalog: 'Catalog', inventory: 'Inventory',
@@ -35,7 +35,9 @@ function createMarketplaces() {
       settlement: index % 7 === 0 ? 'Review' : 'Reconciled',
       lastSync: index % 3 === 0 ? '10:42 AM' : index % 3 === 1 ? '10:39 AM' : '10:35 AM',
       errors: hasIssue ? 1 : 0,
-      rejected: hasIssue ? [`${name} listing rejected: missing channel attribute`] : [],
+      rejected: hasIssue ? [name === 'Sears Marketplace'
+        ? 'KV-910331 Executive Decision-Making Mug rejected: “Leadership Accessories” is not a recognized category.'
+        : `${name} listing rejected: missing channel attribute`] : [],
       mapping: hasIssue ? 'Review required' : 'Mapped'
     };
   });
@@ -43,7 +45,7 @@ function createMarketplaces() {
 
 function createSeedState() {
   return {
-    version: 4,
+    version: 5,
     lastSync: '10:42 AM',
     sequence: { po: 7820, return: 4010, case: 2208, import: 1 },
     ui: {
@@ -51,7 +53,7 @@ function createSeedState() {
       settingsTab: 'Users & Roles', selectedChannel: 'CH-01', selectedVendor: 'VEN-01', selectedCase: 'CASE-2201'
     },
     orders: [
-      { id: 'ORD-10482', customer: 'Maya Chen', channel: 'StealStreet.com', date: '04/18/2012', items: 3, total: 86.40, payment: 'Authorized', fulfillment: 'Direct', status: 'Ready to Pick', tracking: '', notes: 'Gift receipt requested.', timeline: ['10:18 AM · Payment authorized', '10:19 AM · Inventory reserved'], itemNames: ['Kitchen organizer', 'Packing labels', 'Storage tote'] },
+      { id: 'ORD-10482', customer: 'Maya Chen', channel: 'StealStreet.com', date: '04/18/2012', items: 3, total: 86.40, payment: 'Authorized', fulfillment: 'Direct', status: 'Ready to Pick', tracking: '', notes: 'Customer asked whether decisions are included. Customer Service advised: sold separately.', timeline: ['10:18 AM · Payment authorized', '10:19 AM · Inventory reserved', '10:21 AM · Mug inscription cleared by Legal-ish'], itemNames: ['Executive Decision-Making Mug', 'Modular packing labels', 'Reusable fulfillment tote'] },
       { id: 'ORD-10477', customer: 'Jordan Rivera', channel: 'Amazon FBA', date: '04/18/2012', items: 1, total: 42.00, payment: 'Settled', fulfillment: 'FBA', status: 'Packed', tracking: 'FBA transfer', notes: 'Marketplace fulfillment.', timeline: ['9:52 AM · Imported from Amazon', '10:01 AM · Inventory allocated', '10:31 AM · Packed'], itemNames: ['Scanner cradle'] },
       { id: 'ORD-10465', customer: 'Avery Singh', channel: 'Walmart', date: '04/17/2012', items: 6, total: 214.18, payment: 'Review', fulfillment: 'Direct', status: 'Exception', tracking: '', notes: 'Payment address mismatch.', timeline: ['Yesterday · Imported from Walmart', 'Yesterday · Payment review flagged'], itemNames: ['Tool set', 'Kitchen accessories'] },
       { id: 'ORD-10441', customer: 'Sam Torres', channel: 'BuyGiftsWholesale.com', date: '04/17/2012', items: 12, total: 638.75, payment: 'Invoice', fulfillment: 'Wholesale', status: 'Shipped', tracking: '1Z804201041', notes: 'Wholesale carton labels included.', timeline: ['Yesterday · Invoice approved', 'Yesterday · Picked and packed', 'Yesterday · Carrier handoff'], itemNames: ['Assorted gift case'] },
@@ -65,14 +67,14 @@ function createSeedState() {
       { id: 'PO-7802', vendorId: 'VEN-03', vendor: 'Brightline Electronics', method: 'Minimum order', orderDate: '04/06/2012', expectedDate: '04/19/2012', quantity: 180, received: 90, damaged: 2, cost: 4050.00, status: 'Partial', sku: 'KV-225190', location: 'C-07' },
       { id: 'PO-7798', vendorId: 'VEN-04', vendor: 'Heritage Collectibles', method: 'Forecast buy', orderDate: '04/04/2012', expectedDate: '04/22/2012', quantity: 60, received: 0, damaged: 0, cost: 1680.00, status: 'Open', sku: 'KV-331990', location: 'D-02' },
       { id: 'PO-7791', vendorId: 'VEN-05', vendor: 'Summit Outdoor Goods', method: 'Replenishment', orderDate: '04/01/2012', expectedDate: '04/14/2012', quantity: 120, received: 120, damaged: 1, cost: 2880.00, status: 'Received', sku: 'KV-630442', location: 'E-11' },
-      { id: 'PO-7784', vendorId: 'VEN-06', vendor: 'Metro Office Supply', method: 'JIT', orderDate: '03/29/2012', expectedDate: '04/10/2012', quantity: 300, received: 300, damaged: 0, cost: 2100.00, status: 'Complete', sku: 'KV-510046', location: 'F-04' }
+      { id: 'PO-7784', vendorId: 'VEN-06', vendor: 'Big Idea Ceramics', method: 'JIT', orderDate: '03/29/2012', expectedDate: '04/10/2012', quantity: 300, received: 300, damaged: 0, cost: 1350.00, status: 'Complete', sku: 'KV-910331', location: 'F-02' }
     ],
     catalog: [
       { sku: 'KV-100042', upc: '000000100042', product: 'Modular packing station labels', category: 'Fulfillment', cost: 3.10, price: 8.95, listings: 8, health: 'Healthy', updated: '10:31 AM', attributes: 24, media: 4, mappings: '8 / 8', audit: ['10:31 AM · Listing copy updated'] },
       { sku: 'KV-225190', upc: '000000225190', product: 'Low-profile inventory scanner cradle', category: 'Electronics', cost: 12.40, price: 29.95, listings: 5, health: 'Low Stock', updated: '10:22 AM', attributes: 31, media: 5, mappings: '5 / 5', audit: ['10:22 AM · Replenishment flag updated'] },
       { sku: 'KV-331990', upc: '000000331990', product: 'Circuit of Time collector cartridge', category: 'Collectibles', cost: 18.00, price: 44.95, listings: 0, health: 'Hidden', updated: 'Yesterday', attributes: 18, media: 2, mappings: '0 / 0', audit: ['Yesterday · Record moved to archive'] },
       { sku: 'KV-740204', upc: '000000740204', product: 'Reusable fulfillment tote — blue', category: 'Housewares', cost: 6.80, price: 16.95, listings: 12, health: 'Healthy', updated: '10:18 AM', attributes: 27, media: 6, mappings: '12 / 12', audit: ['10:18 AM · Inventory feed refreshed'] },
-      { sku: 'KV-910331', upc: '000000910331', product: 'Marketplace integration field guide', category: 'Office Supplies', cost: 4.50, price: 12.95, listings: 3, health: 'Needs Taxonomy', updated: '9:58 AM', attributes: 14, media: 1, mappings: '2 / 3', audit: ['9:58 AM · Marketplace mapping rejected'] },
+      { sku: 'KV-910331', upc: '000000910331', product: 'Executive Decision-Making Mug', category: 'Office Supplies', cost: 4.50, price: 12.95, listings: 3, health: 'Needs Taxonomy', updated: '9:58 AM', attributes: 14, media: 3, mappings: '2 / 3', audit: ['9:58 AM · Category “Leadership Accessories” rejected', '9:54 AM · Claim “decisions sold separately” approved by Legal-ish'] },
       { sku: 'KV-820118', upc: '000000820118', product: 'Household tool set — 18 piece', category: 'Tools', cost: 24.00, price: 54.95, listings: 9, health: 'Rejected', updated: '9:41 AM', attributes: 33, media: 7, mappings: '8 / 9', audit: ['9:41 AM · Wayfair listing rejected'] },
       { sku: 'KV-630442', upc: '000000630442', product: 'Weatherproof outdoor lantern', category: 'Outdoors', cost: 9.20, price: 24.95, listings: 11, health: 'Healthy', updated: '9:32 AM', attributes: 29, media: 5, mappings: '11 / 11', audit: ['9:32 AM · Price rule applied'] },
       { sku: 'KV-510046', upc: '000000510046', product: 'Stackable office organizer', category: 'Office Supplies', cost: 5.60, price: 14.95, listings: 7, health: 'Healthy', updated: '9:20 AM', attributes: 22, media: 4, mappings: '7 / 7', audit: ['9:20 AM · Feed accepted'] }
@@ -82,7 +84,7 @@ function createSeedState() {
       { sku: 'KV-225190', product: 'Low-profile inventory scanner cradle', location: 'C-07', onHand: 12, allocated: 8, incoming: 90, reorderPoint: 24, damaged: 0, status: 'Low Stock' },
       { sku: 'KV-331990', product: 'Circuit of Time collector cartridge', location: 'D-02', onHand: 3, allocated: 0, incoming: 60, reorderPoint: 5, damaged: 0, status: 'Low Stock' },
       { sku: 'KV-740204', product: 'Reusable fulfillment tote — blue', location: 'A-01', onHand: 864, allocated: 64, incoming: 240, reorderPoint: 180, damaged: 7, status: 'Healthy' },
-      { sku: 'KV-910331', product: 'Marketplace integration field guide', location: 'F-02', onHand: 47, allocated: 18, incoming: 0, reorderPoint: 40, damaged: 1, status: 'Watch' },
+      { sku: 'KV-910331', product: 'Executive Decision-Making Mug', location: 'F-02', onHand: 47, allocated: 18, incoming: 0, reorderPoint: 40, damaged: 1, status: 'Watch' },
       { sku: 'KV-820118', product: 'Household tool set — 18 piece', location: 'B-14', onHand: 0, allocated: 4, incoming: 96, reorderPoint: 32, damaged: 0, status: 'Stockout' },
       { sku: 'KV-630442', product: 'Weatherproof outdoor lantern', location: 'E-11', onHand: 120, allocated: 12, incoming: 0, reorderPoint: 30, damaged: 1, status: 'Healthy' },
       { sku: 'KV-510046', product: 'Stackable office organizer', location: 'F-04', onHand: 300, allocated: 28, incoming: 0, reorderPoint: 75, damaged: 0, status: 'Healthy' }
@@ -94,13 +96,13 @@ function createSeedState() {
       { id: 'VEN-03', name: 'Brightline Electronics', contact: 'Naomi Wells', email: 'naomi@brightline.example', terms: 'Net 30', moq: 180, leadTime: 12, openPOs: 1, status: 'Active', categories: 'Electronics', notes: ['04/18 · Partial receipt recorded'] },
       { id: 'VEN-04', name: 'Heritage Collectibles', contact: 'Andre Chen', email: 'andre@heritage.example', terms: 'Prepaid', moq: 48, leadTime: 14, openPOs: 1, status: 'Active', categories: 'Collectibles · Toys', notes: ['04/04 · Forecast buy placed'] },
       { id: 'VEN-05', name: 'Summit Outdoor Goods', contact: 'Dana Cole', email: 'dana@summit.example', terms: 'Net 45', moq: 96, leadTime: 9, openPOs: 0, status: 'Active', categories: 'Outdoors · Accessories', notes: ['04/14 · Receipt completed'] },
-      { id: 'VEN-06', name: 'Metro Office Supply', contact: 'Riley Gomez', email: 'riley@metro.example', terms: 'Net 30', moq: 200, leadTime: 5, openPOs: 0, status: 'Active', categories: 'Office Supplies', notes: ['04/10 · PO completed'] }
+      { id: 'VEN-06', name: 'Big Idea Ceramics', contact: 'Riley Gomez', email: 'riley@bigidea.example', terms: 'Net 30', moq: 200, leadTime: 5, openPOs: 0, status: 'Active', categories: 'Office Supplies · Ceramics', notes: ['04/10 · Mug PO completed', '03/28 · Confirmed decisions remain sold separately'] }
     ],
     cases: [
       { id: 'CASE-2201', customer: 'Avery Singh', channel: 'Walmart', orderId: 'ORD-10465', issue: 'Payment verification', priority: 'High', age: '1d 3h', status: 'Escalated', tracking: '', notes: ['Yesterday · Case opened from order exception', '9:20 AM · Requested address verification'], timeline: ['Yesterday · Payment review flagged', '9:20 AM · Escalated to operator'] },
       { id: 'CASE-2202', customer: 'Jordan Rivera', channel: 'Amazon FBA', orderId: 'ORD-10477', issue: 'Shipment status', priority: 'Medium', age: '5h', status: 'Waiting', tracking: 'FBA transfer', notes: ['10:04 AM · Waiting for FBA receive scan'], timeline: ['10:04 AM · Customer message imported'] },
       { id: 'CASE-2203', customer: 'Priya Patel', channel: 'eBay', orderId: 'ORD-10436', issue: 'Address correction', priority: 'Normal', age: '3h', status: 'Open', tracking: '', notes: ['10:16 AM · Address corrected before packing'], timeline: ['10:12 AM · New message', '10:16 AM · Order note updated'] },
-      { id: 'CASE-2204', customer: 'Sam Torres', channel: 'BuyGiftsWholesale.com', orderId: 'ORD-10441', issue: 'Invoice copy', priority: 'Normal', age: '2h', status: 'New', tracking: '1Z804201041', notes: [], timeline: ['10:28 AM · Case created'] },
+      { id: 'CASE-2204', customer: 'Maya Chen', channel: 'StealStreet.com', orderId: 'ORD-10482', issue: 'Product expectations', priority: 'Normal', age: '2h', status: 'New', tracking: '', notes: ['10:30 AM · Confirmed mug provides caffeine support, not executive authority'], timeline: ['10:28 AM · Customer asked whether decisions are included', '10:30 AM · Reply drafted with unusual precision'] },
       { id: 'CASE-2205', customer: 'Leo Martin', channel: 'Wayfair', orderId: 'ORD-10428', issue: 'Late-order concern', priority: 'High', age: '1d', status: 'Open', tracking: '', notes: ['Yesterday · Channel SLA warning'], timeline: ['Yesterday · Automatic late-order alert'] },
       { id: 'CASE-2206', customer: 'Nora Kim', channel: 'Amazon Canada', orderId: 'ORD-10402', issue: 'Delivery confirmation', priority: 'Normal', age: '1h', status: 'Resolved', tracking: '94001042010402', notes: ['10:35 AM · Delivery confirmed'], timeline: ['10:35 AM · Resolved'] }
     ],
@@ -108,7 +110,7 @@ function createSeedState() {
       { id: 'WH-R-101', type: 'Receiving', record: 'PO-7814', route: 'Dock 2 → A-01', itemCount: 240, weight: '', service: '', label: '', tracking: '', status: 'Awaiting Dock', note: 'Verify quantity and damage.' },
       { id: 'WH-R-102', type: 'Receiving', record: 'PO-7802', route: 'Dock 1 → C-07', itemCount: 90, weight: '', service: '', label: '', tracking: '', status: 'Partial', note: 'Second carton pending.' },
       { id: 'WH-U-103', type: 'Putaway', record: 'PO-7791', route: 'Dock 3 → E-11', itemCount: 119, weight: '', service: '', label: '', tracking: '', status: 'Ready', note: 'One damaged unit quarantined.' },
-      { id: 'WH-P-201', type: 'Picking', record: 'ORD-10482', route: 'A-03 → A-01', itemCount: 3, weight: '', service: '', label: '', tracking: '', status: 'Queued', note: 'Wave 18-A.' },
+      { id: 'WH-P-201', type: 'Picking', record: 'ORD-10482', route: 'F-02 → A-03 → A-01', itemCount: 3, weight: '', service: '', label: '', tracking: '', status: 'Queued', note: 'Wave 18-A. Keep mug upright; decisions may shift in transit.' },
       { id: 'WH-P-202', type: 'Picking', record: 'ORD-10436', route: 'E-11', itemCount: 2, weight: '', service: '', label: '', tracking: '', status: 'Complete', note: 'Delivered to packing.' },
       { id: 'WH-K-301', type: 'Packing', record: 'ORD-10436', route: 'Station 2', itemCount: 2, weight: '4.2 lb', service: 'UPS Ground', label: 'Pending', tracking: '', status: 'Ready', note: 'Verify corrected address.' },
       { id: 'WH-S-401', type: 'Shipments', record: 'ORD-10441', route: 'Carrier lane 1', itemCount: 12, weight: '28.6 lb', service: 'UPS Ground', label: 'Printed', tracking: '1Z804201041', status: 'Complete', note: 'Carrier scan received.' },
@@ -116,15 +118,15 @@ function createSeedState() {
       { id: 'WH-X-601', type: 'Exceptions', record: 'ORD-10428', route: 'Packing hold', itemCount: 1, weight: '12.1 lb', service: 'FedEx Home', label: 'Mismatch', tracking: '', status: 'Open', note: 'Package weight differs from catalog record.' }
     ],
     companyHub: {
-      announcement: 'Updated receiving SOP and marketplace-feed window are available for review.',
+      announcement: 'Operations note: the break-room fridge is not an inventory location. The scanner now knows this too.',
       projects: [
         { id: 'TASK-01', name: 'Review overdue vendor shipment', due: 'Today', complete: false },
-        { id: 'TASK-02', name: 'Approve catalog mapping queue', due: 'Today', complete: false },
+        { id: 'TASK-02', name: 'Retire spreadsheet_final_FINAL_v7.xls', due: 'Today-ish', complete: false },
         { id: 'TASK-03', name: 'Confirm warehouse handoff', due: 'Tomorrow', complete: true }
       ],
-      events: ['11:00 AM · Vendor review', '2:00 PM · Marketplace feed window', 'Tomorrow · Warehouse planning'],
+      events: ['11:00 AM · Vendor review (coffee is the agenda)', '2:00 PM · Marketplace feed window', 'Tomorrow · All-hands, assuming the feed behaves'],
       messages: 3,
-      employees: [{ name: 'Kevin', status: 'In' }, { name: 'Warehouse', status: 'In' }, { name: 'Catalog', status: 'Away' }, { name: 'Customer Service', status: 'In' }],
+      employees: [{ name: 'Kevin', status: 'In', note: 'making systems talk' }, { name: 'Warehouse', status: 'In', note: 'found the other carton' }, { name: 'Catalog', status: 'Away', note: 'escaping spreadsheet limbo' }, { name: 'Customer Service', status: 'In', note: 'translating ALL CAPS' }],
       resources: ['Time-Off Request', 'Onboarding', 'Training Material', 'SOPs', 'Company Resources']
     },
     returns: [
@@ -163,12 +165,12 @@ function createSeedState() {
       { id: 'NOT-04', name: 'Settlement mismatches', channel: 'Dashboard', enabled: false }
     ],
     audit: [
-      { time: '10:42 AM', user: 'System', module: 'Integrations', action: 'Imported marketplace orders', record: '4 channels', result: 'Success' },
-      { time: '10:40 AM', user: 'System', module: 'Inventory', action: 'Published availability feed', record: '20+ channels', result: 'Success' },
-      { time: '10:36 AM', user: 'System', module: 'Marketplaces', action: 'Flagged rejected listing', record: 'Wayfair / KV-820118', result: 'Review' },
-      { time: '10:31 AM', user: 'Kevin', module: 'Catalog', action: 'Updated listing copy', record: 'KV-100042', result: 'Saved' },
+      { time: '10:42 AM', user: 'System', module: 'Integrations', action: 'Got every system talking again', record: '4 channels', result: 'Success' },
+      { time: '10:40 AM', user: 'System', module: 'Warehouse', action: 'Located the missing carton', record: 'Behind the other carton', result: 'Found' },
+      { time: '10:36 AM', user: 'System', module: 'Marketplaces', action: 'Flagged rejected listing', record: 'Sears / KV-910331', result: 'Review' },
+      { time: '10:31 AM', user: 'Kevin', module: 'Catalog', action: 'Rescued listings from spreadsheet limbo', record: '1,204 records', result: 'Saved' },
       { time: '10:22 AM', user: 'System', module: 'Inventory', action: 'Raised low-stock alert', record: 'KV-225190', result: 'Attention' },
-      { time: '10:18 AM', user: 'Kevin', module: 'Orders', action: 'Reviewed order allocation', record: 'ORD-10482', result: 'Ready to Pick' },
+      { time: '10:18 AM', user: 'Kevin', module: 'Customer Service', action: 'Translated an ALL-CAPS message', record: 'CASE-2204', result: 'Punctuation restored' },
       { time: '10:04 AM', user: 'System', module: 'Customer Service', action: 'Imported customer message', record: 'CASE-2202', result: 'Waiting' },
       { time: '9:58 AM', user: 'System', module: 'Catalog', action: 'Flagged missing taxonomy', record: 'KV-910331', result: 'Review' }
     ],
@@ -180,7 +182,7 @@ function clone(value) { return JSON.parse(JSON.stringify(value)); }
 function readState() {
   try {
     const parsed = JSON.parse(localStorage.getItem(STORAGE_KEY) || 'null');
-    if (parsed?.version === 4 && parsed.companyHub) return parsed;
+    if (parsed?.version === 5 && parsed.companyHub) return parsed;
   } catch { /* Reset to the deterministic seed. */ }
   return createSeedState();
 }
@@ -219,6 +221,16 @@ function pageHeader(title, description, actions = '') {
   return `<header class="kz-page-header"><div><h1>${escapeHtml(title)}</h1><p>${escapeHtml(description)}</p></div><div class="kz-page-header__actions">${actions}</div></header>`;
 }
 function illustrativeBadge() { return '<span class="kz-illustrative-badge">Illustrative records</span>'; }
+const CHARACTER_SKU = 'KV-910331';
+function storyMark(label = 'A product with a surprisingly long paper trail') { return `<span class="kz-story-mark" title="${escapeHtml(label)}" aria-label="${escapeHtml(label)}">✦</span>`; }
+function storyProduct(value, sku) { return `${escapeHtml(value)}${sku === CHARACTER_SKU ? storyMark() : ''}`; }
+function interfacePulse(message) {
+  const shell = document.querySelector('[data-kevazon]');
+  shell?.classList.remove('is-delighted');
+  requestAnimationFrame(() => shell?.classList.add('is-delighted'));
+  window.setTimeout(() => shell?.classList.remove('is-delighted'), 1250);
+  if (message) toast(message);
+}
 function summaryStrip(items) {
   return `<div class="kz-summary-strip">${items.map((item) => `<div><span>${escapeHtml(item.label)}</span><b>${escapeHtml(item.value)}</b><small>${escapeHtml(item.note || '')}</small></div>`).join('')}</div>`;
 }
@@ -304,11 +316,11 @@ function renderDashboard() {
     ['vendors', 'Vendors', 'Terms + products'], ['purchase-orders', 'Purchase Orders', 'JIT + MOQ'], ['inventory', 'Inventory', 'Stock state'], ['catalog', 'Catalog', '1.5M records'],
     ['marketplaces', 'Marketplaces', '20+ channels'], ['orders', 'Orders', 'Payment + status'], ['warehouse', 'Warehouse', 'Receive → ship'], ['customer-service', 'Customer', 'Service + returns']
   ];
-  const flow = `<ol class="kz-flow" aria-label="Vendor-to-customer operating flow">${flowModules.map((item, index) => `<li><button type="button" data-navigate="${item[0]}"><em>${String(index + 1).padStart(2, '0')}</em><b>${item[1]}</b><span>${item[2]}</span></button></li>`).join('')}</ol>`;
+  const flow = `<ol class="kz-flow" aria-label="Vendor-to-customer operating flow">${flowModules.map((item, index) => `<li><button type="button" data-navigate="${item[0]}" title="Open ${item[1]} — ${item[2]}"><em>${String(index + 1).padStart(2, '0')}</em><b>${item[1]}</b><span>${item[2]}</span></button></li>`).join('')}</ol>`;
   const attention = `<div class="kz-exception-table-wrap"><table class="kz-exception-table"><caption class="sr-only">Open operational exceptions requiring attention</caption><thead><tr><th scope="col">Exception</th><th scope="col">Record</th><th scope="col">Workspace</th><th scope="col">Age</th><th scope="col">State</th><th scope="col">Action</th></tr></thead><tbody>${exceptions.slice(0, 8).map((item) => `<tr><td><b>${escapeHtml(item.issue)}</b></td><td><code>${escapeHtml(item.record)}</code></td><td>${escapeHtml(moduleName(item.module))}</td><td><time>${escapeHtml(item.age)}</time></td><td>${status(item.status)}</td><td><button type="button" data-navigate="${item.module}" data-focus-record="${escapeHtml(item.record)}">${escapeHtml(item.action)}</button></td></tr>`).join('')}</tbody></table></div>`;
   const scale = `<div class="kz-scale-ledger"><div><b>~1.5M</b><span>Catalog records</span><small>Verified historical scale</small></div><div><b>20+</b><span>Commerce channels</span><small>Verified historical scale</small></div><div><b>12</b><span>Operating workspaces</span><small>Connected in this reconstruction</small></div></div>`;
   const activity = `<ul class="kz-activity-list">${state.audit.slice(0, 6).map((item) => `<li><time>${escapeHtml(item.time)}</time><b>${escapeHtml(item.module)}</b><span>${escapeHtml(item.action)}</span><span>${escapeHtml(item.record)} · ${escapeHtml(item.result)}</span></li>`).join('')}</ul>`;
-  const companyHub = `<div class="kz-company-hub"><section><h3>Company Announcements</h3><p>${escapeHtml(state.companyHub.announcement)}</p></section><section><h3>My Projects &amp; Tasks</h3><ul>${state.companyHub.projects.map((item)=>`<li><button type="button" data-action="toggle-company-task" data-record-id="${item.id}" aria-pressed="${item.complete}"><span>${item.complete?'✓':'○'}</span>${escapeHtml(item.name)}<small>${escapeHtml(item.due)}</small></button></li>`).join('')}</ul></section><section><h3>Upcoming Events / Calendar</h3><ul>${state.companyHub.events.map((item)=>`<li>${escapeHtml(item)}</li>`).join('')}</ul></section><section><h3>Messages &amp; Employee Status</h3><p><button type="button" data-action="open-company-messages">${state.companyHub.messages} internal messages</button></p><div class="kz-employee-status">${state.companyHub.employees.map((item)=>`<span><i class="is-${item.status.toLowerCase()}"></i>${escapeHtml(item.name)} · ${escapeHtml(item.status)}</span>`).join('')}</div></section><section><h3>Resources</h3><div class="kz-resource-links">${state.companyHub.resources.map((item)=>`<button type="button" data-action="open-company-resource" data-record-id="${escapeHtml(item)}">${escapeHtml(item)}</button>`).join('')}</div></section></div>`;
+  const companyHub = `<div class="kz-company-hub"><section><h3>Company Announcements</h3><p>${escapeHtml(state.companyHub.announcement)}</p></section><section><h3>My Projects &amp; Tasks</h3><ul>${state.companyHub.projects.map((item)=>`<li><button type="button" data-action="toggle-company-task" data-record-id="${item.id}" aria-pressed="${item.complete}"><span>${item.complete?'✓':'○'}</span>${escapeHtml(item.name)}<small>${escapeHtml(item.due)}</small></button></li>`).join('')}</ul></section><section><h3>Upcoming Events / Calendar</h3><ul>${state.companyHub.events.map((item)=>`<li>${escapeHtml(item)}</li>`).join('')}</ul></section><section><h3>Messages &amp; Employee Status</h3><p><button type="button" data-action="open-company-messages">${state.companyHub.messages} internal messages</button></p><div class="kz-employee-status">${state.companyHub.employees.map((item)=>`<span title="${escapeHtml(item.note)}"><i class="is-${item.status.toLowerCase()}"></i>${escapeHtml(item.name)} · ${escapeHtml(item.status)}<small>${escapeHtml(item.note)}</small></span>`).join('')}</div></section><section><h3>Resources</h3><div class="kz-resource-links">${state.companyHub.resources.map((item)=>`<button type="button" data-action="open-company-resource" data-record-id="${escapeHtml(item)}">${escapeHtml(item)}</button>`).join('')}</div></section></div>`;
   const commandCenter = `<div class="kz-dashboard-main">${panel('Exception Queue', attention, `${illustrativeBadge()}<span>${exceptions.length} open</span>`, 'kz-exception-panel')}<aside class="kz-dashboard-rail" aria-label="Commerce scale and recent activity">${panel('Commerce Scale', scale, '<span>Operating footprint</span>', 'kz-scale-panel')}${panel('Recent ERP Activity', activity, '<button type="button" data-navigate="settings" data-settings-tab="Audit History">Audit history</button>', 'kz-dashboard-activity')}</aside></div>`;
   workspace.innerHTML = pageHeader('Operations Dashboard', 'One connected command center for purchasing, catalog, inventory, marketplaces, fulfillment, customers, and company operations.', `<button type="button" class="kz-button kz-button--primary" data-action="sync-all">Run System Sync</button>`) + summary + `<div class="kz-grid kz-grid--dashboard kz-dashboard">${panel('Vendor-to-Customer Operating Flow', flow, '<span>8 connected stages</span><span>Vendor → customer</span>', 'kz-flow-panel')}${commandCenter}${panel('Company Homebase', companyHub, '<span>Secondary operations intranet</span>', 'kz-company-panel')}</div>`;
 }
@@ -354,7 +366,7 @@ function renderCatalog() {
   const query = getFilter('catalog');
   const rows = state.catalog.filter((item) => matchesQuery(item, query));
   const columns = [
-    { key: 'sku', label: 'SKU / UPC', render: (row) => `<strong>${row.sku}</strong><small>${row.upc}</small>` }, { key: 'product', label: 'Product' }, { key: 'category', label: 'Category' },
+    { key: 'sku', label: 'SKU / UPC', render: (row) => `<strong>${row.sku}</strong><small>${row.upc}</small>` }, { key: 'product', label: 'Product', render: (row) => storyProduct(row.product, row.sku) }, { key: 'category', label: 'Category' },
     { key: 'cost', label: 'Cost', numeric: true, render: (row) => money(row.cost) }, { key: 'price', label: 'Price', numeric: true, render: (row) => money(row.price) },
     { key: 'available', label: 'Available', numeric: true, sortValue: (row) => available(state.inventory.find((item) => item.sku === row.sku) || { onHand: 0, allocated: 0 }), render: (row) => number(available(state.inventory.find((item) => item.sku === row.sku) || { onHand: 0, allocated: 0 })) },
     { key: 'allocated', label: 'Allocated', numeric: true, sortValue: (row) => state.inventory.find((item) => item.sku === row.sku)?.allocated || 0, render: (row) => number(state.inventory.find((item) => item.sku === row.sku)?.allocated || 0) },
@@ -373,7 +385,7 @@ function renderInventory() {
   const query = getFilter('inventory');
   const rows = state.inventory.filter((item) => matchesQuery(item, query));
   const columns = [
-    { key: 'sku', label: 'SKU', render: (row) => `<strong>${row.sku}</strong>` }, { key: 'product', label: 'Product' }, { key: 'location', label: 'Location' },
+    { key: 'sku', label: 'SKU', render: (row) => `<strong>${row.sku}</strong>` }, { key: 'product', label: 'Product', render: (row) => storyProduct(row.product, row.sku) }, { key: 'location', label: 'Location' },
     { key: 'onHand', label: 'On Hand', numeric: true }, { key: 'allocated', label: 'Allocated', numeric: true }, { key: 'available', label: 'Available', numeric: true, sortValue: available, render: (row) => number(available(row)) },
     { key: 'incoming', label: 'Incoming', numeric: true }, { key: 'reorderPoint', label: 'Reorder Point', numeric: true }, { key: 'status', label: 'Status', render: (row) => status(row.status) }
   ];
@@ -604,7 +616,7 @@ function openRecord(type, id) {
     const item = state.catalog.find((row) => row.sku === id); if (!item) return;
     const inv = state.inventory.find((row)=>row.sku===id);
     const margin = item.price ? Math.round(((item.price-item.cost)/item.price)*100) : 0;
-    showRecord({ kicker:'Catalog record',title:item.sku,body:`<h3>${escapeHtml(item.product)}</h3>${details([['UPC',escapeHtml(item.upc)],['Attributes',`${item.attributes} fields`],['Media',`${item.media} assets`],['Taxonomy',escapeHtml(item.category)],['Cost',money(item.cost)],['Margin',`${margin}%`],['Price',money(item.price)],['Available',number(inv?available(inv):0)],['Listings',number(item.listings)],['Marketplace mappings',escapeHtml(item.mappings)],['Data health',status(item.health)]])}<h3>Audit history</h3><ul class="kz-timeline-list">${item.audit.map((entry)=>`<li>${escapeHtml(entry)}</li>`).join('')}</ul>`,actions:`${actionButton('Update Pricing','catalog-price-one','catalog',item.sku,true)}${actionButton('Edit Taxonomy','catalog-taxonomy-one','catalog',item.sku)}${['Rejected','Needs Taxonomy'].includes(item.health)?actionButton('Fix Listing','fix-listing','catalog',item.sku):''}` });
+    showRecord({ kicker:'Catalog record',title:item.sku,body:`<h3>${storyProduct(item.product, item.sku)}</h3>${details([['UPC',escapeHtml(item.upc)],['Attributes',`${item.attributes} fields`],['Media',`${item.media} assets`],['Taxonomy',escapeHtml(item.category)],['Cost',money(item.cost)],['Margin',`${margin}%`],['Price',money(item.price)],['Available',number(inv?available(inv):0)],['Listings',number(item.listings)],['Marketplace mappings',escapeHtml(item.mappings)],['Data health',status(item.health)]])}<h3>Audit history</h3><ul class="kz-timeline-list">${item.audit.map((entry)=>`<li>${escapeHtml(entry)}</li>`).join('')}</ul>`,actions:`${actionButton('Update Pricing','catalog-price-one','catalog',item.sku,true)}${actionButton('Edit Taxonomy','catalog-taxonomy-one','catalog',item.sku)}${['Rejected','Needs Taxonomy'].includes(item.health)?actionButton('Fix Listing','fix-listing','catalog',item.sku):''}` });
     return;
   }
   if (type === 'inventory') {
@@ -648,7 +660,7 @@ function advanceOrder(id) {
   if(next==='Picked'){const task=state.warehouseTasks.find((row)=>row.record===id&&row.type==='Picking');if(task)task.status='Complete';let pack=state.warehouseTasks.find((row)=>row.record===id&&row.type==='Packing');if(!pack){pack={id:`WH-K-${310+state.warehouseTasks.length}`,type:'Packing',record:id,route:'Station 1',itemCount:item.items,weight:'',service:'UPS Ground',label:'Pending',tracking:'',status:'Ready',note:'Verify contents and address.'};state.warehouseTasks.push(pack);}}
   if(next==='Packed'){const task=state.warehouseTasks.find((row)=>row.record===id&&row.type==='Packing');if(task){task.status='Complete';task.label='Printed';}if(!state.warehouseTasks.some((row)=>row.record===id&&row.type==='Shipments'))state.warehouseTasks.push({id:`WH-S-${410+state.warehouseTasks.length}`,type:'Shipments',record:id,route:'Carrier lane 1',itemCount:item.items,weight:'Pending',service:'UPS Ground',label:'Printed',tracking:'',status:'Ready',note:'Awaiting carrier handoff.'});}
   if(next==='Shipped'){item.tracking=`1Z8042${id.replace(/\D/g,'').slice(-5)}`;const task=state.warehouseTasks.find((row)=>row.record===id&&row.type==='Shipments');if(task){task.status='Complete';task.tracking=item.tracking;}const channel=state.marketplaces.find((row)=>row.name===item.channel);if(channel){channel.orderSync='Current';channel.lastSync=currentTime();}state.cases.filter((row)=>row.orderId===id).forEach((row)=>{row.tracking=item.tracking;row.timeline.push(`${currentTime()} · Shipment posted · ${item.tracking}`);});}
-  item.timeline.push(`${currentTime()} · ${next}`);addAudit('Orders',`${previous} → ${next}`,id,next);closeDialog(recordDialog);commit(`${id} updated to ${next}. Connected warehouse and customer records were refreshed.`);
+  item.timeline.push(`${currentTime()} · ${next}`);addAudit('Orders',`${previous} → ${next}`,id,next);closeDialog(recordDialog);commit();interfacePulse(next==='Shipped'?`${id} shipped. The box is now someone else’s responsibility.`:`${id} updated to ${next}. Connected warehouse and customer records were refreshed.`);
 }
 
 function receivePO(id, quantity, damaged=0) {
@@ -717,7 +729,7 @@ document.addEventListener('click',(event)=>{
   if(action==='disclosure')return openDialog('disclosure');
   if(action==='user-menu'){const menu=document.querySelector('[data-user-menu]');menu.hidden=!menu.hidden;button.setAttribute('aria-expanded',String(!menu.hidden));return;}
   if(action==='toggle-company-task'){const item=state.companyHub.projects.find((row)=>row.id===id);if(item){item.complete=!item.complete;addAudit('Company','Updated project task',item.name,item.complete?'Complete':'Open');}return commit(`${item.name} marked ${item.complete?'complete':'open'}.`);}
-  if(action==='open-company-messages')return showRecord({kicker:'Company homebase',title:'Internal Messages',body:'<ul class="kz-timeline-list"><li><b>Warehouse</b>Receiving dock two is ready for PO-7814.</li><li><b>Catalog</b>Taxonomy mapping queue is ready for review.</li><li><b>Customer Service</b>Payment escalation is linked to ORD-10465.</li></ul>'});
+  if(action==='open-company-messages')return showRecord({kicker:'Company homebase',title:'Internal Messages',body:'<ul class="kz-timeline-list"><li><b>Warehouse</b>Found the missing carton. It was behind the other carton.</li><li><b>Catalog</b>The Executive Decision-Making Mug is back in taxonomy review. Decisions remain sold separately.</li><li><b>Customer Service</b>Converted an ALL-CAPS message into three sentences and a thank-you.</li></ul>'});
   if(action==='open-company-resource')return showRecord({kicker:'Company resources',title:id,body:`<p>${escapeHtml(id)} is represented as part of the internal company homebase. The reconstructed interface does not contain private historical documents.</p>`});
   if(action==='recover'){state.artifactRecovered=true;saveState();window.parent.postMessage({type:'kevinception:artifact',id:'project-blueprint',year:'2010'},window.location.origin);button.textContent='Recovered ✓';button.disabled=true;toast('Project Blueprint recovered: connected commerce operating-system map.');return;}
   if(action==='sort'){const previous=state.ui.sort[button.dataset.table];state.ui.sort[button.dataset.table]={key:button.dataset.key,direction:previous?.key===button.dataset.key&&previous.direction==='asc'?'desc':'asc'};saveState();renderActiveModule();return;}
@@ -753,7 +765,7 @@ document.addEventListener('click',(event)=>{
   if(action==='fix-listing')return fixListing(id);
   if(action==='select-channel'){state.ui.selectedChannel=id;saveState();return renderActiveModule();}
   if(action==='sync-channel'){const item=state.marketplaces.find((row)=>row.id===id);if(item){item.lastSync=currentTime();item.orderSync='Current';item.inventorySync='Current';state.lastSync=item.lastSync;addAudit('Marketplaces','Ran channel sync',item.name,'Success');}return commit(`${item.name} sync completed.`);}
-  if(action==='sync-all-channels'){const time=currentTime();state.marketplaces.forEach((item)=>{item.lastSync=time;if(!item.errors){item.feed='Healthy';item.inventorySync='Current';item.orderSync='Current';}});state.lastSync=time;addAudit('Marketplaces','Ran all channel syncs','20+ channels','Exceptions retained');return commit('All channel syncs completed. Unresolved feed exceptions remain visible.');}
+  if(action==='sync-all-channels'){const time=currentTime();state.marketplaces.forEach((item)=>{item.lastSync=time;if(!item.errors){item.feed='Healthy';item.inventorySync='Current';item.orderSync='Current';}});state.lastSync=time;addAudit('Marketplaces','Ran all channel syncs','20+ channels','Exceptions retained');commit();return interfacePulse('All channels checked in. Even the dramatic ones.');}
   if(action==='retry-feed'){const item=state.marketplaces.find((row)=>row.id===id);if(item){item.feed='Healthy';item.inventorySync='Current';item.errors=0;item.rejected=[];item.lastSync=currentTime();addAudit('Marketplaces','Retried failed feed',item.name,'Success');}return commit(`${item?.name||'Channel'} feed retry succeeded.`);}
   if(action==='view-rejected'){const item=state.marketplaces.find((row)=>row.id===id);return showRecord({kicker:'Rejected listings',title:item.name,body:item.rejected.length?`<ul class="kz-timeline-list">${item.rejected.map((entry)=>`<li>${escapeHtml(entry)}</li>`).join('')}</ul>`:'<p>No rejected listings remain for this channel.</p>',actions:item.rejected.length?actionButton('Retry Feed','retry-feed','channel',id,true):''});}
   if(action==='resolve-mapping'){const item=state.marketplaces.find((row)=>row.id===id);if(item){item.mapping='Mapped';item.errors=0;item.feed='Healthy';item.rejected=[];item.lastSync=currentTime();addAudit('Marketplaces','Resolved mapping',item.name,'Mapped');}return commit(`${item?.name||'Channel'} mapping resolved.`);}
@@ -780,7 +792,7 @@ document.addEventListener('click',(event)=>{
   if(action==='return-restock')return restockReturn(id);
   if(action==='return-damaged'){const item=state.returns.find((row)=>row.id===id);const inv=state.inventory.find((row)=>row.sku===item.sku);if(inv)inv.damaged+=item.quantity;item.disposition='Damaged';item.status='Refund Pending';addAudit('Returns','Marked return damaged',id,`${item.quantity} unit(s)`);return commit(`${id} marked damaged; inventory damage count updated.`);}
   if(action==='return-complete'){const item=state.returns.find((row)=>row.id===id);item.status='Completed';addAudit('Returns','Completed return',id,money(item.refund));return commit(`${id} completed.`);}
-  if(action==='sync-all'){const time=currentTime();state.lastSync=time;state.integrations.forEach((item)=>{item.lastRun=time;if(item.status==='Healthy')item.status='Healthy';});addAudit('Integrations','Ran system sync','All modules','Success');return commit('System sync completed. Exceptions were retained for operator review.');}
+  if(action==='sync-all'){const time=currentTime();state.lastSync=time;state.integrations.forEach((item)=>{item.lastRun=time;if(item.status==='Healthy')item.status='Healthy';});addAudit('Integrations','Ran system sync','All modules','Success');commit();return interfacePulse('Everything is talking again. Suspiciously cooperative.');}
   if(action==='export')return exportCsv(button.dataset.export);
   if(action==='toggle-automation'){const item=state.automation.find((row)=>row.id===id);item.enabled=!item.enabled;addAudit('Automation',item.enabled?'Enabled rule':'Disabled rule',item.name,item.enabled?'Enabled':'Disabled');return commit(`${item.name} ${item.enabled?'enabled':'disabled'}.`);}
   if(action==='toggle-notification'){const item=state.notifications.find((row)=>row.id===id);item.enabled=!item.enabled;addAudit('Notifications',item.enabled?'Enabled notification':'Disabled notification',item.name,item.enabled?'Enabled':'Disabled');return commit(`${item.name} ${item.enabled?'enabled':'disabled'}.`);}

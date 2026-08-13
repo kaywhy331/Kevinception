@@ -36,12 +36,12 @@ describe('Commerce and Coexistence chapters', () => {
     expect(html).toContain('Settings / Administration');
     expect(html).toContain('PORTFOLIO RECONSTRUCTION');
     expect(html).toContain('Illustrative records');
-    expect(html).toContain('kevazon.css?v=20260813-dashboard2');
-    expect(html).toContain('kevazon.js?v=20260813-dashboard3');
+    expect(html).toContain('kevazon.css?v=20260813-personality1');
+    expect(html).toContain('kevazon.js?v=20260813-personality1');
     expect(html).toContain('.kz-era-bar{display:none!important}');
     expect(html).toContain('@media (min-width:761px){html[data-embedded="true"] .kz-sidebar{height:100svh!important}}');
     expect((html.match(/data-kz-tab=/g) ?? [])).toHaveLength(12);
-    expect(script).toContain("const STORAGE_KEY = 'stealstreet-commerce-os-v4'");
+    expect(script).toContain("const STORAGE_KEY = 'stealstreet-commerce-os-v5'");
     for (const renderer of ['renderDashboard', 'renderOrders', 'renderPurchaseOrders', 'renderCatalog', 'renderInventory', 'renderMarketplaces', 'renderVendors', 'renderCustomerService', 'renderWarehouse', 'renderReturns', 'renderReports', 'renderSettings']) {
       expect(script).toContain(`function ${renderer}(`);
     }
@@ -59,6 +59,11 @@ describe('Commerce and Coexistence chapters', () => {
     expect(script).toContain('kz-exception-table');
     expect(script).toContain('kz-scale-ledger');
     expect(script).toContain('Vendor-to-Customer Operating Flow');
+    expect(script).toContain('Executive Decision-Making Mug');
+    expect(script).toContain('the break-room fridge is not an inventory location');
+    expect(script).toContain('Everything is talking again. Suspiciously cooperative.');
+    expect(script).toContain('decisions remain sold separately');
+    expect(script).toContain('interfacePulse');
     expect(script.indexOf("type:'kevinception:legacy-ready'")).toBeGreaterThan(script.indexOf('setModule(initialModule'));
     expect(html).not.toContain("type:'kevinception:legacy-ready'");
     expect(styles).toContain('Tahoma, Verdana, Arial, sans-serif');
