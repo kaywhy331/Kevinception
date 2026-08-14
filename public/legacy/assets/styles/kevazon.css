@@ -214,6 +214,54 @@ html { width: 100%; max-width: 100%; overflow-x: hidden; background: var(--brown
 .kz-dashboard-activity .kz-activity-list li { grid-template-columns: 53px minmax(62px, .65fr) minmax(0, 1fr); gap: 5px; }
 .kz-dashboard-activity .kz-activity-list li > span:last-child { display: none; }
 
+.kz-home-layout { display: grid; min-width: 0; grid-template-columns: minmax(500px, 1.4fr) minmax(340px, .72fr); gap: 8px; align-items: start; }
+.kz-home-layout > *, .kz-home-layout aside { min-width: 0; }
+.kz-home-layout aside { display: grid; gap: 8px; }
+.kz-home-layout aside .kz-panel + .kz-panel { margin-top: 0; }
+.kz-home-feed { display: grid; gap: 8px; padding: 8px; background: #eee4d3; }
+.kz-home-post { padding: 9px; border: 1px solid #c6b694; border-radius: 2px; background: #fffdf8; box-shadow: 0 1px 2px rgba(42,23,18,.1); }
+.kz-home-post > header { display: flex; gap: 7px; align-items: center; padding-bottom: 6px; border-bottom: 1px dotted #d7c9b0; }
+.kz-home-avatar { display: grid; width: 28px; height: 28px; place-items: center; border: 1px solid #154e50; border-radius: 2px; background: linear-gradient(#348789,#1c5d5f); color: #fff; font-size: 12px; font-weight: bold; text-shadow: 0 -1px rgba(0,0,0,.25); }
+.kz-home-post header b, .kz-home-post header small { display: block; }
+.kz-home-post header b { color: var(--teal-dark); font-size: 10px; }
+.kz-home-post header small { color: var(--muted); font-size: 8px; }
+.kz-home-post h3 { margin: 8px 0 4px; color: var(--brown); font-size: 13px; }
+.kz-home-post > p { margin: 0; color: #504840; font-size: 10px; line-height: 1.5; }
+.kz-home-comments { margin-top: 8px; padding-top: 6px; border-top: 1px solid #ded3c0; }
+.kz-home-comments > b { color: var(--muted); font-size: 8px; text-transform: uppercase; }
+.kz-home-comments blockquote { display: grid; grid-template-columns: 74px minmax(0, 1fr) auto; gap: 5px; margin: 5px 0 0; padding: 5px 6px; border-left: 3px solid #a8c6bf; background: #edf3ef; font-size: 9px; }
+.kz-home-comments blockquote strong { color: var(--teal-dark); }
+.kz-home-comments blockquote time { color: #81766b; font-size: 8px; }
+.kz-home-comments > button { min-height: 21px; margin-top: 6px; padding: 2px 6px; border: 1px solid #978973; border-radius: 2px; background: linear-gradient(#fffdf7,#ded3c0); color: var(--teal-dark); font-size: 8px; font-weight: bold; }
+.kz-culture-events, .kz-home-tasks, .kz-amenity-grid { margin: 0; padding: 0; list-style: none; }
+.kz-culture-events li { display: grid; grid-template-columns: 70px 1fr; gap: 7px; padding: 7px; border-bottom: 1px solid #dfd3bf; }
+.kz-culture-events time { color: var(--gold); font-size: 8px; font-weight: bold; }
+.kz-culture-events b, .kz-culture-events span { display: block; }
+.kz-culture-events b { color: var(--brown); font-size: 9px; }
+.kz-culture-events span { margin-top: 2px; color: var(--muted); font-size: 8px; }
+.kz-culture-traditions { padding: 7px; border-top: 1px solid #c9ba9c; background: #f7efdf; }
+.kz-culture-traditions b { color: var(--gold); font-size: 8px; text-transform: uppercase; }
+.kz-culture-traditions p { margin: 3px 0 0; color: var(--muted); font-size: 8px; line-height: 1.45; }
+.kz-amenity-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); padding: 5px; }
+.kz-amenity-grid li { display: grid; min-width: 0; grid-template-columns: 24px 1fr; padding: 5px; border-bottom: 1px dotted #d9cdb9; }
+.kz-amenity-grid li > span { display: grid; width: 19px; height: 19px; grid-row: 1 / 3; place-items: center; border: 1px solid #bda66e; background: #f5e7c5; color: #795719; font: bold 9px/1 Tahoma; }
+.kz-amenity-grid b { color: var(--brown); font-size: 8px; }
+.kz-amenity-grid small { overflow: hidden; color: var(--muted); font-size: 7px; text-overflow: ellipsis; white-space: nowrap; }
+.kz-home-tasks li { border-bottom: 1px dotted #d9cdb9; }
+.kz-home-tasks button { display: grid; width: 100%; grid-template-columns: 18px 1fr auto; gap: 4px; align-items: center; padding: 5px 7px; border: 0; background: transparent; box-shadow: none; text-align: left; }
+.kz-home-tasks button > span { color: var(--teal); font-weight: bold; }
+.kz-home-tasks button > b { font-size: 9px; }
+.kz-home-tasks button > small { color: var(--muted); font-size: 8px; }
+.kz-home-people { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); padding: 5px; }
+.kz-home-people > span { min-width: 0; padding: 5px; border-bottom: 1px dotted #d9cdb9; }
+.kz-home-people i { display: inline-block; width: 6px; height: 6px; margin-right: 4px; border-radius: 50%; background: #929292; }
+.kz-home-people i.is-in { background: #3d8055; }
+.kz-home-people i.is-away { background: var(--gold); }
+.kz-home-people b, .kz-home-people small { display: block; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.kz-home-people b { color: var(--brown); font-size: 8px; }
+.kz-home-people small { margin-left: 10px; color: var(--muted); font-size: 7px; }
+.kz-home-resources-panel .kz-resource-links { padding: 6px; }
+
 .kz-company-panel { grid-column: 1 / -1; }
 .kz-company-hub { display: grid; grid-template-columns: 1.15fr 1.2fr 1fr 1.2fr; }
 .kz-company-hub > section { min-width: 0; padding: 7px; border-right: 1px solid #ded3c0; }
@@ -304,6 +352,9 @@ html { width: 100%; max-width: 100%; overflow-x: hidden; background: var(--brown
   .kz-summary-strip > div:nth-child(-n+3) { border-bottom: 1px solid var(--border); }
   .kz-grid--dashboard, .kz-grid--two, .kz-grid--settings { grid-template-columns: 1fr; }
   .kz-dashboard-main { grid-template-columns: 1fr; }
+  .kz-home-layout { grid-template-columns: 1fr; }
+  .kz-home-layout aside { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .kz-home-layout aside .kz-culture-panel { grid-column: 1 / -1; }
   .kz-dashboard-rail { grid-template-columns: 1fr 1fr; }
   .kz-company-panel { grid-column: auto; }
   .kz-company-hub { grid-template-columns: repeat(2, 1fr); }
@@ -331,6 +382,10 @@ html { width: 100%; max-width: 100%; overflow-x: hidden; background: var(--brown
   .kz-summary-strip > div:nth-child(2n) { border-right: 0; }
   .kz-summary-strip > div:nth-last-child(-n+2) { border-bottom: 0; }
   .kz-dashboard-rail { grid-template-columns: 1fr; }
+  .kz-home-layout aside { grid-template-columns: 1fr; }
+  .kz-home-layout aside .kz-culture-panel { grid-column: auto; }
+  .kz-home-comments blockquote { grid-template-columns: 65px minmax(0, 1fr); }
+  .kz-home-comments blockquote time { grid-column: 2; }
   .kz-flow { grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 6px 0; }
   .kz-flow li:nth-child(4)::after { display: none; }
   .kz-flow button { min-height: 52px; }

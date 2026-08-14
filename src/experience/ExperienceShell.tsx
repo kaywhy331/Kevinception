@@ -25,6 +25,7 @@ type UrlView = 'timeline' | 'environment' | 'interface' | 'text';
 type HistoryMode = 'push' | 'replace';
 
 const COMMERCE_MODULES = new Set([
+  'home',
   'dashboard',
   'orders',
   'purchase-orders',
@@ -57,6 +58,7 @@ function normalizeCommerceModule(value: string | null) {
 }
 
 function moduleNameForTitle(module: string | null) {
+  if (module === 'home') return 'StealStreet Home';
   if (!module || module === 'dashboard') return 'Operations Dashboard';
   return module.split('-').map((word) => word.charAt(0).toUpperCase() + word.slice(1)).join(' ')
     .replace('Settings', 'Settings / Administration');
@@ -69,7 +71,7 @@ function readLocation(pathname: string, search: string): LocationState {
   const year = isYear(queryYear) ? queryYear : legacyYear ?? '1990';
   const requestedView = params.get('view');
   const module = year === '2010' && (requestedView === 'interface' || params.has('module') || Boolean(legacyYear))
-    ? normalizeCommerceModule(params.get('module')) ?? 'dashboard'
+    ? normalizeCommerceModule(params.get('module')) ?? 'home'
     : null;
   const legacyRoute = Boolean(legacyYear && pathname !== '/experience' && pathname !== '/experience/');
   if (legacyRoute) return { year, view: 'interface', legacyRoute: true, module };
@@ -81,7 +83,7 @@ function readLocation(pathname: string, search: string): LocationState {
 
 function experienceUrl(year: YearId, view: Exclude<UrlView, 'timeline'> = 'environment', module: string | null = null) {
   const params = new URLSearchParams({ year });
-  const commerceModule = year === '2010' && view === 'interface' ? normalizeCommerceModule(module) ?? 'dashboard' : null;
+  const commerceModule = year === '2010' && view === 'interface' ? normalizeCommerceModule(module) ?? 'home' : null;
   if (view !== 'environment' && !commerceModule) params.set('view', view);
   if (commerceModule) params.set('module', commerceModule);
   return `/experience/?${params.toString()}`;
@@ -231,6 +233,7 @@ export function ExperienceShell({ children }: { children: React.ReactNode }) {
         recordVisit(location.year);
       }
       send({ type: 'SYNC_VIEW', destination: location.view });
+      setViewMode(location.view);
       if (location.legacyRoute) writeExperienceHistory(location.year, 'interface', 'replace', location.module);
       else if (location.year === '2010' && location.view === 'interface' && !new URLSearchParams(window.location.search).has('module')) {
         writeExperienceHistory(location.year, 'interface', 'replace', location.module);
@@ -241,7 +244,7 @@ export function ExperienceShell({ children }: { children: React.ReactNode }) {
     syncFromBrowser();
     window.addEventListener('popstate', syncFromBrowser);
     return () => window.removeEventListener('popstate', syncFromBrowser);
-  }, [pathname, recordVisit, send, setActiveYear, syncDocumentTitle, syncLegacyModule, writeExperienceHistory]);
+  }, [pathname, recordVisit, send, setActiveYear, setViewMode, syncDocumentTitle, syncLegacyModule, writeExperienceHistory]);
 
   const completeTransition = useCallback((destination: 'timeline' | 'environment' | 'interface', delay: number, version: number) => {
     timers.current.push(window.setTimeout(() => {
@@ -365,7 +368,7 @@ export function ExperienceShell({ children }: { children: React.ReactNode }) {
       }
       if (event.data.type === 'kevinception:module') {
         if (useExperienceStore.getState().activeYear !== '2010') return;
-        const module = normalizeCommerceModule(String(event.data.module ?? 'dashboard')) ?? 'dashboard';
+        const module = normalizeCommerceModule(String(event.data.module ?? 'home')) ?? 'home';
         const href = experienceUrl('2010', 'interface', module);
         const method = event.data.history === 'replace' ? 'replaceState' : 'pushState';
         const previousState = window.history.state && typeof window.history.state === 'object' ? window.history.state : {};

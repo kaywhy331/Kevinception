@@ -16,7 +16,10 @@ describe('Commerce and Coexistence chapters', () => {
     expect(timelineContent['2010'].operations.lifecycle.map((stage) => stage.label)).toEqual([
       'Vendors', 'Purchase Orders', 'Inventory', 'Catalog', 'Marketplaces', 'Customer Orders', 'Warehouse', 'Customer'
     ]);
-    expect(timelineContent['2010'].modules).toHaveLength(12);
+    expect(timelineContent['2010'].modules).toHaveLength(13);
+    expect(timelineContent['2010'].modules.slice(0, 2).map((module) => module.id)).toEqual(['home', 'dashboard']);
+    expect(timelineContent['2010'].companyHub.breakRoom).toContain('Pool table');
+    expect(timelineContent['2010'].companyHub.events).toContain('Big Bear company trip');
     expect(timelineContent['2010'].marketplaces).toContain('Amazon FBA');
     expect(timelineContent['2010'].marketplaces).toContain('BuyGiftsWholesale.com');
     expect(timelineContent['2010'].orders.some((order) => order.status === 'Exception')).toBe(true);
@@ -36,13 +39,13 @@ describe('Commerce and Coexistence chapters', () => {
     expect(html).toContain('Settings / Administration');
     expect(html).toContain('PORTFOLIO RECONSTRUCTION');
     expect(html).toContain('Illustrative records');
-    expect(html).toContain('kevazon.css?v=20260813-personality1');
-    expect(html).toContain('kevazon.js?v=20260813-personality1');
+    expect(html).toContain('kevazon.css?v=20260813-culture1');
+    expect(html).toContain('kevazon.js?v=20260813-culture1');
     expect(html).toContain('.kz-era-bar{display:none!important}');
     expect(html).toContain('@media (min-width:761px){html[data-embedded="true"] .kz-sidebar{height:100svh!important}}');
-    expect((html.match(/data-kz-tab=/g) ?? [])).toHaveLength(12);
-    expect(script).toContain("const STORAGE_KEY = 'stealstreet-commerce-os-v5'");
-    for (const renderer of ['renderDashboard', 'renderOrders', 'renderPurchaseOrders', 'renderCatalog', 'renderInventory', 'renderMarketplaces', 'renderVendors', 'renderCustomerService', 'renderWarehouse', 'renderReturns', 'renderReports', 'renderSettings']) {
+    expect((html.match(/data-kz-tab=/g) ?? [])).toHaveLength(13);
+    expect(script).toContain("const STORAGE_KEY = 'stealstreet-commerce-os-v6'");
+    for (const renderer of ['renderHome', 'renderDashboard', 'renderOrders', 'renderPurchaseOrders', 'renderCatalog', 'renderInventory', 'renderMarketplaces', 'renderVendors', 'renderCustomerService', 'renderWarehouse', 'renderReturns', 'renderReports', 'renderSettings']) {
       expect(script).toContain(`function ${renderer}(`);
     }
     expect(script).toContain("function advanceOrder(id)");
@@ -63,6 +66,15 @@ describe('Commerce and Coexistence chapters', () => {
     expect(script).toContain('the break-room fridge is not an inventory location');
     expect(script).toContain('Everything is talking again. Suspiciously cooperative.');
     expect(script).toContain('decisions remain sold separately');
+    expect(script).toContain("const ERA_YEAR = 2010");
+    expect(script).toContain('Company Posts & Announcements');
+    expect(script).toContain('Big Bear company trip');
+    expect(script).toContain('White Elephant gift exchanges');
+    expect(script).toContain('Pool Table');
+    expect(script).toContain('Learning Library');
+    expect(script).toContain('Add a comment');
+    expect(script).not.toMatch(/(?:orderDate|expectedDate|date):\s*['"]\d{1,2}\/\d{1,2}\/20(?:1[1-9]|2\d)['"]/);
+    expect(script).not.toContain('IMP-2012');
     expect(script).toContain('interfacePulse');
     expect(script.indexOf("type:'kevinception:legacy-ready'")).toBeGreaterThan(script.indexOf('setModule(initialModule'));
     expect(html).not.toContain("type:'kevinception:legacy-ready'");

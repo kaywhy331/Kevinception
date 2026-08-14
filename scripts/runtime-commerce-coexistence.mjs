@@ -88,7 +88,7 @@ async function openModule(frame, module) {
 }
 
 async function commerceState(frame) {
-  return frame.evaluate(() => JSON.parse(localStorage.getItem('stealstreet-commerce-os-v5') || 'null'));
+  return frame.evaluate(() => JSON.parse(localStorage.getItem('stealstreet-commerce-os-v6') || 'null'));
 }
 
 async function setDialogValue(frame, selector, value) {
@@ -104,6 +104,7 @@ try {
   await page.evaluate(() => {
     localStorage.removeItem('stealstreet-commerce-os-v4');
     localStorage.removeItem('stealstreet-commerce-os-v5');
+    localStorage.removeItem('stealstreet-commerce-os-v6');
     localStorage.removeItem('kevinception-v7');
   });
 
@@ -113,7 +114,7 @@ try {
 
   assert('The direct dashboard module URL opens the Commerce interface', new URL(page.url()).searchParams.get('module') === 'dashboard');
   assert('The reconstructed product is branded StealStreet Commerce OS', await commerce.$eval('.kz-brand-block', (node) => node.textContent.includes('StealStreet') && node.textContent.includes('Commerce OS') && node.textContent.includes('Co-founder')));
-  assert('The shell exposes exactly 12 working modules', (await commerce.$$('[data-kz-tab]')).length === 12);
+  assert('The shell exposes exactly 13 working modules', (await commerce.$$('[data-kz-tab]')).length === 13);
   assert('The dashboard presents the full eight-stage operating flow', await commerce.$$eval('.kz-flow button', (nodes) => nodes.length === 8 && nodes[0].textContent.includes('Vendors') && nodes[7].textContent.includes('Customer')));
   assert('The dashboard presents a structured exception queue and verified scale ledger', await commerce.$eval('.kz-dashboard', (node) => Boolean(node.querySelector('.kz-exception-table') && node.querySelector('.kz-scale-ledger'))));
   assert('The embedded dashboard removes duplicate era chrome', await commerce.evaluate(() => getComputedStyle(document.querySelector('.kz-era-bar')).display === 'none'));
@@ -130,8 +131,28 @@ try {
     };
   });
   assert('The desktop command center fits its viewport without clipping', desktopGeometry.flowFits && desktopGeometry.dashboardFitsViewport && desktopGeometry.bodyWidth <= desktopGeometry.viewportWidth + 1, JSON.stringify(desktopGeometry));
-  assert('The dashboard includes an actionable company homebase', await commerce.$eval('.kz-company-hub', (node) => node.textContent.includes('Company Announcements') && node.textContent.includes('My Projects & Tasks') && node.textContent.includes('Employee Status') && node.querySelectorAll('button').length >= 3));
-  assert('The dashboard rewards skimming with restrained operational humor', await commerce.$eval('.kz-dashboard', (node) => node.textContent.includes('break-room fridge is not an inventory location') && node.textContent.includes('Located the missing carton') && node.textContent.includes('spreadsheet limbo') && node.textContent.includes('making systems talk')));
+  assert('The dashboard stays focused on operations instead of duplicating the company intranet', await commerce.$eval('.kz-dashboard', (node) => Boolean(node.querySelector('.kz-exception-table') && !node.querySelector('.kz-home-feed'))));
+  assert('The dashboard rewards skimming with restrained operational humor', await commerce.$eval('.kz-dashboard', (node) => node.textContent.includes('Located the missing carton') && node.textContent.includes('spreadsheet limbo')));
+  await openModule(commerce, 'home');
+  assert('StealStreet Home is a distinct culture-first company workspace', await commerce.$eval('.kz-home-layout', (node) => node.textContent.includes('Company Posts & Announcements') && node.textContent.includes('Company Culture Calendar') && node.textContent.includes('Inside the Break Room') && node.textContent.includes('Employee Resources')));
+  assert('The culture feed includes company traditions, playful spaces, and employee conversation', await commerce.$eval('.kz-home-layout', (node) => node.textContent.includes('Big Bear company trip') && node.textContent.includes('White Elephant gift exchanges') && node.textContent.includes('Pool Table') && node.textContent.includes('Arcade') && node.textContent.includes('Learning Library') && node.querySelectorAll('.kz-home-comments blockquote').length >= 3));
+  const expectedOfficeDate = await commerce.evaluate(() => {
+    const now = new Date();
+    const day = Math.min(now.getDate(), new Date(2010, now.getMonth() + 1, 0).getDate());
+    return new Intl.DateTimeFormat('en-US', { month: 'numeric', day: 'numeric', year: 'numeric' }).format(new Date(2010, now.getMonth(), day));
+  });
+  const datedState = await commerceState(commerce);
+  const explicitDates = [...datedState.orders.map((item) => item.date), ...datedState.purchaseOrders.flatMap((item) => [item.orderDate, item.expectedDate]), ...datedState.companyHub.events.map((item) => item.date)];
+  assert('The office clock projects the current month and day into 2010', await commerce.$eval('[data-office-date]', (node, expected) => node.textContent === expected, expectedOfficeDate), expectedOfficeDate);
+  assert('Every seeded operational and culture date is in 2010 and not after the office date', explicitDates.every((value) => /\/2010$/.test(value) && new Date(value) <= new Date(expectedOfficeDate)), explicitDates.join(' | '));
+  const firstPostComments = datedState.companyHub.posts[0].comments.length;
+  await commerce.click('[data-home-post="POST-01"] [data-action="home-comment-form"]');
+  await commerce.waitForSelector('[data-dialog="record"][open] [data-action="submit-home-comment"]');
+  await setDialogValue(commerce, '[data-dialog="record"][open] textarea[name="comment"]', 'Save me a seat by the snacks.');
+  await commerce.click('[data-dialog="record"][open] [data-action="submit-home-comment"]');
+  await commerce.waitForFunction((count) => JSON.parse(localStorage.getItem('stealstreet-commerce-os-v6')).companyHub.posts[0].comments.length === count + 1, {}, firstPostComments);
+  assert('Employee comments persist on the internal company feed', (await commerceState(commerce)).companyHub.posts[0].comments.at(-1).body === 'Save me a seat by the snacks.');
+  await openModule(commerce, 'dashboard');
   const personalityThread = await commerceState(commerce);
   const characterSku = personalityThread.catalog.find((item) => item.sku === 'KV-910331');
   assert('A recurring product story connects six Commerce workspaces', characterSku?.product === 'Executive Decision-Making Mug'
@@ -145,6 +166,7 @@ try {
   assert('System sync responds with a brief, characterful micro-delight', await commerce.$eval('[data-toast-region]', (node) => node.textContent.includes('Everything is talking again. Suspiciously cooperative.')));
 
   const moduleHeadings = {
+    home: 'StealStreet Home',
     dashboard: 'Operations Dashboard',
     orders: 'Orders',
     'purchase-orders': 'Purchase Orders',
@@ -202,7 +224,7 @@ try {
   await setDialogValue(commerce, '[data-dialog="record"][open] input[name="quantity"]', 10);
   await setDialogValue(commerce, '[data-dialog="record"][open] input[name="damaged"]', 1);
   await commerce.click('[data-dialog="record"][open] [data-action="submit-receive-po"]');
-  await commerce.waitForFunction(() => JSON.parse(localStorage.getItem('stealstreet-commerce-os-v5')).purchaseOrders.find((item) => item.id === 'PO-7814').received === 10);
+  await commerce.waitForFunction(() => JSON.parse(localStorage.getItem('stealstreet-commerce-os-v6')).purchaseOrders.find((item) => item.id === 'PO-7814').received === 10);
   const afterReceipt = await commerceState(commerce);
   const beforeReceiptInventory = beforeReceipt.inventory.find((item) => item.sku === 'KV-740204');
   const afterReceiptInventory = afterReceipt.inventory.find((item) => item.sku === 'KV-740204');
@@ -214,7 +236,7 @@ try {
   await openModule(commerce, 'orders');
   for (const expectedStatus of ['Ready to Pick', 'Picked', 'Packed', 'Shipped']) {
     await commerce.click('[data-row-id="ORD-10465"] [data-action="advance-order"]');
-    await commerce.waitForFunction((status) => JSON.parse(localStorage.getItem('stealstreet-commerce-os-v5')).orders.find((item) => item.id === 'ORD-10465').status === status, {}, expectedStatus);
+    await commerce.waitForFunction((status) => JSON.parse(localStorage.getItem('stealstreet-commerce-os-v6')).orders.find((item) => item.id === 'ORD-10465').status === status, {}, expectedStatus);
   }
   const afterShipment = await commerceState(commerce);
   const shippedOrder = afterShipment.orders.find((item) => item.id === 'ORD-10465');
@@ -227,7 +249,7 @@ try {
   const beforeCatalogFix = afterShipment.marketplaces.reduce((total, item) => total + item.errors, 0);
   await openModule(commerce, 'catalog');
   await commerce.click('[data-row-id="KV-820118"] [data-action="fix-listing"]');
-  await commerce.waitForFunction(() => JSON.parse(localStorage.getItem('stealstreet-commerce-os-v5')).catalog.find((item) => item.sku === 'KV-820118').health === 'Healthy');
+  await commerce.waitForFunction(() => JSON.parse(localStorage.getItem('stealstreet-commerce-os-v6')).catalog.find((item) => item.sku === 'KV-820118').health === 'Healthy');
   const afterCatalogFix = await commerceState(commerce);
   const afterChannelErrors = afterCatalogFix.marketplaces.reduce((total, item) => total + item.errors, 0);
   assert('Fix Listing resolves catalog data health and mappings', afterCatalogFix.catalog.find((item) => item.sku === 'KV-820118').mappings === '9 / 9');
@@ -239,7 +261,7 @@ try {
   await openModule(commerce, 'returns');
   const beforeRestock = (await commerceState(commerce)).inventory.find((item) => item.sku === 'KV-510046').onHand;
   await commerce.click('[data-row-id="RMA-4001"] [data-action="return-restock"]');
-  await commerce.waitForFunction(() => JSON.parse(localStorage.getItem('stealstreet-commerce-os-v5')).returns.find((item) => item.id === 'RMA-4001').status === 'Completed');
+  await commerce.waitForFunction(() => JSON.parse(localStorage.getItem('stealstreet-commerce-os-v6')).returns.find((item) => item.id === 'RMA-4001').status === 'Completed');
   const afterRestock = await commerceState(commerce);
   assert('Restocking a return increments inventory', afterRestock.inventory.find((item) => item.sku === 'KV-510046').onHand === beforeRestock + 1);
   assert('Restocking a return updates its linked order timeline', afterRestock.orders.find((item) => item.id === 'ORD-10402').timeline.some((item) => item.includes('RMA-4001 restocked')));
@@ -254,7 +276,7 @@ try {
   await commerce.click('[data-subtab="warehouse"][data-value="Amazon FBA"]');
   await commerce.waitForSelector('[data-row-id="WH-F-501"] [data-action="warehouse-complete"]');
   await commerce.click('[data-row-id="WH-F-501"] [data-action="warehouse-complete"]');
-  await commerce.waitForFunction(() => JSON.parse(localStorage.getItem('stealstreet-commerce-os-v5')).warehouseTasks.find((item) => item.id === 'WH-F-501').status === 'Complete');
+  await commerce.waitForFunction(() => JSON.parse(localStorage.getItem('stealstreet-commerce-os-v6')).warehouseTasks.find((item) => item.id === 'WH-F-501').status === 'Complete');
   const afterFba = await commerceState(commerce);
   assert('Confirm Carton Labels completes the FBA workflow', afterFba.warehouseTasks.find((item) => item.id === 'WH-F-501').label === 'Confirmed');
 
@@ -282,10 +304,10 @@ try {
   await commerce.click('[data-action="reset-form"]');
   await commerce.waitForSelector('[data-dialog="record"][open] [data-action="confirm-reset"]');
   await commerce.click('[data-dialog="record"][open] [data-action="confirm-reset"]');
-  await waitForModule(commerce, 'dashboard');
+  await waitForModule(commerce, 'home');
   const resetState = await commerceState(commerce);
-  assert('Reset Demo Data restores orders, POs, listings, returns, warehouse, and automation', resetState.orders.find((item) => item.id === 'ORD-10465').status === 'Exception' && resetState.purchaseOrders.find((item) => item.id === 'PO-7814').received === 0 && resetState.catalog.find((item) => item.sku === 'KV-820118').health === 'Rejected' && resetState.returns.find((item) => item.id === 'RMA-4001').status === 'Inspection' && resetState.warehouseTasks.find((item) => item.id === 'WH-F-501').status === 'Carton Labels' && resetState.automation.find((item) => item.id === 'AUTO-01').enabled);
-  await page.waitForFunction(() => new URL(window.location.href).searchParams.get('module') === 'dashboard');
+  assert('Reset Demo Data restores Home, orders, POs, listings, returns, warehouse, and automation', resetState.ui.activeModule === 'home' && resetState.companyHub.posts[0].comments.length === firstPostComments && resetState.orders.find((item) => item.id === 'ORD-10465').status === 'Exception' && resetState.purchaseOrders.find((item) => item.id === 'PO-7814').received === 0 && resetState.catalog.find((item) => item.sku === 'KV-820118').health === 'Rejected' && resetState.returns.find((item) => item.id === 'RMA-4001').status === 'Inspection' && resetState.warehouseTasks.find((item) => item.id === 'WH-F-501').status === 'Carton Labels' && resetState.automation.find((item) => item.id === 'AUTO-01').enabled);
+  await page.waitForFunction(() => new URL(window.location.href).searchParams.get('module') === 'home');
 
   await commerce.click('[data-action="archive"]');
   await commerce.waitForSelector('[data-dialog="archive"][open]');
@@ -299,20 +321,20 @@ try {
   await page.setViewport({ width: 390, height: 844, deviceScaleFactor: 1 });
   await page.reload({ waitUntil: 'domcontentloaded', timeout: 45000 });
   commerce = await commerceFrame();
-  await waitForModule(commerce, 'dashboard');
+  await waitForModule(commerce, 'home');
   const overflow = await page.evaluate(() => ({ outer: document.documentElement.scrollWidth - window.innerWidth }));
   const commerceOverflow = await commerce.evaluate(() => {
     const sidebar = document.querySelector('.kz-sidebar');
-    const exceptionWrap = document.querySelector('.kz-exception-table-wrap');
+    const homeLayout = document.querySelector('.kz-home-layout');
     return {
       body: document.body.scrollWidth - document.body.clientWidth,
       sidebarHeight: Math.round(sidebar.getBoundingClientRect().height),
       sidebarScrolls: sidebar.scrollWidth > sidebar.clientWidth,
-      exceptionContained: exceptionWrap.getBoundingClientRect().right <= document.documentElement.clientWidth + 1 && exceptionWrap.scrollWidth > exceptionWrap.clientWidth,
+      homeContained: homeLayout.getBoundingClientRect().right <= document.documentElement.clientWidth + 1,
       duplicateChrome: [...document.querySelectorAll('.kz-era-bar')].some((node) => getComputedStyle(node).display !== 'none')
     };
   });
-  assert('The Commerce shell contains mobile overflow inside its intended controls', overflow.outer <= 1 && commerceOverflow.body <= 1 && commerceOverflow.sidebarHeight < 50 && commerceOverflow.sidebarScrolls && commerceOverflow.exceptionContained && !commerceOverflow.duplicateChrome, JSON.stringify({ ...overflow, ...commerceOverflow }));
+  assert('The Commerce shell contains mobile overflow inside its intended controls', overflow.outer <= 1 && commerceOverflow.body <= 1 && commerceOverflow.sidebarHeight < 50 && commerceOverflow.sidebarScrolls && commerceOverflow.homeContained && !commerceOverflow.duplicateChrome, JSON.stringify({ ...overflow, ...commerceOverflow }));
 
   await page.setViewport({ width: 1440, height: 1000, deviceScaleFactor: 1 });
   await page.goto(`${base}/experience/?year=2030&view=interface`, { waitUntil: 'domcontentloaded', timeout: 45000 });

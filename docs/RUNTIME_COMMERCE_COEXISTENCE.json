@@ -1,7 +1,7 @@
 {
-  "generatedAt": "2026-08-13T22:55:36.325Z",
+  "generatedAt": "2026-08-13T23:57:18.505Z",
   "browser": "/home/trix/.cache/ms-playwright/chromium-1234/chrome-linux64/chrome",
-  "base": "https://kevinception.netlify.app",
+  "base": "http://127.0.0.1:4322",
   "assertions": [
     {
       "name": "The direct dashboard module URL opens the Commerce interface",
@@ -14,7 +14,7 @@
       "detail": ""
     },
     {
-      "name": "The shell exposes exactly 12 working modules",
+      "name": "The shell exposes exactly 13 working modules",
       "passed": true,
       "detail": ""
     },
@@ -44,12 +44,37 @@
       "detail": "{\"flowFits\":true,\"dashboardFitsViewport\":true,\"bodyWidth\":1440,\"viewportWidth\":1440}"
     },
     {
-      "name": "The dashboard includes an actionable company homebase",
+      "name": "The dashboard stays focused on operations instead of duplicating the company intranet",
       "passed": true,
       "detail": ""
     },
     {
       "name": "The dashboard rewards skimming with restrained operational humor",
+      "passed": true,
+      "detail": ""
+    },
+    {
+      "name": "StealStreet Home is a distinct culture-first company workspace",
+      "passed": true,
+      "detail": ""
+    },
+    {
+      "name": "The culture feed includes company traditions, playful spaces, and employee conversation",
+      "passed": true,
+      "detail": ""
+    },
+    {
+      "name": "The office clock projects the current month and day into 2010",
+      "passed": true,
+      "detail": "8/13/2010"
+    },
+    {
+      "name": "Every seeded operational and culture date is in 2010 and not after the office date",
+      "passed": true,
+      "detail": "8/13/2010 | 8/13/2010 | 8/12/2010 | 8/12/2010 | 8/12/2010 | 8/11/2010 | 8/10/2010 | 8/7/2010 | 8/13/2010 | 8/3/2010 | 8/11/2010 | 8/1/2010 | 8/13/2010 | 7/30/2010 | 8/13/2010 | 7/27/2010 | 8/9/2010 | 7/24/2010 | 8/5/2010 | 8/13/2010 | 8/11/2010 | 8/6/2010 | 7/30/2010 | 7/16/2010"
+    },
+    {
+      "name": "Employee comments persist on the internal company feed",
       "passed": true,
       "detail": ""
     },
@@ -62,6 +87,11 @@
       "name": "System sync responds with a brief, characterful micro-delight",
       "passed": true,
       "detail": ""
+    },
+    {
+      "name": "StealStreet Home renders from sidebar navigation",
+      "passed": true,
+      "detail": "StealStreet Home"
     },
     {
       "name": "Operations Dashboard renders from sidebar navigation",
@@ -344,7 +374,7 @@
       "detail": ""
     },
     {
-      "name": "Reset Demo Data restores orders, POs, listings, returns, warehouse, and automation",
+      "name": "Reset Demo Data restores Home, orders, POs, listings, returns, warehouse, and automation",
       "passed": true,
       "detail": ""
     },
@@ -356,7 +386,7 @@
     {
       "name": "The Commerce shell contains mobile overflow inside its intended controls",
       "passed": true,
-      "detail": "{\"outer\":0,\"body\":0,\"sidebarHeight\":35,\"sidebarScrolls\":true,\"exceptionContained\":true,\"duplicateChrome\":false}"
+      "detail": "{\"outer\":0,\"body\":0,\"sidebarHeight\":35,\"sidebarScrolls\":true,\"homeContained\":true,\"duplicateChrome\":false}"
     },
     {
       "name": "The Coexistence roster retains explicit human and AI collaborators",

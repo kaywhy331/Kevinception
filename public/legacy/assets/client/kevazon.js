@@ -1,9 +1,10 @@
 import { toast, track } from './global.js';
 
-const STORAGE_KEY = 'stealstreet-commerce-os-v5';
-const MODULES = ['dashboard', 'orders', 'purchase-orders', 'catalog', 'inventory', 'marketplaces', 'vendors', 'customer-service', 'warehouse', 'returns', 'reports', 'settings'];
+const STORAGE_KEY = 'stealstreet-commerce-os-v6';
+const ERA_YEAR = 2010;
+const MODULES = ['home', 'dashboard', 'orders', 'purchase-orders', 'catalog', 'inventory', 'marketplaces', 'vendors', 'customer-service', 'warehouse', 'returns', 'reports', 'settings'];
 const MODULE_LABELS = {
-  dashboard: 'Dashboard', orders: 'Orders', 'purchase-orders': 'Purchase Orders', catalog: 'Catalog', inventory: 'Inventory',
+  home: 'StealStreet Home', dashboard: 'Dashboard', orders: 'Orders', 'purchase-orders': 'Purchase Orders', catalog: 'Catalog', inventory: 'Inventory',
   marketplaces: 'Marketplaces', vendors: 'Vendors', 'customer-service': 'Customer Service', warehouse: 'Warehouse',
   returns: 'Returns', reports: 'Reports', settings: 'Settings / Administration'
 };
@@ -16,6 +17,34 @@ const CHANNEL_NAMES = [
 const WAREHOUSE_TABS = ['Receiving', 'Putaway', 'Picking', 'Packing', 'Shipments', 'Amazon FBA', 'Exceptions'];
 const REPORT_TABS = ['Inventory', 'Sales Trends', 'Product Trajectory', 'Marketplace Health', 'Finance', 'Customer Service', 'Warehouse'];
 const SETTINGS_TABS = ['Users & Roles', 'Integrations', 'Warehouses', 'Shipping', 'Marketplace Rules', 'Automation', 'Notifications', 'Audit History', 'Demo Controls'];
+
+function eraAnchorDate(now = new Date()) {
+  const month = now.getMonth();
+  const lastDay = new Date(ERA_YEAR, month + 1, 0).getDate();
+  return new Date(ERA_YEAR, month, Math.min(now.getDate(), lastDay), now.getHours(), now.getMinutes());
+}
+function eraDateValue(offsetDays = 0) {
+  const date = eraAnchorDate();
+  date.setDate(date.getDate() + Math.min(0, Number(offsetDays) || 0));
+  if (date.getFullYear() < ERA_YEAR) date.setTime(new Date(ERA_YEAR, 0, 1, date.getHours(), date.getMinutes()).getTime());
+  return date;
+}
+function eraDate(offsetDays = 0) {
+  return new Intl.DateTimeFormat('en-US', { month: 'numeric', day: 'numeric', year: 'numeric' }).format(eraDateValue(offsetDays));
+}
+function eraLongDate(offsetDays = 0) {
+  return new Intl.DateTimeFormat('en-US', { weekday: 'long', month: 'long', day: 'numeric', year: 'numeric' }).format(eraDateValue(offsetDays));
+}
+function normalizeEraDate(value, fallbackOffset = 0) {
+  const parts = String(value || '').match(/^(?:\d{4}-)?(\d{1,2})[/-](\d{1,2})(?:[/-]\d{2,4})?$/);
+  if (!parts) return eraDate(fallbackOffset);
+  const month = Math.max(1, Math.min(12, Number(parts[1])));
+  const lastDay = new Date(ERA_YEAR, month, 0).getDate();
+  const candidate = new Date(ERA_YEAR, month - 1, Math.max(1, Math.min(lastDay, Number(parts[2]))));
+  const anchor = eraAnchorDate();
+  if (candidate > anchor) return eraDate(0);
+  return new Intl.DateTimeFormat('en-US', { month: 'numeric', day: 'numeric', year: 'numeric' }).format(candidate);
+}
 
 function createMarketplaces() {
   return CHANNEL_NAMES.map((name, index) => {
@@ -45,34 +74,34 @@ function createMarketplaces() {
 
 function createSeedState() {
   return {
-    version: 5,
+    version: 6,
     lastSync: '10:42 AM',
     sequence: { po: 7820, return: 4010, case: 2208, import: 1 },
     ui: {
-      activeModule: 'dashboard', filters: {}, sort: {}, pages: {}, warehouseTab: 'Receiving', reportTab: 'Inventory',
+      activeModule: 'home', filters: {}, sort: {}, pages: {}, warehouseTab: 'Receiving', reportTab: 'Inventory',
       settingsTab: 'Users & Roles', selectedChannel: 'CH-01', selectedVendor: 'VEN-01', selectedCase: 'CASE-2201'
     },
     orders: [
-      { id: 'ORD-10482', customer: 'Maya Chen', channel: 'StealStreet.com', date: '04/18/2012', items: 3, total: 86.40, payment: 'Authorized', fulfillment: 'Direct', status: 'Ready to Pick', tracking: '', notes: 'Customer asked whether decisions are included. Customer Service advised: sold separately.', timeline: ['10:18 AM · Payment authorized', '10:19 AM · Inventory reserved', '10:21 AM · Mug inscription cleared by Legal-ish'], itemNames: ['Executive Decision-Making Mug', 'Modular packing labels', 'Reusable fulfillment tote'] },
-      { id: 'ORD-10477', customer: 'Jordan Rivera', channel: 'Amazon FBA', date: '04/18/2012', items: 1, total: 42.00, payment: 'Settled', fulfillment: 'FBA', status: 'Packed', tracking: 'FBA transfer', notes: 'Marketplace fulfillment.', timeline: ['9:52 AM · Imported from Amazon', '10:01 AM · Inventory allocated', '10:31 AM · Packed'], itemNames: ['Scanner cradle'] },
-      { id: 'ORD-10465', customer: 'Avery Singh', channel: 'Walmart', date: '04/17/2012', items: 6, total: 214.18, payment: 'Review', fulfillment: 'Direct', status: 'Exception', tracking: '', notes: 'Payment address mismatch.', timeline: ['Yesterday · Imported from Walmart', 'Yesterday · Payment review flagged'], itemNames: ['Tool set', 'Kitchen accessories'] },
-      { id: 'ORD-10441', customer: 'Sam Torres', channel: 'BuyGiftsWholesale.com', date: '04/17/2012', items: 12, total: 638.75, payment: 'Invoice', fulfillment: 'Wholesale', status: 'Shipped', tracking: '1Z804201041', notes: 'Wholesale carton labels included.', timeline: ['Yesterday · Invoice approved', 'Yesterday · Picked and packed', 'Yesterday · Carrier handoff'], itemNames: ['Assorted gift case'] },
-      { id: 'ORD-10436', customer: 'Priya Patel', channel: 'eBay', date: '04/17/2012', items: 2, total: 58.90, payment: 'Captured', fulfillment: 'Direct', status: 'Picked', tracking: '', notes: '', timeline: ['Yesterday · Payment captured', '9:48 AM · Pick completed'], itemNames: ['Outdoor lantern'] },
-      { id: 'ORD-10428', customer: 'Leo Martin', channel: 'Wayfair', date: '04/16/2012', items: 1, total: 119.00, payment: 'Captured', fulfillment: 'Direct', status: 'Ready to Pick', tracking: '', notes: 'Channel SLA due today.', timeline: ['04/16 · Order imported', '04/16 · Inventory reserved'], itemNames: ['Entryway rack'] },
-      { id: 'ORD-10402', customer: 'Nora Kim', channel: 'Amazon Canada', date: '04/15/2012', items: 4, total: 172.20, payment: 'Settled', fulfillment: 'Direct', status: 'Complete', tracking: '94001042010402', notes: 'International documents archived.', timeline: ['04/15 · Order imported', '04/16 · Shipped', '04/18 · Delivery confirmed'], itemNames: ['Office storage set'] }
+      { id: 'ORD-10482', customer: 'Maya Chen', channel: 'StealStreet.com', date: eraDate(0), items: 3, total: 86.40, payment: 'Authorized', fulfillment: 'Direct', status: 'Ready to Pick', tracking: '', notes: 'Customer asked whether decisions are included. Customer Service advised: sold separately.', timeline: [`${eraDate(0)} · 10:18 AM · Payment authorized`, `${eraDate(0)} · 10:19 AM · Inventory reserved`, `${eraDate(0)} · 10:21 AM · Mug inscription cleared by Legal-ish`], itemNames: ['Executive Decision-Making Mug', 'Modular packing labels', 'Reusable fulfillment tote'] },
+      { id: 'ORD-10477', customer: 'Jordan Rivera', channel: 'Amazon FBA', date: eraDate(0), items: 1, total: 42.00, payment: 'Settled', fulfillment: 'FBA', status: 'Packed', tracking: 'FBA transfer', notes: 'Marketplace fulfillment.', timeline: [`${eraDate(0)} · 9:52 AM · Imported from Amazon`, `${eraDate(0)} · 10:01 AM · Inventory allocated`, `${eraDate(0)} · 10:31 AM · Packed`], itemNames: ['Scanner cradle'] },
+      { id: 'ORD-10465', customer: 'Avery Singh', channel: 'Walmart', date: eraDate(-1), items: 6, total: 214.18, payment: 'Review', fulfillment: 'Direct', status: 'Exception', tracking: '', notes: 'Payment address mismatch.', timeline: [`${eraDate(-1)} · Imported from Walmart`, `${eraDate(-1)} · Payment review flagged`], itemNames: ['Tool set', 'Kitchen accessories'] },
+      { id: 'ORD-10441', customer: 'Sam Torres', channel: 'BuyGiftsWholesale.com', date: eraDate(-1), items: 12, total: 638.75, payment: 'Invoice', fulfillment: 'Wholesale', status: 'Shipped', tracking: '1Z804201041', notes: 'Wholesale carton labels included.', timeline: [`${eraDate(-1)} · Invoice approved`, `${eraDate(-1)} · Picked and packed`, `${eraDate(-1)} · Carrier handoff`], itemNames: ['Assorted gift case'] },
+      { id: 'ORD-10436', customer: 'Priya Patel', channel: 'eBay', date: eraDate(-1), items: 2, total: 58.90, payment: 'Captured', fulfillment: 'Direct', status: 'Picked', tracking: '', notes: '', timeline: [`${eraDate(-1)} · Payment captured`, `${eraDate(0)} · 9:48 AM · Pick completed`], itemNames: ['Outdoor lantern'] },
+      { id: 'ORD-10428', customer: 'Leo Martin', channel: 'Wayfair', date: eraDate(-2), items: 1, total: 119.00, payment: 'Captured', fulfillment: 'Direct', status: 'Ready to Pick', tracking: '', notes: 'Channel SLA due today.', timeline: [`${eraDate(-2)} · Order imported`, `${eraDate(-2)} · Inventory reserved`], itemNames: ['Entryway rack'] },
+      { id: 'ORD-10402', customer: 'Nora Kim', channel: 'Amazon Canada', date: eraDate(-3), items: 4, total: 172.20, payment: 'Settled', fulfillment: 'Direct', status: 'Complete', tracking: '94001042010402', notes: 'International documents archived.', timeline: [`${eraDate(-3)} · Order imported`, `${eraDate(-2)} · Shipped`, `${eraDate(0)} · Delivery confirmed`], itemNames: ['Office storage set'] }
     ],
     purchaseOrders: [
-      { id: 'PO-7814', vendorId: 'VEN-01', vendor: 'Northstar Housewares', method: 'JIT · MOQ met', orderDate: '04/12/2012', expectedDate: '04/18/2012', quantity: 240, received: 0, damaged: 0, cost: 3120.00, status: 'Awaiting Receiving', sku: 'KV-740204', location: 'A-01' },
-      { id: 'PO-7809', vendorId: 'VEN-02', vendor: 'Atlas Tool Supply', method: 'Replenishment', orderDate: '04/08/2012', expectedDate: '04/16/2012', quantity: 96, received: 0, damaged: 0, cost: 2304.00, status: 'Overdue', sku: 'KV-820118', location: 'B-14' },
-      { id: 'PO-7802', vendorId: 'VEN-03', vendor: 'Brightline Electronics', method: 'Minimum order', orderDate: '04/06/2012', expectedDate: '04/19/2012', quantity: 180, received: 90, damaged: 2, cost: 4050.00, status: 'Partial', sku: 'KV-225190', location: 'C-07' },
-      { id: 'PO-7798', vendorId: 'VEN-04', vendor: 'Heritage Collectibles', method: 'Forecast buy', orderDate: '04/04/2012', expectedDate: '04/22/2012', quantity: 60, received: 0, damaged: 0, cost: 1680.00, status: 'Open', sku: 'KV-331990', location: 'D-02' },
-      { id: 'PO-7791', vendorId: 'VEN-05', vendor: 'Summit Outdoor Goods', method: 'Replenishment', orderDate: '04/01/2012', expectedDate: '04/14/2012', quantity: 120, received: 120, damaged: 1, cost: 2880.00, status: 'Received', sku: 'KV-630442', location: 'E-11' },
-      { id: 'PO-7784', vendorId: 'VEN-06', vendor: 'Big Idea Ceramics', method: 'JIT', orderDate: '03/29/2012', expectedDate: '04/10/2012', quantity: 300, received: 300, damaged: 0, cost: 1350.00, status: 'Complete', sku: 'KV-910331', location: 'F-02' }
+      { id: 'PO-7814', vendorId: 'VEN-01', vendor: 'Northstar Housewares', method: 'JIT · MOQ met', orderDate: eraDate(-6), expectedDate: eraDate(0), quantity: 240, received: 0, damaged: 0, cost: 3120.00, status: 'Awaiting Receiving', sku: 'KV-740204', location: 'A-01' },
+      { id: 'PO-7809', vendorId: 'VEN-02', vendor: 'Atlas Tool Supply', method: 'Replenishment', orderDate: eraDate(-10), expectedDate: eraDate(-2), quantity: 96, received: 0, damaged: 0, cost: 2304.00, status: 'Overdue', sku: 'KV-820118', location: 'B-14' },
+      { id: 'PO-7802', vendorId: 'VEN-03', vendor: 'Brightline Electronics', method: 'Minimum order', orderDate: eraDate(-12), expectedDate: eraDate(0), quantity: 180, received: 90, damaged: 2, cost: 4050.00, status: 'Partial', sku: 'KV-225190', location: 'C-07' },
+      { id: 'PO-7798', vendorId: 'VEN-04', vendor: 'Heritage Collectibles', method: 'Forecast buy', orderDate: eraDate(-14), expectedDate: eraDate(0), quantity: 60, received: 0, damaged: 0, cost: 1680.00, status: 'Open', sku: 'KV-331990', location: 'D-02' },
+      { id: 'PO-7791', vendorId: 'VEN-05', vendor: 'Summit Outdoor Goods', method: 'Replenishment', orderDate: eraDate(-17), expectedDate: eraDate(-4), quantity: 120, received: 120, damaged: 1, cost: 2880.00, status: 'Received', sku: 'KV-630442', location: 'E-11' },
+      { id: 'PO-7784', vendorId: 'VEN-06', vendor: 'Big Idea Ceramics', method: 'JIT', orderDate: eraDate(-20), expectedDate: eraDate(-8), quantity: 300, received: 300, damaged: 0, cost: 1350.00, status: 'Complete', sku: 'KV-910331', location: 'F-02' }
     ],
     catalog: [
       { sku: 'KV-100042', upc: '000000100042', product: 'Modular packing station labels', category: 'Fulfillment', cost: 3.10, price: 8.95, listings: 8, health: 'Healthy', updated: '10:31 AM', attributes: 24, media: 4, mappings: '8 / 8', audit: ['10:31 AM · Listing copy updated'] },
       { sku: 'KV-225190', upc: '000000225190', product: 'Low-profile inventory scanner cradle', category: 'Electronics', cost: 12.40, price: 29.95, listings: 5, health: 'Low Stock', updated: '10:22 AM', attributes: 31, media: 5, mappings: '5 / 5', audit: ['10:22 AM · Replenishment flag updated'] },
-      { sku: 'KV-331990', upc: '000000331990', product: 'Circuit of Time collector cartridge', category: 'Collectibles', cost: 18.00, price: 44.95, listings: 0, health: 'Hidden', updated: 'Yesterday', attributes: 18, media: 2, mappings: '0 / 0', audit: ['Yesterday · Record moved to archive'] },
+      { sku: 'KV-331990', upc: '000000331990', product: 'Circuit of Time collector cartridge', category: 'Collectibles', cost: 18.00, price: 44.95, listings: 0, health: 'Hidden', updated: eraDate(-1), attributes: 18, media: 2, mappings: '0 / 0', audit: [`${eraDate(-1)} · Record moved to archive`] },
       { sku: 'KV-740204', upc: '000000740204', product: 'Reusable fulfillment tote — blue', category: 'Housewares', cost: 6.80, price: 16.95, listings: 12, health: 'Healthy', updated: '10:18 AM', attributes: 27, media: 6, mappings: '12 / 12', audit: ['10:18 AM · Inventory feed refreshed'] },
       { sku: 'KV-910331', upc: '000000910331', product: 'Executive Decision-Making Mug', category: 'Office Supplies', cost: 4.50, price: 12.95, listings: 3, health: 'Needs Taxonomy', updated: '9:58 AM', attributes: 14, media: 3, mappings: '2 / 3', audit: ['9:58 AM · Category “Leadership Accessories” rejected', '9:54 AM · Claim “decisions sold separately” approved by Legal-ish'] },
       { sku: 'KV-820118', upc: '000000820118', product: 'Household tool set — 18 piece', category: 'Tools', cost: 24.00, price: 54.95, listings: 9, health: 'Rejected', updated: '9:41 AM', attributes: 33, media: 7, mappings: '8 / 9', audit: ['9:41 AM · Wayfair listing rejected'] },
@@ -91,19 +120,19 @@ function createSeedState() {
     ],
     marketplaces: createMarketplaces(),
     vendors: [
-      { id: 'VEN-01', name: 'Northstar Housewares', contact: 'Elena Brooks', email: 'elena@northstar.example', terms: 'Net 30', moq: 120, leadTime: 6, openPOs: 1, status: 'Active', categories: 'Housewares · Kitchen', notes: ['04/12 · JIT program confirmed'] },
-      { id: 'VEN-02', name: 'Atlas Tool Supply', contact: 'Marcus Lee', email: 'marcus@atlas.example', terms: 'Net 15', moq: 72, leadTime: 8, openPOs: 1, status: 'Shipment Late', categories: 'Tools · Accessories', notes: ['04/17 · Requested overdue shipment update'] },
-      { id: 'VEN-03', name: 'Brightline Electronics', contact: 'Naomi Wells', email: 'naomi@brightline.example', terms: 'Net 30', moq: 180, leadTime: 12, openPOs: 1, status: 'Active', categories: 'Electronics', notes: ['04/18 · Partial receipt recorded'] },
-      { id: 'VEN-04', name: 'Heritage Collectibles', contact: 'Andre Chen', email: 'andre@heritage.example', terms: 'Prepaid', moq: 48, leadTime: 14, openPOs: 1, status: 'Active', categories: 'Collectibles · Toys', notes: ['04/04 · Forecast buy placed'] },
-      { id: 'VEN-05', name: 'Summit Outdoor Goods', contact: 'Dana Cole', email: 'dana@summit.example', terms: 'Net 45', moq: 96, leadTime: 9, openPOs: 0, status: 'Active', categories: 'Outdoors · Accessories', notes: ['04/14 · Receipt completed'] },
-      { id: 'VEN-06', name: 'Big Idea Ceramics', contact: 'Riley Gomez', email: 'riley@bigidea.example', terms: 'Net 30', moq: 200, leadTime: 5, openPOs: 0, status: 'Active', categories: 'Office Supplies · Ceramics', notes: ['04/10 · Mug PO completed', '03/28 · Confirmed decisions remain sold separately'] }
+      { id: 'VEN-01', name: 'Northstar Housewares', contact: 'Elena Brooks', email: 'elena@northstar.example', terms: 'Net 30', moq: 120, leadTime: 6, openPOs: 1, status: 'Active', categories: 'Housewares · Kitchen', notes: [`${eraDate(-6)} · JIT program confirmed`] },
+      { id: 'VEN-02', name: 'Atlas Tool Supply', contact: 'Marcus Lee', email: 'marcus@atlas.example', terms: 'Net 15', moq: 72, leadTime: 8, openPOs: 1, status: 'Shipment Late', categories: 'Tools · Accessories', notes: [`${eraDate(-1)} · Requested overdue shipment update`] },
+      { id: 'VEN-03', name: 'Brightline Electronics', contact: 'Naomi Wells', email: 'naomi@brightline.example', terms: 'Net 30', moq: 180, leadTime: 12, openPOs: 1, status: 'Active', categories: 'Electronics', notes: [`${eraDate(0)} · Partial receipt recorded`] },
+      { id: 'VEN-04', name: 'Heritage Collectibles', contact: 'Andre Chen', email: 'andre@heritage.example', terms: 'Prepaid', moq: 48, leadTime: 14, openPOs: 1, status: 'Active', categories: 'Collectibles · Toys', notes: [`${eraDate(-14)} · Forecast buy placed`] },
+      { id: 'VEN-05', name: 'Summit Outdoor Goods', contact: 'Dana Cole', email: 'dana@summit.example', terms: 'Net 45', moq: 96, leadTime: 9, openPOs: 0, status: 'Active', categories: 'Outdoors · Accessories', notes: [`${eraDate(-4)} · Receipt completed`] },
+      { id: 'VEN-06', name: 'Big Idea Ceramics', contact: 'Riley Gomez', email: 'riley@bigidea.example', terms: 'Net 30', moq: 200, leadTime: 5, openPOs: 0, status: 'Active', categories: 'Office Supplies · Ceramics', notes: [`${eraDate(-8)} · Mug PO completed`, `${eraDate(-21)} · Confirmed decisions remain sold separately`] }
     ],
     cases: [
-      { id: 'CASE-2201', customer: 'Avery Singh', channel: 'Walmart', orderId: 'ORD-10465', issue: 'Payment verification', priority: 'High', age: '1d 3h', status: 'Escalated', tracking: '', notes: ['Yesterday · Case opened from order exception', '9:20 AM · Requested address verification'], timeline: ['Yesterday · Payment review flagged', '9:20 AM · Escalated to operator'] },
+      { id: 'CASE-2201', customer: 'Avery Singh', channel: 'Walmart', orderId: 'ORD-10465', issue: 'Payment verification', priority: 'High', age: '1d 3h', status: 'Escalated', tracking: '', notes: [`${eraDate(-1)} · Case opened from order exception`, `${eraDate(0)} · 9:20 AM · Requested address verification`], timeline: [`${eraDate(-1)} · Payment review flagged`, `${eraDate(0)} · 9:20 AM · Escalated to operator`] },
       { id: 'CASE-2202', customer: 'Jordan Rivera', channel: 'Amazon FBA', orderId: 'ORD-10477', issue: 'Shipment status', priority: 'Medium', age: '5h', status: 'Waiting', tracking: 'FBA transfer', notes: ['10:04 AM · Waiting for FBA receive scan'], timeline: ['10:04 AM · Customer message imported'] },
       { id: 'CASE-2203', customer: 'Priya Patel', channel: 'eBay', orderId: 'ORD-10436', issue: 'Address correction', priority: 'Normal', age: '3h', status: 'Open', tracking: '', notes: ['10:16 AM · Address corrected before packing'], timeline: ['10:12 AM · New message', '10:16 AM · Order note updated'] },
       { id: 'CASE-2204', customer: 'Maya Chen', channel: 'StealStreet.com', orderId: 'ORD-10482', issue: 'Product expectations', priority: 'Normal', age: '2h', status: 'New', tracking: '', notes: ['10:30 AM · Confirmed mug provides caffeine support, not executive authority'], timeline: ['10:28 AM · Customer asked whether decisions are included', '10:30 AM · Reply drafted with unusual precision'] },
-      { id: 'CASE-2205', customer: 'Leo Martin', channel: 'Wayfair', orderId: 'ORD-10428', issue: 'Late-order concern', priority: 'High', age: '1d', status: 'Open', tracking: '', notes: ['Yesterday · Channel SLA warning'], timeline: ['Yesterday · Automatic late-order alert'] },
+      { id: 'CASE-2205', customer: 'Leo Martin', channel: 'Wayfair', orderId: 'ORD-10428', issue: 'Late-order concern', priority: 'High', age: '1d', status: 'Open', tracking: '', notes: [`${eraDate(-1)} · Channel SLA warning`], timeline: [`${eraDate(-1)} · Automatic late-order alert`] },
       { id: 'CASE-2206', customer: 'Nora Kim', channel: 'Amazon Canada', orderId: 'ORD-10402', issue: 'Delivery confirmation', priority: 'Normal', age: '1h', status: 'Resolved', tracking: '94001042010402', notes: ['10:35 AM · Delivery confirmed'], timeline: ['10:35 AM · Resolved'] }
     ],
     warehouseTasks: [
@@ -118,13 +147,30 @@ function createSeedState() {
       { id: 'WH-X-601', type: 'Exceptions', record: 'ORD-10428', route: 'Packing hold', itemCount: 1, weight: '12.1 lb', service: 'FedEx Home', label: 'Mismatch', tracking: '', status: 'Open', note: 'Package weight differs from catalog record.' }
     ],
     companyHub: {
-      announcement: 'Operations note: the break-room fridge is not an inventory location. The scanner now knows this too.',
-      projects: [
-        { id: 'TASK-01', name: 'Review overdue vendor shipment', due: 'Today', complete: false },
-        { id: 'TASK-02', name: 'Retire spreadsheet_final_FINAL_v7.xls', due: 'Today-ish', complete: false },
-        { id: 'TASK-03', name: 'Confirm warehouse handoff', due: 'Tomorrow', complete: true }
+      posts: [
+        { id: 'POST-01', author: 'Kevin', team: 'Company', date: eraDate(0), title: 'Big Bear company trip: head count time', body: 'We are planning a day in Big Bear. Add your name before the van becomes a very ambitious packing problem.', comments: [{ author: 'Warehouse', body: 'Can the route planner account for snacks?', time: '10:16 AM' }, { author: 'Catalog', body: 'I have categorized myself as attending.', time: '10:23 AM' }] },
+        { id: 'POST-02', author: 'People Team', team: 'Culture', date: eraDate(-1), title: 'After-work tournament bracket is open', body: 'Pool, darts, arcade, and mini golf. Friendly competition is mandatory; being good at it is not.', comments: [{ author: 'Customer Service', body: 'Requesting a formal review of the dartboard seeding.', time: '4:41 PM' }, { author: 'Kevin', body: 'Appeal denied with unusual confidence.', time: '4:48 PM' }] },
+        { id: 'POST-03', author: 'Office Committee', team: 'Break Room', date: eraDate(-3), title: 'Friday movie projector vote', body: 'Submit one movie and one snack. Also: the break-room fridge is not an inventory location. Anyone nominating a four-hour director cut volunteers for cleanup.', comments: [{ author: 'Warehouse', body: 'The popcorn machine has passed receiving.', time: '2:08 PM' }] }
       ],
-      events: ['11:00 AM · Vendor review (coffee is the agenda)', '2:00 PM · Marketplace feed window', 'Tomorrow · All-hands, assuming the feed behaves'],
+      projects: [
+        { id: 'TASK-01', name: 'Vote for Friday movie', due: eraDate(0), complete: false },
+        { id: 'TASK-02', name: 'Retire spreadsheet_final_FINAL_v7.xls', due: eraDate(0), complete: false },
+        { id: 'TASK-03', name: 'Add name to tournament bracket', due: eraDate(0), complete: true }
+      ],
+      events: [
+        { date: eraDate(0), time: '12:15 PM', title: 'Break-room pool tournament', note: 'Winner keeps bragging rights until someone updates the bracket.' },
+        { date: eraDate(-2), time: '5:30 PM', title: 'Arcade high-score night', note: 'Historical event placeholder · suspicious button technique welcomed.' },
+        { date: eraDate(-7), time: '6:00 PM', title: 'Company party', note: 'Historical event placeholder · dancing ability was not a hiring requirement.' },
+        { date: eraDate(-14), time: '9:00 AM', title: 'StealStreet job fair', note: 'Historical event placeholder · careers, demos, and very committed name tags.' },
+        { date: eraDate(-28), time: 'All day', title: 'Big Bear company trip', note: 'Historical event placeholder · mountain air, team photos, zero inventory counts.' }
+      ],
+      amenities: [
+        { name: 'Pool Table', note: 'Current champion: disputed' }, { name: 'Arcade', note: 'High scores protected by honor system' },
+        { name: 'Dart Board', note: 'Aim away from Accounting' }, { name: 'Mini Golf', note: 'One hole, several strong opinions' },
+        { name: 'Movie Projector', note: 'Friday screenings' }, { name: 'Board Games', note: 'Diplomacy discouraged after 5 PM' },
+        { name: 'Learning Library', note: 'Borrow, learn, return eventually' }
+      ],
+      traditions: ['Big Bear company trips', 'Company parties', 'White Elephant gift exchanges', 'Job fairs', 'After-work tournaments'],
       messages: 3,
       employees: [{ name: 'Kevin', status: 'In', note: 'making systems talk' }, { name: 'Warehouse', status: 'In', note: 'found the other carton' }, { name: 'Catalog', status: 'Away', note: 'escaping spreadsheet limbo' }, { name: 'Customer Service', status: 'In', note: 'translating ALL CAPS' }],
       resources: ['Time-Off Request', 'Onboarding', 'Training Material', 'SOPs', 'Company Resources']
@@ -182,7 +228,7 @@ function clone(value) { return JSON.parse(JSON.stringify(value)); }
 function readState() {
   try {
     const parsed = JSON.parse(localStorage.getItem(STORAGE_KEY) || 'null');
-    if (parsed?.version === 5 && parsed.companyHub) return parsed;
+    if (parsed?.version === 6 && parsed.companyHub?.posts) return parsed;
   } catch { /* Reset to the deterministic seed. */ }
   return createSeedState();
 }
@@ -198,6 +244,7 @@ function escapeHtml(value) { return String(value ?? '').replace(/[&<>'"]/g, (cha
 function money(value) { return new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD' }).format(Number(value || 0)); }
 function number(value) { return new Intl.NumberFormat('en-US').format(Number(value || 0)); }
 function currentTime() { return new Intl.DateTimeFormat('en-US', { hour: 'numeric', minute: '2-digit' }).format(new Date()); }
+function eraTimestamp() { return `${eraDate(0)} · ${currentTime()}`; }
 function statusClass(status) {
   const normalized = String(status).toLowerCase();
   if (/exception|overdue|stockout|rejected|damaged|escalated|failed|open/.test(normalized)) return 'danger';
@@ -212,7 +259,7 @@ function updateInventoryStatus(item) {
   item.status = free <= 0 ? 'Stockout' : free <= item.reorderPoint ? 'Low Stock' : free <= item.reorderPoint * 1.35 ? 'Watch' : 'Healthy';
 }
 function addAudit(module, action, record, result) {
-  state.audit.unshift({ time: currentTime(), user: 'Kevin', module, action, record, result });
+  state.audit.unshift({ time: eraTimestamp(), user: 'Kevin', module, action, record, result });
   state.audit = state.audit.slice(0, 60);
 }
 function commit(message) { saveState(); renderActiveModule(); if (message) toast(message); }
@@ -302,6 +349,21 @@ function updateNavCounts() {
   document.querySelectorAll('[data-nav-count]').forEach((node) => { node.textContent = String(counts[node.dataset.navCount] || 0); });
 }
 
+function renderHome() {
+  const comments = state.companyHub.posts.reduce((total, post) => total + post.comments.length, 0);
+  const feed = `<div class="kz-home-feed">${state.companyHub.posts.map((post) => `<article class="kz-home-post" data-home-post="${post.id}"><header><span class="kz-home-avatar" aria-hidden="true">${escapeHtml(post.author.charAt(0))}</span><div><b>${escapeHtml(post.author)}</b><small>${escapeHtml(post.team)} · <time datetime="${escapeHtml(post.date)}">${escapeHtml(post.date)}</time></small></div></header><h3>${escapeHtml(post.title)}</h3><p>${escapeHtml(post.body)}</p><div class="kz-home-comments"><b>${post.comments.length} ${post.comments.length === 1 ? 'comment' : 'comments'}</b>${post.comments.map((comment) => `<blockquote><strong>${escapeHtml(comment.author)}</strong><span>${escapeHtml(comment.body)}</span><time>${escapeHtml(comment.time)}</time></blockquote>`).join('')}<button type="button" data-action="home-comment-form" data-record-id="${post.id}">Add a comment</button></div></article>`).join('')}</div>`;
+  const events = `<ol class="kz-culture-events">${state.companyHub.events.map((item) => `<li><time>${escapeHtml(item.date)}</time><div><b>${escapeHtml(item.title)}</b><span>${escapeHtml(item.time)} · ${escapeHtml(item.note)}</span></div></li>`).join('')}</ol><div class="kz-culture-traditions"><b>Culture archive · undated placeholders</b><p>${state.companyHub.traditions.map(escapeHtml).join(' · ')}</p></div>`;
+  const amenities = `<ul class="kz-amenity-grid">${state.companyHub.amenities.map((item, index) => `<li><span aria-hidden="true">${['8','▦','➶','⚑','▶','◆','A'][index]}</span><b>${escapeHtml(item.name)}</b><small>${escapeHtml(item.note)}</small></li>`).join('')}</ul>`;
+  const tasks = `<ul class="kz-home-tasks">${state.companyHub.projects.map((item) => `<li><button type="button" data-action="toggle-company-task" data-record-id="${item.id}" aria-pressed="${item.complete}"><span>${item.complete ? '✓' : '○'}</span><b>${escapeHtml(item.name)}</b><small>${escapeHtml(item.due)}</small></button></li>`).join('')}</ul>`;
+  const people = `<div class="kz-home-people">${state.companyHub.employees.map((item) => `<span title="${escapeHtml(item.note)}"><i class="is-${item.status.toLowerCase()}"></i><b>${escapeHtml(item.name)}</b><small>${escapeHtml(item.status)} · ${escapeHtml(item.note)}</small></span>`).join('')}</div>`;
+  const resources = `<div class="kz-resource-links">${state.companyHub.resources.map((item) => `<button type="button" data-action="open-company-resource" data-record-id="${escapeHtml(item)}">${escapeHtml(item)}</button>`).join('')}</div>`;
+  workspace.innerHTML = pageHeader('StealStreet Home', `Good morning, Kevin. It is ${eraLongDate(0)} inside the StealStreet office.`, `<button type="button" class="kz-button kz-button--gold" data-action="open-company-messages">${state.companyHub.messages} internal messages</button><button type="button" class="kz-button kz-button--primary" data-action="home-post-form">New Post</button>`) + summaryStrip([
+    { label: 'Office Date', value: eraDate(0), note: 'Month + day projected into 2010' }, { label: 'Company Posts', value: state.companyHub.posts.length, note: 'Internal feed' },
+    { label: 'Employee Comments', value: comments, note: 'Conversation, not gamification' }, { label: 'Culture Events', value: state.companyHub.events.length, note: 'Past + present placeholders' },
+    { label: 'Break-Room Favorites', value: state.companyHub.amenities.length, note: 'Ways to step away from a screen' }, { label: 'Team Online', value: state.companyHub.employees.filter((item) => item.status === 'In').length, note: 'At least according to status' }
+  ]) + `<div class="kz-home-layout"><main>${panel('Company Posts & Announcements', feed, `<span>${comments} comments</span>`, 'kz-home-feed-panel')}</main><aside>${panel('Company Culture Calendar', events, '<span>2010 office calendar</span>', 'kz-culture-panel')}${panel('Inside the Break Room', amenities, '<span>Work hard · play often</span>', 'kz-amenities-panel')}${panel('My Stuff', tasks, '<span>Tasks</span>', 'kz-home-tasks-panel')}${panel('Who’s Around', people, '<span>Employee status</span>', 'kz-home-people-panel')}${panel('Employee Resources', resources, '<span>Internal links</span>', 'kz-home-resources-panel')}</aside></div>`;
+}
+
 function renderDashboard() {
   const exceptions = dashboardExceptions();
   const summary = summaryStrip([
@@ -320,9 +382,8 @@ function renderDashboard() {
   const attention = `<div class="kz-exception-table-wrap"><table class="kz-exception-table"><caption class="sr-only">Open operational exceptions requiring attention</caption><thead><tr><th scope="col">Exception</th><th scope="col">Record</th><th scope="col">Workspace</th><th scope="col">Age</th><th scope="col">State</th><th scope="col">Action</th></tr></thead><tbody>${exceptions.slice(0, 8).map((item) => `<tr><td><b>${escapeHtml(item.issue)}</b></td><td><code>${escapeHtml(item.record)}</code></td><td>${escapeHtml(moduleName(item.module))}</td><td><time>${escapeHtml(item.age)}</time></td><td>${status(item.status)}</td><td><button type="button" data-navigate="${item.module}" data-focus-record="${escapeHtml(item.record)}">${escapeHtml(item.action)}</button></td></tr>`).join('')}</tbody></table></div>`;
   const scale = `<div class="kz-scale-ledger"><div><b>~1.5M</b><span>Catalog records</span><small>Verified historical scale</small></div><div><b>20+</b><span>Commerce channels</span><small>Verified historical scale</small></div><div><b>12</b><span>Operating workspaces</span><small>Connected in this reconstruction</small></div></div>`;
   const activity = `<ul class="kz-activity-list">${state.audit.slice(0, 6).map((item) => `<li><time>${escapeHtml(item.time)}</time><b>${escapeHtml(item.module)}</b><span>${escapeHtml(item.action)}</span><span>${escapeHtml(item.record)} · ${escapeHtml(item.result)}</span></li>`).join('')}</ul>`;
-  const companyHub = `<div class="kz-company-hub"><section><h3>Company Announcements</h3><p>${escapeHtml(state.companyHub.announcement)}</p></section><section><h3>My Projects &amp; Tasks</h3><ul>${state.companyHub.projects.map((item)=>`<li><button type="button" data-action="toggle-company-task" data-record-id="${item.id}" aria-pressed="${item.complete}"><span>${item.complete?'✓':'○'}</span>${escapeHtml(item.name)}<small>${escapeHtml(item.due)}</small></button></li>`).join('')}</ul></section><section><h3>Upcoming Events / Calendar</h3><ul>${state.companyHub.events.map((item)=>`<li>${escapeHtml(item)}</li>`).join('')}</ul></section><section><h3>Messages &amp; Employee Status</h3><p><button type="button" data-action="open-company-messages">${state.companyHub.messages} internal messages</button></p><div class="kz-employee-status">${state.companyHub.employees.map((item)=>`<span title="${escapeHtml(item.note)}"><i class="is-${item.status.toLowerCase()}"></i>${escapeHtml(item.name)} · ${escapeHtml(item.status)}<small>${escapeHtml(item.note)}</small></span>`).join('')}</div></section><section><h3>Resources</h3><div class="kz-resource-links">${state.companyHub.resources.map((item)=>`<button type="button" data-action="open-company-resource" data-record-id="${escapeHtml(item)}">${escapeHtml(item)}</button>`).join('')}</div></section></div>`;
   const commandCenter = `<div class="kz-dashboard-main">${panel('Exception Queue', attention, `${illustrativeBadge()}<span>${exceptions.length} open</span>`, 'kz-exception-panel')}<aside class="kz-dashboard-rail" aria-label="Commerce scale and recent activity">${panel('Commerce Scale', scale, '<span>Operating footprint</span>', 'kz-scale-panel')}${panel('Recent ERP Activity', activity, '<button type="button" data-navigate="settings" data-settings-tab="Audit History">Audit history</button>', 'kz-dashboard-activity')}</aside></div>`;
-  workspace.innerHTML = pageHeader('Operations Dashboard', 'One connected command center for purchasing, catalog, inventory, marketplaces, fulfillment, customers, and company operations.', `<button type="button" class="kz-button kz-button--primary" data-action="sync-all">Run System Sync</button>`) + summary + `<div class="kz-grid kz-grid--dashboard kz-dashboard">${panel('Vendor-to-Customer Operating Flow', flow, '<span>8 connected stages</span><span>Vendor → customer</span>', 'kz-flow-panel')}${commandCenter}${panel('Company Homebase', companyHub, '<span>Secondary operations intranet</span>', 'kz-company-panel')}</div>`;
+  workspace.innerHTML = pageHeader('Operations Dashboard', 'A focused company overview for purchasing, catalog, inventory, marketplaces, fulfillment, customers, and exceptions.', `<button type="button" class="kz-button" data-navigate="home">Open StealStreet Home</button><button type="button" class="kz-button kz-button--primary" data-action="sync-all">Run System Sync</button>`) + summary + `<div class="kz-grid kz-grid--dashboard kz-dashboard">${panel('Vendor-to-Customer Operating Flow', flow, '<span>8 connected stages</span><span>Vendor → customer</span>', 'kz-flow-panel')}${commandCenter}</div>`;
 }
 
 function renderOrders() {
@@ -551,12 +612,13 @@ function renderActiveModule() {
   });
   document.querySelector('[data-module-breadcrumb]').textContent = moduleName(state.ui.activeModule);
   const renderers = {
-    dashboard: renderDashboard, orders: renderOrders, 'purchase-orders': renderPurchaseOrders, catalog: renderCatalog,
+    home: renderHome, dashboard: renderDashboard, orders: renderOrders, 'purchase-orders': renderPurchaseOrders, catalog: renderCatalog,
     inventory: renderInventory, marketplaces: renderMarketplaces, vendors: renderVendors, 'customer-service': renderCustomerService,
     warehouse: renderWarehouse, returns: renderReturns, reports: renderReports, settings: renderSettings
   };
   (renderers[state.ui.activeModule] || renderDashboard)();
   document.querySelector('[data-last-sync]').textContent = state.lastSync;
+  document.querySelector('[data-office-date]').textContent = eraDate(0);
 }
 
 function setModule(module, { notify = true, history = 'push', focusRecord = '' } = {}) {
@@ -659,8 +721,8 @@ function advanceOrder(id) {
   if(previous==='Exception'){item.payment='Authorized'; const linked=state.cases.find((row)=>row.orderId===id);if(linked){linked.status='Open';linked.timeline.push(`${currentTime()} · Order exception resolved`);}}
   if(next==='Picked'){const task=state.warehouseTasks.find((row)=>row.record===id&&row.type==='Picking');if(task)task.status='Complete';let pack=state.warehouseTasks.find((row)=>row.record===id&&row.type==='Packing');if(!pack){pack={id:`WH-K-${310+state.warehouseTasks.length}`,type:'Packing',record:id,route:'Station 1',itemCount:item.items,weight:'',service:'UPS Ground',label:'Pending',tracking:'',status:'Ready',note:'Verify contents and address.'};state.warehouseTasks.push(pack);}}
   if(next==='Packed'){const task=state.warehouseTasks.find((row)=>row.record===id&&row.type==='Packing');if(task){task.status='Complete';task.label='Printed';}if(!state.warehouseTasks.some((row)=>row.record===id&&row.type==='Shipments'))state.warehouseTasks.push({id:`WH-S-${410+state.warehouseTasks.length}`,type:'Shipments',record:id,route:'Carrier lane 1',itemCount:item.items,weight:'Pending',service:'UPS Ground',label:'Printed',tracking:'',status:'Ready',note:'Awaiting carrier handoff.'});}
-  if(next==='Shipped'){item.tracking=`1Z8042${id.replace(/\D/g,'').slice(-5)}`;const task=state.warehouseTasks.find((row)=>row.record===id&&row.type==='Shipments');if(task){task.status='Complete';task.tracking=item.tracking;}const channel=state.marketplaces.find((row)=>row.name===item.channel);if(channel){channel.orderSync='Current';channel.lastSync=currentTime();}state.cases.filter((row)=>row.orderId===id).forEach((row)=>{row.tracking=item.tracking;row.timeline.push(`${currentTime()} · Shipment posted · ${item.tracking}`);});}
-  item.timeline.push(`${currentTime()} · ${next}`);addAudit('Orders',`${previous} → ${next}`,id,next);closeDialog(recordDialog);commit();interfacePulse(next==='Shipped'?`${id} shipped. The box is now someone else’s responsibility.`:`${id} updated to ${next}. Connected warehouse and customer records were refreshed.`);
+  if(next==='Shipped'){item.tracking=`1Z8042${id.replace(/\D/g,'').slice(-5)}`;const task=state.warehouseTasks.find((row)=>row.record===id&&row.type==='Shipments');if(task){task.status='Complete';task.tracking=item.tracking;}const channel=state.marketplaces.find((row)=>row.name===item.channel);if(channel){channel.orderSync='Current';channel.lastSync=currentTime();}state.cases.filter((row)=>row.orderId===id).forEach((row)=>{row.tracking=item.tracking;row.timeline.push(`${eraTimestamp()} · Shipment posted · ${item.tracking}`);});}
+  item.timeline.push(`${eraTimestamp()} · ${next}`);addAudit('Orders',`${previous} → ${next}`,id,next);closeDialog(recordDialog);commit();interfacePulse(next==='Shipped'?`${id} shipped. The box is now someone else’s responsibility.`:`${id} updated to ${next}. Connected warehouse and customer records were refreshed.`);
 }
 
 function receivePO(id, quantity, damaged=0) {
@@ -676,14 +738,14 @@ function createReorder(sku, vendorId='', quantity=0) {
   const inv=state.inventory.find((row)=>row.sku===sku);if(!inv)return;
   const existing=state.purchaseOrders.find((row)=>row.sku===sku&&!['Complete','Received'].includes(row.status));if(existing){setModule('purchase-orders');window.setTimeout(()=>openRecord('po',existing.id),0);toast(`${existing.id} is already open for ${sku}.`);return;}
   const vendor=state.vendors.find((row)=>row.id===vendorId)||state.vendors[0];const qty=Number(quantity)||Math.max(vendor.moq,inv.reorderPoint*2);const id=`PO-${++state.sequence.po}`;
-  const po={id,vendorId:vendor.id,vendor:vendor.name,method:'Replenishment',orderDate:'04/18/2012',expectedDate:'04/25/2012',quantity:qty,received:0,damaged:0,cost:qty*(state.catalog.find((row)=>row.sku===sku)?.cost||10),status:'Open',sku,location:inv.location};state.purchaseOrders.unshift(po);inv.incoming+=qty;vendor.openPOs+=1;state.warehouseTasks.unshift({id:`WH-R-${120+state.warehouseTasks.length}`,type:'Receiving',record:id,route:`Expected → ${inv.location}`,itemCount:qty,weight:'',service:'',label:'',tracking:'',status:'Expected',note:'Created from inventory replenishment.'});addAudit('Inventory','Created reorder',sku,id);commit(`${id} created. Incoming stock and warehouse receiving are linked.`);
+  const po={id,vendorId:vendor.id,vendor:vendor.name,method:'Replenishment',orderDate:eraDate(0),expectedDate:eraDate(0),quantity:qty,received:0,damaged:0,cost:qty*(state.catalog.find((row)=>row.sku===sku)?.cost||10),status:'Open',sku,location:inv.location};state.purchaseOrders.unshift(po);inv.incoming+=qty;vendor.openPOs+=1;state.warehouseTasks.unshift({id:`WH-R-${120+state.warehouseTasks.length}`,type:'Receiving',record:id,route:`Expected → ${inv.location}`,itemCount:qty,weight:'',service:'',label:'',tracking:'',status:'Expected',note:'Created from inventory replenishment.'});addAudit('Inventory','Created reorder',sku,id);commit(`${id} created. Incoming stock and warehouse receiving are linked.`);
 }
 function fixListing(sku) {
   const item=state.catalog.find((row)=>row.sku===sku);if(!item)return;const previous=item.health;item.health='Healthy';item.category=item.category==='Office Supplies'?item.category:item.category;item.mappings=`${Math.max(1,item.listings)} / ${Math.max(1,item.listings)}`;item.updated=currentTime();item.audit.unshift(`${currentTime()} · Listing and mapping exception resolved`);
   state.marketplaces.forEach((channel)=>{if(channel.errors&&channel.rejected.some((entry)=>entry.includes(sku)||previous==='Rejected')){channel.errors=0;channel.feed='Healthy';channel.mapping='Mapped';channel.rejected=[];channel.lastSync=currentTime();}});addAudit('Catalog','Resolved listing exception',sku,'Healthy');commit(`${sku} listing fixed. Catalog health, channel feed, and dashboard exceptions updated.`);
 }
 function restockReturn(id) {
-  const item=state.returns.find((row)=>row.id===id);if(!item)return;const inv=state.inventory.find((row)=>row.sku===item.sku);if(inv){inv.onHand+=item.quantity;updateInventoryStatus(inv);}item.disposition='Restocked';item.status='Completed';const order=state.orders.find((row)=>row.id===item.orderId);if(order)order.timeline.push(`${currentTime()} · ${id} restocked · ${item.quantity} unit(s)`);addAudit('Returns','Restocked return',id,`${item.quantity} unit(s) to inventory`);closeDialog(recordDialog);commit(`${id} restocked. Inventory and the linked order timeline were updated.`);
+  const item=state.returns.find((row)=>row.id===id);if(!item)return;const inv=state.inventory.find((row)=>row.sku===item.sku);if(inv){inv.onHand+=item.quantity;updateInventoryStatus(inv);}item.disposition='Restocked';item.status='Completed';const order=state.orders.find((row)=>row.id===item.orderId);if(order)order.timeline.push(`${eraTimestamp()} · ${id} restocked · ${item.quantity} unit(s)`);addAudit('Returns','Restocked return',id,`${item.quantity} unit(s) to inventory`);closeDialog(recordDialog);commit(`${id} restocked. Inventory and the linked order timeline were updated.`);
 }
 function completeWarehouseTask(id) {
   const task=state.warehouseTasks.find((row)=>row.id===id);if(!task)return;
@@ -695,7 +757,7 @@ function completeWarehouseTask(id) {
 function openReceiveForm(id) { const po=state.purchaseOrders.find((row)=>row.id===id);if(!po)return;const remaining=Math.max(0,po.quantity-po.received);openForm({kicker:'Purchase order receiving',title:`Receive ${id}`,body:`<form class="kz-inline-form"><div class="kz-inline-form__row"><label>Units received<input name="quantity" type="number" min="1" max="${remaining}" value="${remaining}"></label><label>Damaged units<input name="damaged" type="number" min="0" max="${remaining}" value="0"></label></div><label>Assign location<select name="location"><option>${escapeHtml(po.location)}</option><option>QUARANTINE</option></select></label><p>${remaining} units remain open. Receiving updates the PO, inventory, warehouse work, and audit history.</p></form>`,submitLabel:'Receive Units',submitAction:'submit-receive-po',recordId:id,recordType:'po'}); }
 function openStockAdjustForm(sku) { const item=state.inventory.find((row)=>row.sku===sku);if(!item)return;openForm({kicker:'Inventory adjustment',title:`Adjust ${sku}`,body:`<form class="kz-inline-form"><label>Quantity change<input name="quantity" type="number" value="1"></label><label>Reason<select name="reason"><option>Cycle count</option><option>Damage correction</option><option>Found inventory</option><option>Manual correction</option></select></label><p>Use a negative quantity to reduce on-hand stock. Every adjustment creates an audit entry.</p></form>`,submitLabel:'Record Adjustment',submitAction:'submit-stock-adjust',recordId:sku,recordType:'inventory'}); }
 function openTransferForm(sku='') { const options=state.inventory.map((item)=>`<option value="${item.sku}" ${sku===item.sku?'selected':''}>${item.sku} · ${escapeHtml(item.product)}</option>`).join('');openForm({kicker:'Warehouse stock transfer',title:'Transfer Stock',body:`<form class="kz-inline-form"><label>SKU<select name="sku">${options}</select></label><div class="kz-inline-form__row"><label>Quantity<input name="quantity" type="number" min="1" value="1"></label><label>Destination<select name="location"><option>A-01</option><option>B-14</option><option>C-07</option><option>D-02</option><option>E-11</option><option>F-04</option></select></label></div></form>`,submitLabel:'Transfer',submitAction:'submit-transfer-stock',recordId:sku,recordType:'inventory'}); }
-function openCreatePOForm(vendorId='') { const vendors=state.vendors.map((item)=>`<option value="${item.id}" ${vendorId===item.id?'selected':''}>${escapeHtml(item.name)}</option>`).join('');const products=state.inventory.map((item)=>`<option value="${item.sku}">${item.sku} · ${escapeHtml(item.product)}</option>`).join('');openForm({kicker:'Vendor purchasing',title:'Create Purchase Order',body:`<form class="kz-inline-form"><label>Vendor<select name="vendorId">${vendors}</select></label><label>Product / SKU<select name="sku">${products}</select></label><div class="kz-inline-form__row"><label>Quantity<input name="quantity" type="number" min="1" value="120"></label><label>Expected date<input name="expectedDate" type="text" value="04/25/2012"></label></div></form>`,submitLabel:'Create PO',submitAction:'submit-create-po',recordId:vendorId,recordType:'vendor'}); }
+function openCreatePOForm(vendorId='') { const vendors=state.vendors.map((item)=>`<option value="${item.id}" ${vendorId===item.id?'selected':''}>${escapeHtml(item.name)}</option>`).join('');const products=state.inventory.map((item)=>`<option value="${item.sku}">${item.sku} · ${escapeHtml(item.product)}</option>`).join('');openForm({kicker:'Vendor purchasing',title:'Create Purchase Order',body:`<form class="kz-inline-form"><label>Vendor<select name="vendorId">${vendors}</select></label><label>Product / SKU<select name="sku">${products}</select></label><div class="kz-inline-form__row"><label>Quantity<input name="quantity" type="number" min="1" value="120"></label><label>Expected date<input name="expectedDate" type="text" value="${eraDate(0)}" aria-describedby="era-date-help"></label></div><p id="era-date-help">This reconstructed office calendar remains in 2010 and will not accept a future date.</p></form>`,submitLabel:'Create PO',submitAction:'submit-create-po',recordId:vendorId,recordType:'vendor'}); }
 
 function exportCsv(type) {
   const sources={orders:state.orders,'purchase-orders':state.purchaseOrders,catalog:state.catalog,inventory:state.inventory,warehouse:state.warehouseTasks,audit:state.audit,reports:reportData()[state.ui.reportTab].rows};const rows=sources[type]||[];if(!rows.length){toast('No records to export.');return;}let csv='';if(Array.isArray(rows[0]))csv=rows.map((row)=>row.map(csvValue).join(',')).join('\n');else{const headers=Object.keys(rows[0]).filter((key)=>!Array.isArray(rows[0][key]));csv=`${headers.join(',')}\n${rows.map((row)=>headers.map((key)=>csvValue(row[key])).join(',')).join('\n')}`;}const blob=new Blob([csv],{type:'text/csv'});const url=URL.createObjectURL(blob);const anchor=document.createElement('a');anchor.href=url;anchor.download=`stealstreet-${type}.csv`;anchor.click();window.setTimeout(()=>URL.revokeObjectURL(url),0);addAudit(moduleName(state.ui.activeModule),'Exported records',type,`${rows.length} rows`);saveState();toast(`${rows.length} ${type} rows exported.`);
@@ -728,6 +790,10 @@ document.addEventListener('click',(event)=>{
   if(action==='archive')return openDialog('archive');
   if(action==='disclosure')return openDialog('disclosure');
   if(action==='user-menu'){const menu=document.querySelector('[data-user-menu]');menu.hidden=!menu.hidden;button.setAttribute('aria-expanded',String(!menu.hidden));return;}
+  if(action==='home-post-form')return openForm({kicker:'StealStreet Home',title:'New Company Post',body:'<form class="kz-inline-form"><label>Title<input name="title" maxlength="80" value="What should everyone know?"></label><label>Post<textarea name="body" maxlength="320">Share an announcement, company event, or small office victory.</textarea></label></form>',submitLabel:'Publish Post',submitAction:'submit-home-post'});
+  if(action==='submit-home-post'){const data=new FormData(recordDialog.querySelector('form'));const title=String(data.get('title')||'Company update').trim();const body=String(data.get('body')||'').trim();state.companyHub.posts.unshift({id:`POST-${String(state.companyHub.posts.length+1).padStart(2,'0')}`,author:'Kevin',team:'Company',date:eraDate(0),title,body,comments:[]});addAudit('StealStreet Home','Published company post',title,'Posted');closeDialog(recordDialog);return commit('Company post published. The office now officially knows.');}
+  if(action==='home-comment-form')return openForm({kicker:'StealStreet Home',title:'Add Employee Comment',body:'<form class="kz-inline-form"><label>Comment<textarea name="comment" maxlength="220">Count me in.</textarea></label></form>',submitLabel:'Add Comment',submitAction:'submit-home-comment',recordId:id});
+  if(action==='submit-home-comment'){const post=state.companyHub.posts.find((item)=>item.id===id);const comment=String(new FormData(recordDialog.querySelector('form')).get('comment')||'').trim();if(post&&comment){post.comments.push({author:'Kevin',body:comment,time:currentTime()});addAudit('StealStreet Home','Commented on company post',post.title,'Posted');}closeDialog(recordDialog);return commit('Comment posted. Water-cooler consensus updated.');}
   if(action==='toggle-company-task'){const item=state.companyHub.projects.find((row)=>row.id===id);if(item){item.complete=!item.complete;addAudit('Company','Updated project task',item.name,item.complete?'Complete':'Open');}return commit(`${item.name} marked ${item.complete?'complete':'open'}.`);}
   if(action==='open-company-messages')return showRecord({kicker:'Company homebase',title:'Internal Messages',body:'<ul class="kz-timeline-list"><li><b>Warehouse</b>Found the missing carton. It was behind the other carton.</li><li><b>Catalog</b>The Executive Decision-Making Mug is back in taxonomy review. Decisions remain sold separately.</li><li><b>Customer Service</b>Converted an ALL-CAPS message into three sentences and a thank-you.</li></ul>'});
   if(action==='open-company-resource')return showRecord({kicker:'Company resources',title:id,body:`<p>${escapeHtml(id)} is represented as part of the internal company homebase. The reconstructed interface does not contain private historical documents.</p>`});
@@ -741,12 +807,12 @@ document.addEventListener('click',(event)=>{
   if(action==='submit-receive-po'){const form=recordDialog.querySelector('form');const data=new FormData(form);return receivePO(id,data.get('quantity'),data.get('damaged'));}
   if(action==='damage-po-form')return openForm({kicker:'Purchase order receiving',title:`Record Damage · ${id}`,body:'<form class="kz-inline-form"><label>Damaged units<input name="damaged" type="number" min="1" value="1"></label><label>Note<textarea name="note">Damage found during receiving inspection.</textarea></label></form>',submitLabel:'Record Damage',submitAction:'submit-po-damage',recordId:id});
   if(action==='submit-po-damage'){const po=state.purchaseOrders.find((row)=>row.id===id);const qty=Number(new FormData(recordDialog.querySelector('form')).get('damaged'))||0;if(po){po.damaged+=qty;const inv=state.inventory.find((row)=>row.sku===po.sku);if(inv)inv.damaged+=qty;addAudit('Purchase Orders','Recorded damaged units',id,String(qty));}closeDialog(recordDialog);return commit(`${qty} damaged units recorded on ${id}.`);}
-  if(action==='po-date-form'){const po=state.purchaseOrders.find((row)=>row.id===id);return openForm({kicker:'Purchase order schedule',title:`Update ${id}`,body:`<form class="kz-inline-form"><label>Expected date<input name="expectedDate" value="${po?.expectedDate||''}"></label></form>`,submitLabel:'Update Date',submitAction:'submit-po-date',recordId:id});}
-  if(action==='submit-po-date'){const po=state.purchaseOrders.find((row)=>row.id===id);const date=new FormData(recordDialog.querySelector('form')).get('expectedDate');if(po){po.expectedDate=String(date);if(po.status==='Overdue')po.status='Open';addAudit('Purchase Orders','Updated expected date',id,String(date));}closeDialog(recordDialog);return commit(`${id} expected date updated.`);}
+  if(action==='po-date-form'){const po=state.purchaseOrders.find((row)=>row.id===id);return openForm({kicker:'Purchase order schedule',title:`Update ${id}`,body:`<form class="kz-inline-form"><label>Expected date<input name="expectedDate" value="${po?.expectedDate||''}"></label><p>The office calendar is fixed to 2010; dates after ${eraDate(0)} are clamped to today.</p></form>`,submitLabel:'Update Date',submitAction:'submit-po-date',recordId:id});}
+  if(action==='submit-po-date'){const po=state.purchaseOrders.find((row)=>row.id===id);const date=normalizeEraDate(new FormData(recordDialog.querySelector('form')).get('expectedDate'));if(po){po.expectedDate=date;if(po.status==='Overdue')po.status='Open';addAudit('Purchase Orders','Updated expected date',id,date);}closeDialog(recordDialog);return commit(`${id} expected date updated to ${date}.`);}
   if(action==='complete-po'){const po=state.purchaseOrders.find((row)=>row.id===id);if(!po)return;if(po.received<po.quantity){toast(`${id} cannot close until all units are received.`);return;}po.status='Complete';state.vendors.find((row)=>row.id===po.vendorId).openPOs=Math.max(0,state.vendors.find((row)=>row.id===po.vendorId).openPOs-1);addAudit('Purchase Orders','Completed PO',id,'Complete');closeDialog(recordDialog);return commit(`${id} marked complete.`);}
   if(action==='create-po-form')return openCreatePOForm();
   if(action==='create-po-vendor')return openCreatePOForm(id);
-  if(action==='submit-create-po'){const data=new FormData(recordDialog.querySelector('form'));const sku=String(data.get('sku'));const vendorId=String(data.get('vendorId'));const inv=state.inventory.find((row)=>row.sku===sku);if(!inv)return;const vendor=state.vendors.find((row)=>row.id===vendorId);const qty=Number(data.get('quantity'))||vendor.moq;const poId=`PO-${++state.sequence.po}`;state.purchaseOrders.unshift({id:poId,vendorId:vendor.id,vendor:vendor.name,method:'Manual reorder',orderDate:'04/18/2012',expectedDate:String(data.get('expectedDate')),quantity:qty,received:0,damaged:0,cost:qty*(state.catalog.find((row)=>row.sku===sku)?.cost||10),status:qty<vendor.moq?'MOQ Exception':'Open',sku,location:inv.location});inv.incoming+=qty;vendor.openPOs+=1;state.warehouseTasks.unshift({id:`WH-R-${130+state.warehouseTasks.length}`,type:'Receiving',record:poId,route:`Expected → ${inv.location}`,itemCount:qty,weight:'',service:'',label:'',tracking:'',status:'Expected',note:'Created from vendor purchasing.'});addAudit('Purchase Orders','Created PO',poId,`${qty} units`);closeDialog(recordDialog);return commit(`${poId} created and connected to inventory and receiving.`);}
+  if(action==='submit-create-po'){const data=new FormData(recordDialog.querySelector('form'));const sku=String(data.get('sku'));const vendorId=String(data.get('vendorId'));const inv=state.inventory.find((row)=>row.sku===sku);if(!inv)return;const vendor=state.vendors.find((row)=>row.id===vendorId);const qty=Number(data.get('quantity'))||vendor.moq;const poId=`PO-${++state.sequence.po}`;state.purchaseOrders.unshift({id:poId,vendorId:vendor.id,vendor:vendor.name,method:'Manual reorder',orderDate:eraDate(0),expectedDate:normalizeEraDate(data.get('expectedDate')),quantity:qty,received:0,damaged:0,cost:qty*(state.catalog.find((row)=>row.sku===sku)?.cost||10),status:qty<vendor.moq?'MOQ Exception':'Open',sku,location:inv.location});inv.incoming+=qty;vendor.openPOs+=1;state.warehouseTasks.unshift({id:`WH-R-${130+state.warehouseTasks.length}`,type:'Receiving',record:poId,route:`Expected → ${inv.location}`,itemCount:qty,weight:'',service:'',label:'',tracking:'',status:'Expected',note:'Created from vendor purchasing.'});addAudit('Purchase Orders','Created PO',poId,`${qty} units`);closeDialog(recordDialog);return commit(`${poId} created and connected to inventory and receiving.`);}
   if(action==='adjust-stock-form')return openStockAdjustForm(id);
   if(action==='submit-stock-adjust'){const item=state.inventory.find((row)=>row.sku===id);const data=new FormData(recordDialog.querySelector('form'));const qty=Number(data.get('quantity'))||0;if(item){item.onHand=Math.max(0,item.onHand+qty);updateInventoryStatus(item);addAudit('Inventory','Adjusted quantity',id,`${qty>=0?'+':''}${qty} · ${data.get('reason')}`);}closeDialog(recordDialog);return commit(`${id} stock adjusted by ${qty}. Dashboard alerts recalculated.`);}
   if(action==='transfer-stock-form')return openTransferForm();
@@ -754,7 +820,7 @@ document.addEventListener('click',(event)=>{
   if(action==='submit-transfer-stock'){const data=new FormData(recordDialog.querySelector('form'));const item=state.inventory.find((row)=>row.sku===data.get('sku'));if(item){item.location=String(data.get('location'));addAudit('Inventory','Transferred stock',item.sku,`${data.get('quantity')} units → ${item.location}`);}closeDialog(recordDialog);return commit(`${data.get('sku')} transferred to ${data.get('location')}.`);}
   if(action==='reorder-stock')return createReorder(id);
   if(action==='catalog-bulk'){const targets=state.catalog.filter((row)=>row.health==='Needs Taxonomy');targets.forEach((row)=>{row.category='Office Supplies';row.health='Healthy';row.updated=currentTime();row.audit.unshift(`${currentTime()} · Bulk taxonomy edit applied`);});addAudit('Catalog','Bulk edited records',`${targets.length} records`,'Saved');return commit(`${targets.length} catalog records updated.`);}
-  if(action==='catalog-import'){const suffix=String(state.sequence.import++).padStart(3,'0');const sku=`IMP-2012-${suffix}`;state.catalog.unshift({sku,upc:`0099002012${suffix}`,product:`Imported sample product ${suffix}`,category:'Pending Cataloging',cost:8.00,price:19.95,listings:0,health:'Needs Taxonomy',updated:currentTime(),attributes:8,media:0,mappings:'0 / 0',audit:[`${currentTime()} · Imported from CSV`]});state.inventory.unshift({sku,product:`Imported sample product ${suffix}`,location:'UNASSIGNED',onHand:0,allocated:0,incoming:0,reorderPoint:12,damaged:0,status:'Stockout'});addAudit('Catalog','Imported CSV record',sku,'Needs Taxonomy');return commit(`${sku} imported. Catalog queue and inventory were updated.`);}
+  if(action==='catalog-import'){const suffix=String(state.sequence.import++).padStart(3,'0');const sku=`IMP-2010-${suffix}`;state.catalog.unshift({sku,upc:`0099002010${suffix}`,product:`Imported sample product ${suffix}`,category:'Pending Cataloging',cost:8.00,price:19.95,listings:0,health:'Needs Taxonomy',updated:eraTimestamp(),attributes:8,media:0,mappings:'0 / 0',audit:[`${eraTimestamp()} · Imported from CSV`]});state.inventory.unshift({sku,product:`Imported sample product ${suffix}`,location:'UNASSIGNED',onHand:0,allocated:0,incoming:0,reorderPoint:12,damaged:0,status:'Stockout'});addAudit('Catalog','Imported CSV record',sku,'Needs Taxonomy');return commit(`${sku} imported. Catalog queue and inventory were updated.`);}
   if(action==='catalog-map'){const target=state.catalog.find((row)=>['Rejected','Needs Taxonomy'].includes(row.health));if(target)return fixListing(target.sku);toast('No mapping exceptions remain.');return;}
   if(action==='catalog-price'){const targets=state.catalog.filter((row)=>row.health!=='Hidden');targets.forEach((row)=>{row.price=Number((row.price+0.5).toFixed(2));row.updated=currentTime();});addAudit('Catalog','Bulk pricing update',`${targets.length} records`,'Saved');return commit(`${targets.length} representative prices updated by $0.50.`);}
   if(action==='catalog-taxonomy'){const target=state.catalog.find((row)=>row.health==='Needs Taxonomy');if(target){target.category='Office Supplies';target.health='Healthy';target.updated=currentTime();addAudit('Catalog','Edited taxonomy',target.sku,'Healthy');return commit(`${target.sku} taxonomy completed.`);}toast('No taxonomy records are waiting.');return;}
@@ -801,17 +867,17 @@ document.addEventListener('click',(event)=>{
   if(action==='submit-user-role'){const item=state.users.find((row)=>row.id===id);const data=new FormData(recordDialog.querySelector('form'));item.role=String(data.get('role'));item.modules=String(data.get('modules'));addAudit('Administration','Updated user role',item.name,item.role);closeDialog(recordDialog);return commit(`${item.name} permissions updated.`);}
   if(action==='warehouse-config'||action==='test-shipping'||action==='run-marketplace-rule'){addAudit('Administration',action==='warehouse-config'?'Updated warehouse configuration':action==='test-shipping'?'Tested shipping integration':'Ran marketplace rule',id,'Success');return commit('Configuration action completed and recorded in audit history.');}
   if(action==='reset'||action==='reset-form')return openForm({kicker:'Demo controls',title:'Reset Demo Data',body:'<p>This restores the deterministic seeded ERP state and removes every local workflow change, note, audit entry, and selected record created during this visit.</p>',submitLabel:'Reset Demo Data',submitAction:'confirm-reset'});
-  if(action==='confirm-reset'){state=createSeedState();saveState();closeDialog(recordDialog);setModule('dashboard',{history:'replace'});return toast('Demo data reset to the seeded starting state.');}
+  if(action==='confirm-reset'){state=createSeedState();saveState();closeDialog(recordDialog);setModule('home',{history:'replace'});return toast('Demo data reset to the seeded starting state.');}
 });
 
 document.addEventListener('click',(event)=>{const menu=document.querySelector('[data-user-menu]');if(!menu.hidden&&!event.target.closest('.kz-user-control')){menu.hidden=true;document.querySelector('[data-action="user-menu"]').setAttribute('aria-expanded','false');}});
 document.addEventListener('click',(event)=>{const tab=event.target.closest('[data-subtab]');if(!tab)return;if(tab.dataset.subtab==='warehouse')state.ui.warehouseTab=tab.dataset.value;if(tab.dataset.subtab==='reports')state.ui.reportTab=tab.dataset.value;if(tab.dataset.subtab==='settings')state.ui.settingsTab=tab.dataset.value;saveState();renderActiveModule();});
 document.querySelectorAll('.kz-dialog').forEach((dialog)=>dialog.addEventListener('click',(event)=>{if(event.target===dialog)closeDialog(dialog);}));
 window.addEventListener('keydown',(event)=>{if(event.key==='Escape')document.querySelectorAll('dialog[open]').forEach(closeDialog);});
-window.addEventListener('message',(event)=>{if(event.origin!==window.location.origin||event.data?.type!=='kevinception:module-sync')return;setModule(event.data.module||'dashboard',{notify:false,history:'replace'});});
-window.addEventListener('popstate',()=>{if(window.parent===window){const module=new URLSearchParams(window.location.search).get('module');setModule(module||'dashboard',{notify:false,history:'replace'});}});
+window.addEventListener('message',(event)=>{if(event.origin!==window.location.origin||event.data?.type!=='kevinception:module-sync')return;setModule(event.data.module||'home',{notify:false,history:'replace'});});
+window.addEventListener('popstate',()=>{if(window.parent===window){const module=new URLSearchParams(window.location.search).get('module');setModule(module||'home',{notify:false,history:'replace'});}});
 
-const initialModule=new URLSearchParams(window.location.search).get('module')||state.ui.activeModule||'dashboard';
+const initialModule=new URLSearchParams(window.location.search).get('module')||state.ui.activeModule||'home';
 if(state.artifactRecovered){const recover=document.querySelector('[data-action="recover"]');recover.textContent='Recovered ✓';recover.disabled=true;}
 setModule(initialModule,{notify:false,history:'replace'});
 track('stealstreet_commerce_os_loaded',{era:'2010',chapter:'Commerce',version:state.version});

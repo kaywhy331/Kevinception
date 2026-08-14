@@ -1300,7 +1300,8 @@ export const timelineContent = {
       ]
     },
     "modules": [
-      { "id": "dashboard", "label": "Dashboard", "description": "Company operations homebase and cross-system exception queue." },
+      { "id": "home", "label": "StealStreet Home", "description": "Company culture, announcements, internal posts and comments, events, employee status, and resources." },
+      { "id": "dashboard", "label": "Dashboard", "description": "Company overview, operating flow, business activity, and cross-system exception queue." },
       { "id": "orders", "label": "Orders", "description": "Customer orders, payments, tracking, marketplace source, fulfillment state, and exceptions." },
       { "id": "purchase-orders", "label": "Purchase Orders", "description": "Vendor purchasing, JIT ordering, MOQ rules, incoming quantities, tracking, and receiving." },
       { "id": "catalog", "label": "Catalog · 1.5M", "description": "Product information, taxonomy, pricing, listings, bulk actions, and imports or exports." },
@@ -1446,11 +1447,12 @@ export const timelineContent = {
       { "type": "Finance", "module": "reports", "issue": "Marketplace settlement mismatch", "detail": "Remittance does not reconcile to recorded fees." }
     ],
     "companyHub": {
-      "announcement": "Operations update and SOP changes are published from the company homebase.",
-      "tasks": ["Review PO exception", "Approve catalog mapping", "Confirm warehouse handoff"],
-      "events": ["Vendor review", "Marketplace feed window", "Warehouse planning"],
+      "announcement": "StealStreet Home is the internal culture feed for announcements, employee comments, events, and resources.",
+      "tasks": ["Vote for Friday movie", "Join the tournament bracket", "Check company-trip head count"],
+      "events": ["Big Bear company trip", "Company parties", "White Elephant gift exchange", "Job fairs", "After-work tournaments"],
       "employeeStates": ["In", "Out", "Away"],
-      "resources": ["Time-Off Request", "Onboarding", "Training Material", "SOPs", "Company Resources"]
+      "resources": ["Time-Off Request", "Onboarding", "Training Material", "SOPs", "Company Resources"],
+      "breakRoom": ["Pool table", "Arcade", "Dart board", "Mini golf putting", "Movie projector", "Board games", "Learning library"]
     },
     "intelligence": {
       "label": "Illustrative inventory-velocity index",
