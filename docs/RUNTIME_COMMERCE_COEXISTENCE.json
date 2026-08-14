@@ -1,7 +1,7 @@
 {
-  "generatedAt": "2026-08-14T00:02:47.816Z",
+  "generatedAt": "2026-08-14T03:28:08.913Z",
   "browser": "/home/trix/.cache/ms-playwright/chromium-1234/chrome-linux64/chrome",
-  "base": "https://kevinception.netlify.app",
+  "base": "http://127.0.0.1:4322",
   "assertions": [
     {
       "name": "The direct dashboard module URL opens the Commerce interface",
@@ -9,7 +9,12 @@
       "detail": ""
     },
     {
-      "name": "The reconstructed product is branded StealStreet Commerce OS",
+      "name": "The desktop sidebar attribution block has been removed",
+      "passed": true,
+      "detail": ""
+    },
+    {
+      "name": "The active Commerce user is the visiting time traveler",
       "passed": true,
       "detail": ""
     },
@@ -64,6 +69,16 @@
       "detail": ""
     },
     {
+      "name": "The Home greeting keeps the visitor in the guest perspective",
+      "passed": true,
+      "detail": ""
+    },
+    {
+      "name": "Who’s Around contains the full named employee roster and roles",
+      "passed": true,
+      "detail": ""
+    },
+    {
       "name": "The office clock projects the current month and day into 2010",
       "passed": true,
       "detail": "8/13/2010"
@@ -74,7 +89,7 @@
       "detail": "8/13/2010 | 8/13/2010 | 8/12/2010 | 8/12/2010 | 8/12/2010 | 8/11/2010 | 8/10/2010 | 8/7/2010 | 8/13/2010 | 8/3/2010 | 8/11/2010 | 8/1/2010 | 8/13/2010 | 7/30/2010 | 8/13/2010 | 7/27/2010 | 8/9/2010 | 7/24/2010 | 8/5/2010 | 8/13/2010 | 8/11/2010 | 8/6/2010 | 7/30/2010 | 7/16/2010"
     },
     {
-      "name": "Employee comments persist on the internal company feed",
+      "name": "Guest comments persist under the time-traveler identity",
       "passed": true,
       "detail": ""
     },

@@ -1448,9 +1448,28 @@ export const timelineContent = {
     ],
     "companyHub": {
       "announcement": "StealStreet Home is the internal culture feed for announcements, employee comments, events, and resources.",
+      "guestIdentity": "YOU (Time Traveler)",
       "tasks": ["Vote for Friday movie", "Join the tournament bracket", "Check company-trip head count"],
       "events": ["Big Bear company trip", "Company parties", "White Elephant gift exchange", "Job fairs", "After-work tournaments"],
       "employeeStates": ["In", "Out", "Away"],
+      "employees": [
+        { "name": "Kevin", "role": "Co-Founder, CIO" },
+        { "name": "Mike", "role": "Co-Founder, CEO" },
+        { "name": "Joel", "role": "Operations Mgr." },
+        { "name": "Elvis", "role": "Catalog Mgr." },
+        { "name": "Tiffany", "role": "Company Culture" },
+        { "name": "Virginia", "role": "Human Resource" },
+        { "name": "Toni", "role": "Customer Service Mgr" },
+        { "name": "Jennifer", "role": "Customer Service" },
+        { "name": "Adam", "role": "Sr. Developer" },
+        { "name": "Julia", "role": "Designer" },
+        { "name": "Katrina", "role": "Marketing" },
+        { "name": "Paul", "role": "Shipping Mgr." },
+        { "name": "Joseph", "role": "Warehouse Mgr." },
+        { "name": "Steven", "role": "Developer" },
+        { "name": "Michael", "role": "Jr. Developer" },
+        { "name": "Madison", "role": "Data" }
+      ],
       "resources": ["Time-Off Request", "Onboarding", "Training Material", "SOPs", "Company Resources"],
       "breakRoom": ["Pool table", "Arcade", "Dart board", "Mini golf putting", "Movie projector", "Board games", "Learning library"]
     },

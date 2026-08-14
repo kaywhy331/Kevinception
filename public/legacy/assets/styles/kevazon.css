@@ -59,14 +59,6 @@ html { width: 100%; max-width: 100%; overflow-x: hidden; background: var(--brown
 
 .kz-app-shell { display: grid; min-height: calc(100svh - 35px); grid-template-columns: 216px minmax(0, 1fr); }
 .kz-sidebar { position: sticky; top: 35px; display: flex; height: calc(100svh - 35px); overflow: auto; border-right: 1px solid #1b0e0b; background: linear-gradient(90deg, #321c16, var(--brown-dark)); color: #e9dfd1; flex-direction: column; }
-.kz-brand-block { min-height: 135px; padding: 13px 15px 11px; border-bottom: 1px solid #170c09; background: linear-gradient(145deg, #5d3a2d, #382018); box-shadow: inset 0 -1px rgba(255,255,255,.06); }
-.kz-stealstreet-logo { position: relative; display: flex; width: 146px; align-items: baseline; padding-bottom: 4px; color: #fff4df; font-size: 22px; font-style: italic; font-weight: bold; letter-spacing: -1.5px; text-transform: lowercase; }
-.kz-stealstreet-logo b { color: var(--gold-light); }
-.kz-stealstreet-logo i { position: absolute; right: 0; bottom: 1px; left: 7px; height: 3px; border-radius: 50%; background: linear-gradient(90deg, transparent, var(--gold), var(--gold-light), transparent); transform: rotate(-2deg); }
-.kz-brand-block h1 { margin: 8px 0 0; color: #f5eadb; font-size: 14px; }
-.kz-brand-block p { margin: 0; color: var(--gold-light); font-size: 11px; font-weight: bold; text-transform: uppercase; }
-.kz-brand-block small { display: block; margin-top: 8px; color: #c9b8aa; font-size: 9px; line-height: 1.45; }
-
 .kz-module-nav { padding: 7px 0; }
 .kz-module-nav button { display: grid; width: 100%; min-height: 31px; grid-template-columns: 24px minmax(0, 1fr) auto; gap: 4px; align-items: center; padding: 4px 10px 4px 12px; border: 0; border-left: 4px solid transparent; background: transparent; color: #d7cabf; text-align: left; }
 .kz-module-nav button > span { color: #927c70; font: bold 9px/1 Tahoma, Verdana, sans-serif; }
@@ -367,7 +359,7 @@ html { width: 100%; max-width: 100%; overflow-x: hidden; background: var(--brown
   .kz-era-bar > div { justify-content: end; }
   .kz-app-shell { display: block; }
   .kz-sidebar { position: sticky; z-index: 70; top: 35px; display: block; width: 100%; height: auto; overflow-x: auto; overflow-y: hidden; border-right: 0; border-bottom: 1px solid #160b08; }
-  .kz-brand-block, .kz-sidebar-footer { display: none; }
+  .kz-sidebar-footer { display: none; }
   .kz-module-nav { display: flex; width: max-content; padding: 3px; }
   .kz-module-nav button { display: flex; width: auto; min-width: max-content; min-height: 28px; gap: 4px; padding: 3px 8px; border-left: 0; border-bottom: 3px solid transparent; }
   .kz-module-nav button.is-active { border-bottom-color: var(--gold); }

@@ -88,7 +88,7 @@ async function openModule(frame, module) {
 }
 
 async function commerceState(frame) {
-  return frame.evaluate(() => JSON.parse(localStorage.getItem('stealstreet-commerce-os-v6') || 'null'));
+  return frame.evaluate(() => JSON.parse(localStorage.getItem('stealstreet-commerce-os-v7') || 'null'));
 }
 
 async function setDialogValue(frame, selector, value) {
@@ -105,6 +105,7 @@ try {
     localStorage.removeItem('stealstreet-commerce-os-v4');
     localStorage.removeItem('stealstreet-commerce-os-v5');
     localStorage.removeItem('stealstreet-commerce-os-v6');
+    localStorage.removeItem('stealstreet-commerce-os-v7');
     localStorage.removeItem('kevinception-v7');
   });
 
@@ -113,7 +114,8 @@ try {
   await waitForModule(commerce, 'dashboard');
 
   assert('The direct dashboard module URL opens the Commerce interface', new URL(page.url()).searchParams.get('module') === 'dashboard');
-  assert('The reconstructed product is branded StealStreet Commerce OS', await commerce.$eval('.kz-brand-block', (node) => node.textContent.includes('StealStreet') && node.textContent.includes('Commerce OS') && node.textContent.includes('Co-founder')));
+  assert('The desktop sidebar attribution block has been removed', await commerce.$eval('.kz-sidebar', (node) => !node.querySelector('.kz-brand-block') && !node.textContent.includes('Built in-house by Kevin')));
+  assert('The active Commerce user is the visiting time traveler', await commerce.$eval('[data-action="user-menu"]', (node) => node.textContent.includes('YOU (Time Traveler)')));
   assert('The shell exposes exactly 13 working modules', (await commerce.$$('[data-kz-tab]')).length === 13);
   assert('The dashboard presents the full eight-stage operating flow', await commerce.$$eval('.kz-flow button', (nodes) => nodes.length === 8 && nodes[0].textContent.includes('Vendors') && nodes[7].textContent.includes('Customer')));
   assert('The dashboard presents a structured exception queue and verified scale ledger', await commerce.$eval('.kz-dashboard', (node) => Boolean(node.querySelector('.kz-exception-table') && node.querySelector('.kz-scale-ledger'))));
@@ -136,6 +138,8 @@ try {
   await openModule(commerce, 'home');
   assert('StealStreet Home is a distinct culture-first company workspace', await commerce.$eval('.kz-home-layout', (node) => node.textContent.includes('Company Posts & Announcements') && node.textContent.includes('Company Culture Calendar') && node.textContent.includes('Inside the Break Room') && node.textContent.includes('Employee Resources')));
   assert('The culture feed includes company traditions, playful spaces, and employee conversation', await commerce.$eval('.kz-home-layout', (node) => node.textContent.includes('Big Bear company trip') && node.textContent.includes('White Elephant gift exchanges') && node.textContent.includes('Pool Table') && node.textContent.includes('Arcade') && node.textContent.includes('Learning Library') && node.querySelectorAll('.kz-home-comments blockquote').length >= 3));
+  assert('The Home greeting keeps the visitor in the guest perspective', await commerce.$eval('.kz-page-header', (node) => node.textContent.includes('Good morning, YOU (Time Traveler).')));
+  assert('Who’s Around contains the full named employee roster and roles', await commerce.$eval('.kz-home-people', (node) => node.querySelectorAll(':scope > span').length === 16 && node.textContent.includes('Kevin') && node.textContent.includes('Co-Founder, CIO') && node.textContent.includes('Madison') && node.textContent.includes('Data')));
   const expectedOfficeDate = await commerce.evaluate(() => {
     const now = new Date();
     const day = Math.min(now.getDate(), new Date(2010, now.getMonth() + 1, 0).getDate());
@@ -150,8 +154,9 @@ try {
   await commerce.waitForSelector('[data-dialog="record"][open] [data-action="submit-home-comment"]');
   await setDialogValue(commerce, '[data-dialog="record"][open] textarea[name="comment"]', 'Save me a seat by the snacks.');
   await commerce.click('[data-dialog="record"][open] [data-action="submit-home-comment"]');
-  await commerce.waitForFunction((count) => JSON.parse(localStorage.getItem('stealstreet-commerce-os-v6')).companyHub.posts[0].comments.length === count + 1, {}, firstPostComments);
-  assert('Employee comments persist on the internal company feed', (await commerceState(commerce)).companyHub.posts[0].comments.at(-1).body === 'Save me a seat by the snacks.');
+  await commerce.waitForFunction((count) => JSON.parse(localStorage.getItem('stealstreet-commerce-os-v7')).companyHub.posts[0].comments.length === count + 1, {}, firstPostComments);
+  const guestComment = (await commerceState(commerce)).companyHub.posts[0].comments.at(-1);
+  assert('Guest comments persist under the time-traveler identity', guestComment.body === 'Save me a seat by the snacks.' && guestComment.author === 'YOU (Time Traveler)');
   await openModule(commerce, 'dashboard');
   const personalityThread = await commerceState(commerce);
   const characterSku = personalityThread.catalog.find((item) => item.sku === 'KV-910331');
@@ -224,7 +229,7 @@ try {
   await setDialogValue(commerce, '[data-dialog="record"][open] input[name="quantity"]', 10);
   await setDialogValue(commerce, '[data-dialog="record"][open] input[name="damaged"]', 1);
   await commerce.click('[data-dialog="record"][open] [data-action="submit-receive-po"]');
-  await commerce.waitForFunction(() => JSON.parse(localStorage.getItem('stealstreet-commerce-os-v6')).purchaseOrders.find((item) => item.id === 'PO-7814').received === 10);
+  await commerce.waitForFunction(() => JSON.parse(localStorage.getItem('stealstreet-commerce-os-v7')).purchaseOrders.find((item) => item.id === 'PO-7814').received === 10);
   const afterReceipt = await commerceState(commerce);
   const beforeReceiptInventory = beforeReceipt.inventory.find((item) => item.sku === 'KV-740204');
   const afterReceiptInventory = afterReceipt.inventory.find((item) => item.sku === 'KV-740204');
@@ -236,7 +241,7 @@ try {
   await openModule(commerce, 'orders');
   for (const expectedStatus of ['Ready to Pick', 'Picked', 'Packed', 'Shipped']) {
     await commerce.click('[data-row-id="ORD-10465"] [data-action="advance-order"]');
-    await commerce.waitForFunction((status) => JSON.parse(localStorage.getItem('stealstreet-commerce-os-v6')).orders.find((item) => item.id === 'ORD-10465').status === status, {}, expectedStatus);
+    await commerce.waitForFunction((status) => JSON.parse(localStorage.getItem('stealstreet-commerce-os-v7')).orders.find((item) => item.id === 'ORD-10465').status === status, {}, expectedStatus);
   }
   const afterShipment = await commerceState(commerce);
   const shippedOrder = afterShipment.orders.find((item) => item.id === 'ORD-10465');
@@ -249,7 +254,7 @@ try {
   const beforeCatalogFix = afterShipment.marketplaces.reduce((total, item) => total + item.errors, 0);
   await openModule(commerce, 'catalog');
   await commerce.click('[data-row-id="KV-820118"] [data-action="fix-listing"]');
-  await commerce.waitForFunction(() => JSON.parse(localStorage.getItem('stealstreet-commerce-os-v6')).catalog.find((item) => item.sku === 'KV-820118').health === 'Healthy');
+  await commerce.waitForFunction(() => JSON.parse(localStorage.getItem('stealstreet-commerce-os-v7')).catalog.find((item) => item.sku === 'KV-820118').health === 'Healthy');
   const afterCatalogFix = await commerceState(commerce);
   const afterChannelErrors = afterCatalogFix.marketplaces.reduce((total, item) => total + item.errors, 0);
   assert('Fix Listing resolves catalog data health and mappings', afterCatalogFix.catalog.find((item) => item.sku === 'KV-820118').mappings === '9 / 9');
@@ -261,7 +266,7 @@ try {
   await openModule(commerce, 'returns');
   const beforeRestock = (await commerceState(commerce)).inventory.find((item) => item.sku === 'KV-510046').onHand;
   await commerce.click('[data-row-id="RMA-4001"] [data-action="return-restock"]');
-  await commerce.waitForFunction(() => JSON.parse(localStorage.getItem('stealstreet-commerce-os-v6')).returns.find((item) => item.id === 'RMA-4001').status === 'Completed');
+  await commerce.waitForFunction(() => JSON.parse(localStorage.getItem('stealstreet-commerce-os-v7')).returns.find((item) => item.id === 'RMA-4001').status === 'Completed');
   const afterRestock = await commerceState(commerce);
   assert('Restocking a return increments inventory', afterRestock.inventory.find((item) => item.sku === 'KV-510046').onHand === beforeRestock + 1);
   assert('Restocking a return updates its linked order timeline', afterRestock.orders.find((item) => item.id === 'ORD-10402').timeline.some((item) => item.includes('RMA-4001 restocked')));
@@ -276,7 +281,7 @@ try {
   await commerce.click('[data-subtab="warehouse"][data-value="Amazon FBA"]');
   await commerce.waitForSelector('[data-row-id="WH-F-501"] [data-action="warehouse-complete"]');
   await commerce.click('[data-row-id="WH-F-501"] [data-action="warehouse-complete"]');
-  await commerce.waitForFunction(() => JSON.parse(localStorage.getItem('stealstreet-commerce-os-v6')).warehouseTasks.find((item) => item.id === 'WH-F-501').status === 'Complete');
+  await commerce.waitForFunction(() => JSON.parse(localStorage.getItem('stealstreet-commerce-os-v7')).warehouseTasks.find((item) => item.id === 'WH-F-501').status === 'Complete');
   const afterFba = await commerceState(commerce);
   assert('Confirm Carton Labels completes the FBA workflow', afterFba.warehouseTasks.find((item) => item.id === 'WH-F-501').label === 'Confirmed');
 

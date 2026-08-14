@@ -20,6 +20,25 @@ describe('Commerce and Coexistence chapters', () => {
     expect(timelineContent['2010'].modules.slice(0, 2).map((module) => module.id)).toEqual(['home', 'dashboard']);
     expect(timelineContent['2010'].companyHub.breakRoom).toContain('Pool table');
     expect(timelineContent['2010'].companyHub.events).toContain('Big Bear company trip');
+    expect(timelineContent['2010'].companyHub.guestIdentity).toBe('YOU (Time Traveler)');
+    expect(timelineContent['2010'].companyHub.employees).toEqual([
+      { name: 'Kevin', role: 'Co-Founder, CIO' },
+      { name: 'Mike', role: 'Co-Founder, CEO' },
+      { name: 'Joel', role: 'Operations Mgr.' },
+      { name: 'Elvis', role: 'Catalog Mgr.' },
+      { name: 'Tiffany', role: 'Company Culture' },
+      { name: 'Virginia', role: 'Human Resource' },
+      { name: 'Toni', role: 'Customer Service Mgr' },
+      { name: 'Jennifer', role: 'Customer Service' },
+      { name: 'Adam', role: 'Sr. Developer' },
+      { name: 'Julia', role: 'Designer' },
+      { name: 'Katrina', role: 'Marketing' },
+      { name: 'Paul', role: 'Shipping Mgr.' },
+      { name: 'Joseph', role: 'Warehouse Mgr.' },
+      { name: 'Steven', role: 'Developer' },
+      { name: 'Michael', role: 'Jr. Developer' },
+      { name: 'Madison', role: 'Data' }
+    ]);
     expect(timelineContent['2010'].marketplaces).toContain('Amazon FBA');
     expect(timelineContent['2010'].marketplaces).toContain('BuyGiftsWholesale.com');
     expect(timelineContent['2010'].orders.some((order) => order.status === 'Exception')).toBe(true);
@@ -32,19 +51,27 @@ describe('Commerce and Coexistence chapters', () => {
     const script = read('public/legacy/assets/client/kevazon.js');
     const styles = read('public/legacy/assets/styles/kevazon.css');
     expect(html).toContain('StealStreet Commerce OS');
-    expect(html).toContain('Built in-house by Kevin<br>Co-founder &amp; systems builder');
+    expect(html).not.toContain('Built in-house by Kevin');
+    expect(html).not.toContain('Co-founder &amp; systems builder');
+    expect(html).not.toContain('class="kz-brand-block"');
+    expect(html).toContain('YOU (Time Traveler)');
     expect(html).toContain('Order #, PO #, SKU, UPC, customer, vendor, tracking #');
     expect(html).toContain('Systems Healthy');
     expect(html).toContain('20+ Channels');
     expect(html).toContain('Settings / Administration');
     expect(html).toContain('PORTFOLIO RECONSTRUCTION');
     expect(html).toContain('Illustrative records');
-    expect(html).toContain('kevazon.css?v=20260813-culture1');
-    expect(html).toContain('kevazon.js?v=20260813-culture1');
+    expect(html).toContain('kevazon.css?v=20260813-timetraveler1');
+    expect(html).toContain('kevazon.js?v=20260813-timetraveler1');
     expect(html).toContain('.kz-era-bar{display:none!important}');
     expect(html).toContain('@media (min-width:761px){html[data-embedded="true"] .kz-sidebar{height:100svh!important}}');
     expect((html.match(/data-kz-tab=/g) ?? [])).toHaveLength(13);
-    expect(script).toContain("const STORAGE_KEY = 'stealstreet-commerce-os-v6'");
+    expect(script).toContain("const STORAGE_KEY = 'stealstreet-commerce-os-v7'");
+    expect(script).toContain("const ACTIVE_USER = 'YOU (Time Traveler)'");
+    expect(script).toContain("author:ACTIVE_USER");
+    expect(script).toContain("post.comments.push({author:ACTIVE_USER");
+    expect(script).toContain("user: ACTIVE_USER");
+    expect(script).not.toContain("user: 'Kevin'");
     for (const renderer of ['renderHome', 'renderDashboard', 'renderOrders', 'renderPurchaseOrders', 'renderCatalog', 'renderInventory', 'renderMarketplaces', 'renderVendors', 'renderCustomerService', 'renderWarehouse', 'renderReturns', 'renderReports', 'renderSettings']) {
       expect(script).toContain(`function ${renderer}(`);
     }
@@ -73,6 +100,8 @@ describe('Commerce and Coexistence chapters', () => {
     expect(script).toContain('Pool Table');
     expect(script).toContain('Learning Library');
     expect(script).toContain('Add a comment');
+    expect(script).toContain("{ name: 'Madison', role: 'Data'");
+    expect(script).toContain("{ id: 'USR-16', name: 'Madison', role: 'Data'");
     expect(script).not.toMatch(/(?:orderDate|expectedDate|date):\s*['"]\d{1,2}\/\d{1,2}\/20(?:1[1-9]|2\d)['"]/);
     expect(script).not.toContain('IMP-2012');
     expect(script).toContain('interfacePulse');

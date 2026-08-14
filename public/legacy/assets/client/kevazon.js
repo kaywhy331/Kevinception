@@ -1,7 +1,8 @@
 import { toast, track } from './global.js';
 
-const STORAGE_KEY = 'stealstreet-commerce-os-v6';
+const STORAGE_KEY = 'stealstreet-commerce-os-v7';
 const ERA_YEAR = 2010;
+const ACTIVE_USER = 'YOU (Time Traveler)';
 const MODULES = ['home', 'dashboard', 'orders', 'purchase-orders', 'catalog', 'inventory', 'marketplaces', 'vendors', 'customer-service', 'warehouse', 'returns', 'reports', 'settings'];
 const MODULE_LABELS = {
   home: 'StealStreet Home', dashboard: 'Dashboard', orders: 'Orders', 'purchase-orders': 'Purchase Orders', catalog: 'Catalog', inventory: 'Inventory',
@@ -74,7 +75,7 @@ function createMarketplaces() {
 
 function createSeedState() {
   return {
-    version: 6,
+    version: 7,
     lastSync: '10:42 AM',
     sequence: { po: 7820, return: 4010, case: 2208, import: 1 },
     ui: {
@@ -148,9 +149,9 @@ function createSeedState() {
     ],
     companyHub: {
       posts: [
-        { id: 'POST-01', author: 'Kevin', team: 'Company', date: eraDate(0), title: 'Big Bear company trip: head count time', body: 'We are planning a day in Big Bear. Add your name before the van becomes a very ambitious packing problem.', comments: [{ author: 'Warehouse', body: 'Can the route planner account for snacks?', time: '10:16 AM' }, { author: 'Catalog', body: 'I have categorized myself as attending.', time: '10:23 AM' }] },
-        { id: 'POST-02', author: 'People Team', team: 'Culture', date: eraDate(-1), title: 'After-work tournament bracket is open', body: 'Pool, darts, arcade, and mini golf. Friendly competition is mandatory; being good at it is not.', comments: [{ author: 'Customer Service', body: 'Requesting a formal review of the dartboard seeding.', time: '4:41 PM' }, { author: 'Kevin', body: 'Appeal denied with unusual confidence.', time: '4:48 PM' }] },
-        { id: 'POST-03', author: 'Office Committee', team: 'Break Room', date: eraDate(-3), title: 'Friday movie projector vote', body: 'Submit one movie and one snack. Also: the break-room fridge is not an inventory location. Anyone nominating a four-hour director cut volunteers for cleanup.', comments: [{ author: 'Warehouse', body: 'The popcorn machine has passed receiving.', time: '2:08 PM' }] }
+        { id: 'POST-01', author: 'Mike', team: 'Co-Founder, CEO', date: eraDate(0), title: 'Big Bear company trip: head count time', body: 'We are planning a day in Big Bear. Add your name before the van becomes a very ambitious packing problem.', comments: [{ author: 'Paul', role: 'Shipping Mgr.', body: 'Can the route planner account for snacks?', time: '10:16 AM' }, { author: 'Elvis', role: 'Catalog Mgr.', body: 'I have categorized myself as attending.', time: '10:23 AM' }] },
+        { id: 'POST-02', author: 'Tiffany', team: 'Company Culture', date: eraDate(-1), title: 'After-work tournament bracket is open', body: 'Pool, darts, arcade, and mini golf. Friendly competition is mandatory; being good at it is not.', comments: [{ author: 'Jennifer', role: 'Customer Service', body: 'Requesting a formal review of the dartboard seeding.', time: '4:41 PM' }, { author: 'Kevin', role: 'Co-Founder, CIO', body: 'Appeal denied with unusual confidence.', time: '4:48 PM' }] },
+        { id: 'POST-03', author: 'Julia', team: 'Designer', date: eraDate(-3), title: 'Friday movie projector vote', body: 'Submit one movie and one snack. Also: the break-room fridge is not an inventory location. Anyone nominating a four-hour director cut volunteers for cleanup.', comments: [{ author: 'Joseph', role: 'Warehouse Mgr.', body: 'The popcorn machine has passed receiving.', time: '2:08 PM' }] }
       ],
       projects: [
         { id: 'TASK-01', name: 'Vote for Friday movie', due: eraDate(0), complete: false },
@@ -172,7 +173,24 @@ function createSeedState() {
       ],
       traditions: ['Big Bear company trips', 'Company parties', 'White Elephant gift exchanges', 'Job fairs', 'After-work tournaments'],
       messages: 3,
-      employees: [{ name: 'Kevin', status: 'In', note: 'making systems talk' }, { name: 'Warehouse', status: 'In', note: 'found the other carton' }, { name: 'Catalog', status: 'Away', note: 'escaping spreadsheet limbo' }, { name: 'Customer Service', status: 'In', note: 'translating ALL CAPS' }],
+      employees: [
+        { name: 'Kevin', role: 'Co-Founder, CIO', status: 'In', note: 'making systems talk' },
+        { name: 'Mike', role: 'Co-Founder, CEO', status: 'In', note: 'keeping the big picture bigger' },
+        { name: 'Joel', role: 'Operations Mgr.', status: 'In', note: 'turning chaos into a checklist' },
+        { name: 'Elvis', role: 'Catalog Mgr.', status: 'Away', note: 'escaping spreadsheet limbo' },
+        { name: 'Tiffany', role: 'Company Culture', status: 'In', note: 'planning something with snacks' },
+        { name: 'Virginia', role: 'Human Resource', status: 'In', note: 'keeping people paperwork human' },
+        { name: 'Toni', role: 'Customer Service Mgr', status: 'In', note: 'reviewing the escalation queue' },
+        { name: 'Jennifer', role: 'Customer Service', status: 'In', note: 'restoring punctuation to ALL CAPS' },
+        { name: 'Adam', role: 'Sr. Developer', status: 'In', note: 'deploying before lunch (bravely)' },
+        { name: 'Julia', role: 'Designer', status: 'Away', note: 'adjusting it by two pixels' },
+        { name: 'Katrina', role: 'Marketing', status: 'In', note: 'finding the headline behind the headline' },
+        { name: 'Paul', role: 'Shipping Mgr.', status: 'In', note: 'asking where the tracking scan went' },
+        { name: 'Joseph', role: 'Warehouse Mgr.', status: 'In', note: 'found the other carton' },
+        { name: 'Steven', role: 'Developer', status: 'Away', note: 'debugging yesterday\'s mystery' },
+        { name: 'Michael', role: 'Jr. Developer', status: 'In', note: 'reading the stack trace twice' },
+        { name: 'Madison', role: 'Data', status: 'Out', note: 'making the numbers agree' }
+      ],
       resources: ['Time-Off Request', 'Onboarding', 'Training Material', 'SOPs', 'Company Resources']
     },
     returns: [
@@ -184,10 +202,22 @@ function createSeedState() {
       { id: 'RMA-4006', orderId: 'ORD-10318', customer: 'Ethan Davis', sku: 'KV-510046', item: 'Stackable office organizer', quantity: 1, reason: 'Duplicate order', condition: 'Unopened', disposition: 'Restocked', refund: 14.95, status: 'Completed' }
     ],
     users: [
-      { id: 'USR-01', name: 'Kevin', role: 'Administrator', modules: 'All modules', status: 'Active' },
-      { id: 'USR-02', name: 'Warehouse Operator', role: 'Fulfillment', modules: 'Inventory · Warehouse · Returns', status: 'Active' },
-      { id: 'USR-03', name: 'Customer Service', role: 'Support', modules: 'Orders · Cases · Returns', status: 'Active' },
-      { id: 'USR-04', name: 'Catalog Operator', role: 'Catalog', modules: 'Catalog · Marketplaces', status: 'Active' }
+      { id: 'USR-01', name: 'Kevin', role: 'Co-Founder, CIO', modules: 'All modules', status: 'Active' },
+      { id: 'USR-02', name: 'Mike', role: 'Co-Founder, CEO', modules: 'Dashboard · Reports · Administration', status: 'Active' },
+      { id: 'USR-03', name: 'Joel', role: 'Operations Mgr.', modules: 'Dashboard · Orders · Inventory · Warehouse', status: 'Active' },
+      { id: 'USR-04', name: 'Elvis', role: 'Catalog Mgr.', modules: 'Catalog · Marketplaces · Vendors', status: 'Active' },
+      { id: 'USR-05', name: 'Tiffany', role: 'Company Culture', modules: 'StealStreet Home · Employee Resources', status: 'Active' },
+      { id: 'USR-06', name: 'Virginia', role: 'Human Resource', modules: 'StealStreet Home · Administration', status: 'Active' },
+      { id: 'USR-07', name: 'Toni', role: 'Customer Service Mgr', modules: 'Orders · Customer Service · Returns', status: 'Active' },
+      { id: 'USR-08', name: 'Jennifer', role: 'Customer Service', modules: 'Orders · Customer Service · Returns', status: 'Active' },
+      { id: 'USR-09', name: 'Adam', role: 'Sr. Developer', modules: 'All modules · Integrations', status: 'Active' },
+      { id: 'USR-10', name: 'Julia', role: 'Designer', modules: 'Catalog · StealStreet Home', status: 'Active' },
+      { id: 'USR-11', name: 'Katrina', role: 'Marketing', modules: 'Catalog · Marketplaces · Reports', status: 'Active' },
+      { id: 'USR-12', name: 'Paul', role: 'Shipping Mgr.', modules: 'Orders · Warehouse · Marketplaces', status: 'Active' },
+      { id: 'USR-13', name: 'Joseph', role: 'Warehouse Mgr.', modules: 'Inventory · Warehouse · Returns', status: 'Active' },
+      { id: 'USR-14', name: 'Steven', role: 'Developer', modules: 'Catalog · Integrations · Automation', status: 'Active' },
+      { id: 'USR-15', name: 'Michael', role: 'Jr. Developer', modules: 'Catalog · Integrations', status: 'Active' },
+      { id: 'USR-16', name: 'Madison', role: 'Data', modules: 'Dashboard · Reports · Catalog', status: 'Active' }
     ],
     integrations: [
       { id: 'INT-01', name: 'Marketplace order importer', type: 'Scheduled job', status: 'Healthy', lastRun: '10:42 AM' },
@@ -214,9 +244,9 @@ function createSeedState() {
       { time: '10:42 AM', user: 'System', module: 'Integrations', action: 'Got every system talking again', record: '4 channels', result: 'Success' },
       { time: '10:40 AM', user: 'System', module: 'Warehouse', action: 'Located the missing carton', record: 'Behind the other carton', result: 'Found' },
       { time: '10:36 AM', user: 'System', module: 'Marketplaces', action: 'Flagged rejected listing', record: 'Sears / KV-910331', result: 'Review' },
-      { time: '10:31 AM', user: 'Kevin', module: 'Catalog', action: 'Rescued listings from spreadsheet limbo', record: '1,204 records', result: 'Saved' },
+      { time: '10:31 AM', user: 'Elvis', module: 'Catalog', action: 'Rescued listings from spreadsheet limbo', record: '1,204 records', result: 'Saved' },
       { time: '10:22 AM', user: 'System', module: 'Inventory', action: 'Raised low-stock alert', record: 'KV-225190', result: 'Attention' },
-      { time: '10:18 AM', user: 'Kevin', module: 'Customer Service', action: 'Translated an ALL-CAPS message', record: 'CASE-2204', result: 'Punctuation restored' },
+      { time: '10:18 AM', user: 'Jennifer', module: 'Customer Service', action: 'Translated an ALL-CAPS message', record: 'CASE-2204', result: 'Punctuation restored' },
       { time: '10:04 AM', user: 'System', module: 'Customer Service', action: 'Imported customer message', record: 'CASE-2202', result: 'Waiting' },
       { time: '9:58 AM', user: 'System', module: 'Catalog', action: 'Flagged missing taxonomy', record: 'KV-910331', result: 'Review' }
     ],
@@ -228,7 +258,7 @@ function clone(value) { return JSON.parse(JSON.stringify(value)); }
 function readState() {
   try {
     const parsed = JSON.parse(localStorage.getItem(STORAGE_KEY) || 'null');
-    if (parsed?.version === 6 && parsed.companyHub?.posts) return parsed;
+    if (parsed?.version === 7 && parsed.companyHub?.posts) return parsed;
   } catch { /* Reset to the deterministic seed. */ }
   return createSeedState();
 }
@@ -259,7 +289,7 @@ function updateInventoryStatus(item) {
   item.status = free <= 0 ? 'Stockout' : free <= item.reorderPoint ? 'Low Stock' : free <= item.reorderPoint * 1.35 ? 'Watch' : 'Healthy';
 }
 function addAudit(module, action, record, result) {
-  state.audit.unshift({ time: eraTimestamp(), user: 'Kevin', module, action, record, result });
+  state.audit.unshift({ time: eraTimestamp(), user: ACTIVE_USER, module, action, record, result });
   state.audit = state.audit.slice(0, 60);
 }
 function commit(message) { saveState(); renderActiveModule(); if (message) toast(message); }
@@ -351,13 +381,13 @@ function updateNavCounts() {
 
 function renderHome() {
   const comments = state.companyHub.posts.reduce((total, post) => total + post.comments.length, 0);
-  const feed = `<div class="kz-home-feed">${state.companyHub.posts.map((post) => `<article class="kz-home-post" data-home-post="${post.id}"><header><span class="kz-home-avatar" aria-hidden="true">${escapeHtml(post.author.charAt(0))}</span><div><b>${escapeHtml(post.author)}</b><small>${escapeHtml(post.team)} · <time datetime="${escapeHtml(post.date)}">${escapeHtml(post.date)}</time></small></div></header><h3>${escapeHtml(post.title)}</h3><p>${escapeHtml(post.body)}</p><div class="kz-home-comments"><b>${post.comments.length} ${post.comments.length === 1 ? 'comment' : 'comments'}</b>${post.comments.map((comment) => `<blockquote><strong>${escapeHtml(comment.author)}</strong><span>${escapeHtml(comment.body)}</span><time>${escapeHtml(comment.time)}</time></blockquote>`).join('')}<button type="button" data-action="home-comment-form" data-record-id="${post.id}">Add a comment</button></div></article>`).join('')}</div>`;
+  const feed = `<div class="kz-home-feed">${state.companyHub.posts.map((post) => `<article class="kz-home-post" data-home-post="${post.id}"><header><span class="kz-home-avatar" aria-hidden="true">${escapeHtml(post.author.charAt(0))}</span><div><b>${escapeHtml(post.author)}</b><small>${escapeHtml(post.team)} · <time datetime="${escapeHtml(post.date)}">${escapeHtml(post.date)}</time></small></div></header><h3>${escapeHtml(post.title)}</h3><p>${escapeHtml(post.body)}</p><div class="kz-home-comments"><b>${post.comments.length} ${post.comments.length === 1 ? 'comment' : 'comments'}</b>${post.comments.map((comment) => `<blockquote><strong>${escapeHtml(comment.author)}${comment.role ? ` · ${escapeHtml(comment.role)}` : ''}</strong><span>${escapeHtml(comment.body)}</span><time>${escapeHtml(comment.time)}</time></blockquote>`).join('')}<button type="button" data-action="home-comment-form" data-record-id="${post.id}">Add a comment</button></div></article>`).join('')}</div>`;
   const events = `<ol class="kz-culture-events">${state.companyHub.events.map((item) => `<li><time>${escapeHtml(item.date)}</time><div><b>${escapeHtml(item.title)}</b><span>${escapeHtml(item.time)} · ${escapeHtml(item.note)}</span></div></li>`).join('')}</ol><div class="kz-culture-traditions"><b>Culture archive · undated placeholders</b><p>${state.companyHub.traditions.map(escapeHtml).join(' · ')}</p></div>`;
   const amenities = `<ul class="kz-amenity-grid">${state.companyHub.amenities.map((item, index) => `<li><span aria-hidden="true">${['8','▦','➶','⚑','▶','◆','A'][index]}</span><b>${escapeHtml(item.name)}</b><small>${escapeHtml(item.note)}</small></li>`).join('')}</ul>`;
   const tasks = `<ul class="kz-home-tasks">${state.companyHub.projects.map((item) => `<li><button type="button" data-action="toggle-company-task" data-record-id="${item.id}" aria-pressed="${item.complete}"><span>${item.complete ? '✓' : '○'}</span><b>${escapeHtml(item.name)}</b><small>${escapeHtml(item.due)}</small></button></li>`).join('')}</ul>`;
-  const people = `<div class="kz-home-people">${state.companyHub.employees.map((item) => `<span title="${escapeHtml(item.note)}"><i class="is-${item.status.toLowerCase()}"></i><b>${escapeHtml(item.name)}</b><small>${escapeHtml(item.status)} · ${escapeHtml(item.note)}</small></span>`).join('')}</div>`;
+  const people = `<div class="kz-home-people">${state.companyHub.employees.map((item) => `<span title="${escapeHtml(`${item.name} — ${item.role}: ${item.note}`)}"><i class="is-${item.status.toLowerCase()}"></i><b>${escapeHtml(item.name)}</b><small>${escapeHtml(item.status)} · ${escapeHtml(item.role)}</small></span>`).join('')}</div>`;
   const resources = `<div class="kz-resource-links">${state.companyHub.resources.map((item) => `<button type="button" data-action="open-company-resource" data-record-id="${escapeHtml(item)}">${escapeHtml(item)}</button>`).join('')}</div>`;
-  workspace.innerHTML = pageHeader('StealStreet Home', `Good morning, Kevin. It is ${eraLongDate(0)} inside the StealStreet office.`, `<button type="button" class="kz-button kz-button--gold" data-action="open-company-messages">${state.companyHub.messages} internal messages</button><button type="button" class="kz-button kz-button--primary" data-action="home-post-form">New Post</button>`) + summaryStrip([
+  workspace.innerHTML = pageHeader('StealStreet Home', `Good morning, ${ACTIVE_USER}. It is ${eraLongDate(0)} inside the StealStreet office.`, `<button type="button" class="kz-button kz-button--gold" data-action="open-company-messages">${state.companyHub.messages} internal messages</button><button type="button" class="kz-button kz-button--primary" data-action="home-post-form">New Post</button>`) + summaryStrip([
     { label: 'Office Date', value: eraDate(0), note: 'Month + day projected into 2010' }, { label: 'Company Posts', value: state.companyHub.posts.length, note: 'Internal feed' },
     { label: 'Employee Comments', value: comments, note: 'Conversation, not gamification' }, { label: 'Culture Events', value: state.companyHub.events.length, note: 'Past + present placeholders' },
     { label: 'Break-Room Favorites', value: state.companyHub.amenities.length, note: 'Ways to step away from a screen' }, { label: 'Team Online', value: state.companyHub.employees.filter((item) => item.status === 'In').length, note: 'At least according to status' }
@@ -791,11 +821,11 @@ document.addEventListener('click',(event)=>{
   if(action==='disclosure')return openDialog('disclosure');
   if(action==='user-menu'){const menu=document.querySelector('[data-user-menu]');menu.hidden=!menu.hidden;button.setAttribute('aria-expanded',String(!menu.hidden));return;}
   if(action==='home-post-form')return openForm({kicker:'StealStreet Home',title:'New Company Post',body:'<form class="kz-inline-form"><label>Title<input name="title" maxlength="80" value="What should everyone know?"></label><label>Post<textarea name="body" maxlength="320">Share an announcement, company event, or small office victory.</textarea></label></form>',submitLabel:'Publish Post',submitAction:'submit-home-post'});
-  if(action==='submit-home-post'){const data=new FormData(recordDialog.querySelector('form'));const title=String(data.get('title')||'Company update').trim();const body=String(data.get('body')||'').trim();state.companyHub.posts.unshift({id:`POST-${String(state.companyHub.posts.length+1).padStart(2,'0')}`,author:'Kevin',team:'Company',date:eraDate(0),title,body,comments:[]});addAudit('StealStreet Home','Published company post',title,'Posted');closeDialog(recordDialog);return commit('Company post published. The office now officially knows.');}
-  if(action==='home-comment-form')return openForm({kicker:'StealStreet Home',title:'Add Employee Comment',body:'<form class="kz-inline-form"><label>Comment<textarea name="comment" maxlength="220">Count me in.</textarea></label></form>',submitLabel:'Add Comment',submitAction:'submit-home-comment',recordId:id});
-  if(action==='submit-home-comment'){const post=state.companyHub.posts.find((item)=>item.id===id);const comment=String(new FormData(recordDialog.querySelector('form')).get('comment')||'').trim();if(post&&comment){post.comments.push({author:'Kevin',body:comment,time:currentTime()});addAudit('StealStreet Home','Commented on company post',post.title,'Posted');}closeDialog(recordDialog);return commit('Comment posted. Water-cooler consensus updated.');}
+  if(action==='submit-home-post'){const data=new FormData(recordDialog.querySelector('form'));const title=String(data.get('title')||'Company update').trim();const body=String(data.get('body')||'').trim();state.companyHub.posts.unshift({id:`POST-${String(state.companyHub.posts.length+1).padStart(2,'0')}`,author:ACTIVE_USER,team:'Guest',date:eraDate(0),title,body,comments:[]});addAudit('StealStreet Home','Published company post',title,'Posted');closeDialog(recordDialog);return commit('Company post published. The office now officially knows.');}
+  if(action==='home-comment-form')return openForm({kicker:'StealStreet Home',title:'Add a Comment',body:'<form class="kz-inline-form"><label>Comment<textarea name="comment" maxlength="220">Count me in.</textarea></label></form>',submitLabel:'Add Comment',submitAction:'submit-home-comment',recordId:id});
+  if(action==='submit-home-comment'){const post=state.companyHub.posts.find((item)=>item.id===id);const comment=String(new FormData(recordDialog.querySelector('form')).get('comment')||'').trim();if(post&&comment){post.comments.push({author:ACTIVE_USER,role:'Guest',body:comment,time:currentTime()});addAudit('StealStreet Home','Commented on company post',post.title,'Posted');}closeDialog(recordDialog);return commit('Comment posted. Water-cooler consensus updated.');}
   if(action==='toggle-company-task'){const item=state.companyHub.projects.find((row)=>row.id===id);if(item){item.complete=!item.complete;addAudit('Company','Updated project task',item.name,item.complete?'Complete':'Open');}return commit(`${item.name} marked ${item.complete?'complete':'open'}.`);}
-  if(action==='open-company-messages')return showRecord({kicker:'Company homebase',title:'Internal Messages',body:'<ul class="kz-timeline-list"><li><b>Warehouse</b>Found the missing carton. It was behind the other carton.</li><li><b>Catalog</b>The Executive Decision-Making Mug is back in taxonomy review. Decisions remain sold separately.</li><li><b>Customer Service</b>Converted an ALL-CAPS message into three sentences and a thank-you.</li></ul>'});
+  if(action==='open-company-messages')return showRecord({kicker:'Company homebase',title:'Internal Messages',body:'<ul class="kz-timeline-list"><li><b>Joseph · Warehouse Mgr.</b>Found the missing carton. It was behind the other carton.</li><li><b>Elvis · Catalog Mgr.</b>The Executive Decision-Making Mug is back in taxonomy review. Decisions remain sold separately.</li><li><b>Jennifer · Customer Service</b>Converted an ALL-CAPS message into three sentences and a thank-you.</li></ul>'});
   if(action==='open-company-resource')return showRecord({kicker:'Company resources',title:id,body:`<p>${escapeHtml(id)} is represented as part of the internal company homebase. The reconstructed interface does not contain private historical documents.</p>`});
   if(action==='recover'){state.artifactRecovered=true;saveState();window.parent.postMessage({type:'kevinception:artifact',id:'project-blueprint',year:'2010'},window.location.origin);button.textContent='Recovered ✓';button.disabled=true;toast('Project Blueprint recovered: connected commerce operating-system map.');return;}
   if(action==='sort'){const previous=state.ui.sort[button.dataset.table];state.ui.sort[button.dataset.table]={key:button.dataset.key,direction:previous?.key===button.dataset.key&&previous.direction==='asc'?'desc':'asc'};saveState();renderActiveModule();return;}
@@ -863,7 +893,7 @@ document.addEventListener('click',(event)=>{
   if(action==='toggle-automation'){const item=state.automation.find((row)=>row.id===id);item.enabled=!item.enabled;addAudit('Automation',item.enabled?'Enabled rule':'Disabled rule',item.name,item.enabled?'Enabled':'Disabled');return commit(`${item.name} ${item.enabled?'enabled':'disabled'}.`);}
   if(action==='toggle-notification'){const item=state.notifications.find((row)=>row.id===id);item.enabled=!item.enabled;addAudit('Notifications',item.enabled?'Enabled notification':'Disabled notification',item.name,item.enabled?'Enabled':'Disabled');return commit(`${item.name} ${item.enabled?'enabled':'disabled'}.`);}
   if(action==='run-integration'){const item=state.integrations.find((row)=>row.id===id);item.status='Healthy';item.lastRun=currentTime();state.lastSync=item.lastRun;addAudit('Integrations','Ran integration',item.name,'Success');return commit(`${item.name} completed successfully.`);}
-  if(action==='edit-user-role'){const item=state.users.find((row)=>row.id===id);return openForm({kicker:'Users & roles',title:item.name,body:`<form class="kz-inline-form"><label>Role<select name="role"><option>Administrator</option><option>Fulfillment</option><option>Support</option><option>Catalog</option><option>Reporting</option></select></label><label>Module access<input name="modules" value="${escapeHtml(item.modules)}"></label></form>`,submitLabel:'Save Role',submitAction:'submit-user-role',recordId:id});}
+  if(action==='edit-user-role'){const item=state.users.find((row)=>row.id===id);const roles=[item.role,'Administrator','Executive','Operations','Fulfillment','Support','Catalog','Reporting'].filter((role,index,items)=>items.indexOf(role)===index);return openForm({kicker:'Users & roles',title:item.name,body:`<form class="kz-inline-form"><label>Role<select name="role">${roles.map((role)=>`<option ${role===item.role?'selected':''}>${escapeHtml(role)}</option>`).join('')}</select></label><label>Module access<input name="modules" value="${escapeHtml(item.modules)}"></label></form>`,submitLabel:'Save Role',submitAction:'submit-user-role',recordId:id});}
   if(action==='submit-user-role'){const item=state.users.find((row)=>row.id===id);const data=new FormData(recordDialog.querySelector('form'));item.role=String(data.get('role'));item.modules=String(data.get('modules'));addAudit('Administration','Updated user role',item.name,item.role);closeDialog(recordDialog);return commit(`${item.name} permissions updated.`);}
   if(action==='warehouse-config'||action==='test-shipping'||action==='run-marketplace-rule'){addAudit('Administration',action==='warehouse-config'?'Updated warehouse configuration':action==='test-shipping'?'Tested shipping integration':'Ran marketplace rule',id,'Success');return commit('Configuration action completed and recorded in audit history.');}
   if(action==='reset'||action==='reset-form')return openForm({kicker:'Demo controls',title:'Reset Demo Data',body:'<p>This restores the deterministic seeded ERP state and removes every local workflow change, note, audit entry, and selected record created during this visit.</p>',submitLabel:'Reset Demo Data',submitAction:'confirm-reset'});
