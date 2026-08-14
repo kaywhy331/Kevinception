@@ -3,6 +3,7 @@ import { Inter, Syne } from 'next/font/google';
 import './globals.css';
 import './environment-pass.css';
 import './device-native-pass.css';
+import './future-wing.css';
 import './award-pass.css';
 import { Analytics } from '@/components/Analytics';
 import { site } from '@/content/data';

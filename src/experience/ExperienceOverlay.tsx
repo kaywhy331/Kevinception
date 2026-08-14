@@ -6,6 +6,8 @@ import { projects, timelineContent, xennialLegacy, type YearId } from '@/content
 import { artifacts } from './artifacts';
 import { eraConfigs, getAdjacentYear, YEAR_ORDER } from './config';
 import { useExperienceActions } from './ExperienceContext';
+import { FutureExperience } from './future/FutureExperience';
+import { FutureTextExperience } from './future/FutureTextExperience';
 import { preloadExperienceScene } from './sceneLoaders';
 import { useExperienceStore } from './store';
 
@@ -13,7 +15,7 @@ function canPrewarmInterface(year: YearId) {
   if (typeof navigator === 'undefined') return false;
   const device = navigator as Navigator & { deviceMemory?: number; connection?: { saveData?: boolean } };
   const futureYear = year === '2030' || year === '2040';
-  return !device.connection?.saveData && (futureYear || ((device.deviceMemory ?? 8) > 4 && navigator.hardwareConcurrency > 4));
+  return !futureYear && !device.connection?.saveData && (device.deviceMemory ?? 8) > 4 && navigator.hardwareConcurrency > 4;
 }
 
 function requestExperiencePrewarm(year: YearId) {
@@ -145,9 +147,10 @@ function InterfaceLayer({ visible }: { visible: boolean }) {
   const [loadedYears, setLoadedYears] = useState<Partial<Record<YearId, boolean>>>({});
   const [takeawayOpen, setTakeawayOpen] = useState(false);
   const next = getAdjacentYear(activeYear, 1);
+  const futureYear = activeYear === '2030' || activeYear === '2040';
 
   const mountYear = (year: YearId) => {
-    if (year === '2000') return;
+    if (year === '2000' || year === '2030' || year === '2040') return;
     setMountedYears((current) => {
       const withoutYear = current.filter((item) => item !== year);
       return [...withoutYear, year].slice(-2);
@@ -155,7 +158,7 @@ function InterfaceLayer({ visible }: { visible: boolean }) {
   };
 
   useEffect(() => {
-    if (!visible) return;
+    if (!visible || activeYear === '2030' || activeYear === '2040') return;
     setMountedYears((current) => {
       const withoutActive = current.filter((year) => year !== activeYear);
       return [...withoutActive, activeYear].slice(-2);
@@ -226,23 +229,27 @@ function InterfaceLayer({ visible }: { visible: boolean }) {
         </aside>
       )}
       <div className="interface-mode__device" style={{ '--era-accent': config.accent } as React.CSSProperties}>
-        {!loadedYears[activeYear] && visible && <div className="interface-loading" role="status"><div className="power-on-mark power-on-mark--small" aria-hidden="true"><span>K</span><i></i></div><p>Starting {config.experienceName}…</p><div className="power-on-meter" aria-hidden="true"><i></i></div></div>}
-        {mountedYears.map((year) => {
-          const yearConfig = eraConfigs[year];
-          const isActive = visible && year === activeYear;
-          return (
-            <iframe
-              key={year}
-              className={`interface-mode__frame ${isActive ? 'is-active' : 'is-cached'}`}
-              src={yearConfig.legacyPath}
-              title={`${yearConfig.experienceName} functional application for the ${yearConfig.chapterName} chapter`}
-              sandbox="allow-scripts allow-forms allow-same-origin allow-popups allow-modals allow-downloads allow-top-navigation-by-user-activation"
-              loading="eager"
-              tabIndex={isActive ? 0 : -1}
-              onLoad={(event) => onFrameLoad(year, event.currentTarget)}
-            />
-          );
-        })}
+        {futureYear ? <FutureExperience year={activeYear} /> : (
+          <>
+            {!loadedYears[activeYear] && visible && <div className="interface-loading" role="status"><div className="power-on-mark power-on-mark--small" aria-hidden="true"><span>K</span><i></i></div><p>Starting {config.experienceName}…</p><div className="power-on-meter" aria-hidden="true"><i></i></div></div>}
+            {mountedYears.map((year) => {
+              const yearConfig = eraConfigs[year];
+              const isActive = visible && year === activeYear;
+              return (
+                <iframe
+                  key={year}
+                  className={`interface-mode__frame ${isActive ? 'is-active' : 'is-cached'}`}
+                  src={yearConfig.legacyPath}
+                  title={`${yearConfig.experienceName} functional application for the ${yearConfig.chapterName} chapter`}
+                  sandbox="allow-scripts allow-forms allow-same-origin allow-popups allow-modals allow-downloads allow-top-navigation-by-user-activation"
+                  loading="eager"
+                  tabIndex={isActive ? 0 : -1}
+                  onLoad={(event) => onFrameLoad(year, event.currentTarget)}
+                />
+              );
+            })}
+          </>
+        )}
       </div>
     </section>
   );
@@ -319,23 +326,8 @@ function TextMode() {
             ))}
           </div>
         )}
-        {activeYear === '2030' && yearData && 'collaborators' in yearData && 'missions' in yearData && (
-          <>
-            <h2>Human and AI collaborators</h2>
-            <div className="text-mode__grid">
-              {(yearData.collaborators as Array<{ id: string; kind: string; name: string; function: string }>).map((collaborator) => <section key={collaborator.id}><p className="eyebrow">{collaborator.kind} collaborator</p><h3>{collaborator.name}</h3><p>{collaborator.function}</p></section>)}
-            </div>
-            <h2>Mission board</h2>
-            <div className="text-mode__grid">
-              {(yearData.missions as Array<{ id: string; label: string; objective: string; projects: string[] }>).map((mission) => <section key={mission.id}><h3>{mission.label}</h3><p>{mission.objective}</p><small>Related projects: {mission.projects.join(', ')}</small></section>)}
-            </div>
-          </>
-        )}
-        {activeYear === '2040' && yearData && 'prompts' in yearData && 'responses' in yearData && (
-          <div className="text-mode__grid">
-            {(yearData.prompts as Array<{ id: string; label: string }>).map((prompt) => <section key={prompt.id}><h3>{prompt.label}</h3><p>{(yearData.responses as Record<string, string>)[prompt.id]}</p></section>)}
-          </div>
-        )}
+        {activeYear === '2030' && <FutureTextExperience year="2030" />}
+        {activeYear === '2040' && <FutureTextExperience year="2040" />}
         <h2>Kevin’s work in this layer</h2>
         <div className="text-mode__grid">
           {featured.map((project) => <section key={project.slug}><h3>{project.title}</h3><p>{project.summary}</p><Link href={`/work/${project.slug}/`}>Open case study</Link></section>)}
@@ -469,18 +461,46 @@ function UtilityMenu({ foundCount }: { foundCount: number }) {
 
 function TransitionOverlay() {
   const transition = useExperienceStore((state) => state.transition);
+  const motion = useExperienceStore((state) => state.motion);
+  const receipt = useExperienceStore((state) => state.futureJourney.mission.artifact);
   if (!transition || transition.id === 'timeline-fade') return null;
   const from = transition.from ? eraConfigs[transition.from] : null;
   const to = eraConfigs[transition.to];
+  const futureHandoff = transition.id === 'agents-to-echo';
+  const reverseHandoff = futureHandoff && transition.to === '2030';
   const technicalLine = transition.id === 'time-jump'
     ? `Jumping from ${transition.from ?? 'the present'} to ${transition.to}.`
     : from?.transitionLine ?? 'Moving through the technology timeline.';
+  const transitionDuration = motion === 'reduced' ? '40ms' : transition.id === 'time-jump' ? '390ms' : '660ms';
+  const handoffLine = receipt
+    ? `${receipt.receiptId} · ${receipt.status} mission · human decision preserved.`
+    : 'Context can continue forward; consequential authority remains human.';
   return (
-    <div className={`transition-overlay transition-${transition.id}`} role="status" aria-live="polite">
-      <span></span>
+    <div
+      className={`transition-overlay transition-${transition.id}${reverseHandoff ? ' is-reverse' : ''}`}
+      role="status"
+      aria-live="polite"
+      style={{ '--transition-duration': transitionDuration } as React.CSSProperties}
+      data-receipt={futureHandoff ? receipt?.receiptId ?? 'unsealed-context' : undefined}
+    >
+      <span aria-hidden="true"></span>
+      {futureHandoff && (
+        <div className="future-handoff-visual" aria-hidden="true">
+          <i className="future-handoff-node future-handoff-node--source"><b>2030</b><small>INTENT</small></i>
+          <div className="future-handoff-rail">
+            <em></em><em></em><em></em>
+            <div className={`future-handoff-packet is-${receipt?.status ?? 'context'}`}>
+              <small>{receipt ? 'GOVERNED MEMORY' : 'BOUNDED CONTEXT'}</small>
+              <b>{receipt?.receiptId ?? 'HUMAN GATE'}</b>
+            </div>
+          </div>
+          <i className="future-handoff-node future-handoff-node--target"><b>2040</b><small>ECHO</small></i>
+        </div>
+      )}
       <div className="transition-copy">
+        {futureHandoff && <small className="transition-copy__kicker">{reverseHandoff ? 'Memory returning to collaboration' : 'Decision receipt in transit'}</small>}
         <strong>{from ? `${from.chapterName} → ${to.chapterName}` : to.chapterName}</strong>
-        <p>{technicalLine}</p>
+        <p>{futureHandoff ? handoffLine : technicalLine}</p>
       </div>
     </div>
   );

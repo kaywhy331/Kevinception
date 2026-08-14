@@ -4,6 +4,23 @@ import { create } from 'zustand';
 import { createJSONStorage, persist } from 'zustand/middleware';
 import type { YearId } from '@/content/data';
 import type { ArtifactId } from './artifacts';
+import {
+  advanceFutureMission as advanceFutureMissionState,
+  beginFutureMission as beginFutureMissionState,
+  createInitialFutureJourney,
+  interpretEchoThought as interpretEchoThoughtState,
+  markEchoFinaleSeen as markEchoFinaleSeenState,
+  openEchoMemory as openEchoMemoryState,
+  resolveFutureMission as resolveFutureMissionState,
+  selectFutureMission as selectFutureMissionState,
+  setFutureAnswer as setFutureAnswerState,
+  setFutureAutonomy as setFutureAutonomyState,
+  setFutureObjective as setFutureObjectiveState,
+  type EchoMemoryId,
+  type FutureDecision,
+  type FutureJourneyState,
+  type FutureMissionId
+} from './future/futureJourney';
 import type { ArtifactProgress, MotionPreference, Quality, TransitionState, ViewMode } from './types';
 
 const emptyArtifacts: ArtifactProgress = {
@@ -26,6 +43,7 @@ type ExperienceStore = {
   artifactsOpen: boolean;
   transition: TransitionState;
   artifacts: ArtifactProgress;
+  futureJourney: FutureJourneyState;
   yearVisits: Record<YearId, number>;
   webglAvailable: boolean | null;
   preferencesConfigured: boolean;
@@ -41,12 +59,23 @@ type ExperienceStore = {
   setArtifactsOpen: (open: boolean) => void;
   setWebglAvailable: (available: boolean) => void;
   discoverArtifact: (id: ArtifactId, year: YearId) => void;
+  chooseFutureMission: (missionId: FutureMissionId) => void;
+  setFutureObjective: (objective: string) => void;
+  setFutureAnswer: (questionId: string, answer: string) => void;
+  setFutureAutonomy: (autonomy: number) => void;
+  beginFutureMission: () => void;
+  advanceFutureMission: () => void;
+  resolveFutureMission: (decision: FutureDecision) => void;
+  interpretEchoThought: (thought: string) => void;
+  openEchoMemory: (memoryId: EchoMemoryId) => void;
+  markEchoFinaleSeen: () => void;
+  resetFutureJourney: () => void;
   recordVisit: (year: YearId) => void;
   resetProgress: () => void;
 };
 
 type PersistedExperienceState = Pick<ExperienceStore,
-  'activeYear' | 'lastVisitedYear' | 'quality' | 'motion' | 'sound' | 'artifacts' | 'yearVisits' | 'preferencesConfigured'
+  'activeYear' | 'lastVisitedYear' | 'quality' | 'motion' | 'sound' | 'artifacts' | 'futureJourney' | 'yearVisits' | 'preferencesConfigured'
 >;
 
 export const useExperienceStore = create<ExperienceStore>()(
@@ -63,6 +92,7 @@ export const useExperienceStore = create<ExperienceStore>()(
       artifactsOpen: false,
       transition: null,
       artifacts: emptyArtifacts,
+      futureJourney: createInitialFutureJourney(),
       yearVisits: { '1990': 0, '2000': 0, '2010': 0, '2020': 0, '2030': 0, '2040': 0 },
       webglAvailable: null,
       preferencesConfigured: false,
@@ -90,15 +120,26 @@ export const useExperienceStore = create<ExperienceStore>()(
           }
         };
       }),
+      chooseFutureMission: (missionId) => set((state) => ({ futureJourney: selectFutureMissionState(state.futureJourney, missionId) })),
+      setFutureObjective: (objective) => set((state) => ({ futureJourney: setFutureObjectiveState(state.futureJourney, objective) })),
+      setFutureAnswer: (questionId, answer) => set((state) => ({ futureJourney: setFutureAnswerState(state.futureJourney, questionId, answer) })),
+      setFutureAutonomy: (autonomy) => set((state) => ({ futureJourney: setFutureAutonomyState(state.futureJourney, autonomy) })),
+      beginFutureMission: () => set((state) => ({ futureJourney: beginFutureMissionState(state.futureJourney) })),
+      advanceFutureMission: () => set((state) => ({ futureJourney: advanceFutureMissionState(state.futureJourney) })),
+      resolveFutureMission: (decision) => set((state) => ({ futureJourney: resolveFutureMissionState(state.futureJourney, decision) })),
+      interpretEchoThought: (thought) => set((state) => ({ futureJourney: interpretEchoThoughtState(state.futureJourney, thought) })),
+      openEchoMemory: (memoryId) => set((state) => ({ futureJourney: openEchoMemoryState(state.futureJourney, memoryId) })),
+      markEchoFinaleSeen: () => set((state) => ({ futureJourney: markEchoFinaleSeenState(state.futureJourney) })),
+      resetFutureJourney: () => set({ futureJourney: createInitialFutureJourney() }),
       recordVisit: (year) => set((state) => ({
         yearVisits: { ...state.yearVisits, [year]: state.yearVisits[year] + 1 },
         lastVisitedYear: year
       })),
-      resetProgress: () => set({ artifacts: emptyArtifacts, yearVisits: { '1990': 0, '2000': 0, '2010': 0, '2020': 0, '2030': 0, '2040': 0 }, lastVisitedYear: '1990' })
+      resetProgress: () => set({ artifacts: emptyArtifacts, futureJourney: createInitialFutureJourney(), yearVisits: { '1990': 0, '2000': 0, '2010': 0, '2020': 0, '2030': 0, '2040': 0 }, lastVisitedYear: '1990' })
     }),
     {
       name: 'kevinception-v7',
-      version: 2,
+      version: 3,
       storage: createJSONStorage(() => localStorage),
       migrate: (persistedState, version) => {
         const state = persistedState && typeof persistedState === 'object'
@@ -106,7 +147,8 @@ export const useExperienceStore = create<ExperienceStore>()(
           : {};
         return {
           ...state,
-          preferencesConfigured: version < 2 ? true : Boolean(state.preferencesConfigured)
+          preferencesConfigured: version < 2 ? true : Boolean(state.preferencesConfigured),
+          futureJourney: version < 3 || !state.futureJourney ? createInitialFutureJourney() : state.futureJourney
         } as PersistedExperienceState;
       },
       partialize: (state) => ({
@@ -116,6 +158,7 @@ export const useExperienceStore = create<ExperienceStore>()(
         motion: state.motion,
         sound: state.sound,
         artifacts: state.artifacts,
+        futureJourney: state.futureJourney,
         yearVisits: state.yearVisits,
         preferencesConfigured: state.preferencesConfigured
       })

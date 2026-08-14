@@ -13,7 +13,7 @@ import { experienceMachine } from './machine';
 import { useExperienceStore } from './store';
 import { ExperienceOverlay } from './ExperienceOverlay';
 import { CanvasErrorBoundary } from './CanvasErrorBoundary';
-import { playInterfaceTone } from './audio';
+import { playFutureCue, playInterfaceTone } from './audio';
 import { getWebGLRendererName, resolveAdaptivePreferences } from './performanceProfile';
 
 const ExperienceCanvas = dynamic(() => import('./ExperienceCanvas'), {
@@ -303,7 +303,8 @@ export function ExperienceShell({ children }: { children: React.ReactNode }) {
     trackAnalyticsEvent('chapter_enter', { year, chapter: eraConfigs[year].chapterName });
     send({ type: 'START_TRANSITION' });
     writeExperienceHistory(year, 'interface');
-    playInterfaceTone(changingYear ? 'transition' : 'click', sound);
+    if (id === 'agents-to-echo') playFutureCue('handoff', sound);
+    else playInterfaceTone(changingYear ? 'transition' : 'click', sound);
     completeTransition('interface', duration, version);
   }, [clearTransitionTimers, completeTransition, interruptTransition, motion, recordVisit, send, setActiveYear, setTransition, sound, writeExperienceHistory]);
 

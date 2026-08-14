@@ -1,7 +1,7 @@
 'use client';
 
 import { useEffect, useMemo, useRef } from 'react';
-import { RoundedBox } from '@react-three/drei';
+import { Html, RoundedBox } from '@react-three/drei';
 import { useFrame } from '@react-three/fiber';
 import * as THREE from 'three';
 import { eraConfigs, YEAR_ORDER } from './config';
@@ -65,7 +65,9 @@ function Corridor({
 function FutureDataConduit() {
   const activeYear = useExperienceStore((state) => state.activeYear);
   const transition = useExperienceStore((state) => state.transition);
-  const pulse = useRef<THREE.Mesh>(null);
+  const motion = useExperienceStore((state) => state.motion);
+  const receipt = useExperienceStore((state) => state.futureJourney.mission.artifact);
+  const pulse = useRef<THREE.Group>(null);
   const data = useMemo(() => {
     const curve = new THREE.CatmullRomCurve3([
       new THREE.Vector3(22.55, 1.15, -1.1),
@@ -78,11 +80,15 @@ function FutureDataConduit() {
   }, []);
   useEffect(() => () => data.geometry.dispose(), [data]);
   const transitionActive = transition?.id === 'agents-to-echo';
+  const receiptColor = receipt?.status === 'stopped' ? '#ff718f' : receipt?.status === 'reframed' ? '#ffd66b' : '#bafff2';
   useFrame(({ clock }) => {
     if (!transitionActive || !pulse.current) return;
-    const t = (clock.elapsedTime * 0.48) % 1;
+    const duration = motion === 'reduced' ? 36 : 660;
+    const progress = Math.min(1, Math.max(0, (Date.now() - (transition?.startedAt ?? Date.now())) / duration));
+    const t = transition?.to === '2030' ? 1 - progress : progress;
     pulse.current.position.copy(data.curve.getPointAt(t));
-    pulse.current.scale.setScalar(1.45 + Math.sin(clock.elapsedTime * 5) * 0.12);
+    pulse.current.rotation.y = clock.elapsedTime * (receipt ? 1.1 : 2.2);
+    pulse.current.scale.setScalar((receipt ? 1 : 1.45) + Math.sin(clock.elapsedTime * 5) * 0.08);
   });
   if (!transitionActive) return null;
   return (
@@ -90,11 +96,26 @@ function FutureDataConduit() {
       <mesh geometry={data.geometry}>
         <meshStandardMaterial color="#a6ecff" emissive="#67dff7" emissiveIntensity={1.0} transparent opacity={0.72} />
       </mesh>
-      <mesh ref={pulse}>
-        <octahedronGeometry args={[0.13, 0]} />
-        <meshStandardMaterial color="#ffffff" emissive={activeYear === '2040' ? '#bfaaff' : '#73ecff'} emissiveIntensity={3.0} />
-      </mesh>
-      <pointLight position={[24, 1.6, 0]} color={activeYear === '2040' ? '#bba2ff' : '#78e8ff'} intensity={1.3} distance={5.5} decay={2} />
+      <group ref={pulse} userData={{ label: receipt ? `Receipt ${receipt.receiptId} in transit` : 'Future signal in transit', receiptId: receipt?.receiptId }}>
+        {receipt ? (
+          <>
+            <RoundedBox args={[0.62, 0.34, 0.16]} radius={0.055} smoothness={3} castShadow>
+              <meshStandardMaterial color="#ffffff" emissive={receiptColor} emissiveIntensity={2.2} metalness={0.42} roughness={0.16} />
+            </RoundedBox>
+            <mesh position={[0, 0, 0.1]}><planeGeometry args={[0.42, 0.16]} /><meshBasicMaterial color={receiptColor} transparent opacity={0.86} /></mesh>
+            <mesh rotation={[Math.PI / 2, 0, 0]}><torusGeometry args={[0.34, 0.018, 8, 32]} /><meshStandardMaterial color="#ffffff" emissive={receiptColor} emissiveIntensity={1.8} /></mesh>
+            <Html center position={[0, 0.42, 0]} zIndexRange={[6, 0]} style={{ pointerEvents: 'none' }}>
+              <span style={{ display: 'block', whiteSpace: 'nowrap', padding: '0.18rem 0.38rem', border: `1px solid ${receiptColor}`, borderRadius: '999px', color: '#f8ffff', background: 'rgba(5, 10, 16, .88)', font: '600 9px/1 ui-monospace, monospace', letterSpacing: '.08em', boxShadow: `0 0 18px ${receiptColor}66` }}>{receipt.receiptId}</span>
+            </Html>
+          </>
+        ) : (
+          <mesh>
+            <octahedronGeometry args={[0.13, 0]} />
+            <meshStandardMaterial color="#ffffff" emissive={activeYear === '2040' ? '#bfaaff' : '#73ecff'} emissiveIntensity={3.0} />
+          </mesh>
+        )}
+      </group>
+      <pointLight position={[24, 1.6, 0]} color={receipt ? receiptColor : activeYear === '2040' ? '#bba2ff' : '#78e8ff'} intensity={receipt ? 2.4 : 1.3} distance={receipt ? 7 : 5.5} decay={2} />
     </group>
   );
 }

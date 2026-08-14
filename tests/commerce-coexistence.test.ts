@@ -137,8 +137,9 @@ describe('Commerce and Coexistence chapters', () => {
     expect(html).toContain('AI initiative boundary');
     expect(html).toContain('Humans retain accountability');
     expect(html).not.toContain('Autonomous AI');
-    expect(overlay).toContain("'collaborators' in yearData");
-    expect(overlay).toContain('Human and AI collaborators');
+    const futureText = read('src/experience/future/FutureTextExperience.tsx');
+    expect(overlay).toContain('<FutureTextExperience year="2030"');
+    expect(futureText).toContain('Human and AI collaborators');
     expect(scene).toContain('Kevin · Human Lead');
     expect(scene).toContain('Human Governor');
   });

@@ -47,6 +47,15 @@ function assert(name, condition, detail = '') {
   if (!condition) throw new Error(`${name}${detail ? `: ${detail}` : ''}`);
 }
 
+async function clickPageButton(label) {
+  const clicked = await page.$$eval('button', (buttons, expected) => {
+    const button = buttons.find((candidate) => candidate.textContent?.trim().includes(expected) && !candidate.disabled);
+    button?.click();
+    return Boolean(button);
+  }, label);
+  if (!clicked) throw new Error(`Could not find enabled page button containing “${label}”.`);
+}
+
 page.on('console', (message) => {
   if (message.type() === 'error') report.consoleErrors.push(message.text());
 });
@@ -343,17 +352,34 @@ try {
 
   await page.setViewport({ width: 1440, height: 1000, deviceScaleFactor: 1 });
   await page.goto(`${base}/experience/?year=2030&view=interface`, { waitUntil: 'domcontentloaded', timeout: 45000 });
-  const nexus = await page.waitForFrame((frame) => frame.url().includes('/legacy/experience/2030/'), { timeout: 30000 });
-  await nexus.waitForSelector('[data-era-enter]', { timeout: 30000 });
-  await nexus.$eval('[data-era-enter]', (button) => button.click());
-  await nexus.waitForSelector('[data-era-stage]:not([hidden])');
-  await nexus.click('[data-nexus-preset="product-plan"]');
-  await nexus.click('[data-nexus-form] button[type="submit"]');
-  await nexus.waitForFunction(() => document.querySelector('[data-nexus-gate-state]')?.textContent === 'REVIEW REQUIRED', { timeout: 10000 });
-  const roster = await nexus.$$eval('[data-nexus-agent]', (nodes) => nodes.map((node) => node.querySelector('b')?.textContent?.trim()));
-  assert('The Coexistence roster retains explicit human and AI collaborators', roster.includes('Kevin · Human Lead') && roster.includes('Human Governor') && roster.includes('AI Researcher'), roster.join(' | '));
-  await nexus.click('[data-nexus-approve]');
-  assert('A consequential Nexus action still records human approval', await nexus.$eval('[data-nexus-gate-state]', (node) => node.textContent === 'APPROVED'));
+  await page.waitForSelector('.interface-mode.is-visible .future-native--2030', { timeout: 30000 });
+  assert('The future interfaces are native and mount no 2030/2040 iframe', await page.$$eval('iframe', (frames) => frames.every((frame) => !/\/legacy\/experience\/(2030|2040)\//.test(frame.src))));
+  const roster = await page.$$eval('.nexus-agent-node', (nodes) => nodes.map((node) => ({ label: node.querySelector('b')?.textContent?.trim(), owner: node.querySelector(':scope > span')?.textContent?.trim() })));
+  assert('The native Coexistence roster exposes four AI roles and a human Governor', ['Clarifier', 'Researcher', 'Architect', 'Builder', 'Governor'].every((label) => roster.some((member) => member.label === label)) && roster.find((member) => member.label === 'Governor')?.owner === 'H' && roster.filter((member) => member.owner === 'AI').length === 4, JSON.stringify(roster));
+  await clickPageButton('Fast learning');
+  await clickPageButton('Low');
+  await clickPageButton('Initialize collaboration');
+  await page.waitForSelector('.nexus-decision-gate', { timeout: 10000 });
+  assert('The native mission stops at an explicit human decision gate', await page.$eval('.nexus-decision-gate', (node) => node.textContent.includes('REVIEW REQUIRED') && node.textContent.includes('CONFLICT') === false));
+  assert('The native mission keeps surfaced disagreement visible beside the gate', await page.$eval('.nexus-disagreement', (node) => node.textContent.includes('CONFLICT SURFACED')));
+  await clickPageButton('Revise and narrow');
+  await page.waitForSelector('.nexus-receipt', { timeout: 5000 });
+  const receiptId = await page.$eval('.nexus-receipt h3', (node) => node.textContent.trim());
+  assert('A consequential Nexus decision creates a governed receipt', /^NX-[A-Z0-9]{7}$/.test(receiptId), receiptId);
+  await clickPageButton('Transmit memory to 2040');
+  await page.waitForSelector('.interface-mode.is-visible .future-native--2040', { timeout: 10000 });
+  assert('The governed receipt persists into Kevin Echo', await page.$eval('.echo-presence-native', (node, id) => node.textContent.includes(id), receiptId), receiptId);
+  await page.type('.echo-interpreter-native textarea', 'What is your favorite color?');
+  await clickPageButton('Interpret signal');
+  await page.waitForFunction(() => document.querySelector('.echo-response-native')?.textContent.includes('Evidence boundary'));
+  assert('Kevin Echo fails closed on unsupported details', await page.$eval('.echo-response-native', (node) => node.textContent.includes('not present in the verified records')));
+  await clickPageButton('1990');
+  await clickPageButton('2010');
+  await clickPageButton('2030');
+  await page.waitForSelector('.echo-synthesis-action', { timeout: 5000 });
+  await clickPageButton('Synthesize continuity');
+  await page.waitForSelector('.echo-finale', { timeout: 5000 });
+  assert('The three-memory synthesis reaches the authored finale with receipt provenance', await page.$eval('.echo-finale', (node, id) => node.textContent.includes('The interfaces changed. The pattern did not.') && node.textContent.includes(id), receiptId));
 
   assert('The reviewed flows emit no console errors', report.consoleErrors.length === 0, report.consoleErrors.join(' | '));
   assert('The reviewed flows emit no page errors', report.pageErrors.length === 0, report.pageErrors.join(' | '));

@@ -1,7 +1,7 @@
 {
-  "generatedAt": "2026-08-14T03:32:52.221Z",
+  "generatedAt": "2026-08-14T08:55:13.401Z",
   "browser": "/home/trix/.cache/ms-playwright/chromium-1234/chrome-linux64/chrome",
-  "base": "https://kevinception.netlify.app",
+  "base": "http://127.0.0.1:4321",
   "assertions": [
     {
       "name": "The direct dashboard module URL opens the Commerce interface",
@@ -81,12 +81,12 @@
     {
       "name": "The office clock projects the current month and day into 2010",
       "passed": true,
-      "detail": "8/13/2010"
+      "detail": "8/14/2010"
     },
     {
       "name": "Every seeded operational and culture date is in 2010 and not after the office date",
       "passed": true,
-      "detail": "8/13/2010 | 8/13/2010 | 8/12/2010 | 8/12/2010 | 8/12/2010 | 8/11/2010 | 8/10/2010 | 8/7/2010 | 8/13/2010 | 8/3/2010 | 8/11/2010 | 8/1/2010 | 8/13/2010 | 7/30/2010 | 8/13/2010 | 7/27/2010 | 8/9/2010 | 7/24/2010 | 8/5/2010 | 8/13/2010 | 8/11/2010 | 8/6/2010 | 7/30/2010 | 7/16/2010"
+      "detail": "8/14/2010 | 8/14/2010 | 8/13/2010 | 8/13/2010 | 8/13/2010 | 8/12/2010 | 8/11/2010 | 8/8/2010 | 8/14/2010 | 8/4/2010 | 8/12/2010 | 8/2/2010 | 8/14/2010 | 7/31/2010 | 8/14/2010 | 7/28/2010 | 8/10/2010 | 7/25/2010 | 8/6/2010 | 8/14/2010 | 8/12/2010 | 8/7/2010 | 7/31/2010 | 7/17/2010"
     },
     {
       "name": "Guest comments persist under the time-traveler identity",
@@ -404,12 +404,42 @@
       "detail": "{\"outer\":0,\"body\":0,\"sidebarHeight\":35,\"sidebarScrolls\":true,\"homeContained\":true,\"duplicateChrome\":false}"
     },
     {
-      "name": "The Coexistence roster retains explicit human and AI collaborators",
+      "name": "The future interfaces are native and mount no 2030/2040 iframe",
       "passed": true,
-      "detail": "Kevin · Human Lead | AI Researcher | AI Builder | Human Governor | AI Archivist"
+      "detail": ""
     },
     {
-      "name": "A consequential Nexus action still records human approval",
+      "name": "The native Coexistence roster exposes four AI roles and a human Governor",
+      "passed": true,
+      "detail": "[{\"label\":\"Clarifier\",\"owner\":\"AI\"},{\"label\":\"Researcher\",\"owner\":\"AI\"},{\"label\":\"Architect\",\"owner\":\"AI\"},{\"label\":\"Builder\",\"owner\":\"AI\"},{\"label\":\"Governor\",\"owner\":\"H\"}]"
+    },
+    {
+      "name": "The native mission stops at an explicit human decision gate",
+      "passed": true,
+      "detail": ""
+    },
+    {
+      "name": "The native mission keeps surfaced disagreement visible beside the gate",
+      "passed": true,
+      "detail": ""
+    },
+    {
+      "name": "A consequential Nexus decision creates a governed receipt",
+      "passed": true,
+      "detail": "NX-1N8J08S"
+    },
+    {
+      "name": "The governed receipt persists into Kevin Echo",
+      "passed": true,
+      "detail": "NX-1N8J08S"
+    },
+    {
+      "name": "Kevin Echo fails closed on unsupported details",
+      "passed": true,
+      "detail": ""
+    },
+    {
+      "name": "The three-memory synthesis reaches the authored finale with receipt provenance",
       "passed": true,
       "detail": ""
     },

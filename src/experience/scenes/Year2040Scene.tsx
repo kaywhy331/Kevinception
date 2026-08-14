@@ -5,6 +5,8 @@ import { useFrame } from '@react-three/fiber';
 import * as THREE from 'three';
 import { eraConfigs } from '../config';
 import { useExperienceActions } from '../ExperienceContext';
+import { useExperienceStore } from '../store';
+import { echoMemoryRecords, type EchoMemoryId } from '../future/futureJourney';
 import { Dust, Hoverable } from './SceneUtils';
 import { ArchiveColumn, GlassPanel, LightBar, Plant, RoomShell } from './EnvironmentPrimitives';
 
@@ -40,39 +42,49 @@ function createHologramPoints() {
   return new Float32Array(points);
 }
 
-function HologramFigure({ active }: { active: boolean }) {
+function HologramFigure({ active, resonance, finaleSeen }: { active: boolean; resonance: number; finaleSeen: boolean }) {
   const ref = useRef<THREE.Points>(null);
   const material = useRef<THREE.PointsMaterial>(null);
   const positions = useMemo(() => createHologramPoints(), []);
   useFrame(({ clock }) => {
     if (!active || !ref.current || !material.current) return;
-    ref.current.rotation.y = Math.sin(clock.elapsedTime * 0.18) * 0.1;
-    ref.current.position.y = Math.sin(clock.elapsedTime * 0.68) * 0.03;
-    material.current.opacity = 0.78 + Math.sin(clock.elapsedTime * 2) * 0.05;
+    ref.current.rotation.y = Math.sin(clock.elapsedTime * (0.18 + resonance * 0.0015)) * (0.08 + resonance * 0.0007);
+    ref.current.position.y = Math.sin(clock.elapsedTime * 0.68) * (0.025 + resonance * 0.00025);
+    const resonanceOpacity = 0.42 + resonance * 0.0044;
+    material.current.opacity = Math.min(1, resonanceOpacity + Math.sin(clock.elapsedTime * 2) * (finaleSeen ? 0.08 : 0.04));
+    material.current.size = 0.024 + resonance * 0.00009 + (finaleSeen ? 0.004 : 0);
   });
   return (
-    <points ref={ref}>
+    <points ref={ref} scale={0.92 + resonance * 0.0014}>
       <bufferGeometry><bufferAttribute attach="attributes-position" args={[positions, 3]} /></bufferGeometry>
-      <pointsMaterial ref={material} color="#c3b5ff" size={0.031} transparent opacity={active ? 0.78 : 0.16} depthWrite={false} blending={THREE.AdditiveBlending} />
+      <pointsMaterial ref={material} color={finaleSeen ? '#f8f4ff' : '#c3b5ff'} size={0.024 + resonance * 0.00009} transparent opacity={active ? 0.42 + resonance * 0.0044 : 0.16} depthWrite={false} blending={THREE.AdditiveBlending} />
     </points>
   );
 }
 
 const shardLayout = [
-  { position: [-2.15, 2.2, 0.15] as [number, number, number], color: '#a88cff' },
-  { position: [-1.1, 3.0, 0.05] as [number, number, number], color: '#75d9ff' },
-  { position: [1.1, 3.0, 0.05] as [number, number, number], color: '#86e6ba' },
-  { position: [2.15, 2.2, 0.15] as [number, number, number], color: '#ffe7a1' },
-  { position: [0, 2.45, 1.25] as [number, number, number], color: '#f7f6ff' }
+  { id: '1990' as EchoMemoryId, position: [-2.3, 2.05, 0.15] as [number, number, number], color: '#ffd75a' },
+  { id: '2000' as EchoMemoryId, position: [-1.32, 3.05, 0.05] as [number, number, number], color: '#75d9ff' },
+  { id: '2010' as EchoMemoryId, position: [0, 3.42, -0.05] as [number, number, number], color: '#d7a64e' },
+  { id: '2020' as EchoMemoryId, position: [1.32, 3.05, 0.05] as [number, number, number], color: '#ff82a5' },
+  { id: '2030' as EchoMemoryId, position: [2.3, 2.05, 0.15] as [number, number, number], color: '#86e6df' },
+  { id: '2040' as EchoMemoryId, position: [0, 2.35, 1.35] as [number, number, number], color: '#f7f6ff' }
 ];
 
 export function Year2040Scene({ active, detail = true }: { active: boolean; timeline: boolean; detail?: boolean }) {
   const config = eraConfigs['2040'];
   const { enterYear, discover } = useExperienceActions();
+  const echo = useExperienceStore((state) => state.futureJourney.echo);
+  const missionArtifact = useExperienceStore((state) => state.futureJourney.mission.artifact);
+  const openMemory = useExperienceStore((state) => state.openEchoMemory);
   const shards = useRef<THREE.Group>(null);
   useFrame(({ clock }) => {
     if (!active || !detail || !shards.current) return;
-    shards.current.rotation.y = Math.sin(clock.elapsedTime * 0.14) * 0.045;
+    shards.current.rotation.y = Math.sin(clock.elapsedTime * (0.14 + echo.resonance * 0.001)) * (0.035 + echo.resonance * 0.00035);
+    shards.current.children.forEach((child, index) => {
+      const opened = echo.openedMemories.includes(shardLayout[index]?.id);
+      child.position.y = Math.sin(clock.elapsedTime * (opened ? 1.25 : 0.62) + index) * (opened ? 0.07 : 0.025);
+    });
   });
 
   if (!detail) {
@@ -112,18 +124,31 @@ export function Year2040Scene({ active, detail = true }: { active: boolean; time
         <group position={[0, 0.52, -0.2]}>
           <mesh position={[0, -0.26, 0]} castShadow receiveShadow><cylinderGeometry args={[1.6, 1.95, 0.3, 56]} /><meshStandardMaterial color="#d8d3df" roughness={0.28} metalness={0.12} /></mesh>
           <mesh position={[0, -0.09, 0]}><cylinderGeometry args={[1.34, 1.58, 0.11, 56]} /><meshPhysicalMaterial color="#cbbcff" transparent opacity={0.32} roughness={0.08} clearcoat={1} /></mesh>
-          <HologramFigure active={active} />
-          {active && <pointLight position={[0, 1.75, 0]} color="#b7a1ff" intensity={5.0} distance={8} decay={2} />}
+          <HologramFigure active={active} resonance={echo.resonance} finaleSeen={echo.finaleSeen} />
+          {active && <pointLight position={[0, 1.75, 0]} color={echo.finaleSeen ? '#ffffff' : '#b7a1ff'} intensity={3.4 + echo.resonance * 0.034} distance={8 + echo.resonance * 0.025} decay={2} />}
+          {missionArtifact && (
+            <group position={[0, -0.01, 0.92]} userData={{ label: `Mounted receipt ${missionArtifact.receiptId}`, receiptId: missionArtifact.receiptId }}>
+              <mesh rotation={[Math.PI / 2, 0, 0]}><ringGeometry args={[0.22, 0.3, 32]} /><meshStandardMaterial color="#e9ffff" emissive="#64e8ff" emissiveIntensity={1.4} transparent opacity={0.88} /></mesh>
+              <mesh position={[0, 0.03, 0]}><octahedronGeometry args={[0.13, 0]} /><meshStandardMaterial color="#ffffff" emissive="#b7a1ff" emissiveIntensity={1.8} /></mesh>
+            </group>
+          )}
         </group>
       </Hoverable>
 
       <group ref={shards}>
         {shardLayout.map((shard, index) => (
-          <Hoverable key={shard.color} label={`Memory shard ${index + 1}`} onClick={() => { if (index === 0) discover('signal-fragment', '2040'); if (index === shardLayout.length - 1) discover('next-layer-message', '2040'); }}>
-            <mesh position={shard.position} rotation={[0.2 + index * 0.08, index * 0.42, 0.1 * index]} castShadow><octahedronGeometry args={[0.22 + (index % 2) * 0.035]} /><meshStandardMaterial color={shard.color} emissive={shard.color} emissiveIntensity={active ? 0.78 : 0.1} transparent opacity={0.76} /></mesh>
+          <Hoverable key={shard.id} label={`${shard.id} memory shard · ${echoMemoryRecords[shard.id].title}`} onClick={() => { openMemory(shard.id); if (shard.id === '1990') discover('signal-fragment', '2040'); if (shard.id === '2040') discover('next-layer-message', '2040'); }}>
+            <mesh position={shard.position} rotation={[0.2 + index * 0.08, index * 0.42, 0.1 * index]} scale={echo.openedMemories.includes(shard.id) ? 1.28 : 1} castShadow><octahedronGeometry args={[0.22 + (index % 2) * 0.035]} /><meshStandardMaterial color={echo.openedMemories.includes(shard.id) ? '#ffffff' : shard.color} emissive={shard.color} emissiveIntensity={active ? echo.openedMemories.includes(shard.id) ? 1.75 : 0.42 + echo.resonance * 0.004 : 0.1} transparent opacity={echo.openedMemories.includes(shard.id) ? 0.96 : 0.68} /></mesh>
           </Hoverable>
         ))}
       </group>
+
+      {echo.synthesisReady && (
+        <group position={[0, 2.32, -0.2]} userData={{ label: echo.finaleSeen ? 'Continuity synthesis complete' : 'Continuity synthesis ready' }}>
+          <mesh rotation={[Math.PI / 2, 0, 0]}><torusGeometry args={[1.34, echo.finaleSeen ? 0.045 : 0.025, 12, 72]} /><meshStandardMaterial color="#f4efff" emissive="#a88cff" emissiveIntensity={echo.finaleSeen ? 2.2 : 1.15} transparent opacity={0.84} /></mesh>
+          <mesh rotation={[Math.PI / 2, 0, Math.PI / 3]}><torusGeometry args={[1.58, 0.016, 10, 72]} /><meshStandardMaterial color="#bdefff" emissive="#64e8ff" emissiveIntensity={echo.finaleSeen ? 1.7 : 0.78} transparent opacity={0.6} /></mesh>
+        </group>
+      )}
 
       <group position={[-3.48, 1.58, -2.55]}>
         <ArchiveColumn position={[-0.34, 0, 0]} color="#b8a8ff" active={active} height={3.1} radius={0.27} />

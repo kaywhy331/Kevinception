@@ -66,6 +66,7 @@ Pair Inter (functional) with a distinctive display face for h1/h2 and era-neutra
 ✅ *Done when:* display face live on all hero/section headings; CLS unchanged; font budget ≤120KB added.
 
 **2.2 Six era design languages** [A] (L) — **the signature design move**
+**Status 2026-08-14: ◐ Native future wing implemented; full six-era pass remains.** Kevin Nexus now uses a bright, dense collaboration chamber and Kevin Echo a sparse, dark continuity archive, with distinct responsive and motion treatments. The four earlier eras and standard-page echoes still need the complete documented six-up art-direction pass.
 Each era gets a micro design system beyond the current accent color: texture, type treatment, UI chrome, motion character. 1990 phosphor glow + scanlines; 2000 beige plastic + skeuomorphic bevels; 2010 flat social blue + card feeds; 2020 vertical neon + kinetic type; 2030 ambient minimal + agent glyphs; 2040 volumetric light + particle memory. Applied to the experience overlay (timeline panel, environment panel, transitions) and echoed subtly on standard-page era references.
 ✅ *Done when:* a screenshot of any era's UI is identifiable without labels in a six-up lineup; documented in `docs/ERA_DESIGN_LANGUAGES.md`.
 
@@ -98,6 +99,7 @@ Render-to-texture portals so era screens show the neighboring era's live world (
 ✅ *Done when:* ≥3 eras have live portals at high tier with graceful tier fallback; frame budget held.
 
 **3.3 Sound design** [K→A] (M)
+**Status 2026-08-14: ◐ Future-wing code pass implemented; authored asset pass remains.** Sound remains muted by default with a persisted, accessible toggle. Native 2030/2040 now have generated layered atmospheres plus mission, task, gate, receipt, signal, memory, synthesis, and handoff cues that start only in the active interface and clean up on exit. Original/licensed audio and complete 1990–2020 coverage remain Kevin-gated.
 Replace oscillator beeps with original/licensed era-authentic audio: ambient bed per era (CRT hum, dial-up handshake, notification-era chatter, neon room tone…), interface SFX. Opt-in, muted by default, persistent preference, visible toggle.
 ✅ *Done when:* all six eras have ambient + SFX; no autoplay; toggle accessible; assets licensed or original.
 
@@ -107,10 +109,11 @@ The five cross-era artifacts are a brilliant buried mechanic. Add first-visit hi
 ✅ *Done when:* an unprompted first-time tester discovers ≥1 artifact; completion state exists and is reachable; progress persists across visits.
 
 **3.5 Narrative payoff at 2040** [A, K approves copy] (S)
+**Status 2026-08-14: ✅ Implemented in visual and text modes.** Three unique memories unlock a designed continuity synthesis—“The interfaces changed. The pattern did not.”—that preserves any governed 2030 receipt and offers measurable Work, Contact, artifact, and Curiosity replay actions.
 An authored ending beat after Continuity: the thesis lands ("the pattern compounds") and hands off to a present-day CTA. The loop back to Curiosity stays as the replay path.
 ✅ *Done when:* finishing chapter six delivers a designed moment, not just a loop; CTA to contact/work measurable in analytics.
 
-**3.6 Deliberately deferred** — native React ports of the V6 iframe apps (the CRT-embedded originals are part of the charm; revisit post-launch) and a live LLM endpoint for Kevin Echo (differentiator, but infra + safety scope; the deterministic version ships with a clear "simulated" disclosure it already has).
+**3.6 Deliberately deferred** — native React ports of the 1990–2020 V6 iframe apps (the CRT-embedded originals are part of the charm; revisit post-launch) and a live LLM endpoint for Kevin Echo (differentiator, but infra + safety scope). Kevin Nexus and Kevin Echo are now native React; Echo remains deterministic, sourced, fail-closed, and explicitly disclosed as a representation.
 
 ---
 
@@ -137,7 +140,7 @@ Three.js only on `/experience/`; GLB via Draco + KTX2; lazy scene loading; quali
 ✅ *Done when:* Lighthouse ≥90 across Performance/A11y/Best-Practices/SEO on all standard routes; experience holds frame floors on a defined device matrix; budgets enforced in CI (`check:build` extended).
 
 **5.2 Accessibility audit — both modes** [A] (M)
-**Status 2026-08-11: ◐ Major code gaps implemented; manual audit remains.** Mobile utilities and Step Back remain operable, the experience has a real skip target, WebGL hotspots expose semantic buttons, and text mode covers canonical content/artifact recovery for all eras. Axe, contrast, and manual screen-reader evidence remain pre-launch work.
+**Status 2026-08-14: ◐ Functional parity implemented; manual audit remains.** Mobile utilities and Step Back remain operable, the experience has a real skip target, WebGL hotspots expose semantic buttons, and text mode now runs the complete 2030 mission/decision/receipt plus the 2040 sourced interpreter/memories/synthesis/finale from the same state. Axe, contrast, and manual screen-reader evidence remain pre-launch work.
 Full screen-reader pass of standard pages *and* the experience's text-mode parity; focus order; contrast sweep; WCAG 2.2 AA. Document the SR script.
 ✅ *Done when:* axe/pa11y clean; manual SR walkthrough documented; text-mode reaches every fact the 3D mode presents.
 
@@ -167,7 +170,7 @@ Phase 2 (art direction)  ──┼─→ Phase 3 (immersive execution) ─→ Ph
         └── 2.3 imagery depends on 3.1 scene fidelity for final captures (interim captures OK)
 ```
 
-- **Agent-ready tranche completed 2026-08-10:** 1.4, 1.6, 2.1, 2.4, 2.5, and 4.3; 5.4 code is complete and awaits production-account activation.
+- **Agent-ready tranches completed through 2026-08-14:** 1.4, 1.6, 2.1, 2.4, 2.5, 3.4, 3.5, and 4.3; the native future-wing portion of 2.2/3.3 and functional text parity are implemented; 5.4 code awaits production-account activation.
 - **Blocked on Kevin:** 1.1, 1.2, 1.3, 1.5 (facts/photo/quotes), 3.1 (direction decision), 3.3 (audio budget/licensing), 6.4 (submissions).
 - **Biggest single lever for the Design axis:** 2.2 + 3.1 together — the era design languages made real in 3D.
 - **Biggest single lever for the Creativity axis:** 3.2 portals — the site's own tagline, made literal.
