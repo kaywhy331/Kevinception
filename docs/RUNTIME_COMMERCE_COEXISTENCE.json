@@ -1,7 +1,7 @@
 {
-  "generatedAt": "2026-08-14T03:28:08.913Z",
+  "generatedAt": "2026-08-14T03:32:52.221Z",
   "browser": "/home/trix/.cache/ms-playwright/chromium-1234/chrome-linux64/chrome",
-  "base": "http://127.0.0.1:4322",
+  "base": "https://kevinception.netlify.app",
   "assertions": [
     {
       "name": "The direct dashboard module URL opens the Commerce interface",
