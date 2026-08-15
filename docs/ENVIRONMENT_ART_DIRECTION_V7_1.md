@@ -12,7 +12,7 @@ The six eras are no longer presented as isolated devices on floating shelves. Th
   → 2000 Computer Bedroom
   → 2010 Connected Workspace
   → 2020 Creator Studio
-  → 2030 Autonomous Systems Lab
+  → 2030 Permissioned Smart Home
   → 2040 Continuity Sanctuary
 ```
 
@@ -34,16 +34,16 @@ Each era includes:
 
 2030 and 2040 are deliberately modeled as adjacent physical spaces.
 
-### 2030 — Autonomous Systems Lab
+### 2030 — Permissioned Smart Home
 
-The lab contains:
+The apartment contains:
 
-- A central mission table
-- Five specialized agent stations
-- Shared memory archives
-- Evidence displays
-- Moving context packets
-- A human approval console
+- Distinct local-sensing kitchen, mounted-context studio, guest-safe living, and private-threshold zones
+- Five human-scale objects that carry the day from a morning mug to after-gathering glasses
+- A room-scale Wren presence rather than a humanoid assistant or command-center dashboard
+- A five-node decision rail that makes Sense → Interpret → Authority → Act or wait → Receipt visible in the architecture
+- A marked human-authority gate and consent state linked to the active object
+- Quiet, inspectable infrastructure receipts for provenance and retention boundaries
 - Observation glass into the 2040 chamber
 
 ### 2040 — Continuity Sanctuary
@@ -60,7 +60,7 @@ The sanctuary contains:
 
 ### Physical transition
 
-Approved information moves from the 2030 memory core through a visible animated conduit toward the 2040 sanctuary. The transition animation is therefore a bridge between two real places, not a replacement for either environment.
+The selected 2030 moment and its explicit keep/refuse state move through a visible animated conduit toward the 2040 sanctuary. The transition is therefore a bridge between two real places and two real state models, not a replacement for either environment.
 
 ## Current art-production boundary
 

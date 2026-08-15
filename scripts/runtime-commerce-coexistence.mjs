@@ -369,7 +369,7 @@ try {
   await clickPageButton('Let it end here');
   await clickPageButton('Window desk');
   await clickPageButton('Let it end here');
-  await clickPageButton('How was this carried?');
+  await clickPageButton('Open infrastructure receipt');
   assert('TokenPak, TIP, and PAK remain optional provenance rather than the 2030 hero', await page.$eval('.coexistence-provenance aside', (node) => node.textContent.includes('TokenPak') && node.textContent.includes('TIP authority') && node.textContent.includes('PAK context')));
   await clickPageButton('Enter Morning, After');
   await page.waitForSelector('.future-native--2040', { timeout: 30000 });

@@ -27,14 +27,18 @@ describe('V7 connected physical environment pass', () => {
     expect(computerRoom).toContain('<GroundedDesk');
   });
 
-  it('models 2030 as a grounded apartment shared with ambient Wren', () => {
+  it('models 2030 as a zoned smart home with an inspectable ambient Wren', () => {
     const scene = read('src/experience/scenes/Year2030Scene.tsx');
     expect(scene).toContain('<RoomShell');
     expect(scene).toContain('ApartmentFurniture');
     expect(scene).toContain('MomentObject');
     expect(scene).toContain('ConsentMark');
     expect(scene).toContain('Wren in the room');
-    expect(scene).toContain('THREE.AdditiveBlending');
+    expect(scene).toContain('AgentDecisionRail');
+    expect(scene).toContain('Kitchen · local sensing zone');
+    expect(scene).toContain('Studio · mounted context zone');
+    expect(scene).toContain('Living room · guest-safe zone');
+    expect(scene).toContain('<CylinderBetween');
     expect(scene).not.toContain('Human Governor');
     expect(scene).not.toContain('<ArchiveColumn');
   });

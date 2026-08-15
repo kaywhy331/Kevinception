@@ -23,10 +23,13 @@ describe('future functional text experience', () => {
     expect(screen.getByRole('heading', { name: 'Morning, Together' })).toBeInTheDocument();
     fireEvent.click(screen.getByRole('button', { name: /10:36Studio table/ }));
     expect(screen.getByRole('heading', { name: 'An idea finds its edge' })).toBeInTheDocument();
+    expect(screen.getByRole('heading', { name: 'What happened under the calm' })).toBeInTheDocument();
+    expect(screen.getByText(/Recommend · do not rewrite/)).toBeInTheDocument();
+    expect(screen.getByText(/Wren cannot alter the draft/)).toBeInTheDocument();
     fireEvent.click(screen.getByRole('button', { name: 'Let it end here' }));
     expect(screen.getByText('Gone. The room remembers nothing.')).toBeInTheDocument();
     expect(experienceActions.discover).toHaveBeenCalledWith('human-gate', '2030');
-    fireEvent.click(screen.getByRole('button', { name: 'How was this carried?' }));
+    fireEvent.click(screen.getByRole('button', { name: 'Open infrastructure receipt' }));
     expect(screen.getByText(/carried on TokenPak/)).toBeInTheDocument();
     fireEvent.click(screen.getByRole('button', { name: /Ten years pass/ }));
     expect(experienceActions.navigateToYear).toHaveBeenCalledWith('2040');
