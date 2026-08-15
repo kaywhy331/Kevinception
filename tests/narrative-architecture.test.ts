@@ -6,8 +6,8 @@ import { eraConfigs } from '@/experience/config';
 
 const read = (relative: string) => fs.readFileSync(path.join(process.cwd(), relative), 'utf8');
 
-const expectedChapters = ['Curiosity', 'Connection', 'Commerce', 'Creation', 'Coexistence', 'Continuity'];
-const expectedExperiences = ['KevinVision', 'Kevin Online', 'StealStreet Commerce OS', 'KevTok', 'Kevin Nexus', 'Kevin Echo'];
+const expectedChapters = ['Curiosity', 'Connection', 'Commerce', 'Creation', 'Co-Existence', 'Consciousness'];
+const expectedExperiences = ['KevinVision', 'Kevin Online', 'StealStreet Commerce OS', 'KevTok', 'Morning, Together', 'Morning, After'];
 
 describe('V7.6 narrative architecture', () => {
   it('defines one ordered conceptual chapter and one in-world experience per year', () => {
@@ -59,7 +59,7 @@ describe('V7.6 narrative architecture', () => {
 
   it('updates site positioning from six technologies to six digital eras', () => {
     expect(narrativeSite.title).toContain('Six Digital Eras');
-    expect(narrativeSite.description).toContain('Curiosity, Connection, Commerce, Creation, Coexistence, and Continuity');
+    expect(narrativeSite.description).toContain('Curiosity, Connection, Commerce, Creation, Co-Existence, and Consciousness');
     const layout = read('app/layout.tsx');
     expect(layout).toContain('narrativeSite.title');
     expect(layout).toContain('narrativeSite.description');

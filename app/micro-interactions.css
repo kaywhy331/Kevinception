@@ -1,0 +1,119 @@
+/* Standard-page interaction layer: fine-pointer enhancement, never task-critical. */
+:root {
+  --ease-spring: cubic-bezier(.2, .8, .2, 1.18);
+}
+
+:where(.site-shell, .landing-page) .primary-action {
+  --magnet-x: 0px;
+  --magnet-y: 0px;
+  --press-scale: 1;
+  transform: translate3d(var(--magnet-x), var(--magnet-y), 0) scale(var(--press-scale));
+  transition:
+    transform var(--motion-fast) var(--ease-out),
+    border-color var(--motion-fast) var(--ease-out),
+    background var(--motion-fast) var(--ease-out),
+    box-shadow var(--motion-fast) var(--ease-out);
+  will-change: transform;
+}
+
+:where(.site-shell, .landing-page) .primary-action:hover {
+  transform: translate3d(var(--magnet-x), calc(var(--magnet-y) - 2px), 0) scale(var(--press-scale));
+  box-shadow: 0 14px 38px rgba(100,192,255,.25), inset 0 1px rgba(255,255,255,.7);
+}
+
+:where(.site-shell, .landing-page) .primary-action:active {
+  --press-scale: .975;
+}
+
+:where(.site-shell, .landing-page) .primary-action:focus-visible {
+  box-shadow: 0 0 0 4px rgba(7,8,12,.92), 0 0 0 7px var(--accent-2), 0 14px 38px rgba(100,192,255,.22);
+}
+
+:is(.site-header__desktop-nav a:not(.site-header__cta), .site-footer nav a, .text-link) {
+  position: relative;
+}
+
+:is(.site-header__desktop-nav a:not(.site-header__cta), .site-footer nav a, .text-link)::after {
+  content: '';
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: .18em;
+  height: 1px;
+  background: linear-gradient(90deg, var(--accent-2), var(--accent));
+  transform: scaleX(0);
+  transform-origin: right center;
+  transition: transform var(--motion-fast) var(--ease-out);
+  pointer-events: none;
+}
+
+:is(.site-header__desktop-nav a:not(.site-header__cta), .site-footer nav a, .text-link):is(:hover, :focus-visible)::after {
+  transform: scaleX(1);
+  transform-origin: left center;
+}
+
+.text-link > span[aria-hidden='true'] {
+  display: inline-block;
+  margin-left: .25em;
+  transition: transform var(--motion-fast) var(--ease-spring);
+}
+
+.text-link:is(:hover, :focus-visible) > span[aria-hidden='true'] { transform: translateX(.28rem); }
+
+[data-interactive-card] {
+  --tilt-x: 0deg;
+  --tilt-y: 0deg;
+  --glow-x: 50%;
+  --glow-y: 50%;
+  position: relative;
+  isolation: isolate;
+  transform: perspective(900px) rotateX(var(--tilt-x)) rotateY(var(--tilt-y));
+  transform-style: preserve-3d;
+  transition: transform var(--motion-medium) var(--ease-out), border-color var(--motion-fast) var(--ease-out), box-shadow var(--motion-medium) var(--ease-out);
+}
+
+[data-interactive-card]::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  border-radius: inherit;
+  background: radial-gradient(circle at var(--glow-x) var(--glow-y), rgba(141,168,255,.18), transparent 38%);
+  opacity: 0;
+  transition: opacity var(--motion-fast) var(--ease-out);
+  pointer-events: none;
+}
+
+[data-interactive-card] > * { position: relative; z-index: 1; }
+
+[data-interactive-card][data-tilt-active='true'] {
+  border-color: color-mix(in srgb, var(--accent) 40%, var(--line));
+  box-shadow: 0 28px 70px rgba(0,0,0,.24);
+  transition: transform 90ms linear, border-color var(--motion-fast) var(--ease-out), box-shadow var(--motion-medium) var(--ease-out);
+  will-change: transform;
+}
+
+[data-interactive-card][data-tilt-active='true']::before { opacity: 1; }
+
+@media (hover: none), (pointer: coarse), (prefers-reduced-motion: reduce) {
+  :where(.site-shell, .landing-page) .primary-action,
+  :where(.site-shell, .landing-page) .primary-action:hover,
+  [data-interactive-card],
+  [data-interactive-card][data-tilt-active='true'] {
+    transform: none;
+    will-change: auto;
+  }
+
+  :where(.site-shell, .landing-page) .primary-action,
+  [data-interactive-card] {
+    transition: color var(--motion-fast) ease, border-color var(--motion-fast) ease, background var(--motion-fast) ease, box-shadow var(--motion-fast) ease;
+  }
+
+  [data-interactive-card]::before { opacity: 0; }
+  .text-link > span[aria-hidden='true'] { transform: none; transition: color var(--motion-fast) ease; }
+}
+
+@media print {
+  [data-interactive-card],
+  :where(.site-shell, .landing-page) .primary-action { transform: none !important; }
+}

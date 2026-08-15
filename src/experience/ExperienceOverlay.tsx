@@ -4,8 +4,11 @@ import Link from 'next/link';
 import { useEffect, useMemo, useState } from 'react';
 import { projects, timelineContent, xennialLegacy, type YearId } from '@/content/data';
 import { artifacts } from './artifacts';
-import { eraConfigs, getAdjacentYear, YEAR_ORDER } from './config';
+import { eraConfigs, getAdjacentYear, getEraCssVariables, YEAR_ORDER } from './config';
 import { useExperienceActions } from './ExperienceContext';
+import { FutureExperience } from './future/FutureExperience';
+import { FutureTextExperience } from './future/FutureTextExperience';
+import { coexistenceMoments } from './future/futureWorld';
 import { preloadExperienceScene } from './sceneLoaders';
 import { useExperienceStore } from './store';
 
@@ -13,7 +16,7 @@ function canPrewarmInterface(year: YearId) {
   if (typeof navigator === 'undefined') return false;
   const device = navigator as Navigator & { deviceMemory?: number; connection?: { saveData?: boolean } };
   const futureYear = year === '2030' || year === '2040';
-  return !device.connection?.saveData && (futureYear || ((device.deviceMemory ?? 8) > 4 && navigator.hardwareConcurrency > 4));
+  return !futureYear && !device.connection?.saveData && (device.deviceMemory ?? 8) > 4 && navigator.hardwareConcurrency > 4;
 }
 
 function requestExperiencePrewarm(year: YearId) {
@@ -34,8 +37,10 @@ function YearSelector() {
           <button
             key={year}
             type="button"
+            data-era={year}
+            data-era-texture={config.designLanguage.texture}
             className={activeYear === year ? 'is-active' : ''}
-            style={{ '--era-accent': config.accent } as React.CSSProperties}
+            style={getEraCssVariables(year) as React.CSSProperties}
             onClick={() => navigateToYear(year)}
             onPointerEnter={() => requestExperiencePrewarm(year)}
             onFocus={() => requestExperiencePrewarm(year)}
@@ -60,7 +65,7 @@ function ChapterCard({ mode }: { mode: 'timeline' | 'environment' }) {
   const { enterYear } = useExperienceActions();
   const panelClass = mode === 'timeline' ? 'timeline-panel' : 'environment-panel';
   return (
-    <section className={`${panelClass} chapter-card glass-panel`} style={{ '--era-accent': config.accent } as React.CSSProperties}>
+    <section className={`${panelClass} chapter-card glass-panel`} data-era-panel={activeYear} style={getEraCssVariables(activeYear) as React.CSSProperties}>
       <div className="chapter-card__identity">
         <p className="eyebrow">Chapter {config.chapterNumber} of {YEAR_ORDER.length}</p>
         <h1><span>{activeYear}</span> {config.chapterName}</h1>
@@ -145,9 +150,10 @@ function InterfaceLayer({ visible }: { visible: boolean }) {
   const [loadedYears, setLoadedYears] = useState<Partial<Record<YearId, boolean>>>({});
   const [takeawayOpen, setTakeawayOpen] = useState(false);
   const next = getAdjacentYear(activeYear, 1);
+  const futureYear = activeYear === '2030' || activeYear === '2040';
 
   const mountYear = (year: YearId) => {
-    if (year === '2000') return;
+    if (year === '2000' || year === '2030' || year === '2040') return;
     setMountedYears((current) => {
       const withoutYear = current.filter((item) => item !== year);
       return [...withoutYear, year].slice(-2);
@@ -155,7 +161,7 @@ function InterfaceLayer({ visible }: { visible: boolean }) {
   };
 
   useEffect(() => {
-    if (!visible) return;
+    if (!visible || activeYear === '2030' || activeYear === '2040') return;
     setMountedYears((current) => {
       const withoutActive = current.filter((year) => year !== activeYear);
       return [...withoutActive, activeYear].slice(-2);
@@ -226,23 +232,27 @@ function InterfaceLayer({ visible }: { visible: boolean }) {
         </aside>
       )}
       <div className="interface-mode__device" style={{ '--era-accent': config.accent } as React.CSSProperties}>
-        {!loadedYears[activeYear] && visible && <div className="interface-loading" role="status"><div className="power-on-mark power-on-mark--small" aria-hidden="true"><span>K</span><i></i></div><p>Starting {config.experienceName}…</p><div className="power-on-meter" aria-hidden="true"><i></i></div></div>}
-        {mountedYears.map((year) => {
-          const yearConfig = eraConfigs[year];
-          const isActive = visible && year === activeYear;
-          return (
-            <iframe
-              key={year}
-              className={`interface-mode__frame ${isActive ? 'is-active' : 'is-cached'}`}
-              src={yearConfig.legacyPath}
-              title={`${yearConfig.experienceName} functional application for the ${yearConfig.chapterName} chapter`}
-              sandbox="allow-scripts allow-forms allow-same-origin allow-popups allow-modals allow-downloads allow-top-navigation-by-user-activation"
-              loading="eager"
-              tabIndex={isActive ? 0 : -1}
-              onLoad={(event) => onFrameLoad(year, event.currentTarget)}
-            />
-          );
-        })}
+        {futureYear ? <FutureExperience year={activeYear} /> : (
+          <>
+            {!loadedYears[activeYear] && visible && <div className="interface-loading" role="status"><div className="power-on-mark power-on-mark--small" aria-hidden="true"><span>K</span><i></i></div><p>Starting {config.experienceName}…</p><div className="power-on-meter" aria-hidden="true"><i></i></div></div>}
+            {mountedYears.map((year) => {
+              const yearConfig = eraConfigs[year];
+              const isActive = visible && year === activeYear;
+              return (
+                <iframe
+                  key={year}
+                  className={`interface-mode__frame ${isActive ? 'is-active' : 'is-cached'}`}
+                  src={yearConfig.legacyPath}
+                  title={`${yearConfig.experienceName} functional application for the ${yearConfig.chapterName} chapter`}
+                  sandbox="allow-scripts allow-forms allow-same-origin allow-popups allow-modals allow-downloads allow-top-navigation-by-user-activation"
+                  loading="eager"
+                  tabIndex={isActive ? 0 : -1}
+                  onLoad={(event) => onFrameLoad(year, event.currentTarget)}
+                />
+              );
+            })}
+          </>
+        )}
       </div>
     </section>
   );
@@ -319,23 +329,8 @@ function TextMode() {
             ))}
           </div>
         )}
-        {activeYear === '2030' && yearData && 'collaborators' in yearData && 'missions' in yearData && (
-          <>
-            <h2>Human and AI collaborators</h2>
-            <div className="text-mode__grid">
-              {(yearData.collaborators as Array<{ id: string; kind: string; name: string; function: string }>).map((collaborator) => <section key={collaborator.id}><p className="eyebrow">{collaborator.kind} collaborator</p><h3>{collaborator.name}</h3><p>{collaborator.function}</p></section>)}
-            </div>
-            <h2>Mission board</h2>
-            <div className="text-mode__grid">
-              {(yearData.missions as Array<{ id: string; label: string; objective: string; projects: string[] }>).map((mission) => <section key={mission.id}><h3>{mission.label}</h3><p>{mission.objective}</p><small>Related projects: {mission.projects.join(', ')}</small></section>)}
-            </div>
-          </>
-        )}
-        {activeYear === '2040' && yearData && 'prompts' in yearData && 'responses' in yearData && (
-          <div className="text-mode__grid">
-            {(yearData.prompts as Array<{ id: string; label: string }>).map((prompt) => <section key={prompt.id}><h3>{prompt.label}</h3><p>{(yearData.responses as Record<string, string>)[prompt.id]}</p></section>)}
-          </div>
-        )}
+        {activeYear === '2030' && <FutureTextExperience year="2030" />}
+        {activeYear === '2040' && <FutureTextExperience year="2040" />}
         <h2>Kevin’s work in this layer</h2>
         <div className="text-mode__grid">
           {featured.map((project) => <section key={project.slug}><h3>{project.title}</h3><p>{project.summary}</p><Link href={`/work/${project.slug}/`}>Open case study</Link></section>)}
@@ -388,7 +383,7 @@ function ArtifactDrawer() {
         const years = progress[artifact.id].discoveredYears;
         return <section key={artifact.id} className={years.length ? 'is-found' : ''}><h3>{artifact.title}</h3><p>{artifact.meaning}</p><b>{activeYear}: {artifact.transformations[activeYear]}</b><small>{years.length ? `Recovered in ${years.join(', ')}` : `Not yet recovered · ${artifact.discoveryHint}`}</small></section>;
       })}
-      {foundCount === artifacts.length && <section className="artifact-drawer__complete" role="status"><p className="eyebrow">Continuity restored</p><h3>Five signals, one connected story.</h3><p>The containers changed; curiosity, identity, ideas, future signals, and human judgment carried forward.</p><Link href="/work/kevinception/">Read how Kevinception connects the eras →</Link></section>}
+      {foundCount === artifacts.length && <section className="artifact-drawer__complete" role="status"><p className="eyebrow">Pattern recovered</p><h3>Five signals, one connected story.</h3><p>The containers changed; curiosity, identity, ideas, future signals, and human judgment carried forward.</p><Link href="/work/kevinception/">Read how Kevinception connects the eras →</Link></section>}
     </aside>
   );
 }
@@ -469,18 +464,49 @@ function UtilityMenu({ foundCount }: { foundCount: number }) {
 
 function TransitionOverlay() {
   const transition = useExperienceStore((state) => state.transition);
+  const motion = useExperienceStore((state) => state.motion);
+  const coexistence = useExperienceStore((state) => state.futureJourney.coexistence);
   if (!transition || transition.id === 'timeline-fade') return null;
   const from = transition.from ? eraConfigs[transition.from] : null;
   const to = eraConfigs[transition.to];
+  const futureHandoff = transition.id === 'agents-to-echo';
+  const reverseHandoff = futureHandoff && transition.to === '2030';
   const technicalLine = transition.id === 'time-jump'
     ? `Jumping from ${transition.from ?? 'the present'} to ${transition.to}.`
     : from?.transitionLine ?? 'Moving through the technology timeline.';
+  const transitionDuration = motion === 'reduced' ? '40ms' : transition.id === 'time-jump' ? '390ms' : '660ms';
+  const moment = coexistenceMoments[coexistence.activeMoment];
+  const momentDecision = coexistence.consent[coexistence.activeMoment];
+  const handoffLine = coexistence.keptMoments.length
+    ? `${coexistence.keptMoments.length} moment${coexistence.keptMoments.length === 1 ? '' : 's'} cross the decade because Kevin said they could.`
+    : 'The room crosses the decade. Memory does not—unless Kevin permits it.';
   return (
-    <div className={`transition-overlay transition-${transition.id}`} role="status" aria-live="polite">
-      <span></span>
+    <div
+      className={`transition-overlay transition-${transition.id}${reverseHandoff ? ' is-reverse' : ''}`}
+      role="status"
+      aria-live="polite"
+      style={{ '--transition-duration': transitionDuration } as React.CSSProperties}
+      data-memory={futureHandoff ? `${coexistence.activeMoment}-${momentDecision}` : undefined}
+    >
+      <span aria-hidden="true"></span>
+      {futureHandoff && (
+        <div className="future-handoff-visual" aria-hidden="true">
+          <i className="future-handoff-node future-handoff-node--source"><b>2030</b><small>LIVING</small></i>
+          <div className="future-handoff-rail">
+            <em></em><em></em><em></em>
+            <div className={`future-handoff-packet is-${momentDecision}`}>
+              <i className="future-handoff-mug"><em></em></i>
+              <small>{momentDecision === 'kept' ? 'KEPT WITH PERMISSION' : momentDecision === 'refused' ? 'LET GO' : 'FAMILIAR OBJECT'}</small>
+              <b>{moment.time} · {moment.place}</b>
+            </div>
+          </div>
+          <i className="future-handoff-node future-handoff-node--target"><b>2040</b><small>BECOMES</small></i>
+        </div>
+      )}
       <div className="transition-copy">
+        {futureHandoff && <small className="transition-copy__kicker">{reverseHandoff ? 'The hologram returns to the living room' : 'A physical gesture becomes memory'}</small>}
         <strong>{from ? `${from.chapterName} → ${to.chapterName}` : to.chapterName}</strong>
-        <p>{technicalLine}</p>
+        <p>{futureHandoff ? handoffLine : technicalLine}</p>
       </div>
     </div>
   );
@@ -496,7 +522,12 @@ export function ExperienceOverlay() {
   const foundCount = useMemo(() => Object.values(artifactProgress).filter((item) => item.discoveredYears.length > 0).length, [artifactProgress]);
   const showChapterNavigation = viewMode === 'timeline' || viewMode === 'environment' || viewMode === 'transition';
   return (
-    <div className={`experience-overlay mode-${viewMode}`} style={{ '--era-accent': config.accent } as React.CSSProperties}>
+    <div
+      className={`experience-overlay mode-${viewMode}`}
+      data-era={activeYear}
+      data-era-texture={config.designLanguage.texture}
+      style={getEraCssVariables(activeYear) as React.CSSProperties}
+    >
       <header className="experience-toolbar">
         <button className="experience-mark" type="button" onClick={showTimeline} aria-label="Open chapter timeline"><span>K</span><b>Kevinception</b></button>
         <nav aria-label="Global experience controls">

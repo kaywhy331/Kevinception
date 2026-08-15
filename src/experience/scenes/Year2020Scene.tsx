@@ -8,6 +8,7 @@ import { eraConfigs } from '../config';
 import { useExperienceActions } from '../ExperienceContext';
 import { DeviceScreen, Dust, Hoverable } from './SceneUtils';
 import { LightBar, PictureFrame, RoomShell } from './EnvironmentPrimitives';
+import { EraScreenPortal } from './EraScreenPortal';
 import { DESK_SURFACE_Y, GroundedDesk } from './SceneLayout';
 
 const graphPoints: Array<[number, number, number]> = [
@@ -76,6 +77,7 @@ export function Year2020Scene({ active }: { active: boolean; timeline: boolean }
         <group position={[0, 0.96, -0.77]} rotation={[-0.055, 0, 0]}>
           <RoundedBox args={[3.0, 1.8, 0.16]} radius={0.08} smoothness={3} castShadow><meshStandardMaterial color="#454951" metalness={0.4} roughness={0.36} /></RoundedBox>
           <mesh position={[0, 0, 0.1]}><planeGeometry args={[2.72, 1.52]} /><meshStandardMaterial color="#111827" emissive="#31527c" emissiveIntensity={active ? 0.28 : 0.06} /></mesh>
+          <EraScreenPortal fromYear="2020" size={[2.72, 1.52]} position={[0, 0, 0.145]} active={active} />
           {[-0.52, -0.18, 0.16, 0.5].map((y) => <mesh key={y} position={[0, y, 0.115]}><boxGeometry args={[2.4, 0.018, 0.018]} /><meshBasicMaterial color="#263348" transparent opacity={0.75} /></mesh>)}
           <Line points={graphPoints} color="#5ee8ff" lineWidth={2.2} transparent opacity={0.95} />
           {graphPoints.map((point, index) => <mesh key={index} position={point}><sphereGeometry args={[0.055, 14, 14]} /><meshBasicMaterial color={index === graphPoints.length - 1 ? '#ff6b9d' : '#7ff5d4'} /></mesh>)}

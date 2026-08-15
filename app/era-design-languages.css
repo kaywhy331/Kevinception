@@ -1,0 +1,251 @@
+/* Six code-native micro design systems. Tokens come from experience/config.ts. */
+.experience-overlay {
+  --era-secondary: var(--era-accent);
+  --era-surface: #090b10;
+  --era-surface-raised: #151923;
+  --era-ink: #fff;
+  --era-muted: #aeb8c8;
+  --era-line: rgba(255,255,255,.18);
+  --era-radius: 14px;
+  --era-ease: ease;
+  color: var(--era-ink);
+}
+
+.experience-overlay::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  pointer-events: none;
+  opacity: .13;
+}
+
+.experience-overlay .glass-panel,
+.experience-overlay .experience-toolbar nav,
+.experience-overlay .year-selector,
+.experience-overlay .chapter-details,
+.experience-overlay .chapter-takeaway-panel,
+.experience-overlay .experience-hint {
+  border-color: color-mix(in srgb, var(--era-line) 78%, transparent);
+  border-radius: var(--era-radius);
+  background: linear-gradient(145deg, color-mix(in srgb, var(--era-surface-raised) 88%, transparent), color-mix(in srgb, var(--era-surface) 92%, transparent));
+  color: var(--era-ink);
+  transition: border-color .24s var(--era-ease), background-color .24s var(--era-ease), border-radius .24s var(--era-ease);
+}
+
+.experience-overlay .chapter-card__experience,
+.experience-overlay .chapter-details p,
+.experience-overlay .experience-hint p { color: var(--era-muted); }
+
+.experience-overlay .chapter-card__experience b,
+.experience-overlay .chapter-details p:first-child,
+.experience-overlay .year-selector button span { color: var(--era-ink); }
+
+.experience-overlay .year-selector button,
+.experience-overlay .era-details summary,
+.experience-overlay .interface-mode__bar nav > *,
+.experience-overlay .text-mode > header > * {
+  border-radius: var(--era-radius);
+  transition: color .2s var(--era-ease), background-color .2s var(--era-ease), border-color .2s var(--era-ease), transform .2s var(--era-ease);
+}
+
+.experience-overlay .year-selector button.is-active {
+  border-color: color-mix(in srgb, var(--era-accent) 65%, var(--era-line));
+  background: color-mix(in srgb, var(--era-accent) 15%, var(--era-surface-raised));
+  box-shadow: inset 0 -2px var(--era-secondary);
+}
+
+.experience-overlay .interface-mode,
+.experience-overlay .text-mode { background: color-mix(in srgb, var(--era-surface) 96%, black); }
+
+.experience-overlay .interface-mode__bar,
+.experience-overlay .text-mode > header {
+  border-color: var(--era-line);
+  background: color-mix(in srgb, var(--era-surface-raised) 94%, transparent);
+}
+
+.experience-overlay .interface-mode__device {
+  background:
+    radial-gradient(circle at center, color-mix(in srgb, var(--era-accent) 12%, transparent), transparent 62%),
+    var(--era-surface);
+}
+
+.experience-overlay .interface-mode iframe { border-radius: var(--era-radius); }
+
+/* 1990 — broadcast phosphor, hard bezel, signal-lock motion. */
+.experience-overlay[data-era='1990']::before {
+  background: repeating-linear-gradient(0deg, transparent 0 3px, rgba(255,247,204,.16) 4px 5px);
+  mix-blend-mode: screen;
+}
+
+.experience-overlay[data-era='1990'] .chapter-card,
+.experience-overlay[data-era='1990'] .year-selector,
+.experience-overlay[data-era='1990'] .experience-toolbar nav {
+  border-width: 2px;
+  box-shadow: inset 0 0 0 3px #080905, inset 0 0 24px rgba(135,255,155,.08), 0 18px 55px rgba(0,0,0,.5);
+}
+
+.experience-overlay[data-era='1990'] .chapter-card h1,
+.experience-overlay[data-era='1990'] .chapter-card strong,
+.experience-overlay[data-era='1990'] .experience-mark,
+.experience-overlay[data-era='1990'] .year-selector { font-family: ui-monospace, 'Courier New', monospace; }
+
+.experience-overlay[data-era='1990'] .chapter-card h1 { letter-spacing: -.055em; text-shadow: 2px 0 rgba(135,255,155,.24); }
+.experience-overlay[data-era='1990'] .year-selector button.is-active { box-shadow: inset 0 0 18px rgba(135,255,155,.13), inset 0 -3px var(--era-secondary); }
+
+/* 2000 — blue desktop, beige plastic bevels, compact utility type. */
+.experience-overlay[data-era='2000']::before {
+  background-image: linear-gradient(rgba(107,188,255,.16) 1px, transparent 1px), linear-gradient(90deg, rgba(107,188,255,.16) 1px, transparent 1px);
+  background-size: 16px 16px;
+  mask-image: linear-gradient(to bottom, black, transparent 62%);
+}
+
+.experience-overlay[data-era='2000'] .chapter-card,
+.experience-overlay[data-era='2000'] .year-selector,
+.experience-overlay[data-era='2000'] .experience-toolbar nav {
+  border-color: #928970;
+  box-shadow: inset 2px 2px rgba(255,255,255,.12), inset -2px -2px rgba(0,0,0,.32), 0 20px 60px rgba(0,0,0,.42);
+}
+
+.experience-overlay[data-era='2000'] .chapter-card::after {
+  content: '●  ●  ●';
+  position: absolute;
+  top: .55rem;
+  right: .65rem;
+  color: var(--era-secondary);
+  font-size: .55rem;
+  letter-spacing: .3em;
+}
+
+.experience-overlay[data-era='2000'] .chapter-card h1,
+.experience-overlay[data-era='2000'] .year-selector { font-family: Tahoma, Verdana, var(--font-inter), sans-serif; letter-spacing: -.015em; }
+
+/* 2010 — flat operational density, status rails, measurable rhythm. */
+.experience-overlay[data-era='2010']::before {
+  background: linear-gradient(90deg, transparent 0 72%, rgba(91,146,189,.16) 72% 72.2%, transparent 72.2%), repeating-linear-gradient(0deg, transparent 0 47px, rgba(185,134,47,.13) 48px);
+}
+
+.experience-overlay[data-era='2010'] .chapter-card,
+.experience-overlay[data-era='2010'] .year-selector,
+.experience-overlay[data-era='2010'] .experience-toolbar nav {
+  border-left: 4px solid var(--era-secondary);
+  box-shadow: 0 14px 0 rgba(0,0,0,.18);
+}
+
+.experience-overlay[data-era='2010'] .chapter-card h1,
+.experience-overlay[data-era='2010'] .year-selector { font-family: Arial, Helvetica, var(--font-inter), sans-serif; letter-spacing: -.025em; }
+.experience-overlay[data-era='2010'] .chapter-card strong { display: inline-block; padding: .2rem .4rem; background: var(--era-accent); color: #17120a; }
+
+/* 2020 — portrait neon, compressed kinetic labels, elastic stacks. */
+.experience-overlay[data-era='2020']::before {
+  background: repeating-linear-gradient(112deg, transparent 0 80px, rgba(255,92,138,.16) 81px, transparent 83px 150px, rgba(94,232,255,.12) 151px 152px);
+  mask-image: radial-gradient(ellipse at 72% 45%, black, transparent 70%);
+}
+
+.experience-overlay[data-era='2020'] .chapter-card,
+.experience-overlay[data-era='2020'] .year-selector,
+.experience-overlay[data-era='2020'] .experience-toolbar nav {
+  border-color: color-mix(in srgb, var(--era-accent) 55%, var(--era-line));
+  box-shadow: 8px 8px 0 color-mix(in srgb, var(--era-secondary) 14%, transparent), -8px -8px 0 color-mix(in srgb, var(--era-accent) 10%, transparent), 0 26px 80px rgba(0,0,0,.5);
+}
+
+.experience-overlay[data-era='2020'] .chapter-card h1,
+.experience-overlay[data-era='2020'] .experience-mark,
+.experience-overlay[data-era='2020'] .year-selector { font-family: var(--font-display), var(--font-inter), sans-serif; text-transform: uppercase; }
+.experience-overlay[data-era='2020'] .chapter-card h1 { font-stretch: condensed; letter-spacing: -.06em; }
+.experience-overlay[data-era='2020'] .year-selector button.is-active { transform: translateY(-3px) scale(1.015); }
+
+/* 2030 — warm ambient intelligence, soft permissioned surfaces. */
+.experience-overlay[data-era='2030']::before {
+  background: radial-gradient(circle at 18% 25%, rgba(214,155,80,.24), transparent 22%), radial-gradient(circle at 84% 72%, rgba(132,184,161,.18), transparent 28%), repeating-linear-gradient(104deg, transparent 0 18px, rgba(255,244,223,.06) 19px 20px);
+  filter: blur(.25px);
+}
+
+.experience-overlay[data-era='2030'] .chapter-card,
+.experience-overlay[data-era='2030'] .year-selector,
+.experience-overlay[data-era='2030'] .experience-toolbar nav {
+  border-color: color-mix(in srgb, var(--era-line) 62%, transparent);
+  background-image: linear-gradient(135deg, rgba(255,244,223,.055), transparent 58%);
+  box-shadow: inset 0 1px rgba(255,244,223,.1), 0 24px 80px rgba(10,5,2,.42);
+}
+
+.experience-overlay[data-era='2030'] .chapter-card h1 { font-family: Georgia, 'Times New Roman', serif; font-weight: 500; letter-spacing: -.035em; }
+.experience-overlay[data-era='2030'] .chapter-card strong { color: color-mix(in srgb, var(--era-secondary) 72%, white); }
+
+/* 2040 — black glass, sodium trace, refracted rain. */
+.experience-overlay[data-era='2040']::before {
+  background: repeating-linear-gradient(102deg, transparent 0 26px, rgba(255,158,47,.08) 27px 28px), linear-gradient(90deg, transparent 0 48%, rgba(255,79,46,.13) 49%, transparent 50%);
+  filter: drop-shadow(8px 0 rgba(255,79,46,.08));
+}
+
+.experience-overlay[data-era='2040'] .chapter-card,
+.experience-overlay[data-era='2040'] .year-selector,
+.experience-overlay[data-era='2040'] .experience-toolbar nav {
+  border-color: color-mix(in srgb, var(--era-accent) 48%, #2b170b);
+  background-image: linear-gradient(108deg, rgba(255,158,47,.04), transparent 43% 57%, rgba(255,79,46,.04));
+  box-shadow: inset 0 0 32px rgba(255,79,46,.035), 0 0 0 1px rgba(0,0,0,.9), 0 28px 90px rgba(0,0,0,.65);
+}
+
+.experience-overlay[data-era='2040'] .chapter-card h1,
+.experience-overlay[data-era='2040'] .experience-mark,
+.experience-overlay[data-era='2040'] .year-selector { font-family: var(--font-display), ui-monospace, monospace; letter-spacing: .025em; text-transform: uppercase; }
+.experience-overlay[data-era='2040'] .chapter-card h1 span { text-shadow: -4px 0 rgba(255,79,46,.25), 4px 0 rgba(255,196,88,.18); }
+
+@media (prefers-reduced-motion: reduce) {
+  .experience-overlay .year-selector button,
+  .experience-overlay .glass-panel { transition-duration: .16s; }
+  .experience-overlay[data-era='2020'] .year-selector button.is-active { transform: none; }
+}
+
+/* Standard-page echo: the About timeline carries the same vocabulary at card scale. */
+.about-timeline .era-echo {
+  position: relative;
+  isolation: isolate;
+  overflow: hidden;
+  min-height: 10.5rem;
+  border-color: var(--era-line);
+  border-radius: var(--era-radius);
+  background: linear-gradient(145deg, color-mix(in srgb, var(--era-surface-raised) 94%, transparent), var(--era-surface));
+  color: var(--era-ink);
+  box-shadow: inset 0 1px color-mix(in srgb, var(--era-ink) 10%, transparent);
+  transition: transform .22s var(--era-ease), border-color .22s var(--era-ease), box-shadow .22s var(--era-ease);
+}
+
+.about-timeline .era-echo::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  opacity: .22;
+  pointer-events: none;
+}
+
+.about-timeline .era-echo:hover {
+  border-color: var(--era-accent);
+  box-shadow: inset 0 1px color-mix(in srgb, var(--era-ink) 16%, transparent), 0 18px 45px color-mix(in srgb, var(--era-accent) 13%, transparent);
+  color: var(--era-ink);
+  transform: translateY(-4px);
+}
+
+.about-timeline .era-echo b { color: var(--era-accent); font-size: 1.35rem; line-height: 1; }
+.about-timeline .era-echo span { color: var(--era-ink); font-weight: 750; }
+.about-timeline .era-echo small { color: var(--era-muted); }
+.about-timeline .era-echo em { align-self: end; margin-top: 1rem; color: var(--era-secondary); font-size: .55rem; font-style: normal; font-weight: 800; letter-spacing: .1em; text-transform: uppercase; }
+
+.about-timeline .era-echo[data-era='1990'] { border-width: 2px; font-family: ui-monospace, 'Courier New', monospace; box-shadow: inset 0 0 0 3px #080905; }
+.about-timeline .era-echo[data-era='1990']::before { background: repeating-linear-gradient(0deg, transparent 0 3px, rgba(135,255,155,.25) 4px 5px); }
+.about-timeline .era-echo[data-era='2000'] { font-family: Tahoma, Verdana, sans-serif; box-shadow: inset 2px 2px rgba(255,255,255,.16), inset -2px -2px rgba(0,0,0,.38); }
+.about-timeline .era-echo[data-era='2000']::before { background-image: linear-gradient(rgba(107,188,255,.24) 1px, transparent 1px), linear-gradient(90deg, rgba(107,188,255,.24) 1px, transparent 1px); background-size: 12px 12px; }
+.about-timeline .era-echo[data-era='2010'] { border-left: 4px solid var(--era-secondary); font-family: Arial, Helvetica, sans-serif; }
+.about-timeline .era-echo[data-era='2010']::before { background: repeating-linear-gradient(0deg, transparent 0 22px, rgba(185,134,47,.22) 23px); }
+.about-timeline .era-echo[data-era='2020'] { font-family: var(--font-display), sans-serif; text-transform: uppercase; box-shadow: 5px 5px 0 color-mix(in srgb, var(--era-secondary) 15%, transparent); }
+.about-timeline .era-echo[data-era='2020']::before { background: repeating-linear-gradient(112deg, transparent 0 32px, rgba(255,92,138,.28) 33px, transparent 35px 52px, rgba(94,232,255,.22) 53px 54px); }
+.about-timeline .era-echo[data-era='2030'] { font-family: Georgia, 'Times New Roman', serif; box-shadow: inset 0 1px rgba(255,244,223,.12), 0 16px 50px rgba(10,5,2,.22); }
+.about-timeline .era-echo[data-era='2030']::before { background: radial-gradient(circle at 22% 20%, rgba(214,155,80,.4), transparent 27%), repeating-linear-gradient(104deg, transparent 0 15px, rgba(255,244,223,.12) 16px); }
+.about-timeline .era-echo[data-era='2040'] { font-family: var(--font-display), ui-monospace, monospace; letter-spacing: .02em; text-transform: uppercase; }
+.about-timeline .era-echo[data-era='2040']::before { background: repeating-linear-gradient(102deg, transparent 0 18px, rgba(255,158,47,.2) 19px 20px), linear-gradient(90deg, transparent 48%, rgba(255,79,46,.22) 49%, transparent 51%); }
+
+@media (prefers-reduced-motion: reduce) {
+  .about-timeline .era-echo { transition-duration: .16s; }
+  .about-timeline .era-echo:hover { transform: none; }
+}

@@ -19,13 +19,14 @@ describe('artifact completion and text fallback parity', () => {
   it('reports unique recovery progress and provides a completion payoff', () => {
     const overlay = read('src/experience/ExperienceOverlay.tsx');
     expect(overlay).toContain('<progress max={artifacts.length} value={foundCount}>');
-    expect(overlay).toContain('Continuity restored');
+    expect(overlay).toContain('Pattern recovered');
     expect(overlay).not.toContain('/6 forms discovered');
     expect(overlay).toContain('Recover {discoveryArtifact.title}');
   });
 
   it('renders canonical content for every text-mode era', () => {
     const overlay = read('src/experience/ExperienceOverlay.tsx');
+    const futureText = read('src/experience/future/FutureTextExperience.tsx');
     for (const year of ['1990', '2000', '2010', '2020', '2030', '2040']) expect(overlay).toContain(`activeYear === '${year}'`);
     expect(timelineContent['1990'].channels.length).toBeGreaterThan(0);
     expect(timelineContent['2010'].orders.length).toBeGreaterThan(0);
@@ -39,5 +40,10 @@ describe('artifact completion and text fallback parity', () => {
     expect(timelineContent['2040'].prompts.length).toBeGreaterThan(0);
     expect(Object.keys(timelineContent['2040'].responses)).toHaveLength(timelineContent['2040'].prompts.length);
     expect(overlay).toContain('xennialLegacy.intro.lead');
+    expect(overlay).toContain('<FutureTextExperience year="2030"');
+    expect(overlay).toContain('<FutureTextExperience year="2040"');
+    expect(futureText).toContain('Morning, Together');
+    expect(futureText).toContain('Morning, After');
+    expect(futureText).toContain('May I keep this?');
   });
 });

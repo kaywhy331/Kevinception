@@ -8,6 +8,7 @@ import { eraConfigs } from '../config';
 import { useExperienceActions } from '../ExperienceContext';
 import { DeviceScreen, Dust, Hoverable } from './SceneUtils';
 import { PictureFrame, RoomShell } from './EnvironmentPrimitives';
+import { EraScreenPortal } from './EraScreenPortal';
 import { DESK_SURFACE_Y, GroundedDesk, WallDisplay } from './SceneLayout';
 
 export function Year2000Scene({ active }: { active: boolean; timeline: boolean }) {
@@ -51,6 +52,7 @@ export function Year2000Scene({ active }: { active: boolean; timeline: boolean }
           <group position={[0, 0.2, 1.08]}>
             <DeviceScreen size={[3.75, 2.55]} color={power ? '#07152b' : '#020202'} emissive={power ? '#197fb9' : '#000000'} active={active && power} radius={0.28} glass />
             {power && <mesh position={[0, 0, 0.105]}><planeGeometry args={[3.5, 2.3]} /><meshBasicMaterial color="#1d638e" transparent opacity={0.22} /></mesh>}
+            <EraScreenPortal fromYear="2000" size={[3.5, 2.3]} position={[0, 0, 0.12]} active={active} enabled={power} />
           </group>
         </Hoverable>
         <group position={[0, -1.55, 1.1]}>

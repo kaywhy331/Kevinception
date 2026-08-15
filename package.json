@@ -24,6 +24,7 @@
     "check:commerce-js": "node --input-type=module --check < public/legacy/assets/client/kevazon.js && node --check scripts/runtime-commerce-coexistence.mjs",
     "test:runtime": "node scripts/runtime-check.mjs",
     "test:runtime:chapters": "node scripts/runtime-commerce-coexistence.mjs",
+    "test:runtime:future": "node scripts/runtime-future-native.mjs",
     "doctor": "node scripts/doctor.mjs",
     "audit": "npm audit --omit=dev --audit-level=moderate",
     "verify:full": "npm run doctor && npm run audit && npm run verify"

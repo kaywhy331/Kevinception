@@ -66,7 +66,8 @@ Pair Inter (functional) with a distinctive display face for h1/h2 and era-neutra
 ✅ *Done when:* display face live on all hero/section headings; CLS unchanged; font budget ≤120KB added.
 
 **2.2 Six era design languages** [A] (L) — **the signature design move**
-Each era gets a micro design system beyond the current accent color: texture, type treatment, UI chrome, motion character. 1990 phosphor glow + scanlines; 2000 beige plastic + skeuomorphic bevels; 2010 flat social blue + card feeds; 2020 vertical neon + kinetic type; 2030 ambient minimal + agent glyphs; 2040 volumetric light + particle memory. Applied to the experience overlay (timeline panel, environment panel, transitions) and echoed subtly on standard-page era references.
+**Status 2026-08-15: ◐ Code-native six-era pass implemented; browser six-up review remains.** A typed manifest now gives every era its own texture, chrome, type treatment, motion character, palette, geometry, and easing. The active overlay, persistent chapter selector, focused/text chrome, and About timeline consume the same tokens; `docs/ERA_DESIGN_LANGUAGES.md` documents the system. Final unlabeled screenshot comparison, contrast sampling, and device review remain Phase 5 acceptance work.
+Each era gets a micro design system beyond the current accent color: texture, type treatment, UI chrome, motion character. 1990 phosphor glow + scanlines; 2000 beige plastic + skeuomorphic bevels; 2010 flat social blue + operational density; 2020 vertical neon + kinetic type; 2030 warm ambient intelligence + permissioned objects; 2040 black glass + rain + holographic refraction. Applied to the experience overlay (timeline panel, environment panel, transitions) and echoed subtly on standard-page era references.
 ✅ *Done when:* a screenshot of any era's UI is identifiable without labels in a six-up lineup; documented in `docs/ERA_DESIGN_LANGUAGES.md`.
 
 **2.3 Imagery pipeline — kill the zero-image problem** [A] (M)
@@ -94,23 +95,26 @@ Two valid paths: (a) artist-authored GLB + baked textures per era, or (b) **deli
 ✅ *Done when:* chosen direction documented; all six scenes pass a side-by-side review against 2.2's era languages; perf budget (5.1) holds.
 
 **3.2 Screens-within-screens portals** [A] (L) — **the "inception" payoff**
+**Status 2026-08-15: ✅ Implemented.** Four consecutive device screens now preview the next era (1990→2000 through 2020→2030). High quality uses one 384×240 render texture in the active scene; Standard, Lite, focused-interface, and text modes use authored static previews, while Reduced motion renders one live frame. The target remains capped at one simultaneous portal.
 Render-to-texture portals so era screens show the neighboring era's live world (currently "future work" per limitations doc). Even 2–3 portals at high quality tier lands the site's own thesis: *every screen contains another world.*
 ✅ *Done when:* ≥3 eras have live portals at high tier with graceful tier fallback; frame budget held.
 
 **3.3 Sound design** [K→A] (M)
+**Status 2026-08-14: ◐ Future-wing code pass implemented; authored asset pass remains.** Sound remains muted by default with a persisted, accessible toggle. Native 2030/2040 now have generated layered atmospheres plus presence, consent, refusal, notice, agency, conjecture, and handoff cues that start only in the active interface and clean up on exit. Original/licensed audio and complete 1990–2020 coverage remain Kevin-gated.
 Replace oscillator beeps with original/licensed era-authentic audio: ambient bed per era (CRT hum, dial-up handshake, notification-era chatter, neon room tone…), interface SFX. Opt-in, muted by default, persistent preference, visible toggle.
 ✅ *Done when:* all six eras have ambient + SFX; no autoplay; toggle accessible; assets licensed or original.
 
 **3.4 Artifact hunt surfacing** [A] (M)
-**Status 2026-08-11: ✅ Implemented.** Five unique recoveries now have persistent progress, discovery guidance, semantic keyboard/text controls, and a continuity completion payoff. The 2010 Project Blueprint has a real scene trigger.
+**Status 2026-08-11: ✅ Implemented.** Five unique recoveries now have persistent progress, discovery guidance, semantic keyboard/text controls, and a connected-pattern completion payoff. The 2010 Project Blueprint has a real scene trigger.
 The five cross-era artifacts are a brilliant buried mechanic. Add first-visit hint, progress indicator (5 slots), and a completion payoff (e.g., unlock a "director's commentary" layer or a special contact route — nothing fabricated, just delight).
 ✅ *Done when:* an unprompted first-time tester discovers ≥1 artifact; completion state exists and is reachable; progress persists across visits.
 
 **3.5 Narrative payoff at 2040** [A, K approves copy] (S)
-An authored ending beat after Continuity: the thesis lands ("the pattern compounds") and hands off to a present-day CTA. The loop back to Curiosity stays as the replay path.
+**Status 2026-08-14: ✅ Implemented in visual and text modes.** Each environmental cue carries holographic Kevin through Notice, Recall, Deliberate, Act, and Continue before the authored final question—“May I keep this?”—with explicit release and present-day Work/Contact paths.
+An authored ending beat after Consciousness asks permission instead of claiming permanence, then hands off to the living Kevin’s present-day work and contact routes.
 ✅ *Done when:* finishing chapter six delivers a designed moment, not just a loop; CTA to contact/work measurable in analytics.
 
-**3.6 Deliberately deferred** — native React ports of the V6 iframe apps (the CRT-embedded originals are part of the charm; revisit post-launch) and a live LLM endpoint for Kevin Echo (differentiator, but infra + safety scope; the deterministic version ships with a clear "simulated" disclosure it already has).
+**3.6 Deliberately deferred** — native React ports of the 1990–2020 V6 iframe apps (the CRT-embedded originals are part of the charm; revisit post-launch) and a live LLM endpoint for holographic Kevin (differentiator, but infra + safety scope). Morning, Together and Morning, After are native React; holographic Kevin remains deterministic, sourced, fail-closed, and explicitly disclosed as an authored reproduction.
 
 ---
 
@@ -119,7 +123,9 @@ An authored ending beat after Continuity: the thesis lands ("the pattern compoun
 *Why fourth: feel is judged in the first ten seconds and the last. Applies sitewide.*
 
 **4.1 Micro-interactions** [A] (M) — hover/press states beyond `translateY`, magnetic primary buttons, animated link underlines, subtle card tilt. Consistent easing vocabulary documented.
+**Status 2026-08-15: ✅ Implemented.** Standard pages now use bounded fine-pointer magnetism on primary actions, press/focus feedback, directional link underlines, responsive arrows, and opt-in 2.2° case-study-card tilt. One delegated runtime skips the immersive root, cleans up every transient property, and disables spatial motion for coarse pointers and Reduced motion. `docs/MOTION.md` is the token and behavior contract.
 **4.2 Page transitions + scroll choreography** [A] (M) — View Transitions API between standard routes; authored reveal-on-scroll; sticky chapter markers on long pages.
+**Status 2026-08-15: ✅ Implemented.** Eligible standard-route links use a pathname-settled View Transition with native, Reduced-motion, unsupported-browser, Experience-route, hash, modifier, external, and download fallbacks. Standard sections reveal progressively through IntersectionObserver with no-JS and non-spatial variants. Long case studies expose eight sticky, server-rendered chapter links with optional active-section tracking.
 **4.3 Reduced-motion parity** [A] (S) — every animation gets a *designed* reduced variant (opacity/color shifts), not just the current global kill-switch.
 **Status 2026-08-10: ✅ Implemented.** The universal `0.01ms` kill switch is gone; portal, 404, loading, buttons, panels, and timeline transitions have static or opacity/color variants. See `MOTION.md`.
 **4.4 Touch & gesture** [A] (M) — swipe between eras on mobile; touch targets ≥44px audit; optional custom cursor **only** inside the immersive mode.
@@ -137,7 +143,7 @@ Three.js only on `/experience/`; GLB via Draco + KTX2; lazy scene loading; quali
 ✅ *Done when:* Lighthouse ≥90 across Performance/A11y/Best-Practices/SEO on all standard routes; experience holds frame floors on a defined device matrix; budgets enforced in CI (`check:build` extended).
 
 **5.2 Accessibility audit — both modes** [A] (M)
-**Status 2026-08-11: ◐ Major code gaps implemented; manual audit remains.** Mobile utilities and Step Back remain operable, the experience has a real skip target, WebGL hotspots expose semantic buttons, and text mode covers canonical content/artifact recovery for all eras. Axe, contrast, and manual screen-reader evidence remain pre-launch work.
+**Status 2026-08-14: ◐ Functional parity implemented; manual audit remains.** Mobile utilities and Step Back remain operable, the experience has a real skip target, WebGL hotspots expose semantic buttons, and text mode now runs the complete 2030 mission/decision/receipt plus the 2040 sourced interpreter/memories/synthesis/finale from the same state. Axe, contrast, and manual screen-reader evidence remain pre-launch work.
 Full screen-reader pass of standard pages *and* the experience's text-mode parity; focus order; contrast sweep; WCAG 2.2 AA. Document the SR script.
 ✅ *Done when:* axe/pa11y clean; manual SR walkthrough documented; text-mode reaches every fact the 3D mode presents.
 
@@ -167,9 +173,9 @@ Phase 2 (art direction)  ──┼─→ Phase 3 (immersive execution) ─→ Ph
         └── 2.3 imagery depends on 3.1 scene fidelity for final captures (interim captures OK)
 ```
 
-- **Agent-ready tranche completed 2026-08-10:** 1.4, 1.6, 2.1, 2.4, 2.5, and 4.3; 5.4 code is complete and awaits production-account activation.
+- **Agent-ready tranches completed through 2026-08-15:** 1.4, 1.6, 2.1, the code-native portion of 2.2, 2.4, 2.5, 3.2, 3.4, 3.5, 4.1, and 4.3; the future-wing portion of 3.3 and functional text parity are implemented; 5.4 code awaits production-account activation.
 - **Blocked on Kevin:** 1.1, 1.2, 1.3, 1.5 (facts/photo/quotes), 3.1 (direction decision), 3.3 (audio budget/licensing), 6.4 (submissions).
-- **Biggest single lever for the Design axis:** 2.2 + 3.1 together — the era design languages made real in 3D.
+- **Biggest remaining lever for the Design axis:** 3.1 — carry the implemented era languages through the final scene-fidelity direction and browser six-up review.
 - **Biggest single lever for the Creativity axis:** 3.2 portals — the site's own tagline, made literal.
 
 ## Definition of award-ready

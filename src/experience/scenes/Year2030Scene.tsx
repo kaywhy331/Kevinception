@@ -1,129 +1,153 @@
 'use client';
 
-import { useRef, useState } from 'react';
+import { useRef } from 'react';
 import { RoundedBox } from '@react-three/drei';
 import { useFrame } from '@react-three/fiber';
 import * as THREE from 'three';
 import { eraConfigs } from '../config';
 import { useExperienceActions } from '../ExperienceContext';
+import { useExperienceStore } from '../store';
+import {
+  coexistenceMoments,
+  type CoexistenceMomentId
+} from '../future/futureWorld';
 import { Dust, Hoverable } from './SceneUtils';
-import { ArchiveColumn, CylinderBetween, GlassPanel, LightBar, RoomShell } from './EnvironmentPrimitives';
-import { FloorPedestal, WallDisplay } from './SceneLayout';
+import { GlassPanel, LightBar, Plant, RoomShell } from './EnvironmentPrimitives';
 
-const collaborators = [
-  { id: 'human', label: 'Kevin · Human Lead', position: [-3.3, 0, -0.9] as [number, number, number], color: '#fff1ce', human: true },
-  { id: 'researcher', label: 'AI Researcher', position: [-2.55, 0, 1.7] as [number, number, number], color: '#8da8ff' },
-  { id: 'architect', label: 'AI Architect', position: [0, 0, -2.9] as [number, number, number], color: '#79ffd1' },
-  { id: 'builder', label: 'AI Builder', position: [2.55, 0, 1.7] as [number, number, number], color: '#ffd66b' },
-  { id: 'governor', label: 'Human Governor', position: [3.3, 0, -0.9] as [number, number, number], color: '#ff7f9c', human: true }
+const momentObjects: Array<{
+  id: CoexistenceMomentId;
+  position: [number, number, number];
+  color: string;
+}> = [
+  { id: 'morning', position: [-1.05, 1.82, 0.38], color: '#f2d29e' },
+  { id: 'making', position: [0.62, 1.69, 0.2], color: '#b66b45' },
+  { id: 'work', position: [3.18, 2.5, -2.95], color: '#e6b85c' },
+  { id: 'care', position: [-3.85, 1.85, -2.8], color: '#d8764e' },
+  { id: 'gathering', position: [2.1, 1.76, 0.66], color: '#8aa08a' }
 ];
 
-function AgentStation({ agent, selected, active, onSelect }: {
-  agent: typeof collaborators[number];
-  selected: boolean;
+function ConsentMark({ decision, color }: { decision: 'unasked' | 'kept' | 'refused'; color: string }) {
+  if (decision === 'unasked') return null;
+  return (
+    <group position={[0, .42, 0]}>
+      <mesh rotation={[Math.PI / 2, 0, 0]}>
+        <torusGeometry args={[.21, .025, 8, decision === 'kept' ? 32 : 10]} />
+        <meshStandardMaterial color={decision === 'kept' ? '#fff1bf' : '#b65f44'} emissive={color} emissiveIntensity={decision === 'kept' ? 1.3 : .42} transparent opacity={decision === 'kept' ? .9 : .5} />
+      </mesh>
+    </group>
+  );
+}
+
+function MomentObject({ id, active, decision, onSelect }: {
+  id: CoexistenceMomentId;
   active: boolean;
+  decision: 'unasked' | 'kept' | 'refused';
   onSelect: () => void;
 }) {
-  const avatar = useRef<THREE.Mesh>(null);
-  useFrame(({ clock }) => {
-    if (!active || !avatar.current) return;
-    avatar.current.rotation.y = clock.elapsedTime * (selected ? 0.4 : 0.1);
-    avatar.current.position.y = 1.35 + Math.sin(clock.elapsedTime * 1.1 + agent.position[0]) * 0.035;
-  });
+  const object = momentObjects.find((item) => item.id === id)!;
+  const material = <meshStandardMaterial color={object.color} emissive={object.color} emissiveIntensity={active ? .82 : .12} roughness={.42} metalness={.08} />;
   return (
-    <Hoverable label={`${agent.label} collaboration station`} onClick={onSelect}>
-      <group position={agent.position} scale={selected ? 1.04 : 1}>
-        <FloorPedestal position={[0, 0, 0]} size={[1.05, 0.55, 0.9]} color="#d3dcdd" accent={agent.color} />
-        <RoundedBox position={[0, 0.68, 0.06]} args={[1.08, 0.18, 0.82]} radius={0.08} smoothness={3} castShadow receiveShadow><meshStandardMaterial color="#c8d2d3" roughness={0.32} metalness={0.18} /></RoundedBox>
-        <GlassPanel position={[0, 0.98, 0.42]} size={[0.86, 0.42, 0.03]} color={agent.color} opacity={active ? 0.14 : 0.045} frameColor="#819093" />
-        <mesh ref={avatar} position={[0, 1.35, -0.02]} castShadow>{agent.human ? <capsuleGeometry args={[0.22, 0.36, 5, 12]} /> : <octahedronGeometry args={[0.3, 0]} />}<meshStandardMaterial color={agent.color} emissive={agent.color} emissiveIntensity={active ? (agent.human ? 0.38 : 0.75) : 0.08} metalness={agent.human ? 0.12 : 0.34} roughness={agent.human ? 0.48 : 0.22} /></mesh>
-        <mesh position={[0, 1.35, -0.02]} rotation={[Math.PI / 2, 0, 0]}><torusGeometry args={[0.44, 0.02, 8, 28]} /><meshStandardMaterial color={agent.color} emissive={agent.color} emissiveIntensity={selected && active ? 1.0 : 0.14} /></mesh>
+    <Hoverable label={`${coexistenceMoments[id].time} · ${coexistenceMoments[id].title}`} onClick={onSelect}>
+      <group position={object.position} scale={active ? 1.14 : 1}>
+        {id === 'morning' && <><mesh castShadow><cylinderGeometry args={[.2, .18, .34, 24]} />{material}</mesh><mesh position={[.2, .03, 0]} rotation={[Math.PI / 2, 0, 0]}><torusGeometry args={[.11, .035, 8, 18]} />{material}</mesh></>}
+        {id === 'making' && <RoundedBox rotation={[-Math.PI / 2, 0, -.12]} args={[1.15, .72, .045]} radius={.03} smoothness={2} castShadow>{material}</RoundedBox>}
+        {id === 'work' && <mesh><planeGeometry args={[1.25, 1.5]} /><meshPhysicalMaterial color="#e8c579" transparent opacity={active ? .28 : .08} roughness={.08} clearcoat={1} /></mesh>}
+        {id === 'care' && <RoundedBox args={[.16, 2.2, .18]} radius={.03} smoothness={2}>{material}</RoundedBox>}
+        {id === 'gathering' && <><mesh position={[-.16, 0, 0]}><cylinderGeometry args={[.14, .1, .34, 18]} />{material}</mesh><mesh position={[.16, 0, 0]}><cylinderGeometry args={[.14, .1, .34, 18]} />{material}</mesh></>}
+        <ConsentMark decision={decision} color={object.color} />
       </group>
     </Hoverable>
+  );
+}
+
+function ApartmentFurniture({ active }: { active: boolean }) {
+  return (
+    <>
+      <group position={[0, 1.05, .45]}>
+        <RoundedBox position={[0, .52, 0]} args={[4.45, .22, 2.05]} radius={.09} smoothness={3} castShadow receiveShadow>
+          <meshStandardMaterial color="#8b6040" roughness={.55} />
+        </RoundedBox>
+        {[-1.78, 1.78].flatMap((x) => [-.7, .7].map((z) => <mesh key={`${x}-${z}`} position={[x, -.22, z]} castShadow><cylinderGeometry args={[.09, .12, 1.45, 14]} /><meshStandardMaterial color="#60442f" roughness={.62} /></mesh>))}
+      </group>
+      <group position={[-3.55, 3.08, -3.0]}>
+        {[0, .86, 1.72].map((y) => <RoundedBox key={y} position={[0, y, 0]} args={[2.25, .1, .42]} radius={.025} smoothness={2}><meshStandardMaterial color="#72513b" roughness={.58} /></RoundedBox>)}
+        {[-.72, -.22, .34, .72].map((x, index) => <RoundedBox key={x} position={[x, .25 + (index % 3) * .84, .04]} args={[.24, .58, .31]} radius={.025} smoothness={2}><meshStandardMaterial color={['#9b4f38', '#c38b50', '#536f60', '#d2b37d'][index]} roughness={.65} /></RoundedBox>)}
+      </group>
+      <Plant position={[4.05, .04, 2.25]} scale={1.18} potColor="#a46643" leafColor="#60785f" />
+      <LightBar position={[-2.25, 5.55, -2.5]} length={3.3} color="#ffe3aa" intensity={active ? .78 : .08} />
+      <LightBar position={[2.35, 5.55, -2.5]} length={3.1} color="#f4d7a1" intensity={active ? .62 : .07} />
+    </>
   );
 }
 
 export function Year2030Scene({ active, detail = true }: { active: boolean; timeline: boolean; detail?: boolean }) {
   const config = eraConfigs['2030'];
   const { enterYear, discover } = useExperienceActions();
-  const core = useRef<THREE.Mesh>(null);
-  const packets = useRef<THREE.Group>(null);
-  const [selected, setSelected] = useState('human');
-  const corePosition: [number, number, number] = [0, 1.55, 0];
-  useFrame(({ clock }, delta) => {
+  const coexistence = useExperienceStore((state) => state.futureJourney.coexistence);
+  const selectMoment = useExperienceStore((state) => state.selectCoexistenceMoment);
+  const wren = useRef<THREE.Group>(null);
+  const hand = useRef<THREE.Group>(null);
+
+  useFrame(({ clock }) => {
     if (!active || !detail) return;
-    if (core.current) {
-      core.current.rotation.y += delta * 0.3;
-      core.current.rotation.x = Math.sin(clock.elapsedTime * 0.4) * 0.06;
+    if (wren.current) {
+      const breath = 1 + Math.sin(clock.elapsedTime * 1.15) * .018;
+      wren.current.scale.setScalar(breath);
+      wren.current.position.y = 3.1 + Math.sin(clock.elapsedTime * .72) * .025;
     }
-    if (packets.current) {
-      packets.current.children.forEach((child, index) => {
-        const t = (clock.elapsedTime * (0.12 + index * 0.01) + index * 0.16) % 1;
-        const node = collaborators[index % collaborators.length];
-        child.position.set(corePosition[0] + (node.position[0] - corePosition[0]) * t, corePosition[1] + (1.32 - corePosition[1]) * t, corePosition[2] + (node.position[2] - corePosition[2]) * t);
-      });
-    }
+    if (hand.current) hand.current.position.x = -2.15 + Math.sin(clock.elapsedTime * .72) * .28;
   });
+
+  const chooseMoment = (id: CoexistenceMomentId) => {
+    selectMoment(id);
+    if (id === 'care') discover('human-gate', '2030');
+  };
 
   if (!detail) {
     return (
       <group position={[config.stationX, 0, 0]}>
-        <RoomShell floorColor="#cbd6d7" wallColor="#e5eceb" sideColor="#ccd8d9" ceilingColor="#f4f7f5" trimColor="#75888c" accent={config.accent} openLeft openRight active={false} floorRoughness={0.38} />
-        <LightBar position={[-2.7, 5.55, -2.4]} length={3.1} color="#c7fbff" intensity={0.06} />
-        <LightBar position={[2.7, 5.55, -2.4]} length={3.1} color="#e7fff5" intensity={0.06} />
-        <WallDisplay position={[3.35, 3.45, -3.26]} size={[2.35, 1.65]} frameColor="#718489" screenColor="#dffbff" accent={config.accent} active={false} />
-        <mesh position={[0, 0.22, 0]} receiveShadow><cylinderGeometry args={[1.8, 2.05, 0.4, 40]} /><meshStandardMaterial color="#c5d2d2" metalness={0.2} roughness={0.4} /></mesh>
-        <mesh position={[0, 1.35, 0]}><icosahedronGeometry args={[0.58, 1]} /><meshStandardMaterial color="#43676d" emissive="#64e8ff" emissiveIntensity={0.16} wireframe /></mesh>
+        <RoomShell floorColor="#a48668" wallColor="#d7d2bd" sideColor="#c6b89c" ceilingColor="#eee5d2" trimColor="#765741" accent="#d69b50" openLeft openRight active={false} floorRoughness={.7} />
+        <ApartmentFurniture active={false} />
+        <mesh position={[0, 1.58, .45]} castShadow><boxGeometry args={[4.2, .2, 1.8]} /><meshStandardMaterial color="#8b6040" roughness={.6} /></mesh>
+        <mesh position={[.95, 2.65, -.2]}><sphereGeometry args={[.42, 24, 18]} /><meshStandardMaterial color="#ffd78a" emissive="#f3ad45" emissiveIntensity={.18} transparent opacity={.52} /></mesh>
       </group>
     );
   }
 
   return (
     <group position={[config.stationX, 0, 0]}>
-      <RoomShell floorColor="#cbd6d7" wallColor="#e5eceb" sideColor="#ccd8d9" ceilingColor="#f4f7f5" trimColor="#75888c" accent={config.accent} openLeft openRight active={active} floorRoughness={0.35} />
-      <Dust center={[0, 3.0, 0]} spread={[9.4, 5.5, 7]} color="#8cecff" active={active} count={active ? 26 : 8} />
-      <LightBar position={[-2.7, 5.55, -2.4]} length={3.1} color="#c7fbff" intensity={active ? 0.78 : 0.07} />
-      <LightBar position={[2.7, 5.55, -2.4]} length={3.1} color="#e7fff5" intensity={active ? 0.74 : 0.07} />
+      <RoomShell floorColor="#a48668" wallColor="#d7d2bd" sideColor="#c6b89c" ceilingColor="#eee5d2" trimColor="#765741" accent="#d69b50" openLeft openRight active={active} floorRoughness={.68} />
+      <Dust center={[0, 3, 0]} spread={[9.1, 5.3, 6.8]} color="#f2cf8c" active={active} count={active ? 22 : 7} />
+      <ApartmentFurniture active={active} />
 
-      <group position={[-3.72, 1.75, -2.78]}>
-        {[-0.66, 0, 0.66].map((x, index) => <ArchiveColumn key={x} position={[x, 0, 0]} color={['#8cecff', '#a7b9ff', '#83ffd0'][index]} active={active} height={3.2} radius={0.24} />)}
-        <RoundedBox position={[0, -1.61, 0]} args={[2.2, 0.22, 0.68]} radius={0.07} smoothness={2} castShadow><meshStandardMaterial color="#7c8b8e" metalness={0.3} roughness={0.42} /></RoundedBox>
+      <GlassPanel position={[2.85, 3.32, -3.34]} size={[3.05, 3.55, .06]} color="#e8c17e" opacity={active ? .18 : .05} frameColor="#725944" />
+      <group position={[2.85, 2.0, -3.39]}>
+        {[-1.05, -.58, -.08, .45, .94].map((x, index) => <mesh key={x} position={[x, .35 + (index % 2) * .28, 0]}><boxGeometry args={[.3, 1.2 + index * .18, .04]} /><meshStandardMaterial color="#80735e" emissive="#e2a653" emissiveIntensity={active ? .08 + index * .02 : .01} /></mesh>)}
       </group>
-      <WallDisplay position={[3.35, 3.45, -3.26]} size={[2.35, 1.65]} frameColor="#718489" screenColor="#dffbff" accent={config.accent} active={active} />
 
-      <Hoverable label="Enter Kevin Nexus" onClick={() => enterYear('2030')}>
-        <group>
-          <mesh position={[0, 0.2, 0]} receiveShadow><cylinderGeometry args={[2.0, 2.25, 0.4, 56]} /><meshStandardMaterial color="#c5d2d2" metalness={0.25} roughness={0.36} /></mesh>
-          <mesh position={[0, 0.46, 0]} receiveShadow><cylinderGeometry args={[1.72, 1.9, 0.13, 56]} /><meshPhysicalMaterial color="#bdefff" transparent opacity={0.22} roughness={0.08} clearcoat={1} /></mesh>
-          <mesh ref={core} position={corePosition} castShadow><icosahedronGeometry args={[0.72, 2]} /><meshStandardMaterial color="#2c5961" emissive="#64e8ff" emissiveIntensity={active ? 1.05 : 0.14} metalness={0.5} roughness={0.2} wireframe /></mesh>
-          <mesh position={corePosition}><sphereGeometry args={[0.38, 28, 28]} /><meshStandardMaterial color="#efffff" emissive="#64e8ff" emissiveIntensity={active ? 1.55 : 0.2} transparent opacity={0.76} /></mesh>
-          {active && <pointLight position={corePosition} color="#64e8ff" intensity={5.0} distance={7} decay={2} />}
-        </group>
-      </Hoverable>
+      <group ref={hand} position={[-2.15, 1.84, .45]} rotation={[0, 0, -.08]}>
+        <mesh castShadow><capsuleGeometry args={[.17, 1.1, 6, 14]} /><meshStandardMaterial color="#bb8060" roughness={.54} /></mesh>
+        <mesh position={[-.72, 0, 0]} rotation={[0, 0, Math.PI / 2]}><capsuleGeometry args={[.24, .7, 6, 14]} /><meshStandardMaterial color="#394b42" roughness={.72} /></mesh>
+      </group>
 
-      {collaborators.map((agent) => (
-        <group key={agent.id}>
-          <CylinderBetween from={corePosition} to={[agent.position[0], 1.3, agent.position[2]]} radius={0.012} color={agent.color} emissiveIntensity={active ? (selected === agent.id ? 0.65 : 0.28) : 0.05} transparent opacity={active ? (selected === agent.id ? 0.55 : 0.24) : 0.1} />
-          <AgentStation agent={agent} selected={selected === agent.id} active={active} onSelect={() => { setSelected(agent.id); if (agent.id === 'governor') discover('human-gate', '2030'); }} />
-        </group>
-      ))}
-      <group ref={packets} visible={active}>{collaborators.map((agent) => <mesh key={agent.id} position={corePosition}><boxGeometry args={[0.075, 0.075, 0.075]} /><meshStandardMaterial color={agent.color} emissive={agent.color} emissiveIntensity={1.0} /></mesh>)}</group>
+      {momentObjects.map(({ id }) => <MomentObject key={id} id={id} active={coexistence.activeMoment === id} decision={coexistence.consent[id]} onSelect={() => chooseMoment(id)} />)}
 
-      <Hoverable label="Human approval node" onClick={() => { setSelected('governor'); discover('human-gate', '2030'); }}>
-        <group position={[0, 0, 2.85]}>
-          <FloorPedestal position={[0, 0, 0]} size={[1.05, 0.55, 0.9]} color="#d4dddd" accent="#ffffff" />
-          <RoundedBox position={[0, 0.68, 0.06]} args={[1.08, 0.18, 0.82]} radius={0.08} smoothness={3} castShadow receiveShadow><meshStandardMaterial color="#c8d2d3" roughness={0.32} metalness={0.18} /></RoundedBox>
-          <GlassPanel position={[0, 0.98, 0.42]} size={[0.86, 0.42, 0.03]} color="#efffff" opacity={active ? 0.14 : 0.045} frameColor="#819093" />
-          {collaborators.map((agent, index) => (
-            <mesh key={agent.id} position={[-0.36 + index * 0.18, 0.79, 0.48]}>
-              <sphereGeometry args={[0.045, 12, 12]} />
-              <meshStandardMaterial color={agent.color} emissive={agent.color} emissiveIntensity={active ? 0.95 : 0.12} />
-            </mesh>
-          ))}
-        </group>
-      </Hoverable>
+       <Hoverable label="Enter Morning, Together with Wren" onClick={() => enterYear('2030')}>
+         <group ref={wren} position={[.55, 3.1, -3.15]} userData={{ label: `Wren in the room · ${coexistenceMoments[coexistence.activeMoment].title}` }}>
+           <mesh position={[0, 0, .02]}>
+             <planeGeometry args={[5.4, 2.05]} />
+             <meshBasicMaterial color="#ffd991" transparent opacity={coexistence.activeMoment === 'care' ? .025 : active ? .14 : .035} depthWrite={false} blending={THREE.AdditiveBlending} />
+           </mesh>
+           <mesh position={[-.2, -1.22, 2.55]} rotation={[-Math.PI / 2, 0, -.09]} scale={[coexistence.activeMoment === 'work' ? .46 : 1, 1, 1]}>
+             <planeGeometry args={[4.9, .035]} />
+             <meshBasicMaterial color={coexistence.activeMoment === 'work' ? '#d76b42' : '#ffe1a0'} transparent opacity={coexistence.activeMoment === 'care' ? .04 : active ? .8 : .12} depthWrite={false} blending={THREE.AdditiveBlending} />
+           </mesh>
+           {coexistence.activeMoment === 'making' && <mesh position={[-.1, -1.06, 2.54]} rotation={[-Math.PI / 2, 0, -.04]}><planeGeometry args={[4.2, .022]} /><meshBasicMaterial color="#b86542" transparent opacity={active ? .72 : .1} depthWrite={false} blending={THREE.AdditiveBlending} /></mesh>}
+           {active && coexistence.activeMoment !== 'care' && <pointLight position={[.8, -.35, 1.8]} color="#ffc15c" intensity={2.7} distance={8.5} decay={2} />}
+         </group>
+       </Hoverable>
 
-      <spotLight position={[0, 5.7, 2.6]} target-position={[0, 1.45, 0]} color="#d8ffff" intensity={active ? 3.5 : 0.3} distance={15} angle={0.65} penumbra={0.68} castShadow={active} />
+      <spotLight position={[1.8, 5.75, 2.7]} target-position={[0, 1.45, .35]} color="#ffe4b0" intensity={active ? 3.4 : .28} distance={15} angle={.72} penumbra={.74} castShadow={active} />
     </group>
   );
 }

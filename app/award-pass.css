@@ -419,6 +419,14 @@ h2 { letter-spacing: -.055em; }
     animation: none;
     opacity: .2;
   }
+
+  .future-handoff-packet,
+  .future-handoff-rail > em,
+  .future-handoff-node::after {
+    animation: none;
+  }
+
+  .future-handoff-packet { left: 50%; opacity: 1; filter: none; }
 }
 
 @media (max-width: 900px) {

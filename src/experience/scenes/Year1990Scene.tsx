@@ -8,6 +8,7 @@ import { eraConfigs } from '../config';
 import { useExperienceActions } from '../ExperienceContext';
 import { DeviceScreen, Dust, Hoverable } from './SceneUtils';
 import { Cable, PictureFrame, RoomShell, Rug } from './EnvironmentPrimitives';
+import { EraScreenPortal } from './EraScreenPortal';
 import { MEDIA_SURFACE_Y, MediaConsole } from './SceneLayout';
 
 const channels = [2, 3, 4, 5, 7, 9, 13];
@@ -66,6 +67,7 @@ export function Year1990Scene({ active }: { active: boolean; timeline: boolean }
           <group position={[-0.42, 0.12, 1.04]}>
             <DeviceScreen size={[3.88, 2.5]} color={screenColor} emissive={tvOn ? config.accent : '#000000'} active={active && tvOn} radius={0.27} />
             {tvOn && <mesh position={[0, 0, 0.105]}><planeGeometry args={[3.62, 2.26]} /><meshBasicMaterial color={screenColor} transparent opacity={channel === 13 ? 0.46 : 0.25} /></mesh>}
+            <EraScreenPortal fromYear="1990" size={[3.62, 2.26]} position={[0, 0, 0.12]} active={active} enabled={tvOn && !consoleOn} />
             {tvOn && <group position={[-1.5, 0.96, 0.14]}><mesh><boxGeometry args={[0.4, 0.23, 0.04]} /><meshStandardMaterial color="#0d1114" transparent opacity={0.72} /></mesh><mesh position={[0, 0, 0.025]}><planeGeometry args={[0.31, 0.14]} /><meshBasicMaterial color="#e9f0da" /></mesh></group>}
           </group>
         </Hoverable>

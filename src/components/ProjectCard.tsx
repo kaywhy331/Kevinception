@@ -5,7 +5,7 @@ type Project = (typeof projects)[number];
 
 export function ProjectCard({ project }: { project: Project }) {
   return (
-    <article className="project-card">
+    <article className="project-card" data-interactive-card>
       <p className="eyebrow">{project.eyebrow}</p>
       <h3><Link href={`/work/${project.slug}/`} data-analytics-event="case_study_open" data-analytics-project={project.slug}>{project.title}</Link></h3>
       <p>{project.summary}</p>

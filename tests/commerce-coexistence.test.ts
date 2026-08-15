@@ -3,10 +3,11 @@ import path from 'node:path';
 import { describe, expect, it } from 'vitest';
 import { chapterNarrative } from '@/content/narrative';
 import { eras, timelineContent } from '@/content/data';
+import { coexistenceMoments } from '@/experience/future/futureWorld';
 
 const read = (relative: string) => fs.readFileSync(path.join(process.cwd(), relative), 'utf8');
 
-describe('Commerce and Coexistence chapters', () => {
+describe('Commerce and Co-Existence chapters', () => {
   it('defines the 2010 Commerce operating-system contract and verified scale', () => {
     expect(chapterNarrative['2010'].chapterName).toBe('Commerce');
     expect(chapterNarrative['2010'].experienceName).toBe('StealStreet Commerce OS');
@@ -118,29 +119,21 @@ describe('Commerce and Coexistence chapters', () => {
     expect(html).not.toMatch(/https?:\/\/(?!kevinception\.com)/);
   });
 
-  it('defines 2030 as Coexistence with explicit human authority', () => {
-    expect(chapterNarrative['2030'].chapterName).toBe('Coexistence');
-    expect(chapterNarrative['2030'].chapterThesis).toContain('humans provide intent');
-    expect(eras.find((era) => era.id === '2030')?.label).toBe('Coexistence');
-    expect(timelineContent['2030'].collaborators.map((collaborator) => collaborator.name)).toEqual([
-      'Kevin · Human Lead',
-      'AI Researcher',
-      'AI Builder',
-      'Human Governor',
-      'AI Archivist'
-    ]);
-    const html = read('public/legacy/experience/2030/index.html');
+  it('defines 2030 as daily Co-Existence with Wren and permissioned memory', () => {
+    expect(chapterNarrative['2030'].chapterName).toBe('Co-Existence');
+    expect(chapterNarrative['2030'].experienceName).toBe('Morning, Together');
+    expect(chapterNarrative['2030'].chapterThesis).toContain('Wren anticipates, disagrees, helps, waits');
+    expect(eras.find((era) => era.id === '2030')).toMatchObject({ label: 'Co-Existence', subtitle: 'Morning, Together', accent: '#d69b50' });
+    expect(Object.keys(coexistenceMoments)).toHaveLength(5);
     const overlay = read('src/experience/ExperienceOverlay.tsx');
     const scene = read('src/experience/scenes/Year2030Scene.tsx');
-    expect(html).toContain('Kevin · Human Lead');
-    expect(html).toContain('Human Governor');
-    expect(html).toContain('AI initiative boundary');
-    expect(html).toContain('Humans retain accountability');
-    expect(html).not.toContain('Autonomous AI');
-    expect(overlay).toContain("'collaborators' in yearData");
-    expect(overlay).toContain('Human and AI collaborators');
-    expect(scene).toContain('Kevin · Human Lead');
-    expect(scene).toContain('Human Governor');
+    const futureText = read('src/experience/future/FutureTextExperience.tsx');
+    expect(overlay).toContain('<FutureTextExperience year="2030"');
+    expect(futureText).toContain('Wren anticipates, disagrees, helps, waits');
+    expect(futureText).toContain('carried on TokenPak · TIP authority · PAK context');
+    expect(scene).toContain('Wren in the room');
+    expect(scene).toContain('coexistence.consent[id]');
+    expect(scene).not.toContain('Human Governor');
   });
 
   it('keeps mutable legacy assets revalidated across deployment targets', () => {
@@ -154,10 +147,11 @@ describe('Commerce and Coexistence chapters', () => {
       const html = read(`public/legacy/experience/${year}/index.html`);
       const payload = JSON.parse(html.match(/id="era-world-data">([\s\S]*?)<\/script>/)?.[1] || '{}');
       expect(payload.eras.find((era: { id: string }) => era.id === '2010')).toMatchObject({ label: 'Commerce', subtitle: 'StealStreet Commerce OS' });
-      expect(payload.eras.find((era: { id: string }) => era.id === '2030')).toMatchObject({ label: 'Coexistence', subtitle: 'Kevin Nexus' });
+      expect(payload.eras.find((era: { id: string }) => era.id === '2030')).toMatchObject({ label: 'Co-Existence', subtitle: 'Morning, Together' });
+      expect(payload.eras.find((era: { id: string }) => era.id === '2040')).toMatchObject({ label: 'Consciousness', subtitle: 'Morning, After' });
       expect(payload.timelineContent['2010'].operations.catalogScale).toBe('1.5M catalog records');
       expect(payload.timelineContent['2010'].operations.channelScale).toBe('20+ commerce channels');
-      expect(payload.timelineContent['2040'].responses.memory).toContain('Commerce, Creation, Coexistence');
+      expect(payload.timelineContent['2040'].responses.memory).toContain('Commerce, Creation, Co-Existence, or Consciousness');
       expect(payload.temporalArtifacts['2010']).toMatchObject({ id: 'project-blueprint', name: 'Project Blueprint' });
     }
   });

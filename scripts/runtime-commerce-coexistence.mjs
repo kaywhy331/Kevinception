@@ -29,7 +29,7 @@ const browser = await puppeteer.launch({
   headless: true,
   args: ['--no-sandbox', '--disable-dev-shm-usage', '--enable-unsafe-swiftshader']
 });
-const page = await browser.newPage();
+let page = await browser.newPage();
 await page.setViewport({ width: 1440, height: 1000, deviceScaleFactor: 1 });
 
 const report = {
@@ -47,14 +47,27 @@ function assert(name, condition, detail = '') {
   if (!condition) throw new Error(`${name}${detail ? `: ${detail}` : ''}`);
 }
 
-page.on('console', (message) => {
-  if (message.type() === 'error') report.consoleErrors.push(message.text());
-});
-page.on('pageerror', (error) => report.pageErrors.push(String(error)));
-page.on('requestfailed', (request) => {
-  const reason = request.failure()?.errorText ?? 'unknown';
-  if (reason !== 'net::ERR_ABORTED') report.requestFailures.push(`${request.url()} :: ${reason}`);
-});
+async function clickPageButton(label) {
+  const clicked = await page.$$eval('button', (buttons, expected) => {
+    const button = buttons.find((candidate) => candidate.textContent?.trim().includes(expected) && !candidate.disabled);
+    button?.click();
+    return Boolean(button);
+  }, label);
+  if (!clicked) throw new Error(`Could not find enabled page button containing “${label}”.`);
+}
+
+function observePage(target) {
+  target.on('console', (message) => {
+    if (message.type() === 'error') report.consoleErrors.push(message.text());
+  });
+  target.on('pageerror', (error) => report.pageErrors.push(String(error)));
+  target.on('requestfailed', (request) => {
+    const reason = request.failure()?.errorText ?? 'unknown';
+    if (reason !== 'net::ERR_ABORTED') report.requestFailures.push(`${request.url()} :: ${reason}`);
+  });
+}
+
+observePage(page);
 
 async function commerceFrame() {
   await page.waitForSelector('.interface-mode.is-visible', { timeout: 30000 });
@@ -341,19 +354,36 @@ try {
   });
   assert('The Commerce shell contains mobile overflow inside its intended controls', overflow.outer <= 1 && commerceOverflow.body <= 1 && commerceOverflow.sidebarHeight < 50 && commerceOverflow.sidebarScrolls && commerceOverflow.homeContained && !commerceOverflow.duplicateChrome, JSON.stringify({ ...overflow, ...commerceOverflow }));
 
+  // Start the WebGL future wing on a fresh target so the exhaustive Commerce
+  // iframe run cannot exhaust the renderer before holographic Kevin mounts.
+  await page.close();
+  page = await browser.newPage();
+  observePage(page);
   await page.setViewport({ width: 1440, height: 1000, deviceScaleFactor: 1 });
   await page.goto(`${base}/experience/?year=2030&view=interface`, { waitUntil: 'domcontentloaded', timeout: 45000 });
-  const nexus = await page.waitForFrame((frame) => frame.url().includes('/legacy/experience/2030/'), { timeout: 30000 });
-  await nexus.waitForSelector('[data-era-enter]', { timeout: 30000 });
-  await nexus.$eval('[data-era-enter]', (button) => button.click());
-  await nexus.waitForSelector('[data-era-stage]:not([hidden])');
-  await nexus.click('[data-nexus-preset="product-plan"]');
-  await nexus.click('[data-nexus-form] button[type="submit"]');
-  await nexus.waitForFunction(() => document.querySelector('[data-nexus-gate-state]')?.textContent === 'REVIEW REQUIRED', { timeout: 10000 });
-  const roster = await nexus.$$eval('[data-nexus-agent]', (nodes) => nodes.map((node) => node.querySelector('b')?.textContent?.trim()));
-  assert('The Coexistence roster retains explicit human and AI collaborators', roster.includes('Kevin · Human Lead') && roster.includes('Human Governor') && roster.includes('AI Researcher'), roster.join(' | '));
-  await nexus.click('[data-nexus-approve]');
-  assert('A consequential Nexus action still records human approval', await nexus.$eval('[data-nexus-gate-state]', (node) => node.textContent === 'APPROVED'));
+  await page.waitForSelector('.interface-mode.is-visible .future-native--2030', { timeout: 30000 });
+  assert('The future interfaces are native and mount no 2030/2040 iframe', await page.$$eval('iframe', (frames) => frames.every((frame) => !/\/legacy\/experience\/(2030|2040)\//.test(frame.src))));
+  assert('Native Co-Existence exposes five ordinary moments with Wren', await page.$$eval('.coexistence-dayline button', (buttons) => buttons.length === 5) && await page.$eval('.future-native--2030', (node) => node.textContent.includes('Morning, Together') && node.textContent.includes('Wren')));
+  await clickPageButton('Keep it with me');
+  await clickPageButton('Studio table');
+  await clickPageButton('Let it end here');
+  await clickPageButton('Window desk');
+  await clickPageButton('Let it end here');
+  await clickPageButton('How was this carried?');
+  assert('TokenPak, TIP, and PAK remain optional provenance rather than the 2030 hero', await page.$eval('.coexistence-provenance aside', (node) => node.textContent.includes('TokenPak') && node.textContent.includes('TIP authority') && node.textContent.includes('PAK context')));
+  await clickPageButton('Enter Morning, After');
+  await page.waitForSelector('.future-native--2040', { timeout: 30000 });
+  assert('Consciousness reports the one memory permitted by the living day', await page.$eval('.future-masthead', (node) => node.textContent.includes('1/5 MEMORIES PERMITTED')));
+  await clickPageButton('An unfinished sentence');
+  await clickPageButton('Let Kevin recall');
+  await page.waitForFunction(() => document.querySelector('.consciousness-encounter blockquote')?.textContent.includes('deliberate blank'));
+  await clickPageButton('Pull the sentence to its source');
+  assert('Holographic Kevin exposes withheld conjecture instead of inventing memory', await page.$eval('.consciousness-source', (node) => node.textContent.includes('deliberately withheld') && node.textContent.includes('thread ends here')));
+  await clickPageButton('Let Kevin deliberate');
+  await clickPageButton('Let Kevin speak / act / refuse');
+  await clickPageButton('Let Kevin continue');
+  await page.waitForSelector('.consciousness-retention', { timeout: 5000 });
+  assert('The behavior loop ends with explicit encounter permission', await page.$eval('.consciousness-retention', (node) => node.textContent.includes('May I keep this?') && node.textContent.includes('No—let me disappear')));
 
   assert('The reviewed flows emit no console errors', report.consoleErrors.length === 0, report.consoleErrors.join(' | '));
   assert('The reviewed flows emit no page errors', report.pageErrors.length === 0, report.pageErrors.join(' | '));

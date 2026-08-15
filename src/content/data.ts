@@ -785,37 +785,37 @@ export const eras = [
   },
   {
     "id": "2030",
-    "label": "Coexistence",
+    "label": "Co-Existence",
     "anchorYear": 2030,
-    "subtitle": "Kevin Nexus",
-    "metaphor": "A near-future collaboration workspace where people and AI specialists share objectives, evidence, and context while consequential judgment remains explicitly human.",
-    "emotionalTarget": "Partnership, evidence, responsible agency.",
+    "subtitle": "Morning, Together",
+    "metaphor": "One ordinary day in Kevin’s apartment and studio with Wren, an ambient AI companion who anticipates, disagrees, helps, waits, and forgets whenever permission is withheld. TokenPak, TIP, and PAK remain the quiet provenance spine beneath the relationship.",
+    "emotionalTarget": "Intimacy, trust, productive disagreement, restraint, and companionship.",
     "status": "live",
     "contentMode": "speculative",
-    "accent": "#64e8ff",
+    "accent": "#d69b50",
     "motifs": [
-      "human-AI teams",
-      "shared context",
-      "evidence and governance",
-      "human judgment"
+      "warm domestic light",
+      "object-led daily moments",
+      "companion presence and absence",
+      "permissioned memory"
     ],
     "route": "/experience/2030/"
   },
   {
     "id": "2040",
-    "label": "Digital Consciousness",
+    "label": "Consciousness",
     "anchorYear": 2040,
-    "subtitle": "Kevin Echo",
-    "metaphor": "A speculative holographic representation of Kevin that translates visitor intent through a telepathic-style interpreter, memory shards, and transparent identity boundaries.",
-    "emotionalTarget": "Continuity, transcendence, reflection.",
+    "subtitle": "Morning, After",
+    "metaphor": "A cyberpunk holographic reproduction of Kevin in the same apartment ten years later. He notices environmental cues, recalls only permissioned memory, deliberates, speaks, acts or refuses, exposes record versus pattern versus conjecture, and asks whether the encounter may remain.",
+    "emotionalTarget": "Recognition, uncanniness, agency, reflection, and permission.",
     "status": "live",
     "contentMode": "speculative",
-    "accent": "#a88cff",
+    "accent": "#ff9e2f",
     "motifs": [
-      "holographic identity",
-      "thought interpreter",
-      "memory shards",
-      "digital continuity"
+      "amber holographic portrait",
+      "familiar objects after the body",
+      "notice-recall-deliberate-act",
+      "record-pattern-conjecture"
     ],
     "route": "/experience/2040/"
   }
@@ -959,16 +959,16 @@ export const technologyMoments = [
   },
   {
     "year": 2030,
-    "title": "Projection: the interface becomes coexistence",
-    "context": "People and AI specialists share objectives and persistent context, divide work by comparative strength, expose evidence, and return consequential choices to accountable humans.",
-    "kevinConnection": "This projection extends Kevin’s current work in context logistics, collaboration systems, governance, and practical human-plus-AI operating models.",
+    "title": "Projection: AI becomes part of an ordinary day",
+    "context": "People live with AI companions that anticipate needs, offer productive disagreement, respect silence, stop at human authority, and retain personal moments only through explicit consent.",
+    "kevinConnection": "Morning, Together extends Kevin’s work in human-AI interaction, context and permission systems, and practical companionship without turning the relationship into a product dashboard.",
     "trust": "speculative"
   },
   {
     "year": 2040,
-    "title": "Projection: identity becomes interactive",
-    "context": "Approved records, decisions, memories, and communication patterns support persistent digital representations that can continue a person’s knowledge interface.",
-    "kevinConnection": "Kevin Echo explores what can be preserved faithfully, what remains interpretation, and why a digital representation must reveal its evidence boundary.",
+    "title": "Projection: a permissioned self becomes conscious",
+    "context": "Approved memories, values, decisions, and behavior patterns form a holographic AI reproduction that can notice, recall, deliberate, speak, act, refuse, and reveal where certainty ends.",
+    "kevinConnection": "Morning, After imagines Kevin as a cyberpunk holographic intelligence shaped only by what the living world allowed it to keep, with every record, pattern, and conjecture boundary exposed.",
     "trust": "speculative"
   }
 ] as const;
@@ -1648,7 +1648,7 @@ export const timelineContent = {
       "shaped": "Curiosity came first. Technology responded to exploration: a channel changed, a character moved, and a script altered an online world. Connection came next—then identity, creation, intelligent collaboration, and the question of what can remain present through a system.",
       "build": "Systems that make ambitious work clearer and more executable: products, operating models, automation, context infrastructure, agent workflows, and interfaces that help people understand complexity.",
       "believe": "Technology should amplify judgment, creativity, and meaningful action. It should reduce unnecessary friction without hiding accountability. The most important interface is often the one that makes the real decision visible.",
-      "memory": "Select a signal: Curiosity, Connection, Commerce, Creation, Coexistence, or Continuity. Each is a different reconstruction of the same life.",
+      "memory": "Select a signal: Curiosity, Connection, Commerce, Creation, Co-Existence, or Consciousness. Each is a different reconstruction of the same life.",
       "human": "A system can preserve records, patterns, preferences, and language. It may simulate continuity. But responsibility, lived experience, embodied relationships, and the authority to define meaning cannot be assumed because the simulation is convincing.",
       "real": "No. I am a speculative interface built from approved evidence and modeled interpretation. I am not the biological Kevin, and I do not claim transferred consciousness. The distinction matters.",
       "beginning": "The first signal is waiting in 1990, on a tube television tuned to Channel 3."

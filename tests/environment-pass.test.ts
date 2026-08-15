@@ -10,7 +10,7 @@ describe('V7 connected physical environment pass', () => {
     const architecture = read('src/experience/TimelineArchitecture.tsx');
     expect(world).toContain('<TimelineArchitecture');
     expect(world).toContain('function EraProxy');
-    expect(architecture).toContain('FutureDataConduit');
+    expect(architecture).toContain('FutureMemoryConduit');
     expect(architecture).toContain('function Corridor');
     expect(architecture).toContain('if (!transitionActive) return null');
   });
@@ -27,26 +27,28 @@ describe('V7 connected physical environment pass', () => {
     expect(computerRoom).toContain('<GroundedDesk');
   });
 
-  it('models 2030 as a grounded human-AI coexistence lab', () => {
+  it('models 2030 as a grounded apartment shared with ambient Wren', () => {
     const scene = read('src/experience/scenes/Year2030Scene.tsx');
     expect(scene).toContain('<RoomShell');
-    expect(scene).toContain('Human approval node');
-    expect(scene).toContain('Kevin · Human Lead');
-    expect(scene).toContain('Human Governor');
-    expect(scene).toContain('<ArchiveColumn');
-    expect(scene).toContain('<WallDisplay');
-    expect(scene).toContain('<FloorPedestal');
-    expect(scene).not.toContain('id="human-gate" year="2030"');
+    expect(scene).toContain('ApartmentFurniture');
+    expect(scene).toContain('MomentObject');
+    expect(scene).toContain('ConsentMark');
+    expect(scene).toContain('Wren in the room');
+    expect(scene).toContain('THREE.AdditiveBlending');
+    expect(scene).not.toContain('Human Governor');
+    expect(scene).not.toContain('<ArchiveColumn');
   });
 
-  it('models 2040 as a platform-centered holographic sanctuary', () => {
+  it('models 2040 as an amber cyberpunk apartment with holographic Kevin', () => {
     const scene = read('src/experience/scenes/Year2040Scene.tsx');
     expect(scene).toContain('<RoomShell');
-    expect(scene).toContain('<HologramFigure');
-    expect(scene).toContain('shardLayout');
-    expect(scene).toContain('cylinder([0, 1.78, 0], 0.66, 1.7, 800)');
-    expect(scene).not.toContain('Thought interpreter');
-    expect(scene).not.toContain('torusGeometry args={[2.35');
+    expect(scene).toContain('<HologramKevin');
+    expect(scene).toContain('CyberpunkApartment');
+    expect(scene).toContain("accent=\"#ff9e2f\"");
+    expect(scene).toContain('getPermissionedMemoryState');
+    expect(scene).toContain('consciousness.sourceTraceOpen');
+    expect(scene).not.toContain('shardLayout');
+    expect(scene).not.toContain('<HologramFigure');
   });
 
   it('keeps both future spaces physically open toward one another', () => {
