@@ -16,9 +16,11 @@ import {
   setFutureObjective
 } from '@/experience/future/futureJourney';
 import {
+  AGENT_TRACE_PHASES,
   advanceConsciousnessBehavior,
   createInitialCoexistenceState,
   createInitialConsciousnessState,
+  coexistenceMoments,
   consciousnessCues,
   getConsciousnessLine,
   getPermissionedMemorySource,
@@ -99,6 +101,22 @@ describe('future journey domain', () => {
     state = resolveCompanionConsent(state, 'refused');
     expect(state.keptMoments).toEqual([]);
     expect(state.refusedMoments).toEqual(['making']);
+  });
+
+  it('gives every 2030 moment a complete inspectable agent decision trace', () => {
+    for (const moment of Object.values(coexistenceMoments)) {
+      expect(Object.keys(moment.agent.steps)).toEqual(AGENT_TRACE_PHASES);
+      expect(moment.agent.confidence).toBeGreaterThan(0);
+      expect(moment.agent.confidence).toBeLessThanOrEqual(100);
+      expect(moment.agent.uncertainty.length).toBeGreaterThan(20);
+      for (const phase of AGENT_TRACE_PHASES) {
+        expect(moment.agent.steps[phase].summary.length).toBeGreaterThan(20);
+        expect(moment.agent.steps[phase].detail.length).toBeGreaterThan(50);
+      }
+    }
+    expect(coexistenceMoments.morning.agent.steps.sense.detail).toContain('biometrics are not opened');
+    expect(coexistenceMoments.work.agent.steps.govern.status).toBe('Human authority required');
+    expect(coexistenceMoments.care.agent.steps.account.status).toBe('Ephemeral buffer');
   });
 
   it('allows 2040 to recall only memories that 2030 was permitted to keep', () => {

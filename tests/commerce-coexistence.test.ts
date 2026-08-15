@@ -129,9 +129,11 @@ describe('Commerce and Co-Existence chapters', () => {
     const scene = read('src/experience/scenes/Year2030Scene.tsx');
     const futureText = read('src/experience/future/FutureTextExperience.tsx');
     expect(overlay).toContain('<FutureTextExperience year="2030"');
-    expect(futureText).toContain('Wren anticipates, disagrees, helps, waits');
+    expect(futureText).toContain('Wren makes each assist legible through observable inputs');
+    expect(futureText).toContain('AGENT_TRACE_PHASES.map');
     expect(futureText).toContain('carried on TokenPak · TIP authority · PAK context');
     expect(scene).toContain('Wren in the room');
+    expect(scene).toContain('AgentDecisionRail');
     expect(scene).toContain('coexistence.consent[id]');
     expect(scene).not.toContain('Human Governor');
   });

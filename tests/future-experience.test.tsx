@@ -32,6 +32,11 @@ describe('native future experiences', () => {
 
     expect(screen.getByRole('heading', { name: 'Morning, Together' })).toBeInTheDocument();
     expect(screen.getByText(/Wren softened the alarm/)).toBeInTheDocument();
+    expect(screen.getByRole('heading', { name: 'What happened under the calm' })).toBeInTheDocument();
+    expect(screen.getByText('WREN-0712-MORNING')).toBeInTheDocument();
+    fireEvent.click(screen.getByRole('button', { name: /Check authority.*Reversible only/ }));
+    expect(screen.getByRole('heading', { name: 'Room comfort may change; communication may not.' })).toBeInTheDocument();
+    expect(screen.getByText(/Reading, ranking, replying to, or hiding message content requires Kevin/)).toBeInTheDocument();
     fireEvent.click(screen.getByRole('button', { name: 'Keep it with me' }));
     expect(screen.getByText('Carried—with permission.')).toBeInTheDocument();
     expect(useExperienceStore.getState().futureJourney.coexistence.keptMoments).toEqual(['morning']);
@@ -43,7 +48,7 @@ describe('native future experiences', () => {
     expect(screen.getByText('Gone. The room remembers nothing.')).toBeInTheDocument();
     expect(experienceActions.discover).toHaveBeenCalledWith('human-gate', '2030');
 
-    fireEvent.click(screen.getByRole('button', { name: 'How was this carried?' }));
+    fireEvent.click(screen.getByRole('button', { name: 'Open infrastructure receipt' }));
     expect(screen.getByText(/carried on TokenPak · TIP authority · PAK context/)).toBeInTheDocument();
     fireEvent.click(screen.getByRole('button', { name: /Ten years pass.*Enter Morning, After/ }));
     expect(experienceActions.enterYear).toHaveBeenCalledWith('2040');

@@ -1,13 +1,14 @@
 'use client';
 
 import Link from 'next/link';
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import type { YearId } from '@/content/data';
 import { trackAnalyticsEvent } from '@/lib/analytics';
 import { playFutureCue, playInterfaceTone, startFutureAtmosphere } from '../audio';
 import { useExperienceActions } from '../ExperienceContext';
 import { useExperienceStore } from '../store';
 import {
+  AGENT_TRACE_PHASES,
   COEXISTENCE_MOMENT_IDS,
   CONSCIOUSNESS_CUE_IDS,
   CONSCIOUSNESS_PHASES,
@@ -17,13 +18,23 @@ import {
   getPermissionedMemorySource,
   getPermissionedMemoryState,
   type CoexistenceState,
+  type CoexistenceMoment,
   type CoexistenceMomentId,
+  type AgentTracePhase,
   type CompanionConsent,
   type ConsciousnessCueId,
   type ConsciousnessPhase,
   type EncounterRetention,
   type PermissionedMemoryState
 } from './futureWorld';
+
+const agentTraceLabels: Record<AgentTracePhase, string> = {
+  sense: 'Sense',
+  interpret: 'Interpret',
+  govern: 'Check authority',
+  act: 'Act or wait',
+  account: 'Receipt'
+};
 
 const phaseLabels: Record<ConsciousnessPhase, string> = {
   notice: 'Notice',
@@ -48,6 +59,52 @@ function SoundControl() {
     >
       <span aria-hidden="true">{sound ? '◉' : '○'}</span> Sound {sound ? 'on' : 'off'}
     </button>
+  );
+}
+
+function AgentTrace({ moment }: { moment: CoexistenceMoment }) {
+  const [activePhase, setActivePhase] = useState<AgentTracePhase>('sense');
+  const trace = moment.agent;
+  const activeStep = trace.steps[activePhase];
+
+  return (
+    <section className="coexistence-agent" aria-labelledby="coexistence-agent-title">
+      <header>
+        <div>
+          <p className="future-kicker">Wren · inspectable decision trace</p>
+          <h3 id="coexistence-agent-title">What happened under the calm</h3>
+        </div>
+        <span>{trace.id}</span>
+      </header>
+
+      <ol aria-label="Wren’s agent loop">
+        {AGENT_TRACE_PHASES.map((phase, index) => (
+          <li key={phase}>
+            <button type="button" aria-pressed={activePhase === phase} onClick={() => setActivePhase(phase)}>
+              <span>{String(index + 1).padStart(2, '0')}</span>
+              <b>{agentTraceLabels[phase]}</b>
+              <small>{trace.steps[phase].status}</small>
+            </button>
+          </li>
+        ))}
+      </ol>
+
+      <article aria-live="polite">
+        <div>
+          <span>{agentTraceLabels[activePhase]}</span>
+          <b>{activeStep.status}</b>
+        </div>
+        <h4>{activeStep.summary}</h4>
+        <p>{activeStep.detail}</p>
+        <dl>
+          <div><dt>Posture</dt><dd>{trace.posture}</dd></div>
+          <div><dt>Confidence</dt><dd>{trace.confidence}%</dd></div>
+          <div><dt>Known gap</dt><dd>{trace.uncertainty}</dd></div>
+        </dl>
+      </article>
+
+      <footer>This is a decision record—inputs, policy, action, and retention—not hidden chain-of-thought.</footer>
+    </section>
   );
 }
 
@@ -97,9 +154,15 @@ function CoexistenceRoom({ activeMoment, consent, onSelect }: {
     <section className="coexistence-room" aria-label="Kevin’s apartment and studio across one day">
       <div className="coexistence-sun" aria-hidden="true"></div>
       <div className="coexistence-window" aria-hidden="true"><i></i><i></i><i></i></div>
+      <div className="coexistence-ceiling-rail" aria-hidden="true"></div>
+      <div className="coexistence-partition" aria-hidden="true"><i></i><i></i><i></i><i></i><i></i></div>
       <div className="coexistence-shelf" aria-hidden="true"><i></i><i></i><i></i></div>
       <div className="coexistence-table" aria-hidden="true"></div>
       <div className="coexistence-rug" aria-hidden="true"></div>
+      <div className="coexistence-lounge" aria-hidden="true"><i></i><i></i></div>
+      <div className="coexistence-room-label coexistence-room-label--kitchen" aria-hidden="true">Kitchen / local sensing</div>
+      <div className="coexistence-room-label coexistence-room-label--studio" aria-hidden="true">Studio / mounted context</div>
+      <div className="coexistence-room-label coexistence-room-label--living" aria-hidden="true">Living / guest-safe</div>
       <div className="coexistence-hand coexistence-hand--human" aria-hidden="true"></div>
       {object('morning', 'coexistence-object--mug', 'Warm mug on the kitchen table')}
       {object('making', 'coexistence-object--draft', 'Unfinished draft on the studio table')}
@@ -109,6 +172,10 @@ function CoexistenceRoom({ activeMoment, consent, onSelect }: {
       <div className="wren-presence" data-behavior={activeMoment} aria-label={`Wren is present through the room: ${coexistenceMoments[activeMoment].companion}`}>
         <i aria-hidden="true"></i><i aria-hidden="true"></i><i aria-hidden="true"></i>
         <span>{activeMoment === 'care' ? 'Wren · private' : 'Wren · present'}</span>
+      </div>
+      <div className="wren-trace-rail" data-behavior={activeMoment} aria-hidden="true">
+        {AGENT_TRACE_PHASES.map((phase) => <i key={phase} data-phase={phase}></i>)}
+        <b></b>
       </div>
     </section>
   );
@@ -141,7 +208,7 @@ function CoexistenceExperience() {
     <main className="future-native future-native--2030" data-future-native="2030" data-moment={moment.id}>
       <div className="coexistence-grain" aria-hidden="true"></div>
       <header className="future-masthead">
-        <div><p>2030 · Co-Existence</p><h1>Morning, Together</h1><span>An ordinary day with an intelligence that knows when to help—and when to leave.</span></div>
+        <div><p>2030 · Co-Existence</p><h1>Morning, Together</h1><span>A smart home where every assist exposes its inputs, boundary, action, and memory.</span></div>
         <div><b>WREN · PRESENT</b><SoundControl /></div>
       </header>
 
@@ -157,6 +224,8 @@ function CoexistenceExperience() {
           <blockquote><span>Wren</span>{moment.companion}</blockquote>
           <div className="coexistence-ambient" aria-label="Ambient details">{moment.ambient}</div>
 
+          <AgentTrace key={moment.id} moment={moment} />
+
           <fieldset className="coexistence-consent">
             <legend>{moment.invitation}</legend>
             <button type="button" aria-pressed={decision === 'kept'} onClick={() => chooseConsent('kept')}>Keep it with me</button>
@@ -166,7 +235,7 @@ function CoexistenceExperience() {
 
           <div className="coexistence-provenance">
             <button type="button" aria-expanded={coexistence.provenanceOpen} onClick={() => setProvenance(!coexistence.provenanceOpen)}>
-              {coexistence.provenanceOpen ? 'Close memory receipt' : 'How was this carried?'}
+              {coexistence.provenanceOpen ? 'Close infrastructure receipt' : 'Open infrastructure receipt'}
             </button>
             {coexistence.provenanceOpen && (
               <aside>
@@ -183,7 +252,7 @@ function CoexistenceExperience() {
         </button>
       </div>
 
-      <footer className="future-disclosure"><span>Co-Existence</span><p>Human and AI collaborators share a life; memory remains consensual, inspectable, and subordinate to the relationship.</p></footer>
+      <footer className="future-disclosure"><span>Co-Existence</span><p>Wren exposes observable evidence, policy, action, and retention while private reasoning and human authority remain bounded.</p></footer>
     </main>
   );
 }

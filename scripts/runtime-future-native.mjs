@@ -72,12 +72,21 @@ try {
   await page.evaluate(() => localStorage.removeItem('kevinception-v7'));
   await open('/experience/?year=2030&view=interface', '.future-native--2030');
   assert('Desktop 2030 uses a native interface with no future iframe', await page.$$eval('iframe', (frames) => frames.every((frame) => !/\/legacy\/experience\/(2030|2040)\//.test(frame.src))));
+  assert('2030 exposes Wren’s five-stage inspectable decision trace', await page.$eval('.coexistence-agent', (node) => (
+    node.textContent.includes('Sense')
+      && node.textContent.includes('Interpret')
+      && node.textContent.includes('Check authority')
+      && node.textContent.includes('Act or wait')
+      && node.textContent.includes('Receipt')
+  )));
+  await clickButton('Check authority');
+  assert('The decision trace exposes authority and data boundaries', await page.$eval('.coexistence-agent article', (node) => node.textContent.includes('Room comfort may change; communication may not.') && node.textContent.includes('requires Kevin')));
   await clickButton('Keep it with me');
   await clickButton('Studio table');
   await clickButton('Let it end here');
   await clickButton('Window desk');
   await clickButton('Let it end here');
-  await clickButton('How was this carried?');
+  await clickButton('Open infrastructure receipt');
   assert('2030 keeps TokenPak/TIP/PAK secondary inside optional provenance', await page.$eval('.coexistence-provenance aside', (node) => node.textContent.includes('TokenPak') && node.textContent.includes('TIP authority') && node.textContent.includes('PAK context')));
   const coexistenceGeometry = await geometry('.future-native--2030');
   const coexistenceStageGeometry = await geometry('.coexistence-stage');
@@ -118,10 +127,11 @@ try {
   const mobileCoexistence = await geometry('.future-native--2030');
   const mobileCoexistenceStage = await geometry('.coexistence-stage');
   assert('Mobile 2030 has no horizontal overflow', mobileCoexistence.outerOverflow <= 1 && mobileCoexistence.left >= 0 && mobileCoexistence.right <= mobileCoexistence.viewportWidth + 1 && mobileCoexistenceStage.componentOverflow <= 1 && mobileCoexistenceStage.left >= 0 && mobileCoexistenceStage.right <= mobileCoexistenceStage.viewportWidth + 1, JSON.stringify({ root: mobileCoexistence, stage: mobileCoexistenceStage }));
-  assert('Mobile Co-Existence preserves consent choices and optional provenance', await page.$eval('.future-native--2030', (node) => {
+  assert('Mobile Co-Existence preserves decision trace, consent choices, and optional provenance', await page.$eval('.future-native--2030', (node) => {
     const persisted = JSON.parse(localStorage.getItem('kevinception-v7') || 'null');
     const coexistence = persisted?.state?.futureJourney?.coexistence;
-    return coexistence?.keptMoments?.includes('morning')
+    return Boolean(node.querySelector('.coexistence-agent'))
+      && coexistence?.keptMoments?.includes('morning')
       && coexistence?.refusedMoments?.includes('making')
       && coexistence?.refusedMoments?.includes('work')
       && Boolean(node.querySelector('.coexistence-provenance > button'));

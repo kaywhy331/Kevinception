@@ -8,7 +8,9 @@ describe('future-wing documentation truth', () => {
   it('records the native permissioned journey without claiming final production assets', () => {
     const status = read('docs/IMPLEMENTATION_STATUS_V7.md');
     expect(status).toContain('Morning, Together and Morning, After are native React interfaces and do not use iframes');
-    expect(status).toContain('TokenPak, TIP, and PAK available only through an optional memory receipt');
+    expect(status).toContain('TokenPak, TIP, and PAK available only through an optional infrastructure receipt');
+    expect(status).toContain('Sense → Interpret → Check authority → Act or wait → Receipt');
+    expect(status).toContain('never a claim to reveal hidden chain-of-thought');
     expect(status).toContain('2030 consent materially changes 2040 recall');
     expect(status).toContain('“May I keep this?”');
     expect(status).toContain('final original/licensed sound design across all eras');

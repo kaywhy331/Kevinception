@@ -5,6 +5,7 @@ import type { YearId } from '@/content/data';
 import { useExperienceActions } from '../ExperienceContext';
 import { useExperienceStore } from '../store';
 import {
+  AGENT_TRACE_PHASES,
   COEXISTENCE_MOMENT_IDS,
   CONSCIOUSNESS_CUE_IDS,
   CONSCIOUSNESS_PHASES,
@@ -14,9 +15,18 @@ import {
   getPermissionedMemorySource,
   getPermissionedMemoryState,
   type CompanionConsent,
+  type AgentTracePhase,
   type ConsciousnessPhase,
   type EncounterRetention
 } from './futureWorld';
+
+const agentTraceLabels: Record<AgentTracePhase, string> = {
+  sense: 'Sense',
+  interpret: 'Interpret',
+  govern: 'Check authority',
+  act: 'Act or wait',
+  account: 'Receipt'
+};
 
 const phaseLabels: Record<ConsciousnessPhase, string> = {
   notice: 'Notice',
@@ -45,7 +55,7 @@ function TextCoexistence() {
       <header>
         <p className="eyebrow">2030 · Co-Existence</p>
         <h2 id="future-text-coexistence-title">Morning, Together</h2>
-        <p>Human and AI collaborators share an ordinary day. Wren anticipates, disagrees, helps, waits, and forgets whenever permission is withheld.</p>
+        <p>Human and AI collaborators share an ordinary day. Wren makes each assist legible through observable inputs, interpretation, authority, action, and retention.</p>
       </header>
 
       <nav className="future-text-moments" aria-label="A compressed day with Wren">
@@ -64,13 +74,34 @@ function TextCoexistence() {
           <dt>Wren</dt><dd>{moment.companion}</dd>
           <dt>In the room</dt><dd>{moment.ambient}</dd>
         </dl>
+        <section className="future-text-agent" aria-labelledby="future-text-agent-title">
+          <header>
+            <p className="eyebrow">Wren · inspectable decision trace</p>
+            <h4 id="future-text-agent-title">What happened under the calm</h4>
+            <span>{moment.agent.id} · {moment.agent.confidence}% confidence</span>
+          </header>
+          <ol>
+            {AGENT_TRACE_PHASES.map((phase) => (
+              <li key={phase}>
+                <b>{agentTraceLabels[phase]} · {moment.agent.steps[phase].status}</b>
+                <strong>{moment.agent.steps[phase].summary}</strong>
+                <p>{moment.agent.steps[phase].detail}</p>
+              </li>
+            ))}
+          </ol>
+          <dl>
+            <dt>Posture</dt><dd>{moment.agent.posture}</dd>
+            <dt>Known gap</dt><dd>{moment.agent.uncertainty}</dd>
+          </dl>
+          <footer>This is a decision record—not hidden chain-of-thought.</footer>
+        </section>
         <fieldset>
           <legend>{moment.invitation}</legend>
           <button className="future-text-primary" type="button" aria-pressed={decision === 'kept'} onClick={() => decide('kept')}>Keep it with me</button>
           <button type="button" aria-pressed={decision === 'refused'} onClick={() => decide('refused')}>Let it end here</button>
           {decision !== 'unasked' && <output>{decision === 'kept' ? 'Carried—with permission.' : 'Gone. The room remembers nothing.'}</output>}
         </fieldset>
-        <button className="future-text-provenance" type="button" aria-expanded={coexistence.provenanceOpen} onClick={() => setProvenance(!coexistence.provenanceOpen)}>How was this carried?</button>
+        <button className="future-text-provenance" type="button" aria-expanded={coexistence.provenanceOpen} onClick={() => setProvenance(!coexistence.provenanceOpen)}>Open infrastructure receipt</button>
         {coexistence.provenanceOpen && <aside><b>carried on TokenPak · TIP authority · PAK context</b><p>{moment.receipt}</p></aside>}
       </article>
 

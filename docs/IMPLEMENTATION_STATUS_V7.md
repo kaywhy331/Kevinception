@@ -81,11 +81,12 @@ The build should be treated as a **complete connected-environment implementation
 
 ### 2030 — Co-Existence / Morning, Together
 
-- Warm apartment-and-studio environment compressed into five ordinary moments from 07:12 through 22:04
-- Wren expressed as room-scale light, anticipation, productive disagreement, authority-aware restraint, silence, and intentional absence—not an agent dashboard
+- Warm, spatially zoned smart home with a local-sensing kitchen, mounted-context studio, guest-safe living room, threshold, depth partition, and visible home nervous system
+- Five ordinary moments from 07:12 through 22:04, with Wren expressed through room-scale light, anticipation, productive disagreement, authority-aware restraint, silence, and intentional absence
 - Object-led interaction through the morning mug, shared draft, window desk, threshold, and after-gathering glasses
+- Every moment exposes an inspectable `Sense → Interpret → Check authority → Act or wait → Receipt` decision record with inputs, confidence, uncertainty, policy, action, retention, and exclusions—never a claim to reveal hidden chain-of-thought
 - Explicit Keep it with me / Let it end here consent for every moment, with refused memories removed from the journey
-- TokenPak, TIP, and PAK available only through an optional memory receipt as the quiet provenance and authority spine beneath the relationship
+- TokenPak, TIP, and PAK available only through an optional infrastructure receipt as the quiet provenance and authority spine beneath the relationship
 - Human Gate artifact recovered through the right to keep or forget rather than a generic approval node
 
 ### 2040 — Consciousness / Morning, After
