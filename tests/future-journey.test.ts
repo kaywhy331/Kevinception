@@ -6,6 +6,7 @@ import {
   createMissionRun,
   FUTURE_MISSION_IDS,
   futureMissionTemplates,
+  hydrateFutureJourney,
   inferEchoIntent,
   interpretEchoThought,
   markEchoFinaleSeen,
@@ -14,6 +15,19 @@ import {
   setFutureAutonomy,
   setFutureObjective
 } from '@/experience/future/futureJourney';
+import {
+  advanceConsciousnessBehavior,
+  createInitialCoexistenceState,
+  createInitialConsciousnessState,
+  consciousnessCues,
+  getConsciousnessLine,
+  getPermissionedMemorySource,
+  getPermissionedMemoryState,
+  resolveCompanionConsent,
+  resolveEncounterRetention,
+  selectCoexistenceMoment,
+  selectConsciousnessCue
+} from '@/experience/future/futureWorld';
 
 describe('future journey domain', () => {
   it('provides five materially distinct 2030 missions', () => {
@@ -74,5 +88,49 @@ describe('future journey domain', () => {
     state = markEchoFinaleSeen(state);
     expect(state.echo.finaleSeen).toBe(true);
     expect(state.echo.resonance).toBe(100);
+  });
+
+  it('lets Wren keep or forget moments only through explicit consent', () => {
+    let state = createInitialCoexistenceState();
+    state = selectCoexistenceMoment(state, 'making');
+    state = resolveCompanionConsent(state, 'kept');
+    expect(state.keptMoments).toEqual(['making']);
+    expect(state.consent.making).toBe('kept');
+    state = resolveCompanionConsent(state, 'refused');
+    expect(state.keptMoments).toEqual([]);
+    expect(state.refusedMoments).toEqual(['making']);
+  });
+
+  it('allows 2040 to recall only memories that 2030 was permitted to keep', () => {
+    let coexistence = resolveCompanionConsent(createInitialCoexistenceState(), 'kept', 'morning');
+    expect(getPermissionedMemoryState(coexistence, 'mug')).toBe('retained');
+    expect(getPermissionedMemorySource(coexistence, 'mug')).toContain('07:12 Kitchen');
+    expect(getConsciousnessLine(consciousnessCues.mug, 'recall', 'retained')).toContain('07:12');
+
+    coexistence = resolveCompanionConsent(coexistence, 'refused', 'care');
+    coexistence = resolveCompanionConsent(coexistence, 'refused', 'gathering');
+    expect(getPermissionedMemoryState(coexistence, 'doorway')).toBe('withheld');
+    expect(getPermissionedMemorySource(coexistence, 'doorway')).toContain('deliberately withheld');
+    expect(getConsciousnessLine(consciousnessCues.doorway, 'recall', 'withheld')).toContain('will not reconstruct');
+  });
+
+  it('moves consciousness through behavior before asking to retain the encounter', () => {
+    let state = selectConsciousnessCue(createInitialConsciousnessState(), 'unfinished-note');
+    expect(state.visitedCues).toContain('unfinished-note');
+    for (let index = 0; index < 4; index += 1) state = advanceConsciousnessBehavior(state);
+    expect(state.behaviorPhase).toBe('continue');
+    state = resolveEncounterRetention(state, 'released');
+    expect(state.encounterRetention).toBe('released');
+  });
+
+  it('hydrates legacy v3 journeys without discarding mission or echo state', () => {
+    const legacy = createInitialFutureJourney();
+    legacy.mission.objective = 'Preserve this objective';
+    legacy.echo.resonance = 48;
+    const hydrated = hydrateFutureJourney({ mission: legacy.mission, echo: legacy.echo });
+    expect(hydrated.mission.objective).toBe('Preserve this objective');
+    expect(hydrated.echo.resonance).toBe(48);
+    expect(hydrated.coexistence.activeMoment).toBe('morning');
+    expect(hydrated.consciousness.behaviorPhase).toBe('notice');
   });
 });

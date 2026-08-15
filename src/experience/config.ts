@@ -22,8 +22,8 @@ const technicalConfig: Record<YearId, Pick<EraConfig, 'accent' | 'stationX' | 'l
   '2000': { accent: '#6bbcff', stationX: -18, legacyPath: '/legacy/experience/2000/index.html?embed=1', transitionToNext: 'profile-flatten' },
   '2010': { accent: '#b9862f', stationX: -6, legacyPath: '/legacy/experience/2010/index.html?embed=1&module=dashboard&release=20260813', transitionToNext: 'portrait-rotate' },
   '2020': { accent: '#ff5c8a', stationX: 6, legacyPath: '/legacy/experience/2020/index.html?embed=1', transitionToNext: 'signals-to-agents' },
-  '2030': { accent: '#64e8ff', stationX: 18, legacyPath: '/legacy/experience/2030/index.html?embed=1', transitionToNext: 'agents-to-echo' },
-  '2040': { accent: '#a88cff', stationX: 30, legacyPath: '/legacy/experience/2040/index.html?embed=1' }
+  '2030': { accent: '#d69b50', stationX: 18, legacyPath: '/legacy/experience/2030/index.html?embed=1', transitionToNext: 'agents-to-echo' },
+  '2040': { accent: '#ff9e2f', stationX: 30, legacyPath: '/legacy/experience/2040/index.html?embed=1' }
 };
 
 export const eraConfigs = Object.fromEntries(

@@ -249,32 +249,34 @@ code { padding: .15rem .35rem; border: 1px solid var(--line); background: #0b0d1
 .transition-profile-flatten > span { transform: perspective(900px) rotateY(70deg); background: linear-gradient(90deg, #1b4f95, #eef3ff); }
 .transition-portrait-rotate > span { transform: rotate(90deg) scale(1.2); background: linear-gradient(180deg, #48649f, #ff5c8a); }
 .transition-signals-to-agents > span { background: radial-gradient(circle at 20% 20%, #ff5c8a 0 2px, transparent 3px), radial-gradient(circle at 60% 65%, #64e8ff 0 2px, transparent 3px), #061016; background-size: 55px 55px, 75px 75px; }
-.transition-agents-to-echo { background: linear-gradient(105deg, rgba(5,24,29,.9), rgba(10,8,24,.9)); }
-.transition-agents-to-echo > span { background: radial-gradient(circle at 22% 50%, rgba(100,232,255,.34), transparent 24%), radial-gradient(circle at 78% 50%, rgba(168,140,255,.36), transparent 25%), linear-gradient(90deg, rgba(100,232,255,.08), transparent 43% 57%, rgba(168,140,255,.08)); filter: blur(12px); }
+.transition-agents-to-echo { background: linear-gradient(105deg, rgba(72,50,31,.94), rgba(7,5,3,.96) 62%, rgba(50,16,8,.96)); }
+.transition-agents-to-echo > span { background: radial-gradient(circle at 22% 50%, rgba(255,208,130,.3), transparent 24%), radial-gradient(circle at 78% 50%, rgba(255,86,44,.3), transparent 25%), linear-gradient(90deg, rgba(255,190,92,.08), transparent 43% 57%, rgba(255,73,43,.08)); filter: blur(12px); }
 .future-handoff-visual { position: absolute; inset: 0; z-index: 2; display: grid; grid-template-columns: 4.6rem minmax(15rem, min(48vw, 38rem)) 4.6rem; place-content: center; align-items: center; gap: clamp(.7rem, 2vw, 1.6rem); transform: translateY(-8%); }
-.future-handoff-node { position: relative; display: grid; place-items: center; width: 4.6rem; aspect-ratio: 1; border: 1px solid rgba(255,255,255,.2); border-radius: 50%; background: rgba(4,8,14,.76); box-shadow: 0 0 38px rgba(100,232,255,.16), inset 0 0 24px rgba(255,255,255,.05); color: white; font-style: normal; }
+.future-handoff-node { position: relative; display: grid; place-items: center; width: 4.6rem; aspect-ratio: 1; border: 1px solid rgba(255,255,255,.2); border-radius: 50%; background: rgba(12,7,3,.8); box-shadow: 0 0 38px rgba(255,137,45,.16), inset 0 0 24px rgba(255,255,255,.04); color: white; font-style: normal; }
 .future-handoff-node::before,
 .future-handoff-node::after { content: ''; position: absolute; inset: -.42rem; border: 1px solid rgba(255,255,255,.11); border-radius: inherit; }
 .future-handoff-node::after { inset: -1rem; border-style: dashed; animation: future-handoff-orbit var(--transition-duration) linear both; }
-.future-handoff-node--source { border-color: rgba(100,232,255,.65); color: #9ef3ff; }
-.future-handoff-node--target { border-color: rgba(180,156,255,.7); color: #d5c7ff; }
+.future-handoff-node--source { border-color: rgba(255,203,121,.68); color: #ffe0a8; }
+.future-handoff-node--target { border-color: rgba(255,91,48,.72); color: #ff9a6f; }
 .future-handoff-node b { font: 800 .78rem/1 var(--font-display), sans-serif; letter-spacing: .08em; }
 .future-handoff-node small { margin-top: .28rem; font: 800 .42rem/1 ui-monospace, monospace; letter-spacing: .16em; }
-.future-handoff-rail { position: relative; height: 2px; background: linear-gradient(90deg, #64e8ff, rgba(255,255,255,.78), #a88cff); box-shadow: 0 0 18px rgba(143,218,255,.7); }
+.future-handoff-rail { position: relative; height: 2px; background: linear-gradient(90deg, #f4ca84, rgba(255,238,198,.8), #ff542f); box-shadow: 0 0 18px rgba(255,145,47,.58); }
 .future-handoff-rail::before,
 .future-handoff-rail::after { content: ''; position: absolute; inset: -.35rem 0; border-top: 1px solid rgba(255,255,255,.1); border-bottom: 1px solid rgba(255,255,255,.08); }
-.future-handoff-rail > em { position: absolute; left: 0; top: 50%; width: .35rem; aspect-ratio: 1; translate: -50% -50%; border-radius: 50%; background: white; box-shadow: 0 0 12px #9eeeff; animation: future-handoff-data var(--transition-duration) linear both; }
+.future-handoff-rail > em { position: absolute; left: 0; top: 50%; width: .35rem; aspect-ratio: 1; translate: -50% -50%; border-radius: 50%; background: #ffe7b6; box-shadow: 0 0 12px #ff9e2f; animation: future-handoff-data var(--transition-duration) linear both; }
 .future-handoff-rail > em:nth-child(2) { animation-delay: -90ms; opacity: .7; }
 .future-handoff-rail > em:nth-child(3) { animation-delay: -180ms; opacity: .45; }
-.future-handoff-packet { position: absolute; left: 0; top: 50%; z-index: 3; display: grid; min-width: 8.5rem; translate: -50% -50%; padding: .48rem .65rem; border: 1px solid #bafff2; border-radius: .75rem; background: rgba(5,11,17,.96); box-shadow: 0 0 30px rgba(100,232,255,.35); text-align: center; animation: future-handoff-packet var(--transition-duration) cubic-bezier(.45,0,.2,1) both; }
-.future-handoff-packet.is-reframed { border-color: #ffd66b; box-shadow: 0 0 30px rgba(255,214,107,.35); }
-.future-handoff-packet.is-stopped { border-color: #ff718f; box-shadow: 0 0 30px rgba(255,113,143,.35); }
+.future-handoff-packet { position: absolute; left: 0; top: 50%; z-index: 3; display: grid; min-width: 10rem; translate: -50% -50%; padding: .48rem .65rem .48rem 2.7rem; border: 1px solid #f4ca84; border-radius: .75rem; background: rgba(12,7,3,.96); box-shadow: 0 0 30px rgba(255,148,47,.28); text-align: left; animation: future-handoff-packet var(--transition-duration) cubic-bezier(.45,0,.2,1) both; }
+.future-handoff-packet.is-kept { border-color: #ffc261; box-shadow: 0 0 34px rgba(255,172,63,.44); }
+.future-handoff-packet.is-refused { border-color: #ff5738; border-style: dashed; box-shadow: 0 0 30px rgba(255,70,39,.3); }
+.future-handoff-mug { position: absolute; left: .72rem; top: 50%; width: 1.12rem; height: 1.25rem; translate: 0 -50%; border: 2px solid #f2d39b; border-radius: .18rem .18rem .45rem .45rem; background: #4a2f1d; box-shadow: inset 0 .17rem #0d0805, 0 0 15px rgba(255,156,50,.28); }
+.future-handoff-mug > em { position: absolute; right: -.52rem; top: .23rem; width: .55rem; height: .65rem; border: 2px solid #f2d39b; border-left: 0; border-radius: 0 60% 60% 0; }
 .future-handoff-packet small { color: #9db4bc; font: 800 .44rem/1.1 ui-monospace, monospace; letter-spacing: .14em; }
 .future-handoff-packet b { margin-top: .22rem; color: white; font: 800 .68rem/1 ui-monospace, monospace; letter-spacing: .08em; }
 .transition-agents-to-echo.is-reverse .future-handoff-packet,
 .transition-agents-to-echo.is-reverse .future-handoff-rail > em { animation-direction: reverse; }
 .transition-agents-to-echo .transition-copy { position: absolute; left: 1rem; right: 1rem; bottom: 13%; }
-.transition-copy__kicker { color: #aeeeff; font-size: .55rem; font-weight: 900; letter-spacing: .2em; text-transform: uppercase; }
+.transition-copy__kicker { color: #ffc66f; font-size: .55rem; font-weight: 900; letter-spacing: .2em; text-transform: uppercase; }
 @keyframes transition-fade { 0% { opacity: 0 } 20%, 75% { opacity: 1 } 100% { opacity: 0 } }
 @keyframes transition-pulse { 0% { transform: scale(.4); opacity: 0 } 45% { transform: scale(1); opacity: 1 } 100% { transform: scale(1.6); opacity: 0 } }
 @keyframes future-handoff-packet { 0% { left: 0; scale: .7; opacity: 0; filter: blur(5px) } 18% { scale: 1; opacity: 1; filter: blur(0) } 72% { scale: 1; opacity: 1 } 100% { left: 100%; scale: .78; opacity: 0 } }
@@ -316,6 +318,7 @@ code { padding: .15rem .35rem; border: 1px solid var(--line); background: #0b0d1
 }
 @media (max-width: 680px) {
   h1 { font-size: clamp(2.65rem, 15vw, 4.5rem); }
+  .text-mode > article > h1 { max-width: 100%; font-size: clamp(2.2rem, 11vw, 3.4rem); overflow-wrap: anywhere; }
   .landing-page { padding: .65rem; }
   .landing-page__brand { margin-bottom: .55rem; }
   .landing-page .eyebrow { margin-bottom: .35rem; }

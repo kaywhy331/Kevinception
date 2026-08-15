@@ -19,7 +19,7 @@ describe('artifact completion and text fallback parity', () => {
   it('reports unique recovery progress and provides a completion payoff', () => {
     const overlay = read('src/experience/ExperienceOverlay.tsx');
     expect(overlay).toContain('<progress max={artifacts.length} value={foundCount}>');
-    expect(overlay).toContain('Continuity restored');
+    expect(overlay).toContain('Pattern recovered');
     expect(overlay).not.toContain('/6 forms discovered');
     expect(overlay).toContain('Recover {discoveryArtifact.title}');
   });
@@ -42,8 +42,8 @@ describe('artifact completion and text fallback parity', () => {
     expect(overlay).toContain('xennialLegacy.intro.lead');
     expect(overlay).toContain('<FutureTextExperience year="2030"');
     expect(overlay).toContain('<FutureTextExperience year="2040"');
-    expect(futureText).toContain('Initialize collaboration');
-    expect(futureText).toContain('Synthesize continuity');
-    expect(futureText).toContain('ECHO_FINALE_TITLE');
+    expect(futureText).toContain('Morning, Together');
+    expect(futureText).toContain('Morning, After');
+    expect(futureText).toContain('May I keep this?');
   });
 });

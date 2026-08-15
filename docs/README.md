@@ -27,7 +27,7 @@ When documents appear to conflict:
 - The **Completion Checklists** control release acceptance.
 - Canonical content records control all factual claims about Kevin.
 
-The original planning specifications retain the earlier 2010 social-profile and 2030 autonomous-workspace concepts as historical baselines. The current implementation replaces those concepts with **Commerce / Kevazon Marketplace** and **Coexistence / Kevin Nexus**; the narrative architecture and implementation status documents supersede the older chapter language.
+The original planning specifications retain the earlier 2010 social-profile, 2030 autonomous-workspace, and 2040 continuity-archive concepts as historical baselines. The current implementation replaces those concepts with **Commerce / StealStreet Commerce OS**, **Co-Existence / Morning, Together**, and **Consciousness / Morning, After**. The narrative architecture and implementation status documents supersede the older chapter language.
 
 ## Core decision
 

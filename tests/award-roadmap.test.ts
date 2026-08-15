@@ -54,9 +54,9 @@ describe('award-roadmap agent-ready work', () => {
 
   it('queues privacy-friendly funnel events with properties', () => {
     Object.defineProperty(navigator, 'doNotTrack', { configurable: true, value: '0' });
-    trackAnalyticsEvent('chapter_enter', { year: '2030', chapter: 'Coexistence' });
+    trackAnalyticsEvent('chapter_enter', { year: '2030', chapter: 'Co-Existence' });
     expect(window.plausible?.q).toEqual([
-      ['chapter_enter', { props: { year: '2030', chapter: 'Coexistence' } }]
+      ['chapter_enter', { props: { year: '2030', chapter: 'Co-Existence' } }]
     ]);
   });
 

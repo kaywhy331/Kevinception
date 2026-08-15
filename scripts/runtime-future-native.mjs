@@ -72,50 +72,60 @@ try {
   await page.evaluate(() => localStorage.removeItem('kevinception-v7'));
   await open('/experience/?year=2030&view=interface', '.future-native--2030');
   assert('Desktop 2030 uses a native interface with no future iframe', await page.$$eval('iframe', (frames) => frames.every((frame) => !/\/legacy\/experience\/(2030|2040)\//.test(frame.src))));
-  await clickButton('Fast learning');
-  await clickButton('Low');
-  await clickButton('Initialize collaboration');
-  await page.waitForSelector('.nexus-decision-gate', { timeout: 5000 });
-  await clickButton('Revise and narrow');
-  await page.waitForSelector('.nexus-receipt');
-  const receiptId = await page.$eval('.nexus-receipt h3', (node) => node.textContent.trim());
-  const nexusGeometry = await geometry('.future-native--2030');
-  assert('Desktop 2030 stays within the viewport', nexusGeometry.outerOverflow <= 1 && nexusGeometry.componentOverflow <= 1 && nexusGeometry.left >= 0 && nexusGeometry.right <= nexusGeometry.viewportWidth + 1, JSON.stringify(nexusGeometry));
+  await clickButton('Keep it with me');
+  await clickButton('Studio table');
+  await clickButton('Let it end here');
+  await clickButton('Window desk');
+  await clickButton('Let it end here');
+  await clickButton('How was this carried?');
+  assert('2030 keeps TokenPak/TIP/PAK secondary inside optional provenance', await page.$eval('.coexistence-provenance aside', (node) => node.textContent.includes('TokenPak') && node.textContent.includes('TIP authority') && node.textContent.includes('PAK context')));
+  const coexistenceGeometry = await geometry('.future-native--2030');
+  const coexistenceStageGeometry = await geometry('.coexistence-stage');
+  assert('Desktop 2030 stays within the viewport', coexistenceGeometry.outerOverflow <= 1 && coexistenceGeometry.left >= 0 && coexistenceGeometry.right <= coexistenceGeometry.viewportWidth + 1 && coexistenceStageGeometry.componentOverflow <= 1, JSON.stringify({ root: coexistenceGeometry, stage: coexistenceStageGeometry }));
 
-  await clickButton('Transmit memory to 2040');
+  await clickButton('Enter Morning, After');
   await page.waitForSelector('.future-native--2040', { timeout: 10000 });
-  await page.type('.echo-interpreter-native textarea', 'What is your favorite color?');
-  await clickButton('Interpret signal');
-  await page.waitForFunction(() => document.querySelector('.echo-response-native')?.textContent.includes('Evidence boundary'));
-  await clickButton('1990');
-  await clickButton('2010');
-  await clickButton('2030');
-  await clickButton('Synthesize continuity');
-  await page.waitForSelector('.echo-finale');
-  const echoGeometry = await geometry('.future-native--2040');
-  const echoStageGeometry = await geometry('.echo-native-stage');
-  const echoFinaleGeometry = await geometry('.echo-finale');
-  assert('Desktop 2040 and its finale stay within the viewport', echoGeometry.outerOverflow <= 1 && echoGeometry.left >= 0 && echoGeometry.right <= echoGeometry.viewportWidth + 1 && echoStageGeometry.componentOverflow <= 1 && echoFinaleGeometry.componentOverflow <= 1, JSON.stringify({ root: echoGeometry, stage: echoStageGeometry, finale: echoFinaleGeometry }));
-  assert('Desktop synthesis retains the governed receipt', await page.$eval('.echo-finale', (node, id) => node.textContent.includes(id), receiptId), receiptId);
+  assert('2040 reports only the memory permitted in 2030', await page.$eval('.future-masthead', (node) => node.textContent.includes('1/5 MEMORIES PERMITTED')));
+  await clickButton('An unfinished sentence');
+  await clickButton('Let Kevin recall');
+  await page.waitForFunction(() => document.querySelector('.consciousness-encounter blockquote')?.textContent.includes('deliberate blank'));
+  await clickButton('Pull the sentence to its source');
+  assert('Withheld 2030 memory becomes a sourced deliberate blank in 2040', await page.$eval('.consciousness-source', (node) => node.textContent.includes('deliberately withheld') && node.textContent.includes('conjecture')));
+  await clickButton('Let Kevin deliberate');
+  await clickButton('Let Kevin speak / act / refuse');
+  await clickButton('Let Kevin continue');
+  await page.waitForSelector('.consciousness-retention');
+  await clickButton('No—let me disappear');
+  const consciousnessGeometry = await geometry('.future-native--2040');
+  const consciousnessStageGeometry = await geometry('.consciousness-stage');
+  const encounterGeometry = await geometry('.consciousness-encounter');
+  assert('Desktop 2040 and its permission encounter stay within the viewport', consciousnessGeometry.outerOverflow <= 1 && consciousnessGeometry.left >= 0 && consciousnessGeometry.right <= consciousnessGeometry.viewportWidth + 1 && consciousnessStageGeometry.componentOverflow <= 1 && encounterGeometry.componentOverflow <= 1, JSON.stringify({ root: consciousnessGeometry, stage: consciousnessStageGeometry, encounter: encounterGeometry }));
+  assert('The consciousness loop ends by asking permission', await page.$eval('.consciousness-retention', (node) => node.textContent.includes('May I keep this?') && node.textContent.includes('last trace')));
 
   await page.setViewport({ width: 390, height: 844, deviceScaleFactor: 1 });
   await open('/experience/?year=2040&view=interface', '.future-native--2040');
-  await page.waitForFunction((id) => document.querySelector('.echo-presence-native')?.textContent.includes(id), {}, receiptId);
-  const mobileEcho = await geometry('.future-native--2040');
-  const mobileEchoStage = await geometry('.echo-native-stage');
-  assert('Mobile 2040 has no horizontal overflow', mobileEcho.outerOverflow <= 1 && mobileEcho.left >= 0 && mobileEcho.right <= mobileEcho.viewportWidth + 1 && mobileEchoStage.componentOverflow <= 1 && mobileEchoStage.left >= 0 && mobileEchoStage.right <= mobileEchoStage.viewportWidth + 1, JSON.stringify({ root: mobileEcho, stage: mobileEchoStage }));
-  assert('Mobile Echo keeps thought and memory controls in the document', await page.$eval('.future-native--2040', (node) => Boolean(node.querySelector('.echo-interpreter-native textarea') && node.querySelector('.echo-memory-constellation'))));
+  const mobileConsciousness = await geometry('.future-native--2040');
+  const mobileConsciousnessStage = await geometry('.consciousness-stage');
+  assert('Mobile 2040 has no horizontal overflow', mobileConsciousness.outerOverflow <= 1 && mobileConsciousness.left >= 0 && mobileConsciousness.right <= mobileConsciousness.viewportWidth + 1 && mobileConsciousnessStage.componentOverflow <= 1 && mobileConsciousnessStage.left >= 0 && mobileConsciousnessStage.right <= mobileConsciousnessStage.viewportWidth + 1, JSON.stringify({ root: mobileConsciousness, stage: mobileConsciousnessStage }));
+  assert('Mobile Consciousness keeps portrait, cues, sources, and permission controls in the document', await page.$eval('.future-native--2040', (node) => Boolean(node.querySelector('.consciousness-portrait') && node.querySelector('.consciousness-cue-index') && node.querySelector('.consciousness-source') && node.querySelector('.consciousness-retention'))));
 
   await open('/experience/?year=2040&view=text', '.text-mode .future-text--2040');
   const mobileText = await geometry('.text-mode');
   assert('Mobile future text mode has no horizontal overflow', mobileText.outerOverflow <= 1 && mobileText.componentOverflow <= 1, JSON.stringify(mobileText));
-  assert('Text mode preserves the completed finale and receipt state', await page.$eval('.future-text--2040', (node, id) => node.textContent.includes('The interfaces changed. The pattern did not.') && node.textContent.includes(id), receiptId));
+  assert('Text mode preserves permissioned memory, source, and encounter state', await page.$eval('.future-text--2040', (node) => node.textContent.includes('1/5 memories permitted') && node.textContent.includes('deliberately withheld') && node.textContent.includes('May I keep this?')));
 
   await open('/experience/?year=2030&view=interface', '.future-native--2030');
-  const mobileNexus = await geometry('.future-native--2030');
-  const mobileNexusStage = await geometry('.nexus-native-stage');
-  assert('Mobile 2030 has no horizontal overflow', mobileNexus.outerOverflow <= 1 && mobileNexus.left >= 0 && mobileNexus.right <= mobileNexus.viewportWidth + 1 && mobileNexusStage.componentOverflow <= 1 && mobileNexusStage.left >= 0 && mobileNexusStage.right <= mobileNexusStage.viewportWidth + 1, JSON.stringify({ root: mobileNexus, stage: mobileNexusStage }));
-  assert('Mobile Nexus preserves the completed receipt', await page.$eval('.nexus-receipt', (node, id) => node.textContent.includes(id), receiptId));
+  const mobileCoexistence = await geometry('.future-native--2030');
+  const mobileCoexistenceStage = await geometry('.coexistence-stage');
+  assert('Mobile 2030 has no horizontal overflow', mobileCoexistence.outerOverflow <= 1 && mobileCoexistence.left >= 0 && mobileCoexistence.right <= mobileCoexistence.viewportWidth + 1 && mobileCoexistenceStage.componentOverflow <= 1 && mobileCoexistenceStage.left >= 0 && mobileCoexistenceStage.right <= mobileCoexistenceStage.viewportWidth + 1, JSON.stringify({ root: mobileCoexistence, stage: mobileCoexistenceStage }));
+  assert('Mobile Co-Existence preserves consent choices and optional provenance', await page.$eval('.future-native--2030', (node) => {
+    const persisted = JSON.parse(localStorage.getItem('kevinception-v7') || 'null');
+    const coexistence = persisted?.state?.futureJourney?.coexistence;
+    return coexistence?.keptMoments?.includes('morning')
+      && coexistence?.refusedMoments?.includes('making')
+      && coexistence?.refusedMoments?.includes('work')
+      && Boolean(node.querySelector('.coexistence-provenance > button'));
+  }));
 
   assert('The future smoke path emits no console errors', report.consoleErrors.length === 0, report.consoleErrors.join(' | '));
   assert('The future smoke path emits no page errors', report.pageErrors.length === 0, report.pageErrors.join(' | '));

@@ -26,11 +26,11 @@ function Corridor({
   return (
     <group position={[midpoint, 0, 0]}>
       <RoundedBox position={[0, -0.32, 0]} args={[length, 0.24, future ? 3.45 : 2.8]} radius={0.06} smoothness={2} receiveShadow>
-        <meshStandardMaterial color={future ? '#d7e5e5' : '#171b23'} roughness={future ? 0.4 : 0.84} metalness={future ? 0.18 : 0.04} />
+        <meshStandardMaterial color={future ? '#6f5840' : '#171b23'} roughness={future ? 0.56 : 0.84} metalness={future ? 0.08 : 0.04} />
       </RoundedBox>
       <mesh position={[0, 4.94, 0]} receiveShadow>
         <boxGeometry args={[length, 0.16, future ? 3.45 : 2.8]} />
-        <meshStandardMaterial color={future ? '#eaf1f0' : '#252a34'} roughness={0.7} />
+        <meshStandardMaterial color={future ? '#2a1b11' : '#252a34'} roughness={0.7} />
       </mesh>
       <mesh position={[0, -0.18, -1.32]}><boxGeometry args={[length, 0.035, 0.045]} /><meshBasicMaterial color={fromColor} transparent opacity={0.58} /></mesh>
       <mesh position={[0, -0.18, 1.32]}><boxGeometry args={[length, 0.035, 0.045]} /><meshBasicMaterial color={toColor} transparent opacity={0.58} /></mesh>
@@ -38,18 +38,18 @@ function Corridor({
         <>
           <mesh position={[0, 2.35, -1.7]}>
             <boxGeometry args={[length, 4.55, 0.065]} />
-            <meshPhysicalMaterial color="#c8f3f7" transparent opacity={0.18} roughness={0.06} clearcoat={1} depthWrite={false} />
+            <meshPhysicalMaterial color="#f2c47e" transparent opacity={0.14} roughness={0.08} clearcoat={1} depthWrite={false} />
           </mesh>
           <mesh position={[0, 2.35, 1.7]}>
             <boxGeometry args={[length, 4.55, 0.065]} />
-            <meshPhysicalMaterial color="#e0d4ff" transparent opacity={0.15} roughness={0.06} clearcoat={1} depthWrite={false} />
+            <meshPhysicalMaterial color="#ff6a35" transparent opacity={0.12} roughness={0.08} clearcoat={1} depthWrite={false} />
           </mesh>
           <mesh position={[0, 4.62, 0]}>
             <boxGeometry args={[length, 0.05, 3.25]} />
-            <meshPhysicalMaterial color="#f2ffff" transparent opacity={0.12} roughness={0.03} depthWrite={false} />
+            <meshPhysicalMaterial color="#ffe4b0" transparent opacity={0.1} roughness={0.06} depthWrite={false} />
           </mesh>
-          <mesh position={[0, 2.35, -1.74]}><boxGeometry args={[length, 0.07, 0.08]} /><meshStandardMaterial color="#6f9095" metalness={0.55} roughness={0.25} /></mesh>
-          <mesh position={[0, 2.35, 1.74]}><boxGeometry args={[length, 0.07, 0.08]} /><meshStandardMaterial color="#928aa3" metalness={0.55} roughness={0.25} /></mesh>
+          <mesh position={[0, 2.35, -1.74]}><boxGeometry args={[length, 0.07, 0.08]} /><meshStandardMaterial color="#8a6646" metalness={0.3} roughness={0.4} /></mesh>
+          <mesh position={[0, 2.35, 1.74]}><boxGeometry args={[length, 0.07, 0.08]} /><meshStandardMaterial color="#9d4527" metalness={0.3} roughness={0.4} /></mesh>
         </>
       ) : (
         <>
@@ -62,11 +62,11 @@ function Corridor({
   );
 }
 
-function FutureDataConduit() {
+function FutureMemoryConduit() {
   const activeYear = useExperienceStore((state) => state.activeYear);
   const transition = useExperienceStore((state) => state.transition);
   const motion = useExperienceStore((state) => state.motion);
-  const receipt = useExperienceStore((state) => state.futureJourney.mission.artifact);
+  const coexistence = useExperienceStore((state) => state.futureJourney.coexistence);
   const pulse = useRef<THREE.Group>(null);
   const data = useMemo(() => {
     const curve = new THREE.CatmullRomCurve3([
@@ -80,42 +80,33 @@ function FutureDataConduit() {
   }, []);
   useEffect(() => () => data.geometry.dispose(), [data]);
   const transitionActive = transition?.id === 'agents-to-echo';
-  const receiptColor = receipt?.status === 'stopped' ? '#ff718f' : receipt?.status === 'reframed' ? '#ffd66b' : '#bafff2';
+  const decision = coexistence.consent[coexistence.activeMoment];
+  const carried = coexistence.keptMoments.includes(coexistence.activeMoment);
+  const memoryColor = decision === 'refused' ? '#ff5738' : carried ? '#ffc261' : '#f2d7a0';
   useFrame(({ clock }) => {
     if (!transitionActive || !pulse.current) return;
     const duration = motion === 'reduced' ? 36 : 660;
     const progress = Math.min(1, Math.max(0, (Date.now() - (transition?.startedAt ?? Date.now())) / duration));
     const t = transition?.to === '2030' ? 1 - progress : progress;
     pulse.current.position.copy(data.curve.getPointAt(t));
-    pulse.current.rotation.y = clock.elapsedTime * (receipt ? 1.1 : 2.2);
-    pulse.current.scale.setScalar((receipt ? 1 : 1.45) + Math.sin(clock.elapsedTime * 5) * 0.08);
+    pulse.current.rotation.y = clock.elapsedTime * .62;
+    pulse.current.scale.setScalar((carried ? 1.08 : .92) + Math.sin(clock.elapsedTime * 5) * .06);
   });
   if (!transitionActive) return null;
   return (
     <group>
       <mesh geometry={data.geometry}>
-        <meshStandardMaterial color="#a6ecff" emissive="#67dff7" emissiveIntensity={1.0} transparent opacity={0.72} />
+        <meshStandardMaterial color="#f2bd72" emissive="#ff7f2c" emissiveIntensity={.82} transparent opacity={.58} />
       </mesh>
-      <group ref={pulse} userData={{ label: receipt ? `Receipt ${receipt.receiptId} in transit` : 'Future signal in transit', receiptId: receipt?.receiptId }}>
-        {receipt ? (
-          <>
-            <RoundedBox args={[0.62, 0.34, 0.16]} radius={0.055} smoothness={3} castShadow>
-              <meshStandardMaterial color="#ffffff" emissive={receiptColor} emissiveIntensity={2.2} metalness={0.42} roughness={0.16} />
-            </RoundedBox>
-            <mesh position={[0, 0, 0.1]}><planeGeometry args={[0.42, 0.16]} /><meshBasicMaterial color={receiptColor} transparent opacity={0.86} /></mesh>
-            <mesh rotation={[Math.PI / 2, 0, 0]}><torusGeometry args={[0.34, 0.018, 8, 32]} /><meshStandardMaterial color="#ffffff" emissive={receiptColor} emissiveIntensity={1.8} /></mesh>
-            <Html center position={[0, 0.42, 0]} zIndexRange={[6, 0]} style={{ pointerEvents: 'none' }}>
-              <span style={{ display: 'block', whiteSpace: 'nowrap', padding: '0.18rem 0.38rem', border: `1px solid ${receiptColor}`, borderRadius: '999px', color: '#f8ffff', background: 'rgba(5, 10, 16, .88)', font: '600 9px/1 ui-monospace, monospace', letterSpacing: '.08em', boxShadow: `0 0 18px ${receiptColor}66` }}>{receipt.receiptId}</span>
-            </Html>
-          </>
-        ) : (
-          <mesh>
-            <octahedronGeometry args={[0.13, 0]} />
-            <meshStandardMaterial color="#ffffff" emissive={activeYear === '2040' ? '#bfaaff' : '#73ecff'} emissiveIntensity={3.0} />
-          </mesh>
-        )}
+      <group ref={pulse} userData={{ label: `${coexistence.activeMoment} memory crossing from coexistence to consciousness`, consent: decision }}>
+        <mesh castShadow><cylinderGeometry args={[.16, .14, .29, 24]} /><meshStandardMaterial color="#382419" emissive={memoryColor} emissiveIntensity={carried ? 1.6 : .55} roughness={.4} /></mesh>
+        <mesh position={[.16, .02, 0]} rotation={[Math.PI / 2, 0, 0]}><torusGeometry args={[.09, .025, 8, 18]} /><meshStandardMaterial color="#f4ddae" emissive={memoryColor} emissiveIntensity={1.2} /></mesh>
+        <mesh rotation={[Math.PI / 2, 0, 0]}><torusGeometry args={[.31, .014, 8, decision === 'refused' ? 12 : 32]} /><meshStandardMaterial color={memoryColor} emissive={memoryColor} emissiveIntensity={1.5} transparent opacity={.75} /></mesh>
+        <Html center position={[0, .38, 0]} zIndexRange={[6, 0]} style={{ pointerEvents: 'none' }}>
+          <span style={{ display: 'block', whiteSpace: 'nowrap', padding: '0.18rem 0.38rem', border: `1px solid ${memoryColor}`, borderRadius: '999px', color: '#fff0d0', background: 'rgba(10, 6, 3, .9)', font: '700 8px/1 ui-monospace, monospace', letterSpacing: '.08em', boxShadow: `0 0 18px ${memoryColor}55` }}>{carried ? 'KEPT WITH PERMISSION' : decision === 'refused' ? 'LET GO' : '07:12 / MUG'}</span>
+        </Html>
       </group>
-      <pointLight position={[24, 1.6, 0]} color={receipt ? receiptColor : activeYear === '2040' ? '#bba2ff' : '#78e8ff'} intensity={receipt ? 2.4 : 1.3} distance={receipt ? 7 : 5.5} decay={2} />
+      <pointLight position={[24, 1.6, 0]} color={activeYear === '2040' ? '#ff6a35' : memoryColor} intensity={carried ? 2.4 : 1.3} distance={carried ? 7 : 5.5} decay={2} />
     </group>
   );
 }
@@ -145,7 +136,7 @@ export function TimelineArchitecture() {
           <mesh position={[0, 5.94, -0.48]}><boxGeometry args={[8.4, 0.025, 0.025]} /><meshBasicMaterial color={eraConfigs[year].accent} transparent opacity={activeYear === year ? 0.75 : 0.16} /></mesh>
         </group>
       ))}
-      <FutureDataConduit />
+      <FutureMemoryConduit />
     </group>
   );
 }

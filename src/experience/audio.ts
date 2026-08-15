@@ -1,5 +1,7 @@
 type InterfaceToneKind = 'click' | 'transition' | 'discover' | 'power';
-export type FutureSoundCue = 'mission-start' | 'task' | 'human-gate' | 'receipt' | 'signal' | 'memory' | 'synthesis' | 'handoff';
+export type FutureSoundCue =
+  | 'mission-start' | 'task' | 'human-gate' | 'receipt' | 'signal' | 'memory' | 'synthesis' | 'handoff'
+  | 'presence' | 'consent' | 'refusal' | 'notice' | 'agency' | 'conjecture';
 export type FutureSoundYear = '2030' | '2040';
 
 type ToneNote = {
@@ -57,6 +59,32 @@ export function playInterfaceTone(kind: InterfaceToneKind, enabled: boolean) {
 }
 
 const futureCueNotes: Record<FutureSoundCue, ToneNote[]> = {
+  presence: [
+    { frequency: 174.61, endFrequency: 196, duration: .44, peak: .018, type: 'triangle' },
+    { frequency: 261.63, endFrequency: 293.66, offset: .07, duration: .38, peak: .012 }
+  ],
+  consent: [
+    { frequency: 220, endFrequency: 329.63, duration: .58, peak: .022, type: 'triangle' },
+    { frequency: 329.63, endFrequency: 493.88, offset: .08, duration: .5, peak: .015 },
+    { frequency: 659.25, offset: .2, duration: .3, peak: .008 }
+  ],
+  refusal: [
+    { frequency: 146.83, endFrequency: 92.5, duration: .48, peak: .021, type: 'triangle' },
+    { frequency: 293.66, endFrequency: 185, offset: .04, duration: .38, peak: .011 }
+  ],
+  notice: [
+    { frequency: 246.94, endFrequency: 261.63, duration: .13, peak: .02, type: 'square' },
+    { frequency: 493.88, offset: .035, duration: .1, peak: .009 }
+  ],
+  agency: [
+    { frequency: 82.41, endFrequency: 164.81, duration: .42, peak: .027, type: 'sawtooth' },
+    { frequency: 329.63, endFrequency: 415.3, offset: .06, duration: .32, peak: .012, type: 'triangle' }
+  ],
+  conjecture: [
+    { frequency: 233.08, endFrequency: 207.65, duration: .19, peak: .017, type: 'sawtooth' },
+    { frequency: 311.13, endFrequency: 277.18, offset: .11, duration: .17, peak: .012, type: 'square' },
+    { frequency: 415.3, endFrequency: 369.99, offset: .24, duration: .14, peak: .007, type: 'sawtooth' }
+  ],
   'mission-start': [
     { frequency: 146.83, endFrequency: 196, duration: 0.54, peak: 0.026, type: 'triangle' },
     { frequency: 220, endFrequency: 293.66, offset: 0.06, duration: 0.48, peak: 0.021 },
@@ -130,11 +158,11 @@ export function startFutureAtmosphere(year: FutureSoundYear, enabled: boolean) {
   const filter = audio.createBiquadFilter();
   const lfo = audio.createOscillator();
   const lfoDepth = audio.createGain();
-  const base = year === '2030' ? 55 : 65.41;
+  const base = year === '2030' ? 55 : 43.65;
   const voices = [
     { ratio: 1, gain: 0.48, type: 'sine' as OscillatorType },
     { ratio: year === '2030' ? 1.5 : 4 / 3, gain: 0.27, type: 'triangle' as OscillatorType },
-    { ratio: year === '2030' ? 2.01 : 2.5, gain: 0.13, type: 'sine' as OscillatorType }
+    { ratio: year === '2030' ? 2.01 : 2.5, gain: 0.13, type: year === '2030' ? 'sine' as OscillatorType : 'sawtooth' as OscillatorType }
   ].map((voice, index) => {
     const oscillator = audio.createOscillator();
     const voiceGain = audio.createGain();
@@ -149,7 +177,7 @@ export function startFutureAtmosphere(year: FutureSoundYear, enabled: boolean) {
 
   filter.type = 'lowpass';
   filter.Q.setValueAtTime(year === '2030' ? 0.8 : 1.4, now);
-  filter.frequency.setValueAtTime(year === '2030' ? 620 : 880, now);
+  filter.frequency.setValueAtTime(year === '2030' ? 620 : 540, now);
   master.gain.setValueAtTime(AUDIO_FLOOR, now);
   master.gain.exponentialRampToValueAtTime(year === '2030' ? 0.018 : 0.015, now + 0.8);
   filter.connect(master).connect(audio.destination);

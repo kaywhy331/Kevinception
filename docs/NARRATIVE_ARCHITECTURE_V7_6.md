@@ -2,7 +2,7 @@
 
 ## Product statement
 
-Kevinception is a journey through six stages of Kevin’s relationship with technology: **Curiosity, Connection, Commerce, Creation, Coexistence, and Continuity**—each experienced through a defining interface of its era.
+Kevinception is a journey through six stages of Kevin’s relationship with technology: **Curiosity, Connection, Commerce, Creation, Co-Existence, and Consciousness**—each experienced through a defining interface of its era.
 
 The conceptual chapter name explains the life story. The in-world experience name preserves the era fiction and interface personality.
 
@@ -10,10 +10,10 @@ The conceptual chapter name explains the life story. The in-world experience nam
 |---|---:|---|---|
 | Curiosity | 1990 | KevinVision | Play becomes systems thinking. |
 | Connection | 2000 | Kevin Online | Curiosity finds a network. |
-| Commerce | 2010 | Kevazon Marketplace | Connection becomes commerce. |
+| Commerce | 2010 | StealStreet Commerce OS | Connection becomes commerce. |
 | Creation | 2020 | KevTok | Commerce becomes creation. |
-| Coexistence | 2030 | Kevin Nexus | Creation becomes coexistence. |
-| Continuity | 2040 | Kevin Echo | Coexistence becomes continuity. |
+| Co-Existence | 2030 | Morning, Together | Creation becomes co-existence. |
+| Consciousness | 2040 | Morning, After | Co-Existence becomes consciousness. |
 
 ## Presentation rules
 
@@ -49,7 +49,9 @@ Select chapter
 ## Review checklist
 
 - [ ] The six conceptual names are immediately understandable without opening Help.
-- [ ] KevinVision, Kevin Online, Kevazon Marketplace, KevTok, Kevin Nexus, and Kevin Echo remain visible as interface brands.
+- [ ] KevinVision, Kevin Online, StealStreet Commerce OS, KevTok, Morning, Together, and Morning, After remain visible as experience names.
+- [ ] 2030 reads first as daily life with Wren; TokenPak/TIP/PAK appears only as optional provenance.
+- [ ] 2040 recall and hologram stability visibly honor every 2030 keep/refuse decision.
 - [ ] The chapter card does not change structure between timeline and environment states.
 - [ ] The persistent timeline rail always shows the active chapter outside interface/text mode.
 - [ ] The interface header clearly states chapter number, chapter name, year, and experience name.

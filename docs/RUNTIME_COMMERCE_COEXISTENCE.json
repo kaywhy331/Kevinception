@@ -1,7 +1,7 @@
 {
-  "generatedAt": "2026-08-14T08:55:13.401Z",
+  "generatedAt": "2026-08-15T02:30:00.167Z",
   "browser": "/home/trix/.cache/ms-playwright/chromium-1234/chrome-linux64/chrome",
-  "base": "http://127.0.0.1:4321",
+  "base": "http://127.0.0.1:4322",
   "assertions": [
     {
       "name": "The direct dashboard module URL opens the Commerce interface",
@@ -409,37 +409,27 @@
       "detail": ""
     },
     {
-      "name": "The native Coexistence roster exposes four AI roles and a human Governor",
-      "passed": true,
-      "detail": "[{\"label\":\"Clarifier\",\"owner\":\"AI\"},{\"label\":\"Researcher\",\"owner\":\"AI\"},{\"label\":\"Architect\",\"owner\":\"AI\"},{\"label\":\"Builder\",\"owner\":\"AI\"},{\"label\":\"Governor\",\"owner\":\"H\"}]"
-    },
-    {
-      "name": "The native mission stops at an explicit human decision gate",
+      "name": "Native Co-Existence exposes five ordinary moments with Wren",
       "passed": true,
       "detail": ""
     },
     {
-      "name": "The native mission keeps surfaced disagreement visible beside the gate",
+      "name": "TokenPak, TIP, and PAK remain optional provenance rather than the 2030 hero",
       "passed": true,
       "detail": ""
     },
     {
-      "name": "A consequential Nexus decision creates a governed receipt",
-      "passed": true,
-      "detail": "NX-1N8J08S"
-    },
-    {
-      "name": "The governed receipt persists into Kevin Echo",
-      "passed": true,
-      "detail": "NX-1N8J08S"
-    },
-    {
-      "name": "Kevin Echo fails closed on unsupported details",
+      "name": "Consciousness reports the one memory permitted by the living day",
       "passed": true,
       "detail": ""
     },
     {
-      "name": "The three-memory synthesis reaches the authored finale with receipt provenance",
+      "name": "Holographic Kevin exposes withheld conjecture instead of inventing memory",
+      "passed": true,
+      "detail": ""
+    },
+    {
+      "name": "The behavior loop ends with explicit encounter permission",
       "passed": true,
       "detail": ""
     },

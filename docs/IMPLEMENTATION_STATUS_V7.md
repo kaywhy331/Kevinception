@@ -8,7 +8,7 @@
 
 The V7 architecture is implemented as a working, statically exportable application. One persistent React Three Fiber canvas now powers a connected sequence of six physical era environments, authored camera travel, environment/interface modes, cross-era artifacts, motion and quality controls, and WebGL fallback behavior.
 
-The focused interface layer preserves the substantial 1990–2020 applications—including Kevin Online, Xanga, the reconstructed commerce operating system, and KevTok—while 2030 Kevin Nexus and 2040 Kevin Echo now run as native React experiences on one persisted, consequential journey.
+The focused interface layer preserves the substantial 1990–2020 applications—including Kevin Online, Xanga, the reconstructed commerce operating system, and KevTok—while 2030 **Morning, Together** and 2040 **Morning, After** now run as native React experiences on one persisted, consequential journey.
 
 The build should be treated as a **complete connected-environment implementation and functional vertical slice**, not the final artist-authored GLB and texture pass. Bespoke GLB environments, final original/licensed sound design across all eras, render-to-texture screen portals, and any secure open-ended AI service remain later production work.
 
@@ -38,7 +38,7 @@ The build should be treated as a **complete connected-environment implementation
 - Muted-by-default persisted sound preference, synthesized interface feedback, and generated opt-in 2030/2040 atmospheres and event cues
 - WebGL capability detection
 - Runtime canvas error boundary that moves visitors into the text experience
-- Browser-local year visits, settings, artifact progress, governed mission receipt, Echo memories, resonance, and finale state
+- Browser-local year visits, settings, artifact progress, Wren consent decisions, permissioned memories, holographic Kevin’s behavior phase, source trace, and encounter-retention choice
 
 ### 1990 — KevinVision
 
@@ -74,29 +74,29 @@ The build should be treated as a **complete connected-environment implementation
 - Next-Layer Message artifact
 - Focused interface embedding the finite KevTok feed, captions, transcripts, reactions, comments, and project links
 
-### 2030 — Kevin Nexus
+### 2030 — Co-Existence / Morning, Together
 
-- Physical Coexistence Lab whose core, collaborator stations, context-packet speed/count, human gate, and sealed receipt react to the shared mission state
-- Native semantic Kevin Nexus interface with five materially distinct mission types and configurable objectives, constraints, and 1–5 initiative boundary
-- Clarifier, Researcher, Architect, Builder, and Governor tasks with visible authority mode, confidence, uncertainty, verified evidence, and surfaced disagreement
-- Mandatory human decision gate with Approve, Revise, and Reject outcomes
-- Persistent deterministic `NX-*` continuation receipt carrying the decision, constraints, evidence, next step, and human-owned authority into 2040
-- Human Gate artifact and discovery state
+- Warm apartment-and-studio environment compressed into five ordinary moments from 07:12 through 22:04
+- Wren expressed as room-scale light, anticipation, productive disagreement, authority-aware restraint, silence, and intentional absence—not an agent dashboard
+- Object-led interaction through the morning mug, shared draft, window desk, threshold, and after-gathering glasses
+- Explicit Keep it with me / Let it end here consent for every moment, with refused memories removed from the journey
+- TokenPak, TIP, and PAK available only through an optional memory receipt as the quiet provenance and authority spine beneath the relationship
+- Human Gate artifact recovered through the right to keep or forget rather than a generic approval node
 
-### 2040 — Kevin Echo
+### 2040 — Consciousness / Morning, After
 
-- Physical Continuity Sanctuary with luminous architecture, reflective pool, memory columns, plants, and a point-field hologram that reacts to resonance and finale state
-- Six selectable memory shards linked to the same browser-local memory state as the semantic interface
-- Native evidence-bounded thought interpreter with authored intent routing, visible sources, identity disclosure, and an explicit fail-closed response for unsupported facts
-- Mounted 2030 receipt provenance when a governed mission exists
-- Three-unique-memory synthesis gate and authored finale: “The interfaces changed. The pattern did not.”
-- Present-day Work and Contact actions plus Curiosity replay path
-- Next-Layer Message and Signal Fragment continuity
+- The same apartment ten years later, rebuilt as black glass, rain, sodium amber, and vermilion cyberpunk atmosphere
+- Code-native holographic portrait of Kevin as the visual and narrative hero, including the same mug and a hand that cannot touch it
+- Environmental cues drive `Notice → Recall → Deliberate → Act → Continue`, including speaking, demonstrating, initiating, and refusing
+- 2030 consent materially changes 2040 recall, source language, cue treatment, and hologram stability; withheld memories remain deliberate blanks
+- Theatrical source trace distinguishes stable records, incomplete patterns, and frayed conjecture that Kevin refuses to promote into memory
+- Final encounter question—“May I keep this?”—with explicit keep or release outcomes
+- Elegant identity disclosure: an authored reproduction, not transferred consciousness
 
 ### Cross-era continuity
 
 - Continuous architectural timeline corridor
-- Shared 2030/2040 future wing with observation glass and a stateful conduit that visibly transports the real `NX-*` receipt in either direction
+- Shared 2030/2040 future wing with observation glass and a stateful conduit that carries the selected mug/moment and its real consent state in either direction
 - Five stable artifact identities
 - Era-specific transformations for every artifact
 - Local discovery state
@@ -105,8 +105,8 @@ The build should be treated as a **complete connected-environment implementation
   - TV static to modem noise
   - Personal pages resolving into marketplace operations
   - Order signals accelerating into the creator feed
-  - Reactions reorganizing into human-and-AI collaboration
-  - A governed mission receipt reconstructing as Kevin Echo memory, with authored forward/reverse choreography
+  - Reactions resolving into an ordinary morning shared with Wren
+  - A physical gesture becoming permissioned memory, with authored forward/reverse mug choreography
 - Direct previous, next, timeline, and Portfolio routes
 
 ### Accessibility and fallbacks
@@ -115,7 +115,7 @@ The build should be treated as a **complete connected-environment implementation
 - Skip link and visible focus styles
 - Keyboard timeline controls and DOM equivalents for WebGL hotspots
 - Text experience with canonical content and artifact recovery in all six eras
-- Functional text parity for the full 2030 mission, human decision, persistent receipt, 2040 sourced interpreter, six memories, synthesis gate, and authored finale
+- Functional text parity for all five 2030 moments, Wren consent and optional provenance, all four 2040 cues, the full behavior loop, permission-driven recall, source certainty, and encounter retention
 - Reduced-motion support, including automatic first-visit OS preference detection
 - No-WebGL fallback
 - Canvas failure recovery
@@ -135,7 +135,7 @@ The following 1990–2020 applications are embedded from `public/legacy/` becaus
 - Kevazon Marketplace operations
 - KevTok feed interactions
 
-The embedded applications are same-origin and include a small parent-navigation bridge so internal route actions can control the V7 shell. Kevin Nexus and Kevin Echo are native React interfaces and do not use iframes.
+The embedded applications are same-origin and include a small parent-navigation bridge so internal route actions can control the V7 shell. Morning, Together and Morning, After are native React interfaces and do not use iframes.
 
 ## Remaining production work
 
@@ -163,13 +163,13 @@ The embedded applications are same-origin and include a small parent-navigation 
 
 ### AI
 
-- Decide whether an open-ended service adds enough value beyond the current deterministic, evidence-bounded Echo
+- Decide whether an open-ended service adds enough value beyond the current deterministic, source-bounded holographic Kevin
 - If approved, add a secure server-side retrieval/LLM endpoint grounded only in canonical records
 - Validate every generated claim and UI action against explicit source and action allowlists
-- Preserve the current identity boundary, fail-closed behavior, and deterministic outage fallback
+- Preserve the current identity boundary, permissioned-memory rule, fail-closed behavior, and deterministic outage fallback
 
 ## Definition of the current release
 
-V7.7 is complete when evaluated as a connected physical-environment portfolio and hardened static release: it demonstrates the persistent R3F world, all six physical technology environments, route continuity, functional interface preservation, the native governed future journey, semantic portfolio access, complete fallbacks, searchable evidence, artifact completion, and verified deployment output.
+V7.7 is complete when evaluated as a connected physical-environment portfolio and hardened static release: it demonstrates the persistent R3F world, all six physical technology environments, route continuity, functional interface preservation, the native Co-Existence-to-Consciousness future journey, semantic portfolio access, complete fallbacks, searchable evidence, artifact completion, and verified deployment output.
 
 It is not represented as the final cinematic art, final soundscape, or final AI-enabled release.

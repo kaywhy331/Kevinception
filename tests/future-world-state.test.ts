@@ -5,30 +5,33 @@ import { describe, expect, it } from 'vitest';
 const read = (relative: string) => fs.readFileSync(path.join(process.cwd(), relative), 'utf8');
 
 describe('future journey world-state integration', () => {
-  it('drives the 2030 room from mission phase, task, autonomy, and receipt state', () => {
+  it('drives the 2030 apartment from the active moment and its consent state', () => {
     const scene = read('src/experience/scenes/Year2030Scene.tsx');
-    expect(scene).toContain('state.futureJourney.mission');
-    expect(scene).toContain("mission.phase === 'orchestrating'");
-    expect(scene).toContain('mission.autonomy + 2');
-    expect(scene).toContain('mission.artifact.receiptId');
-    expect(scene).toContain("phase === 'decision' && agentId === 'governor'");
+    expect(scene).toContain('state.futureJourney.coexistence');
+    expect(scene).toContain('coexistence.activeMoment === id');
+    expect(scene).toContain('coexistence.consent[id]');
+    expect(scene).toContain('<ConsentMark');
+    expect(scene).toContain('Wren in the room');
+    expect(scene).not.toContain('mission.artifact');
   });
 
-  it('drives the 2040 room from resonance, all six memories, and synthesis state', () => {
+  it('drives the 2040 room from consciousness phase, source trace, and permissioned memory', () => {
     const scene = read('src/experience/scenes/Year2040Scene.tsx');
-    expect(scene).toContain('state.futureJourney.echo');
-    expect(scene).toContain('openMemory(shard.id)');
-    expect(scene).toContain('echo.openedMemories.includes(shard.id)');
-    expect(scene).toContain('echo.synthesisReady');
-    expect(scene).toContain('echo.finaleSeen');
-    expect(scene.match(/id: '20[0-4]0'/g)).toHaveLength(5);
-    expect(scene).toContain("id: '1990'");
+    expect(scene).toContain('state.futureJourney.consciousness');
+    expect(scene).toContain('state.futureJourney.coexistence');
+    expect(scene).toContain('<HologramKevin');
+    expect(scene).toContain('consciousness.behaviorPhase');
+    expect(scene).toContain('consciousness.sourceTraceOpen');
+    expect(scene).toContain('getPermissionedMemoryState');
+    expect(scene).not.toContain('shardLayout');
   });
 
-  it('carries the governed receipt through the 2030-to-2040 conduit', () => {
+  it('carries the selected moment and its real consent through the 2030-to-2040 conduit', () => {
     const architecture = read('src/experience/TimelineArchitecture.tsx');
-    expect(architecture).toContain('state.futureJourney.mission.artifact');
-    expect(architecture).toContain('receipt.receiptId');
+    expect(architecture).toContain('state.futureJourney.coexistence');
+    expect(architecture).toContain('coexistence.consent[coexistence.activeMoment]');
+    expect(architecture).toContain('coexistence.keptMoments.includes');
+    expect(architecture).toContain('memory crossing from coexistence to consciousness');
     expect(architecture).toContain("transition?.id === 'agents-to-echo'");
     expect(architecture).toContain("transition?.to === '2030' ? 1 - progress : progress");
   });

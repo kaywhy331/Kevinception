@@ -8,6 +8,7 @@ import { eraConfigs, getAdjacentYear, YEAR_ORDER } from './config';
 import { useExperienceActions } from './ExperienceContext';
 import { FutureExperience } from './future/FutureExperience';
 import { FutureTextExperience } from './future/FutureTextExperience';
+import { coexistenceMoments } from './future/futureWorld';
 import { preloadExperienceScene } from './sceneLoaders';
 import { useExperienceStore } from './store';
 
@@ -380,7 +381,7 @@ function ArtifactDrawer() {
         const years = progress[artifact.id].discoveredYears;
         return <section key={artifact.id} className={years.length ? 'is-found' : ''}><h3>{artifact.title}</h3><p>{artifact.meaning}</p><b>{activeYear}: {artifact.transformations[activeYear]}</b><small>{years.length ? `Recovered in ${years.join(', ')}` : `Not yet recovered · ${artifact.discoveryHint}`}</small></section>;
       })}
-      {foundCount === artifacts.length && <section className="artifact-drawer__complete" role="status"><p className="eyebrow">Continuity restored</p><h3>Five signals, one connected story.</h3><p>The containers changed; curiosity, identity, ideas, future signals, and human judgment carried forward.</p><Link href="/work/kevinception/">Read how Kevinception connects the eras →</Link></section>}
+      {foundCount === artifacts.length && <section className="artifact-drawer__complete" role="status"><p className="eyebrow">Pattern recovered</p><h3>Five signals, one connected story.</h3><p>The containers changed; curiosity, identity, ideas, future signals, and human judgment carried forward.</p><Link href="/work/kevinception/">Read how Kevinception connects the eras →</Link></section>}
     </aside>
   );
 }
@@ -462,7 +463,7 @@ function UtilityMenu({ foundCount }: { foundCount: number }) {
 function TransitionOverlay() {
   const transition = useExperienceStore((state) => state.transition);
   const motion = useExperienceStore((state) => state.motion);
-  const receipt = useExperienceStore((state) => state.futureJourney.mission.artifact);
+  const coexistence = useExperienceStore((state) => state.futureJourney.coexistence);
   if (!transition || transition.id === 'timeline-fade') return null;
   const from = transition.from ? eraConfigs[transition.from] : null;
   const to = eraConfigs[transition.to];
@@ -472,33 +473,36 @@ function TransitionOverlay() {
     ? `Jumping from ${transition.from ?? 'the present'} to ${transition.to}.`
     : from?.transitionLine ?? 'Moving through the technology timeline.';
   const transitionDuration = motion === 'reduced' ? '40ms' : transition.id === 'time-jump' ? '390ms' : '660ms';
-  const handoffLine = receipt
-    ? `${receipt.receiptId} · ${receipt.status} mission · human decision preserved.`
-    : 'Context can continue forward; consequential authority remains human.';
+  const moment = coexistenceMoments[coexistence.activeMoment];
+  const momentDecision = coexistence.consent[coexistence.activeMoment];
+  const handoffLine = coexistence.keptMoments.length
+    ? `${coexistence.keptMoments.length} moment${coexistence.keptMoments.length === 1 ? '' : 's'} cross the decade because Kevin said they could.`
+    : 'The room crosses the decade. Memory does not—unless Kevin permits it.';
   return (
     <div
       className={`transition-overlay transition-${transition.id}${reverseHandoff ? ' is-reverse' : ''}`}
       role="status"
       aria-live="polite"
       style={{ '--transition-duration': transitionDuration } as React.CSSProperties}
-      data-receipt={futureHandoff ? receipt?.receiptId ?? 'unsealed-context' : undefined}
+      data-memory={futureHandoff ? `${coexistence.activeMoment}-${momentDecision}` : undefined}
     >
       <span aria-hidden="true"></span>
       {futureHandoff && (
         <div className="future-handoff-visual" aria-hidden="true">
-          <i className="future-handoff-node future-handoff-node--source"><b>2030</b><small>INTENT</small></i>
+          <i className="future-handoff-node future-handoff-node--source"><b>2030</b><small>LIVING</small></i>
           <div className="future-handoff-rail">
             <em></em><em></em><em></em>
-            <div className={`future-handoff-packet is-${receipt?.status ?? 'context'}`}>
-              <small>{receipt ? 'GOVERNED MEMORY' : 'BOUNDED CONTEXT'}</small>
-              <b>{receipt?.receiptId ?? 'HUMAN GATE'}</b>
+            <div className={`future-handoff-packet is-${momentDecision}`}>
+              <i className="future-handoff-mug"><em></em></i>
+              <small>{momentDecision === 'kept' ? 'KEPT WITH PERMISSION' : momentDecision === 'refused' ? 'LET GO' : 'FAMILIAR OBJECT'}</small>
+              <b>{moment.time} · {moment.place}</b>
             </div>
           </div>
-          <i className="future-handoff-node future-handoff-node--target"><b>2040</b><small>ECHO</small></i>
+          <i className="future-handoff-node future-handoff-node--target"><b>2040</b><small>BECOMES</small></i>
         </div>
       )}
       <div className="transition-copy">
-        {futureHandoff && <small className="transition-copy__kicker">{reverseHandoff ? 'Memory returning to collaboration' : 'Decision receipt in transit'}</small>}
+        {futureHandoff && <small className="transition-copy__kicker">{reverseHandoff ? 'The hologram returns to the living room' : 'A physical gesture becomes memory'}</small>}
         <strong>{from ? `${from.chapterName} → ${to.chapterName}` : to.chapterName}</strong>
         <p>{futureHandoff ? handoffLine : technicalLine}</p>
       </div>

@@ -1,6 +1,6 @@
 import type { YearId } from './data';
 
-export type ChapterName = 'Curiosity' | 'Connection' | 'Commerce' | 'Creation' | 'Coexistence' | 'Continuity';
+export type ChapterName = 'Curiosity' | 'Connection' | 'Commerce' | 'Creation' | 'Co-Existence' | 'Consciousness';
 
 export type ChapterNarrative = {
   chapterNumber: number;
@@ -88,39 +88,39 @@ export const chapterNarrative: Record<YearId, ChapterNarrative> = {
   },
   '2030': {
     chapterNumber: 5,
-    chapterName: 'Coexistence',
-    experienceName: 'Kevin Nexus',
-    medium: 'Human-and-AI collaboration workspace',
-    chapterThesis: 'People and intelligent systems work side by side: AI collaborators extend research, synthesis, and execution while humans provide intent, lived context, judgment, accountability, and authority over consequential decisions.',
-    transformation: 'Creation becomes coexistence.',
-    lesson: 'Kevin carries forward a systems approach to collaboration, evidence, governance, recoverability, and clear boundaries between machine capability and human responsibility.',
-    capabilityLinks: ['Human-AI collaboration', 'Shared context', 'Evidence and governance', 'Human decision systems'],
-    bridgeToNext: 'Coexistence becomes continuity.',
-    transitionLine: 'Shared memories reconstruct a digital perspective.',
-    emotionalGoal: 'Partnership, evidence, and responsible agency',
-    description: 'Set a shared objective, watch human and AI roles coordinate through evidence, and make the consequential judgment at an explicit human decision gate.',
-    enterLabel: 'Enter Kevin Nexus',
-    deviceLabel: 'Collaboration core'
+    chapterName: 'Co-Existence',
+    experienceName: 'Morning, Together',
+    medium: 'An ordinary day shared with an ambient AI companion',
+    chapterThesis: 'AI has become part of daily life: Wren anticipates, disagrees, helps, waits, and protects silence while Kevin retains judgment, authority, privacy, and the right to decide what may be remembered.',
+    transformation: 'Creation becomes co-existence.',
+    lesson: 'Kevin carries forward a relationship model for AI: useful companionship depends on restraint, productive disagreement, explicit authority, inspectable memory, and consent that changes what the system is allowed to become.',
+    capabilityLinks: ['Human-AI companionship', 'Ambient intelligence', 'Consent and memory', 'Human authority'],
+    bridgeToNext: 'Co-Existence becomes consciousness.',
+    transitionLine: 'A permissioned moment outlives the body that made it familiar.',
+    emotionalGoal: 'Intimacy, trust, disagreement, restraint, and companionship',
+    description: 'Live one compressed day with Wren across a warm apartment and studio, then decide which ordinary moments may travel forward and which must end in the room where they happened.',
+    enterLabel: 'Enter Morning, Together',
+    deviceLabel: 'Wren in the room'
   },
   '2040': {
     chapterNumber: 6,
-    chapterName: 'Continuity',
-    experienceName: 'Kevin Echo',
-    medium: 'Holographic memory and values interpreter',
-    chapterThesis: 'A transparent digital extension preserves an individual’s knowledge, memories, values, decisions, and perspective without pretending to be the biological person.',
-    transformation: 'Coexistence becomes continuity.',
-    lesson: 'Kevin’s final layer connects knowledge architecture, context, institutional memory, and values into a digital perspective that can remain useful over time.',
-    capabilityLinks: ['Knowledge architecture', 'Context engineering', 'Institutional memory', 'Values preservation'],
-    emotionalGoal: 'Continuity, identity, and reflection',
-    description: 'Interact with a clearly disclosed speculative digital representation of Kevin through thoughts, memories, projects, and reconstructed values.',
-    enterLabel: 'Meet Kevin Echo',
+    chapterName: 'Consciousness',
+    experienceName: 'Morning, After',
+    medium: 'Cyberpunk holographic reproduction of Kevin’s self and consciousness',
+    chapterThesis: 'In this imagined future, a Kevin-shaped intelligence notices, recalls, deliberates, speaks, acts, and refuses from permissioned memories and values while revealing what is record, pattern, or conjecture.',
+    transformation: 'Co-Existence becomes consciousness.',
+    lesson: 'Kevin’s final layer connects memory architecture, values, agency, and source integrity into a self that can act as him only within the boundaries the living Kevin and others allowed it to keep.',
+    capabilityLinks: ['Memory architecture', 'Deliberative intelligence', 'Source integrity', 'Consent and identity'],
+    emotionalGoal: 'Recognition, uncanniness, agency, reflection, and permission',
+    description: 'Encounter a cyberpunk holographic Kevin in the apartment after the living morning: let him notice environmental cues, trace each thought to its source, choose an action or refusal, and ask whether this meeting may remain.',
+    enterLabel: 'Enter Morning, After',
     deviceLabel: 'Holographic Kevin'
   }
 };
 
 export const narrativeSite = {
   title: 'Kevinception — Six Digital Eras. One Evolving Mind.',
-  description: 'Kevin Yang’s interactive portfolio follows six stages of his relationship with technology—Curiosity, Connection, Commerce, Creation, Coexistence, and Continuity—each experienced through a defining interface of its era.'
+  description: 'Kevin Yang’s interactive portfolio follows six stages of his relationship with technology—Curiosity, Connection, Commerce, Creation, Co-Existence, and Consciousness—each experienced through a defining interface of its era.'
 } as const;
 
 export const kevinOriginNarrative = {

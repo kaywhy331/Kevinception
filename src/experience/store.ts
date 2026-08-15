@@ -8,6 +8,7 @@ import {
   advanceFutureMission as advanceFutureMissionState,
   beginFutureMission as beginFutureMissionState,
   createInitialFutureJourney,
+  hydrateFutureJourney,
   interpretEchoThought as interpretEchoThoughtState,
   markEchoFinaleSeen as markEchoFinaleSeenState,
   openEchoMemory as openEchoMemoryState,
@@ -21,6 +22,19 @@ import {
   type FutureJourneyState,
   type FutureMissionId
 } from './future/futureJourney';
+import {
+  advanceConsciousnessBehavior as advanceConsciousnessBehaviorState,
+  resolveCompanionConsent as resolveCompanionConsentState,
+  resolveEncounterRetention as resolveEncounterRetentionState,
+  selectCoexistenceMoment as selectCoexistenceMomentState,
+  selectConsciousnessCue as selectConsciousnessCueState,
+  setCoexistenceProvenance as setCoexistenceProvenanceState,
+  setConsciousnessSourceTrace as setConsciousnessSourceTraceState,
+  type CoexistenceMomentId,
+  type CompanionConsent,
+  type ConsciousnessCueId,
+  type EncounterRetention
+} from './future/futureWorld';
 import type { ArtifactProgress, MotionPreference, Quality, TransitionState, ViewMode } from './types';
 
 const emptyArtifacts: ArtifactProgress = {
@@ -69,6 +83,13 @@ type ExperienceStore = {
   interpretEchoThought: (thought: string) => void;
   openEchoMemory: (memoryId: EchoMemoryId) => void;
   markEchoFinaleSeen: () => void;
+  selectCoexistenceMoment: (momentId: CoexistenceMomentId) => void;
+  resolveCompanionConsent: (decision: Exclude<CompanionConsent, 'unasked'>) => void;
+  setCoexistenceProvenance: (open: boolean) => void;
+  selectConsciousnessCue: (cueId: ConsciousnessCueId) => void;
+  advanceConsciousnessBehavior: () => void;
+  setConsciousnessSourceTrace: (open: boolean) => void;
+  resolveEncounterRetention: (decision: Exclude<EncounterRetention, 'unasked'>) => void;
   resetFutureJourney: () => void;
   recordVisit: (year: YearId) => void;
   resetProgress: () => void;
@@ -130,6 +151,27 @@ export const useExperienceStore = create<ExperienceStore>()(
       interpretEchoThought: (thought) => set((state) => ({ futureJourney: interpretEchoThoughtState(state.futureJourney, thought) })),
       openEchoMemory: (memoryId) => set((state) => ({ futureJourney: openEchoMemoryState(state.futureJourney, memoryId) })),
       markEchoFinaleSeen: () => set((state) => ({ futureJourney: markEchoFinaleSeenState(state.futureJourney) })),
+      selectCoexistenceMoment: (momentId) => set((state) => ({
+        futureJourney: { ...state.futureJourney, coexistence: selectCoexistenceMomentState(state.futureJourney.coexistence, momentId) }
+      })),
+      resolveCompanionConsent: (decision) => set((state) => ({
+        futureJourney: { ...state.futureJourney, coexistence: resolveCompanionConsentState(state.futureJourney.coexistence, decision) }
+      })),
+      setCoexistenceProvenance: (open) => set((state) => ({
+        futureJourney: { ...state.futureJourney, coexistence: setCoexistenceProvenanceState(state.futureJourney.coexistence, open) }
+      })),
+      selectConsciousnessCue: (cueId) => set((state) => ({
+        futureJourney: { ...state.futureJourney, consciousness: selectConsciousnessCueState(state.futureJourney.consciousness, cueId) }
+      })),
+      advanceConsciousnessBehavior: () => set((state) => ({
+        futureJourney: { ...state.futureJourney, consciousness: advanceConsciousnessBehaviorState(state.futureJourney.consciousness) }
+      })),
+      setConsciousnessSourceTrace: (open) => set((state) => ({
+        futureJourney: { ...state.futureJourney, consciousness: setConsciousnessSourceTraceState(state.futureJourney.consciousness, open) }
+      })),
+      resolveEncounterRetention: (decision) => set((state) => ({
+        futureJourney: { ...state.futureJourney, consciousness: resolveEncounterRetentionState(state.futureJourney.consciousness, decision) }
+      })),
       resetFutureJourney: () => set({ futureJourney: createInitialFutureJourney() }),
       recordVisit: (year) => set((state) => ({
         yearVisits: { ...state.yearVisits, [year]: state.yearVisits[year] + 1 },
@@ -139,7 +181,7 @@ export const useExperienceStore = create<ExperienceStore>()(
     }),
     {
       name: 'kevinception-v7',
-      version: 3,
+      version: 4,
       storage: createJSONStorage(() => localStorage),
       migrate: (persistedState, version) => {
         const state = persistedState && typeof persistedState === 'object'
@@ -148,7 +190,9 @@ export const useExperienceStore = create<ExperienceStore>()(
         return {
           ...state,
           preferencesConfigured: version < 2 ? true : Boolean(state.preferencesConfigured),
-          futureJourney: version < 3 || !state.futureJourney ? createInitialFutureJourney() : state.futureJourney
+          futureJourney: version < 3 || !state.futureJourney
+            ? createInitialFutureJourney()
+            : hydrateFutureJourney(state.futureJourney)
         } as PersistedExperienceState;
       },
       partialize: (state) => ({

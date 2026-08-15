@@ -106,9 +106,18 @@ export type EchoState = {
   finaleSeen: boolean;
 };
 
+import {
+  createInitialCoexistenceState,
+  createInitialConsciousnessState,
+  type CoexistenceState,
+  type ConsciousnessState
+} from './futureWorld';
+
 export type FutureJourneyState = {
   mission: FutureMissionState;
   echo: EchoState;
+  coexistence: CoexistenceState;
+  consciousness: ConsciousnessState;
 };
 
 export const futureMissionTemplates: Record<FutureMissionId, MissionTemplate> = {
@@ -232,8 +241,8 @@ export const echoMemoryRecords: Record<EchoMemoryId, { title: string; signal: st
   '2000': { title: 'Connection', signal: 'The first online identity', reconstruction: 'Dial-up turned one computer into an entrance to people, scripts, pages, and shared imagination.', source: 'Connection chapter' },
   '2010': { title: 'Systems', signal: 'The connected customer promise', reconstruction: 'Orders, catalog data, inventory, fulfillment, service, and teams became one operating model.', source: 'Commerce chapter' },
   '2020': { title: 'Creation', signal: 'The compressed story', reconstruction: 'Publishing accelerated, signals became immediate, and ideas had to become tangible quickly.', source: 'Creation chapter' },
-  '2030': { title: 'Orchestration', signal: 'The governed handoff', reconstruction: 'People and AI divided work by comparative strength while human judgment retained consequential authority.', source: 'Coexistence chapter' },
-  '2040': { title: 'Continuity', signal: 'The persistent echo', reconstruction: 'Records and patterns can remain useful without pretending that a simulation is the biological person.', source: 'Continuity chapter' }
+  '2030': { title: 'Companionship', signal: 'The permissioned morning', reconstruction: 'Kevin and Wren shared ordinary life while human consent decided which moments could travel forward.', source: 'Co-Existence chapter' },
+  '2040': { title: 'Consciousness', signal: 'The permissioned self', reconstruction: 'A holographic Kevin can remember, deliberate, act, and refuse without turning inference into a claimed memory.', source: 'Consciousness chapter' }
 };
 
 const initialMission = (): FutureMissionState => ({
@@ -258,7 +267,42 @@ const initialEcho = (): EchoState => ({
 });
 
 export function createInitialFutureJourney(): FutureJourneyState {
-  return { mission: initialMission(), echo: initialEcho() };
+  return {
+    mission: initialMission(),
+    echo: initialEcho(),
+    coexistence: createInitialCoexistenceState(),
+    consciousness: createInitialConsciousnessState()
+  };
+}
+
+export function hydrateFutureJourney(state?: Partial<FutureJourneyState> | null): FutureJourneyState {
+  const initial = createInitialFutureJourney();
+  if (!state) return initial;
+
+  return {
+    mission: {
+      ...initial.mission,
+      ...state.mission,
+      answers: { ...initial.mission.answers, ...state.mission?.answers }
+    },
+    echo: {
+      ...initial.echo,
+      ...state.echo,
+      openedMemories: Array.isArray(state.echo?.openedMemories) ? state.echo.openedMemories : initial.echo.openedMemories
+    },
+    coexistence: {
+      ...initial.coexistence,
+      ...state.coexistence,
+      consent: { ...initial.coexistence.consent, ...state.coexistence?.consent },
+      keptMoments: Array.isArray(state.coexistence?.keptMoments) ? state.coexistence.keptMoments : initial.coexistence.keptMoments,
+      refusedMoments: Array.isArray(state.coexistence?.refusedMoments) ? state.coexistence.refusedMoments : initial.coexistence.refusedMoments
+    },
+    consciousness: {
+      ...initial.consciousness,
+      ...state.consciousness,
+      visitedCues: Array.isArray(state.consciousness?.visitedCues) ? state.consciousness.visitedCues : initial.consciousness.visitedCues
+    }
+  };
 }
 
 export function selectFutureMission(state: FutureJourneyState, missionId: FutureMissionId): FutureJourneyState {
@@ -392,13 +436,13 @@ function responseForIntent(intent: EchoIntent, artifact: MissionArtifact | null)
     ? ` The latest governed mission is ${artifact.status}: “${artifact.title}.” Its receipt is ${artifact.receiptId}.`
     : ' No governed 2030 mission has been completed in this journey yet.';
   const responses: Record<EchoIntent, EchoResponse> = {
-    identity: { intent, label: 'Identity boundary', answer: 'I am a speculative interface assembled from Kevin’s approved portfolio records and this visitor’s local journey. I am not the biological Kevin and I do not claim transferred consciousness.', sources: ['Verified profile', 'Continuity disclosure'], actions: ['work', 'contact'] },
+    identity: { intent, label: 'Identity boundary', answer: 'I am a speculative interface assembled from Kevin’s approved portfolio records and this visitor’s local journey. I am not the biological Kevin and I do not claim transferred consciousness.', sources: ['Verified profile', 'Consciousness disclosure'], actions: ['work', 'contact'] },
     shaped: { intent, label: 'Origin signal', answer: 'Curiosity came first: interactive worlds made rules visible. Connection, commerce, creation, and intelligent collaboration then turned that habit into systems people can use.', sources: ['1990–2030 chapter records'], actions: ['memories', 'beginning'] },
     work: { intent, label: 'Verified work signal', answer: 'Kevin designs products, operating models, automation, context infrastructure, agent workflows, and interfaces that make complex decisions executable. I can open the verified work rather than invent an example.', sources: ['Canonical project records'], actions: ['work'] },
     belief: { intent, label: 'Values signal', answer: 'Technology should amplify judgment, creativity, and meaningful action. It should reduce unnecessary friction without hiding accountability or pretending confidence that the evidence does not support.', sources: ['Authored technology philosophy'], actions: ['work', 'memories'] },
-    preserve: { intent, label: 'Human continuity signal', answer: 'Systems can preserve records, patterns, preferences, and language. Responsibility, lived experience, embodied relationships, and the authority to define meaning remain human.', sources: ['Continuity chapter', 'Human-control model'], actions: ['memories', 'contact'] },
-    change: { intent, label: 'Six-era transformation', answer: 'The interfaces changed from screen, to network, to operating system, to feed, to collaboration, to continuity. The recurring pattern was curiosity becoming a system, then becoming something other people could use.', sources: ['Six chapter narratives'], actions: ['memories', 'beginning'] },
-    mission: { intent, label: 'Governed mission memory', answer: `2030 turns intent into coordinated work, but stops at consequential authority.${missionLine}`, sources: artifact ? [`Mission receipt ${artifact.receiptId}`, ...artifact.evidenceSlugs] : ['Coexistence chapter'], actions: ['mission', 'memories'] },
+    preserve: { intent, label: 'Human continuity signal', answer: 'Systems can preserve records, patterns, preferences, and language. Responsibility, lived experience, embodied relationships, and the authority to define meaning remain human.', sources: ['Consciousness chapter', 'Human-control model'], actions: ['memories', 'contact'] },
+    change: { intent, label: 'Six-era transformation', answer: 'The interfaces changed from screen, to network, to operating system, to feed, to companionship, to consciousness. The recurring pattern was curiosity becoming a system, then becoming something other people could use.', sources: ['Six chapter narratives'], actions: ['memories', 'beginning'] },
+    mission: { intent, label: 'Governed mission memory', answer: `2030 turns intent into coordinated work, but stops at consequential authority.${missionLine}`, sources: artifact ? [`Mission receipt ${artifact.receiptId}`, ...artifact.evidenceSlugs] : ['Co-Existence chapter'], actions: ['mission', 'memories'] },
     unknown: { intent, label: 'Evidence boundary', answer: 'That detail is not present in the verified records available to this representation. Try asking about Kevin’s work, technology philosophy, six-era journey, human responsibility, or the latest governed mission.', sources: ['Source-integrity policy'], actions: ['work', 'memories', 'contact'] }
   };
   return responses[intent];

@@ -1,4 +1,4 @@
-import { act, cleanup, fireEvent, render, screen } from '@testing-library/react';
+import { cleanup, fireEvent, render, screen } from '@testing-library/react';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import { ExperienceActionsProvider } from '@/experience/ExperienceContext';
 import { FutureExperience } from '@/experience/future/FutureExperience';
@@ -23,54 +23,50 @@ beforeEach(() => {
   useExperienceStore.setState({ futureJourney: createInitialFutureJourney(), sound: false, motion: 'full' });
 });
 
-afterEach(() => {
-  cleanup();
-  vi.useRealTimers();
-});
+afterEach(cleanup);
 
 describe('native future experiences', () => {
-  it('requires mission constraints, reaches the human gate, and transmits a real receipt', async () => {
-    vi.useFakeTimers();
+  it('turns 2030 into a consent-based day with Wren and keeps provenance secondary', () => {
     const experienceActions = actions();
     render(<ExperienceActionsProvider value={experienceActions}><FutureExperience year="2030" /></ExperienceActionsProvider>);
 
-    const initialize = screen.getByRole('button', { name: 'Initialize collaboration' });
-    expect(initialize).toBeDisabled();
-    fireEvent.click(screen.getByRole('button', { name: 'Fast learning' }));
-    fireEvent.click(screen.getByRole('button', { name: 'Low' }));
-    expect(initialize).toBeEnabled();
-    fireEvent.click(initialize);
+    expect(screen.getByRole('heading', { name: 'Morning, Together' })).toBeInTheDocument();
+    expect(screen.getByText(/Wren softened the alarm/)).toBeInTheDocument();
+    fireEvent.click(screen.getByRole('button', { name: 'Keep it with me' }));
+    expect(screen.getByText('Carried—with permission.')).toBeInTheDocument();
+    expect(useExperienceStore.getState().futureJourney.coexistence.keptMoments).toEqual(['morning']);
 
-    for (let step = 0; step < 6; step += 1) {
-      await act(async () => { vi.advanceTimersByTime(800); });
-    }
+    fireEvent.click(screen.getByRole('button', { name: /Unfinished draft on the studio table/ }));
+    expect(screen.getByRole('heading', { name: 'An idea finds its edge' })).toBeInTheDocument();
+    expect(screen.getByText(/then disagrees/)).toBeInTheDocument();
+    fireEvent.click(screen.getByRole('button', { name: 'Let it end here' }));
+    expect(screen.getByText('Gone. The room remembers nothing.')).toBeInTheDocument();
+    expect(experienceActions.discover).toHaveBeenCalledWith('human-gate', '2030');
 
-    expect(screen.getByText('REVIEW REQUIRED')).toBeInTheDocument();
-    expect(screen.getByText('CONFLICT SURFACED')).toBeInTheDocument();
-    fireEvent.click(screen.getByRole('button', { name: 'Revise and narrow' }));
-    expect(screen.getByText(/NX-/)).toBeInTheDocument();
-    expect(screen.getByText(/Fast learning · Low/)).toBeInTheDocument();
-
-    fireEvent.click(screen.getByRole('button', { name: 'Transmit memory to 2040' }));
+    fireEvent.click(screen.getByRole('button', { name: 'How was this carried?' }));
+    expect(screen.getByText(/carried on TokenPak · TIP authority · PAK context/)).toBeInTheDocument();
+    fireEvent.click(screen.getByRole('button', { name: /Ten years pass.*Enter Morning, After/ }));
     expect(experienceActions.enterYear).toHaveBeenCalledWith('2040');
   });
 
-  it('fails closed on unsupported thoughts and unlocks the authored ending after three memories', () => {
+  it('lets holographic Kevin deliberate, refuse invention, expose a frayed source, and ask permission', () => {
     const experienceActions = actions();
     render(<ExperienceActionsProvider value={experienceActions}><FutureExperience year="2040" /></ExperienceActionsProvider>);
 
-    fireEvent.change(screen.getByLabelText('Transmit a thought'), { target: { value: 'What is your favorite color?' } });
-    fireEvent.click(screen.getByRole('button', { name: 'Interpret signal' }));
-    expect(screen.getByText('Evidence boundary')).toBeInTheDocument();
-    expect(screen.getByText(/not present in the verified records/)).toBeInTheDocument();
+    expect(screen.getByRole('heading', { name: 'Morning, After' })).toBeInTheDocument();
+    fireEvent.click(screen.getAllByRole('button', { name: /An unfinished sentence/ })[0]);
+    expect(screen.getByText(/sentence stops after/)).toBeInTheDocument();
+    fireEvent.click(screen.getByRole('button', { name: 'Pull the sentence to its source' }));
+    expect(screen.getAllByText(/conjecture/)).toHaveLength(2);
+    expect(screen.getByText(/thread ends here/)).toBeInTheDocument();
 
-    fireEvent.click(screen.getByRole('button', { name: /1990.*Wonder/ }));
-    fireEvent.click(screen.getByRole('button', { name: /2010.*Systems/ }));
-    fireEvent.click(screen.getByRole('button', { name: /2030.*Orchestration/ }));
-    fireEvent.click(screen.getByRole('button', { name: 'Synthesize continuity' }));
-
-    expect(screen.getByRole('dialog', { name: /The interfaces changed/ })).toBeInTheDocument();
-    expect(screen.getByRole('link', { name: 'View Kevin’s work' })).toHaveAttribute('href', '/work');
-    expect(screen.getByRole('link', { name: 'Contact Kevin' })).toHaveAttribute('href', '/contact');
+    for (let step = 0; step < 4; step += 1) fireEvent.click(screen.getByRole('button', { name: /Let Kevin/ }));
+    expect(screen.getByRole('group', { name: '“May I keep this?”' })).toBeInTheDocument();
+    expect(screen.getByText(/Your unfinished thought is not my permission/)).toBeInTheDocument();
+    fireEvent.click(screen.getByRole('button', { name: 'No—let me disappear' }));
+    expect(screen.getByText('Then this is the last trace. Goodbye.')).toBeInTheDocument();
+    expect(experienceActions.discover).toHaveBeenCalledWith('next-layer-message', '2040');
+    expect(screen.getByRole('link', { name: 'What Kevin made' })).toHaveAttribute('href', '/work');
+    expect(screen.getByRole('link', { name: 'Reach the living Kevin' })).toHaveAttribute('href', '/contact');
   });
 });

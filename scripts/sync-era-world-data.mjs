@@ -50,13 +50,13 @@ const temporalArtifacts = {
   },
   '2030': {
     id: 'agent-memory',
-    name: 'Coexistence Handoff Packet',
-    description: 'A human-approved collaboration record addressed to an identity archive ten years in the future.'
+    name: 'Wren Consent Thread',
+    description: 'An ordinary moment allowed to travel from Morning, Together into the consciousness ten years ahead.'
   },
   '2040': {
     id: 'echo-shard',
-    name: 'Kevin Echo Shard',
-    description: 'A transparent identity record that points back to a television signal in 1990.'
+    name: 'Holographic Kevin Trace',
+    description: 'A source-bound fragment of the permissioned self that still points back to the first television signal.'
   }
 };
 
