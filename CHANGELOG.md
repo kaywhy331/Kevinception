@@ -9,6 +9,7 @@
 - Kept experience utilities and Step Back available on small screens, repaired the skip target, and added semantic keyboard controls for WebGL hotspots.
 - Made all five artifacts independently reachable, added persistent 5/5 progress and a completion payoff, and completed text-mode content parity across all six eras.
 - Added a typed six-era design-language system with distinct overlay texture, chrome, typography, geometry, motion character, focused/text treatments, and About-page echoes.
+- Added capability-aware magnetic primary actions, animated link feedback, and bounded card tilt with delegated pointer handling and non-spatial fallbacks.
 - Added bounded screens-within-screens previews to four consecutive era devices, with live High-quality render textures and static or single-frame fallbacks.
 - Upgraded Next.js and its transitive security chain, aligned every deployment CSP, and added production audit, content/configuration, bundle-budget, and patch-hygiene CI gates.
 

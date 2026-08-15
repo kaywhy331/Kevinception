@@ -123,6 +123,7 @@ An authored ending beat after Consciousness asks permission instead of claiming 
 *Why fourth: feel is judged in the first ten seconds and the last. Applies sitewide.*
 
 **4.1 Micro-interactions** [A] (M) — hover/press states beyond `translateY`, magnetic primary buttons, animated link underlines, subtle card tilt. Consistent easing vocabulary documented.
+**Status 2026-08-15: ✅ Implemented.** Standard pages now use bounded fine-pointer magnetism on primary actions, press/focus feedback, directional link underlines, responsive arrows, and opt-in 2.2° case-study-card tilt. One delegated runtime skips the immersive root, cleans up every transient property, and disables spatial motion for coarse pointers and Reduced motion. `docs/MOTION.md` is the token and behavior contract.
 **4.2 Page transitions + scroll choreography** [A] (M) — View Transitions API between standard routes; authored reveal-on-scroll; sticky chapter markers on long pages.
 **4.3 Reduced-motion parity** [A] (S) — every animation gets a *designed* reduced variant (opacity/color shifts), not just the current global kill-switch.
 **Status 2026-08-10: ✅ Implemented.** The universal `0.01ms` kill switch is gone; portal, 404, loading, buttons, panels, and timeline transitions have static or opacity/color variants. See `MOTION.md`.
@@ -171,7 +172,7 @@ Phase 2 (art direction)  ──┼─→ Phase 3 (immersive execution) ─→ Ph
         └── 2.3 imagery depends on 3.1 scene fidelity for final captures (interim captures OK)
 ```
 
-- **Agent-ready tranches completed through 2026-08-15:** 1.4, 1.6, 2.1, the code-native portion of 2.2, 2.4, 2.5, 3.2, 3.4, 3.5, and 4.3; the future-wing portion of 3.3 and functional text parity are implemented; 5.4 code awaits production-account activation.
+- **Agent-ready tranches completed through 2026-08-15:** 1.4, 1.6, 2.1, the code-native portion of 2.2, 2.4, 2.5, 3.2, 3.4, 3.5, 4.1, and 4.3; the future-wing portion of 3.3 and functional text parity are implemented; 5.4 code awaits production-account activation.
 - **Blocked on Kevin:** 1.1, 1.2, 1.3, 1.5 (facts/photo/quotes), 3.1 (direction decision), 3.3 (audio budget/licensing), 6.4 (submissions).
 - **Biggest remaining lever for the Design axis:** 3.1 — carry the implemented era languages through the final scene-fidelity direction and browser six-up review.
 - **Biggest single lever for the Creativity axis:** 3.2 portals — the site's own tagline, made literal.

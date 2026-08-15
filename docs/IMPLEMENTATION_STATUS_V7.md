@@ -25,6 +25,7 @@ The build should be treated as a **complete connected-environment implementation
 - URL-shareable case-study search and discipline filters
 - Typed six-era design-language manifest with distinct texture, chrome, typography, motion, palette, geometry, and easing tokens
 - Active-era overlay, chapter navigation, focused/text chrome, and About timeline treatments driven from the same design manifest
+- Delegated fine-pointer micro-interactions for standard-page primary actions, links, and case-study cards, with coarse-pointer, Reduced-motion, print, and immersive-mode boundaries
 - Static contact brief with client validation, privacy disclosure, mailto handoff, and direct email fallback
 - Canonical Kevin profile, project, capability, and experience content
 - Windows-safe development and preview commands with automatic port fallback

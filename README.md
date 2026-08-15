@@ -38,6 +38,7 @@ V7.7 implements the R3F-first architecture as a connected physical timeline and 
 - authored camera and transition system, including a physically connected 2030/2040 future wing
 - environment and focused-interface modes
 - six typed, code-native era design languages spanning overlay chrome, texture, typography, motion, text/interface states, and standard-page timeline echoes
+- capability-aware standard-page micro-interactions with magnetic primary actions, directional link feedback, subtle card tilt, and non-spatial reduced/touch fallbacks
 - five independently recoverable cross-era artifacts with persistent completion feedback
 - four bounded screens-within-screens previews across the 1990–2020 rooms, with High-quality live rendering and graceful lower-tier fallbacks
 - WebGL, reduced-motion, Lite, and content-complete text fallbacks

@@ -6,7 +6,9 @@ import './device-native-pass.css';
 import './future-wing.css';
 import './award-pass.css';
 import './era-design-languages.css';
+import './micro-interactions.css';
 import { Analytics } from '@/components/Analytics';
+import { MicroInteractions } from '@/components/MicroInteractions';
 import { site } from '@/content/data';
 import { narrativeSite } from '@/content/narrative';
 
@@ -57,6 +59,7 @@ export default function RootLayout({ children }: Readonly<{ children: React.Reac
     <html lang="en" className={`${inter.variable} ${syne.variable}`}>
       <body>
         <Analytics />
+        <MicroInteractions />
         <a className="skip-link" href="#main-content">Skip to content</a>
         {children}
         <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(person) }} />
