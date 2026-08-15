@@ -5,6 +5,7 @@ import './environment-pass.css';
 import './device-native-pass.css';
 import './future-wing.css';
 import './award-pass.css';
+import './era-design-languages.css';
 import { Analytics } from '@/components/Analytics';
 import { site } from '@/content/data';
 import { narrativeSite } from '@/content/narrative';

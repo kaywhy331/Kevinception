@@ -1,7 +1,8 @@
 # Kevinception V7 — Known Limitations
 
 - The six 3D environments now include connected room shells, props, materials, lighting, and a shared 2030/2040 future wing. They still use procedural geometry rather than final artist-authored GLB assets and production texture atlases.
-- Screen transitions use camera choreography and authored full-screen effects. High-tier render-to-texture portals remain future work.
+- Six code-native design languages now distinguish the parent overlay and standard-page era echoes through more than accent color. Final unlabeled six-up screenshot review, contrast sampling, and target-device visual baselines remain pre-launch acceptance work.
+- Screen transitions use camera choreography and authored full-screen effects. High quality adds one bounded render-to-texture portal to the active 1990–2020 device screen, with static Standard/Lite/focused fallbacks. The destination previews are authored procedural vignettes rather than recursively mounting the complete destination room; final portal art, visual-regression baselines, and real-device GPU profiling remain production work.
 - The substantial 1990–2020 era applications remain embedded from the V6 static build. Morning, Together and Morning, After are native React; a later refactor may move the earlier applications into native packages while retaining their contracts.
 - Holographic Kevin is intentionally deterministic and source-bounded. He follows authored environmental cues and fails closed at conjecture because no secure server-side retrieval/LLM endpoint has been configured.
 - Wren consent, permissioned memories, holographic Kevin’s behavior/source state, and the encounter-retention choice persist only in the visitor’s browser. They are speculative design-fiction state, not a remote account, transferred identity, or durable server record.

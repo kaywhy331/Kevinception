@@ -29,6 +29,6 @@ describe('future-wing documentation truth', () => {
     expect(roadmap).toContain('Notice, Recall, Deliberate, Act, and Continue');
     expect(roadmap).toContain('“May I keep this?”');
     expect(roadmap).toContain('◐ Future-wing code pass implemented; authored asset pass remains');
-    expect(roadmap).toContain('◐ Native future wing implemented; full six-era pass remains');
+    expect(roadmap).toContain('◐ Code-native six-era pass implemented; browser six-up review remains');
   });
 });

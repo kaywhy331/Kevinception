@@ -66,7 +66,7 @@ Pair Inter (functional) with a distinctive display face for h1/h2 and era-neutra
 ✅ *Done when:* display face live on all hero/section headings; CLS unchanged; font budget ≤120KB added.
 
 **2.2 Six era design languages** [A] (L) — **the signature design move**
-**Status 2026-08-14: ◐ Native future wing implemented; full six-era pass remains.** Morning, Together now uses warm domestic light and object-led daily life with Wren; Morning, After returns to the same room as an amber/vermilion cyberpunk holographic encounter, with distinct responsive and motion treatments. The four earlier eras and standard-page echoes still need the complete documented six-up art-direction pass.
+**Status 2026-08-15: ◐ Code-native six-era pass implemented; browser six-up review remains.** A typed manifest now gives every era its own texture, chrome, type treatment, motion character, palette, geometry, and easing. The active overlay, persistent chapter selector, focused/text chrome, and About timeline consume the same tokens; `docs/ERA_DESIGN_LANGUAGES.md` documents the system. Final unlabeled screenshot comparison, contrast sampling, and device review remain Phase 5 acceptance work.
 Each era gets a micro design system beyond the current accent color: texture, type treatment, UI chrome, motion character. 1990 phosphor glow + scanlines; 2000 beige plastic + skeuomorphic bevels; 2010 flat social blue + operational density; 2020 vertical neon + kinetic type; 2030 warm ambient intelligence + permissioned objects; 2040 black glass + rain + holographic refraction. Applied to the experience overlay (timeline panel, environment panel, transitions) and echoed subtly on standard-page era references.
 ✅ *Done when:* a screenshot of any era's UI is identifiable without labels in a six-up lineup; documented in `docs/ERA_DESIGN_LANGUAGES.md`.
 
@@ -95,6 +95,7 @@ Two valid paths: (a) artist-authored GLB + baked textures per era, or (b) **deli
 ✅ *Done when:* chosen direction documented; all six scenes pass a side-by-side review against 2.2's era languages; perf budget (5.1) holds.
 
 **3.2 Screens-within-screens portals** [A] (L) — **the "inception" payoff**
+**Status 2026-08-15: ✅ Implemented.** Four consecutive device screens now preview the next era (1990→2000 through 2020→2030). High quality uses one 384×240 render texture in the active scene; Standard, Lite, focused-interface, and text modes use authored static previews, while Reduced motion renders one live frame. The target remains capped at one simultaneous portal.
 Render-to-texture portals so era screens show the neighboring era's live world (currently "future work" per limitations doc). Even 2–3 portals at high quality tier lands the site's own thesis: *every screen contains another world.*
 ✅ *Done when:* ≥3 eras have live portals at high tier with graceful tier fallback; frame budget held.
 
@@ -170,9 +171,9 @@ Phase 2 (art direction)  ──┼─→ Phase 3 (immersive execution) ─→ Ph
         └── 2.3 imagery depends on 3.1 scene fidelity for final captures (interim captures OK)
 ```
 
-- **Agent-ready tranches completed through 2026-08-14:** 1.4, 1.6, 2.1, 2.4, 2.5, 3.4, 3.5, and 4.3; the native future-wing portion of 2.2/3.3 and functional text parity are implemented; 5.4 code awaits production-account activation.
+- **Agent-ready tranches completed through 2026-08-15:** 1.4, 1.6, 2.1, the code-native portion of 2.2, 2.4, 2.5, 3.2, 3.4, 3.5, and 4.3; the future-wing portion of 3.3 and functional text parity are implemented; 5.4 code awaits production-account activation.
 - **Blocked on Kevin:** 1.1, 1.2, 1.3, 1.5 (facts/photo/quotes), 3.1 (direction decision), 3.3 (audio budget/licensing), 6.4 (submissions).
-- **Biggest single lever for the Design axis:** 2.2 + 3.1 together — the era design languages made real in 3D.
+- **Biggest remaining lever for the Design axis:** 3.1 — carry the implemented era languages through the final scene-fidelity direction and browser six-up review.
 - **Biggest single lever for the Creativity axis:** 3.2 portals — the site's own tagline, made literal.
 
 ## Definition of award-ready

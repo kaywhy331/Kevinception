@@ -37,7 +37,9 @@ V7.7 implements the R3F-first architecture as a connected physical timeline and 
 - six connected physical era environments with walls, floors, lighting, props, and authored environmental cameras
 - authored camera and transition system, including a physically connected 2030/2040 future wing
 - environment and focused-interface modes
+- six typed, code-native era design languages spanning overlay chrome, texture, typography, motion, text/interface states, and standard-page timeline echoes
 - five independently recoverable cross-era artifacts with persistent completion feedback
+- four bounded screens-within-screens previews across the 1990–2020 rooms, with High-quality live rendering and graceful lower-tier fallbacks
 - WebGL, reduced-motion, Lite, and content-complete text fallbacks
 - a no-scroll, code-native homepage portal with one contextual entry action; direct Profile, Case studies, Resume, and Contact paths remain available inside the site
 - a searchable, filterable, URL-shareable case-study archive
@@ -45,7 +47,7 @@ V7.7 implements the R3F-first architecture as a connected physical timeline and 
 - static deployment output
 - preserved functional V6 era applications inside the new world
 
-The next bespoke GLB and texture pass, original environmental soundscape, render-to-texture portals, confirmed résumé chronology, and secure server-side contact/AI infrastructure remain production follow-up work. The static release never claims to submit contact data itself. See `docs/IMPLEMENTATION_STATUS_V7.md`.
+The next bespoke GLB and texture pass, original environmental soundscape, final portal art/device profiling, confirmed résumé chronology, and secure server-side contact/AI infrastructure remain production follow-up work. The static release never claims to submit contact data itself. See `docs/IMPLEMENTATION_STATUS_V7.md`.
 
 ## Run locally
 

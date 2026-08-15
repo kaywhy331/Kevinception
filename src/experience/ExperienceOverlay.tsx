@@ -4,7 +4,7 @@ import Link from 'next/link';
 import { useEffect, useMemo, useState } from 'react';
 import { projects, timelineContent, xennialLegacy, type YearId } from '@/content/data';
 import { artifacts } from './artifacts';
-import { eraConfigs, getAdjacentYear, YEAR_ORDER } from './config';
+import { eraConfigs, getAdjacentYear, getEraCssVariables, YEAR_ORDER } from './config';
 import { useExperienceActions } from './ExperienceContext';
 import { FutureExperience } from './future/FutureExperience';
 import { FutureTextExperience } from './future/FutureTextExperience';
@@ -37,8 +37,10 @@ function YearSelector() {
           <button
             key={year}
             type="button"
+            data-era={year}
+            data-era-texture={config.designLanguage.texture}
             className={activeYear === year ? 'is-active' : ''}
-            style={{ '--era-accent': config.accent } as React.CSSProperties}
+            style={getEraCssVariables(year) as React.CSSProperties}
             onClick={() => navigateToYear(year)}
             onPointerEnter={() => requestExperiencePrewarm(year)}
             onFocus={() => requestExperiencePrewarm(year)}
@@ -63,7 +65,7 @@ function ChapterCard({ mode }: { mode: 'timeline' | 'environment' }) {
   const { enterYear } = useExperienceActions();
   const panelClass = mode === 'timeline' ? 'timeline-panel' : 'environment-panel';
   return (
-    <section className={`${panelClass} chapter-card glass-panel`} style={{ '--era-accent': config.accent } as React.CSSProperties}>
+    <section className={`${panelClass} chapter-card glass-panel`} data-era-panel={activeYear} style={getEraCssVariables(activeYear) as React.CSSProperties}>
       <div className="chapter-card__identity">
         <p className="eyebrow">Chapter {config.chapterNumber} of {YEAR_ORDER.length}</p>
         <h1><span>{activeYear}</span> {config.chapterName}</h1>
@@ -520,7 +522,12 @@ export function ExperienceOverlay() {
   const foundCount = useMemo(() => Object.values(artifactProgress).filter((item) => item.discoveredYears.length > 0).length, [artifactProgress]);
   const showChapterNavigation = viewMode === 'timeline' || viewMode === 'environment' || viewMode === 'transition';
   return (
-    <div className={`experience-overlay mode-${viewMode}`} style={{ '--era-accent': config.accent } as React.CSSProperties}>
+    <div
+      className={`experience-overlay mode-${viewMode}`}
+      data-era={activeYear}
+      data-era-texture={config.designLanguage.texture}
+      style={getEraCssVariables(activeYear) as React.CSSProperties}
+    >
       <header className="experience-toolbar">
         <button className="experience-mark" type="button" onClick={showTimeline} aria-label="Open chapter timeline"><span>K</span><b>Kevinception</b></button>
         <nav aria-label="Global experience controls">

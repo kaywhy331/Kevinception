@@ -5,6 +5,7 @@ import { eraConfigs } from '../config';
 import { useExperienceActions } from '../ExperienceContext';
 import { DeviceScreen, Dust, Hoverable } from './SceneUtils';
 import { LightBar, PictureFrame, RoomShell, Shelf } from './EnvironmentPrimitives';
+import { EraScreenPortal } from './EraScreenPortal';
 import { DESK_SURFACE_Y, GroundedDesk } from './SceneLayout';
 
 const systemMapPoints: Array<[number, number, number]> = [
@@ -80,6 +81,7 @@ export function Year2010Scene({ active }: { active: boolean; timeline: boolean }
           <group position={[0, 1.15, -0.82]} rotation={[-0.035, 0, 0]}>
             <RoundedBox args={[3.8, 2.18, 0.2]} radius={0.1} smoothness={4} castShadow><meshStandardMaterial color="#444a50" metalness={0.38} roughness={0.32} /></RoundedBox>
             <DeviceScreen position={[0, 0, 0.13]} size={[3.48, 1.88]} color="#f4f6f8" emissive="#73a9d6" active={active} radius={0.07} glass />
+            <EraScreenPortal fromYear="2010" size={[3.23, 1.66]} position={[0, 0, 0.285]} active={active} />
             <mesh position={[0, 0.7, 0.23]}><boxGeometry args={[3.23, 0.21, 0.018]} /><meshBasicMaterial color="#263442" /></mesh>
             <mesh position={[-1.22, 0.68, 0.25]}><boxGeometry args={[0.58, 0.1, 0.018]} /><meshBasicMaterial color="#ffb548" /></mesh>
             <mesh position={[-1.22, 0.27, 0.24]}><boxGeometry args={[0.62, 0.48, 0.018]} /><meshBasicMaterial color="#e7edf1" /></mesh>

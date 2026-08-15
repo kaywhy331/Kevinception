@@ -1,7 +1,7 @@
 # Kevinception V7 — Implementation Status
 
 **Version:** 0.8.2
-**Date:** August 14, 2026
+**Date:** August 15, 2026
 **Architecture:** Next.js App Router + React + React Three Fiber + semantic DOM applications
 
 ## Executive status
@@ -10,7 +10,7 @@ The V7 architecture is implemented as a working, statically exportable applicati
 
 The focused interface layer preserves the substantial 1990–2020 applications—including Kevin Online, Xanga, the reconstructed commerce operating system, and KevTok—while 2030 **Morning, Together** and 2040 **Morning, After** now run as native React experiences on one persisted, consequential journey.
 
-The build should be treated as a **complete connected-environment implementation and functional vertical slice**, not the final artist-authored GLB and texture pass. Bespoke GLB environments, final original/licensed sound design across all eras, render-to-texture screen portals, and any secure open-ended AI service remain later production work.
+The build should be treated as a **complete connected-environment implementation and functional vertical slice**, not the final artist-authored GLB and texture pass. Bespoke GLB environments, final original/licensed sound design across all eras, final portal art and device profiling, and any secure open-ended AI service remain later production work.
 
 ## Implemented
 
@@ -23,6 +23,8 @@ The build should be treated as a **complete connected-environment implementation
 - Semantic Profile, Case studies, Resume, About, and Contact routes
 - Viewport-locked homepage era portal with one contextual entry action and no page scrolling
 - URL-shareable case-study search and discipline filters
+- Typed six-era design-language manifest with distinct texture, chrome, typography, motion, palette, geometry, and easing tokens
+- Active-era overlay, chapter navigation, focused/text chrome, and About timeline treatments driven from the same design manifest
 - Static contact brief with client validation, privacy disclosure, mailto handoff, and direct email fallback
 - Canonical Kevin profile, project, capability, and experience content
 - Windows-safe development and preview commands with automatic port fallback
@@ -31,6 +33,7 @@ The build should be treated as a **complete connected-environment implementation
 ### Persistent 3D experience
 
 - Six connected physical era dioramas with room shells, environmental lighting, props, and visible neighboring-era portals
+- In High quality, four consecutive screens render the next era through bounded render textures; Standard, Lite, focused-interface, text, and Reduced-motion states retain static or single-frame fallbacks
 - Authored camera poses and year-to-year travel
 - Timeline, environmental, interface, transition, and text modes
 - High, Standard, and Lite visual-quality choices
@@ -143,7 +146,9 @@ The embedded applications are same-origin and include a small parent-navigation 
 
 - Replace procedural environment geometry with final optimized GLB assets where bespoke detail adds value
 - Create final materials, baked lighting, texture atlases, and environmental props
-- Add screen-portal render targets for the highest-quality transition tier
+- Complete the unlabeled six-up browser comparison and contrast sampling for the implemented era design languages
+- Replace the procedural portal vignettes with final optimized destination art where added fidelity justifies the GPU cost
+- Profile the portal render target on the target Safari, Android, and integrated-GPU device matrix
 - Refine device-specific animation choreography
 - Produce final visual-regression baselines on target browsers and devices
 
