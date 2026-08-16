@@ -50,8 +50,10 @@ Select chapter
 
 - [ ] The six conceptual names are immediately understandable without opening Help.
 - [ ] KevinVision, Kevin Online, StealStreet Commerce OS, KevTok, Morning, Together, and Morning, After remain visible as experience names.
-- [ ] 2030 reads first as daily life with Wren; TokenPak/TIP/PAK appears only as optional provenance.
-- [ ] Every 2030 assist can be inspected as observable input, bounded interpretation, authority check, action or deliberate wait, and retention receipt without presenting hidden chain-of-thought.
+- [ ] 2030 reads first as daily life with Saito; TokenPak/TIP/PAK appears only as optional provenance.
+- [ ] Saito is encountered as a first-person conversational counterpart who notices, initiates, answers, disagrees, acts, and sometimes chooses silence; third-person summaries and process dashboards do not lead the scene.
+- [ ] The room visibly responds to the active exchange, and consequential action stops at the human-authority boundary.
+- [ ] Every 2030 assist can still be secondarily inspected as observable input, bounded interpretation, authority check, action or deliberate wait, and retention receipt without presenting hidden chain-of-thought.
 - [ ] 2040 recall and hologram stability visibly honor every 2030 keep/refuse decision.
 - [ ] The chapter card does not change structure between timeline and environment states.
 - [ ] The persistent timeline rail always shows the active chapter outside interface/text mode.

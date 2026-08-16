@@ -27,14 +27,16 @@ describe('V7 connected physical environment pass', () => {
     expect(computerRoom).toContain('<GroundedDesk');
   });
 
-  it('models 2030 as a zoned smart home with an inspectable ambient Wren', () => {
+  it('models 2030 as a zoned smart home with a spatially responsive Saito', () => {
     const scene = read('src/experience/scenes/Year2030Scene.tsx');
     expect(scene).toContain('<RoomShell');
     expect(scene).toContain('ApartmentFurniture');
     expect(scene).toContain('MomentObject');
     expect(scene).toContain('ConsentMark');
-    expect(scene).toContain('Wren in the room');
-    expect(scene).toContain('AgentDecisionRail');
+    expect(scene).toContain('Saito in the room');
+    expect(scene).toContain('SaitoSpatialResponse');
+    expect(scene).toContain('Permissioned room input reaches Saito');
+    expect(scene).toContain('Saito stops at human authority');
     expect(scene).toContain('Kitchen · local sensing zone');
     expect(scene).toContain('Studio · mounted context zone');
     expect(scene).toContain('Living room · guest-safe zone');

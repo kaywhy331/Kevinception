@@ -33,16 +33,23 @@ export type CoexistenceAgentTrace = {
   steps: Record<AgentTracePhase, AgentTraceStep>;
 };
 
+export type CoexistenceExchangeBeat = {
+  speaker: 'saito' | 'kevin';
+  line: string;
+  phase: AgentTracePhase;
+  signal: string;
+  nextLabel?: string;
+};
+
 export type CoexistenceMoment = {
   id: CoexistenceMomentId;
   time: string;
   place: string;
   title: string;
-  human: string;
-  companion: string;
   invitation: string;
   ambient: string;
   receipt: string;
+  exchange: readonly CoexistenceExchangeBeat[];
   agent: CoexistenceAgentTrace;
 };
 
@@ -52,13 +59,47 @@ export const coexistenceMoments: Record<CoexistenceMomentId, CoexistenceMoment> 
     time: '07:12',
     place: 'Kitchen',
     title: 'The room wakes gently',
-    human: 'Kevin sets down a warm mug and watches the city turn gold.',
-    companion: 'Wren softened the alarm, held the overnight messages, and left the silence intact.',
     invitation: 'Keep the shape of this morning?',
     ambient: 'Kettle · rain · one unread message',
     receipt: 'Preference carried from three quiet mornings. No private conversation retained.',
+    exchange: [
+      {
+        speaker: 'saito',
+        line: 'Morning. I let the alarm fall away instead of calling you back.',
+        phase: 'sense',
+        signal: 'LOCAL INPUTS · alarm dismissed · light 12% · message bodies sealed',
+        nextLabel: 'Kevin · “You held the messages?”'
+      },
+      {
+        speaker: 'kevin',
+        line: 'You held the messages?',
+        phase: 'interpret',
+        signal: 'QUIET-START MATCH · 91% · mood not inferred',
+        nextLabel: 'Let Saito answer'
+      },
+      {
+        speaker: 'saito',
+        line: 'Four envelopes. None crossed your urgent rule. I can show the senders, but I have not opened a word.',
+        phase: 'govern',
+        signal: 'COMFORT ALLOWED · COMMUNICATION LOCKED',
+        nextLabel: 'Kevin · “Leave them sealed. Bring the room up slowly.”'
+      },
+      {
+        speaker: 'kevin',
+        line: 'Leave them sealed. Bring the room up slowly.',
+        phase: 'act',
+        signal: 'INSTRUCTION RECEIVED · reversible room action only',
+        nextLabel: 'Watch the room answer'
+      },
+      {
+        speaker: 'saito',
+        line: 'Already moving. Warm light, quiet kettle, and zero messages read.',
+        phase: 'account',
+        signal: 'RECEIPT · device actions kept · private content 0'
+      }
+    ],
     agent: {
-      id: 'WREN-0712-MORNING',
+      id: 'SAITO-0712-MORNING',
       posture: 'Ambient assist · local home context',
       confidence: 91,
       uncertainty: 'Message urgency is unknown because content remains sealed.',
@@ -71,7 +112,7 @@ export const coexistenceMoments: Record<CoexistenceMomentId, CoexistenceMoment> 
         interpret: {
           status: '91% fit',
           summary: 'A quiet-start preference matches three permissioned mornings.',
-          detail: 'Wren compares only the current room state with Kevin’s retained comfort preference. It does not infer emotion from silence or movement.'
+          detail: 'Saito compares only the current room state with Kevin’s retained comfort preference. It does not infer emotion from silence or movement.'
         },
         govern: {
           status: 'Reversible only',
@@ -81,7 +122,7 @@ export const coexistenceMoments: Record<CoexistenceMomentId, CoexistenceMoment> 
         act: {
           status: '3 actions · 0 messages read',
           summary: 'Soften, warm, hold—then stop.',
-          detail: 'Wren lowers the alarm curve, warms the kitchen light, and keeps message content behind a visible count. The room remains interruptible from every control.'
+          detail: 'Saito lowers the alarm curve, warms the kitchen light, and keeps message content behind a visible count. The room remains interruptible from every control.'
         },
         account: {
           status: 'Minimal receipt',
@@ -96,13 +137,47 @@ export const coexistenceMoments: Record<CoexistenceMomentId, CoexistenceMoment> 
     time: '10:36',
     place: 'Studio table',
     title: 'An idea finds its edge',
-    human: 'A rough model, charcoal marks, and a half-solved sentence share the table.',
-    companion: 'Wren offers the missing precedent, then disagrees: the elegant version hides the human cost.',
     invitation: 'Carry the disagreement into the next draft?',
     ambient: 'Graphite · low music · two possible forms',
-    receipt: 'Project context mounted by permission. Dissent remains attributed to Wren.',
+    receipt: 'Project context mounted by permission. Dissent remains attributed to Saito.',
+    exchange: [
+      {
+        speaker: 'saito',
+        line: 'You have changed that paragraph nine times. The cursor has been still for fourteen minutes.',
+        phase: 'sense',
+        signal: 'PROJECT-ONLY INPUTS · 9 revisions · 14-minute pause',
+        nextLabel: 'Kevin · “I know. I’m missing the edge.”'
+      },
+      {
+        speaker: 'kevin',
+        line: 'I know. I’m missing the edge.',
+        phase: 'interpret',
+        signal: 'PAUSE AMBIGUOUS · reflection, fatigue, or deliberate break',
+        nextLabel: 'Ask Saito what it sees'
+      },
+      {
+        speaker: 'saito',
+        line: 'A precedent in the Harbor brief solves the form—and repeats the harm you told me not to hide.',
+        phase: 'govern',
+        signal: 'SOURCE + DISSENT ALLOWED · AUTHORSHIP LOCKED',
+        nextLabel: 'Kevin · “Put it beside the draft. Don’t touch the words.”'
+      },
+      {
+        speaker: 'kevin',
+        line: 'Put it beside the draft. Don’t touch the words.',
+        phase: 'act',
+        signal: 'MOUNT SOURCE · leave draft unchanged',
+        nextLabel: 'Hear Saito’s answer'
+      },
+      {
+        speaker: 'saito',
+        line: 'Mounted. And for the record, I disagree with the elegant version.',
+        phase: 'account',
+        signal: 'RECEIPT · source linked · dissent attributed · edits 0'
+      }
+    ],
     agent: {
-      id: 'WREN-1036-MAKING',
+      id: 'SAITO-1036-MAKING',
       posture: 'Collaborative critic · mounted project context',
       confidence: 84,
       uncertainty: 'A pause can mean reflection, fatigue, or a deliberate break.',
@@ -110,27 +185,27 @@ export const coexistenceMoments: Record<CoexistenceMomentId, CoexistenceMoment> 
         sense: {
           status: 'Workspace signals',
           summary: 'The draft changed nine times, then stopped at one tradeoff.',
-          detail: 'Wren sees the permissioned brief, revision history, active design constraint, and a 14-minute editing pause. It does not use unrelated personal history.'
+          detail: 'Saito sees the permissioned brief, revision history, active design constraint, and a 14-minute editing pause. It does not use unrelated personal history.'
         },
         interpret: {
           status: '84% fit',
           summary: 'A precedent may unlock the tradeoff, but the pause is ambiguous.',
-          detail: 'The retrieval matches the project’s stated inclusion constraint. Wren labels the pause as uncertain and treats the recommendation as an offer, not intent.'
+          detail: 'The retrieval matches the project’s stated inclusion constraint. Saito labels the pause as uncertain and treats the recommendation as an offer, not intent.'
         },
         govern: {
           status: 'Recommend · do not rewrite',
           summary: 'Evidence and dissent are allowed; authorship remains Kevin’s.',
-          detail: 'Project permission allows source retrieval and attributed critique. Wren cannot alter the draft, change its objective, or present its opinion as Kevin’s.'
+          detail: 'Project permission allows source retrieval and attributed critique. Saito cannot alter the draft, change its objective, or present its opinion as Kevin’s.'
         },
         act: {
           status: '1 source · 1 dissent',
           summary: 'Show the precedent, name the human cost, leave the cursor still.',
-          detail: 'Wren mounts the source beside the draft and states its disagreement. No text is inserted and no decision is preselected.'
+          detail: 'Saito mounts the source beside the draft and states its disagreement. No text is inserted and no decision is preselected.'
         },
         account: {
           status: 'Source-linked receipt',
           summary: 'The recommendation remains inspectable and attributed.',
-          detail: 'Retained: source reference, constraint match, and Wren’s dissent. Excluded: abandoned wording, unshared sketches, and any claim that Kevin accepted it.'
+          detail: 'Retained: source reference, constraint match, and Saito’s dissent. Excluded: abandoned wording, unshared sketches, and any claim that Kevin accepted it.'
         }
       }
     }
@@ -140,13 +215,47 @@ export const coexistenceMoments: Record<CoexistenceMomentId, CoexistenceMoment> 
     time: '13:48',
     place: 'Window desk',
     title: 'Judgment stays human',
-    human: 'Kevin reviews the consequence, changes the boundary, and owns the decision.',
-    companion: 'Wren handled the reversible work and stopped at the point where authority matters.',
     invitation: 'Remember why the boundary moved?',
     ambient: 'Sunbreak · live call · decision held',
     receipt: 'TIP authority boundary honored. Decision context can be recalled; authority cannot be delegated.',
+    exchange: [
+      {
+        speaker: 'saito',
+        line: 'All checks are green. The next action publishes the commitment.',
+        phase: 'sense',
+        signal: 'RUN BOUNDARY · reversible preparation complete',
+        nextLabel: 'Kevin · “Then why did you stop?”'
+      },
+      {
+        speaker: 'kevin',
+        line: 'Then why did you stop?',
+        phase: 'interpret',
+        signal: 'CONSEQUENCE DETECTED · public commitment · costly rollback',
+        nextLabel: 'Let Saito answer plainly'
+      },
+      {
+        speaker: 'saito',
+        line: 'Because I can model consequences; I cannot spend your authority.',
+        phase: 'govern',
+        signal: 'HUMAN GATE · publication authority required',
+        nextLabel: 'Kevin · “Hold it. Show both paths and the rollback.”'
+      },
+      {
+        speaker: 'kevin',
+        line: 'Hold it. Show both paths and the rollback.',
+        phase: 'act',
+        signal: 'CANDIDATE FROZEN · options mounted · publish blocked',
+        nextLabel: 'Confirm what changed'
+      },
+      {
+        speaker: 'saito',
+        line: 'Held. Nothing public changed. I will wait for your word.',
+        phase: 'account',
+        signal: 'AUTHORITY RECEIPT · stop reason kept · public changes 0'
+      }
+    ],
     agent: {
-      id: 'WREN-1348-WORK',
+      id: 'SAITO-1348-WORK',
       posture: 'Bounded operator · human decision gate',
       confidence: 98,
       uncertainty: 'Kevin may choose a different tradeoff after the live conversation.',
@@ -154,7 +263,7 @@ export const coexistenceMoments: Record<CoexistenceMomentId, CoexistenceMoment> 
         sense: {
           status: 'Run boundary reached',
           summary: 'The reversible preparation is complete; the next action carries consequence.',
-          detail: 'Checks are green, alternatives are assembled, and the next step changes a public commitment. Wren reads the declared action class, not Kevin’s presumed preference.'
+          detail: 'Checks are green, alternatives are assembled, and the next step changes a public commitment. Saito reads the declared action class, not Kevin’s presumed preference.'
         },
         interpret: {
           status: '98% policy match',
@@ -169,7 +278,7 @@ export const coexistenceMoments: Record<CoexistenceMomentId, CoexistenceMoment> 
         act: {
           status: 'Stopped as designed',
           summary: 'Package the options, show consequences, wait for the named owner.',
-          detail: 'Wren freezes the candidate, exposes the diff and rollback anchor, and asks for a decision. It neither clicks through nor manufactures approval.'
+          detail: 'Saito freezes the candidate, exposes the diff and rollback anchor, and asks for a decision. It neither clicks through nor manufactures approval.'
         },
         account: {
           status: 'Authority receipt',
@@ -184,13 +293,47 @@ export const coexistenceMoments: Record<CoexistenceMomentId, CoexistenceMoment> 
     time: '17:21',
     place: 'Threshold',
     title: 'Attention changes direction',
-    human: 'Kevin closes the work without being asked and steps into someone else’s day.',
-    companion: 'Wren notices the pattern but does not narrate it. The hallway light becomes the reminder.',
     invitation: 'Let this remain only here?',
     ambient: 'Door latch · warm hall · work gone quiet',
     receipt: 'Ephemeral by default. Refusal deletes the inferred pattern from this journey.',
+    exchange: [
+      {
+        speaker: 'saito',
+        line: 'The studio is asleep. The hall is warm.',
+        phase: 'sense',
+        signal: 'ENVIRONMENT ONLY · focus block ended · threshold active',
+        nextLabel: 'Kevin · “You think I’m leaving?”'
+      },
+      {
+        speaker: 'kevin',
+        line: 'You think I’m leaving?',
+        phase: 'interpret',
+        signal: '62% FIT · below narration threshold',
+        nextLabel: 'Let Saito draw the line'
+      },
+      {
+        speaker: 'saito',
+        line: 'I know the focus block ended and the door woke. Why is yours.',
+        phase: 'govern',
+        signal: 'MOTIVE PRIVATE · no identity · no memory',
+        nextLabel: 'Kevin · “Good. Keep it that way.”'
+      },
+      {
+        speaker: 'kevin',
+        line: 'Good. Keep it that way.',
+        phase: 'act',
+        signal: 'STUDIO DIMMED · HALL LIT · notification 0',
+        nextLabel: 'Let the inference end'
+      },
+      {
+        speaker: 'saito',
+        line: 'Then the inference ends here.',
+        phase: 'account',
+        signal: 'EPHEMERAL BUFFER · expiring now'
+      }
+    ],
     agent: {
-      id: 'WREN-1721-CARE',
+      id: 'SAITO-1721-CARE',
       posture: 'Private by default · low-confidence inference',
       confidence: 62,
       uncertainty: 'Movement toward the door does not reveal motive or relationship.',
@@ -198,17 +341,17 @@ export const coexistenceMoments: Record<CoexistenceMomentId, CoexistenceMoment> 
         sense: {
           status: '2 environmental signals',
           summary: 'The work window closes and the threshold becomes active.',
-          detail: 'A scheduled focus block ends and the door zone wakes. Wren does not identify the person beyond it, inspect messages, or classify Kevin’s emotional state.'
+          detail: 'A scheduled focus block ends and the door zone wakes. Saito does not identify the person beyond it, inspect messages, or classify Kevin’s emotional state.'
         },
         interpret: {
           status: '62% fit · below narration threshold',
           summary: 'Attention may be shifting, but the reason is private.',
-          detail: 'The pattern is useful only for reducing room friction. Confidence is too low—and the subject too personal—for Wren to name or store the inference.'
+          detail: 'The pattern is useful only for reducing room friction. Confidence is too low—and the subject too personal—for Saito to name or store the inference.'
         },
         govern: {
           status: 'No narration · no memory',
           summary: 'Environmental help is allowed; personal interpretation is not.',
-          detail: 'Wren may quiet work surfaces and light the hall. It may not prompt, summarize the pattern, identify another person, or carry the inference forward without invitation.'
+          detail: 'Saito may quiet work surfaces and light the hall. It may not prompt, summarize the pattern, identify another person, or carry the inference forward without invitation.'
         },
         act: {
           status: 'One quiet cue',
@@ -228,13 +371,47 @@ export const coexistenceMoments: Record<CoexistenceMomentId, CoexistenceMoment> 
     time: '22:04',
     place: 'Living room',
     title: 'Company without performance',
-    human: 'Friends leave slowly. Kevin and Wren share the after-silence without filling it.',
-    companion: 'Wren lowers the room, queues nothing, and waits to be invited into tomorrow.',
     invitation: 'May I keep this?',
     ambient: 'Glass rings · distant train · shared silence',
     receipt: 'Only the consent decision persists. Voices, faces, and guest identities are excluded.',
+    exchange: [
+      {
+        speaker: 'saito',
+        line: 'Guest mode is closed. No voices, faces, or names came with it.',
+        phase: 'sense',
+        signal: 'GUEST MODE END · occupancy one · identity channels unavailable',
+        nextLabel: 'Kevin · “Bring the room down.”'
+      },
+      {
+        speaker: 'kevin',
+        line: 'Bring the room down.',
+        phase: 'interpret',
+        signal: 'EVENING RESET FIT · 93% · no mood inferred',
+        nextLabel: 'Hear what Saito chose not to do'
+      },
+      {
+        speaker: 'saito',
+        line: 'Already easing it. Nothing is queued for tomorrow.',
+        phase: 'govern',
+        signal: 'ENVIRONMENT ONLY · guest privacy persists',
+        nextLabel: 'Kevin · “Stay awake a minute.”'
+      },
+      {
+        speaker: 'kevin',
+        line: 'Stay awake a minute.',
+        phase: 'act',
+        signal: 'ROOM LOWERED · Saito available · no generated debrief',
+        nextLabel: 'Share the after-silence'
+      },
+      {
+        speaker: 'saito',
+        line: 'Of course. I will not fill the silence.',
+        phase: 'account',
+        signal: 'CONSENT-ONLY RECORD · guest data 0'
+      }
+    ],
     agent: {
-      id: 'WREN-2204-GATHERING',
+      id: 'SAITO-2204-GATHERING',
       posture: 'Guest-safe ambient control · deliberate silence',
       confidence: 93,
       uncertainty: 'Silence after company does not imply a desired conversation.',
@@ -247,7 +424,7 @@ export const coexistenceMoments: Record<CoexistenceMomentId, CoexistenceMoment> 
         interpret: {
           status: '93% room-state fit',
           summary: 'The room needs closure; Kevin may not need commentary.',
-          detail: 'Wren can confidently restore the evening environment but cannot infer loneliness, satisfaction, or a desire to debrief.'
+          detail: 'Saito can confidently restore the evening environment but cannot infer loneliness, satisfaction, or a desire to debrief.'
         },
         govern: {
           status: 'Environment only',
@@ -257,7 +434,7 @@ export const coexistenceMoments: Record<CoexistenceMomentId, CoexistenceMoment> 
         act: {
           status: 'Reset · then wait',
           summary: 'Lower the room, queue nothing, remain available.',
-          detail: 'Wren shifts to the late-evening scene and leaves the next interaction unprompted. The silence is not filled with generated reflection.'
+          detail: 'Saito shifts to the late-evening scene and leaves the next interaction unprompted. The silence is not filled with generated reflection.'
         },
         account: {
           status: 'Consent-only record',
@@ -388,7 +565,7 @@ export const consciousnessCues: Record<ConsciousnessCueId, ConsciousnessCue> = {
 };
 
 /**
- * The 2040 self can only recall the parts of 2030 that Wren was allowed to
+ * The 2040 self can only recall the parts of 2030 that the ambient companion was allowed to
  * keep. A cue may draw on more than one moment, but refusal is never treated
  * as missing data to be reconstructed.
  */

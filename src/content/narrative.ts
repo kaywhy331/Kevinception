@@ -91,16 +91,16 @@ export const chapterNarrative: Record<YearId, ChapterNarrative> = {
     chapterName: 'Co-Existence',
     experienceName: 'Morning, Together',
     medium: 'An ordinary day shared with an ambient AI companion',
-    chapterThesis: 'AI has become part of daily life: Wren anticipates, disagrees, helps, waits, and protects silence while Kevin retains judgment, authority, privacy, and the right to decide what may be remembered.',
+    chapterThesis: 'AI has become part of daily life: an ambient companion anticipates, disagrees, helps, waits, and protects silence while Kevin retains judgment, authority, privacy, and the right to decide what may be remembered.',
     transformation: 'Creation becomes co-existence.',
     lesson: 'Kevin carries forward a relationship model for AI: useful companionship depends on restraint, productive disagreement, explicit authority, inspectable memory, and consent that changes what the system is allowed to become.',
     capabilityLinks: ['Human-AI companionship', 'Ambient intelligence', 'Consent and memory', 'Human authority'],
     bridgeToNext: 'Co-Existence becomes consciousness.',
     transitionLine: 'A permissioned moment outlives the body that made it familiar.',
     emotionalGoal: 'Intimacy, trust, disagreement, restraint, and companionship',
-    description: 'Live one compressed day with Wren across a warm apartment and studio, then decide which ordinary moments may travel forward and which must end in the room where they happened.',
+    description: 'Live one compressed day with an ambient companion across a warm apartment and studio, then decide which ordinary moments may travel forward and which must end in the room where they happened.',
     enterLabel: 'Enter Morning, Together',
-    deviceLabel: 'Wren in the room'
+    deviceLabel: 'Ambient intelligence in the room'
   },
   '2040': {
     chapterNumber: 6,

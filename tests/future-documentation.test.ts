@@ -10,6 +10,9 @@ describe('future-wing documentation truth', () => {
     expect(status).toContain('Morning, Together and Morning, After are native React interfaces and do not use iframes');
     expect(status).toContain('TokenPak, TIP, and PAK available only through an optional infrastructure receipt');
     expect(status).toContain('Sense → Interpret → Check authority → Act or wait → Receipt');
+    expect(status).toContain('progressive first-person Saito/Kevin exchange');
+    expect(status).toContain('without replacing the conversation with a dashboard');
+    expect(status).toContain('signal stops visibly at the human-authority gate');
     expect(status).toContain('never a claim to reveal hidden chain-of-thought');
     expect(status).toContain('2030 consent materially changes 2040 recall');
     expect(status).toContain('“May I keep this?”');

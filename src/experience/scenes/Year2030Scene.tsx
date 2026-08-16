@@ -26,58 +26,70 @@ const momentObjects: Array<{
   { id: 'gathering', position: [2.72, 1.16, 1.82], color: '#8aa08a' }
 ];
 
-const traceRailPoints: Array<[number, number, number]> = [
-  [-3.65, 4.82, -3.82],
-  [-1.85, 4.82, -3.82],
-  [0, 4.82, -3.82],
-  [1.85, 4.82, -3.82],
-  [3.65, 4.82, -3.82]
-];
+const saitoPosition: [number, number, number] = [0, 4.18, -3.62];
 
-const tracePhaseLabels = ['Sense', 'Interpret', 'Authority', 'Act or wait', 'Receipt'];
+const responseTargets: Record<CoexistenceMomentId, [number, number, number]> = {
+  morning: [-2.72, 5.55, .5],
+  making: [.15, 2.58, -.57],
+  work: [3.22, 2.64, -3.58],
+  care: [-4.42, 2.92, -1.52],
+  gathering: [2.85, 5.55, 1.55]
+};
 
-function AgentDecisionRail({ active, momentId, decision }: {
+function SaitoSpatialResponse({ active, momentId, decision }: {
   active: boolean;
   momentId: CoexistenceMomentId;
   decision: 'unasked' | 'kept' | 'refused';
 }) {
-  const signal = useRef<THREE.Mesh>(null);
+  const incomingSignal = useRef<THREE.Mesh>(null);
+  const outgoingSignal = useRef<THREE.Mesh>(null);
   const object = momentObjects.find((item) => item.id === momentId)!;
+  const target = responseTargets[momentId];
+  const humanGate = momentId === 'work';
+  const privateRestraint = momentId === 'care';
+  const actionEnd: [number, number, number] = humanGate
+    ? [
+        saitoPosition[0] + (target[0] - saitoPosition[0]) * .58,
+        saitoPosition[1] + (target[1] - saitoPosition[1]) * .58,
+        saitoPosition[2] + (target[2] - saitoPosition[2]) * .58
+      ]
+    : target;
   const color = decision === 'refused' ? '#b65f44' : decision === 'kept' ? '#fff0ae' : object.color;
 
   useFrame(({ clock }) => {
-    if (!signal.current) return;
-    const cursor = active ? (clock.elapsedTime * .52) % (traceRailPoints.length - 1) : 0;
-    const index = Math.floor(cursor);
-    const progress = cursor - index;
-    const from = new THREE.Vector3(...traceRailPoints[index]);
-    const to = new THREE.Vector3(...traceRailPoints[Math.min(index + 1, traceRailPoints.length - 1)]);
-    signal.current.position.lerpVectors(from, to, progress);
+    const inputProgress = active ? (clock.elapsedTime * .42) % 1 : 0;
+    const actionProgress = active ? (clock.elapsedTime * .42 + .48) % 1 : 0;
+    incomingSignal.current?.position.lerpVectors(
+      new THREE.Vector3(...object.position),
+      new THREE.Vector3(...saitoPosition),
+      inputProgress
+    );
+    outgoingSignal.current?.position.lerpVectors(
+      new THREE.Vector3(...saitoPosition),
+      new THREE.Vector3(...actionEnd),
+      actionProgress
+    );
   });
 
   return (
-    <group userData={{ label: `Wren decision rail · ${coexistenceMoments[momentId].agent.id}` }}>
-      <CylinderBetween from={object.position} to={traceRailPoints[0]} radius={.012} color={color} emissiveIntensity={active ? .9 : .08} transparent opacity={active ? .46 : .08} />
-      {traceRailPoints.slice(0, -1).map((point, index) => (
-        <CylinderBetween key={tracePhaseLabels[index]} from={point} to={traceRailPoints[index + 1]} radius={.018} color={color} emissiveIntensity={active ? .72 : .06} transparent opacity={active ? .62 : .12} />
-      ))}
-      <CylinderBetween from={traceRailPoints.at(-1)!} to={object.position} radius={.009} color={color} emissiveIntensity={active ? .45 : .04} transparent opacity={active ? .24 : .05} />
-      {traceRailPoints.map((position, index) => (
-        <group key={tracePhaseLabels[index]} position={position} userData={{ label: `${index + 1}. ${tracePhaseLabels[index]}` }}>
-          <mesh rotation={index === 2 ? [0, 0, Math.PI / 4] : [0, 0, 0]}>
-            {index === 2 ? <boxGeometry args={[.24, .24, .08]} /> : <sphereGeometry args={[.12, 18, 12]} />}
-            <meshStandardMaterial color={index === 2 ? '#b85c38' : color} emissive={color} emissiveIntensity={active ? 1.25 : .12} roughness={.24} metalness={.2} />
-          </mesh>
-          <mesh position={[0, -.27, .02]}>
-            <boxGeometry args={[index === 2 ? .72 : .48, .035, .025]} />
-            <meshBasicMaterial color={color} transparent opacity={active ? .7 : .12} />
-          </mesh>
-        </group>
-      ))}
-      <mesh ref={signal}>
+    <group userData={{ label: `Saito spatial response · ${coexistenceMoments[momentId].agent.id}` }}>
+      <CylinderBetween from={object.position} to={saitoPosition} radius={.011} color={color} emissiveIntensity={active ? .58 : .06} transparent opacity={active ? .28 : .05} />
+      <CylinderBetween from={saitoPosition} to={actionEnd} radius={.016} color={humanGate ? '#c65d3b' : color} emissiveIntensity={active ? .72 : .07} transparent opacity={privateRestraint ? .1 : active ? .38 : .06} />
+      <mesh ref={incomingSignal} userData={{ label: 'Permissioned room input reaches Saito' }}>
         <sphereGeometry args={[.075, 16, 12]} />
         <meshBasicMaterial color="#fff9df" transparent opacity={active ? .95 : .12} />
       </mesh>
+      <mesh ref={outgoingSignal} userData={{ label: humanGate ? 'Saito stops at human authority' : 'Saito changes the permitted room surface' }}>
+        <sphereGeometry args={[humanGate ? .095 : .07, 16, 12]} />
+        <meshBasicMaterial color={humanGate ? '#e36a43' : '#fff0b7'} transparent opacity={privateRestraint ? .28 : active ? .9 : .1} />
+      </mesh>
+      <group position={actionEnd} userData={{ label: humanGate ? 'Human authority gate · no action beyond this point' : `Permitted response · ${coexistenceMoments[momentId].agent.steps.act.status}` }}>
+        <mesh rotation={humanGate ? [0, 0, Math.PI / 4] : [Math.PI / 2, 0, 0]}>
+          {humanGate ? <boxGeometry args={[.34, .34, .08]} /> : <torusGeometry args={[.26, .025, 8, 30]} />}
+          <meshStandardMaterial color={humanGate ? '#b95132' : color} emissive={color} emissiveIntensity={active ? 1.1 : .12} transparent opacity={privateRestraint ? .22 : active ? .78 : .12} />
+        </mesh>
+        {humanGate && <pointLight color="#d86742" intensity={active ? 1.8 : .08} distance={3.2} decay={2} />}
+      </group>
     </group>
   );
 }
@@ -175,15 +187,15 @@ export function Year2030Scene({ active, detail = true }: { active: boolean; time
   const { enterYear, discover } = useExperienceActions();
   const coexistence = useExperienceStore((state) => state.futureJourney.coexistence);
   const selectMoment = useExperienceStore((state) => state.selectCoexistenceMoment);
-  const wren = useRef<THREE.Group>(null);
+  const saito = useRef<THREE.Group>(null);
   const hand = useRef<THREE.Group>(null);
 
   useFrame(({ clock }) => {
     if (!active || !detail) return;
-    if (wren.current) {
+    if (saito.current) {
       const breath = 1 + Math.sin(clock.elapsedTime * 1.15) * .018;
-      wren.current.scale.setScalar(breath);
-      wren.current.position.y = 4.18 + Math.sin(clock.elapsedTime * .72) * .025;
+      saito.current.scale.setScalar(breath);
+      saito.current.position.y = 4.18 + Math.sin(clock.elapsedTime * .72) * .025;
     }
     if (hand.current) hand.current.position.x = -2.15 + Math.sin(clock.elapsedTime * .72) * .28;
   });
@@ -198,7 +210,7 @@ export function Year2030Scene({ active, detail = true }: { active: boolean; time
       <group position={[config.stationX, 0, 0]}>
         <RoomShell floorColor="#a48668" wallColor="#d7d2bd" sideColor="#c6b89c" ceilingColor="#eee5d2" trimColor="#765741" accent="#d69b50" openLeft openRight active={false} floorRoughness={.7} />
         <ApartmentFurniture active={false} />
-        <AgentDecisionRail active={false} momentId={coexistence.activeMoment} decision={coexistence.consent[coexistence.activeMoment]} />
+        <SaitoSpatialResponse active={false} momentId={coexistence.activeMoment} decision={coexistence.consent[coexistence.activeMoment]} />
         <mesh position={[0, 4.18, -3.62]}><icosahedronGeometry args={[.34, 2]} /><meshStandardMaterial color="#ffd78a" emissive="#f3ad45" emissiveIntensity={.18} transparent opacity={.52} /></mesh>
       </group>
     );
@@ -221,10 +233,10 @@ export function Year2030Scene({ active, detail = true }: { active: boolean; time
       </group>
 
       {momentObjects.map(({ id }) => <MomentObject key={id} id={id} active={coexistence.activeMoment === id} decision={coexistence.consent[id]} onSelect={() => chooseMoment(id)} />)}
-      <AgentDecisionRail active={active} momentId={coexistence.activeMoment} decision={coexistence.consent[coexistence.activeMoment]} />
+      <SaitoSpatialResponse active={active} momentId={coexistence.activeMoment} decision={coexistence.consent[coexistence.activeMoment]} />
 
-       <Hoverable label="Enter Morning, Together with Wren" onClick={() => enterYear('2030')}>
-         <group ref={wren} position={[0, 4.18, -3.62]} userData={{ label: `Wren in the room · ${coexistenceMoments[coexistence.activeMoment].title}` }}>
+       <Hoverable label="Enter Morning, Together with Saito" onClick={() => enterYear('2030')}>
+         <group ref={saito} position={[0, 4.18, -3.62]} userData={{ label: `Saito in the room · ${coexistenceMoments[coexistence.activeMoment].title}` }}>
            <mesh>
              <icosahedronGeometry args={[.34, 2]} />
              <meshPhysicalMaterial color="#ffe0a0" emissive="#f2a948" emissiveIntensity={active ? 1.05 : .12} transparent opacity={coexistence.activeMoment === 'care' ? .28 : active ? .72 : .2} roughness={.12} clearcoat={1} />

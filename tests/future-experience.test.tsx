@@ -26,24 +26,35 @@ beforeEach(() => {
 afterEach(cleanup);
 
 describe('native future experiences', () => {
-  it('turns 2030 into a consent-based day with Wren and keeps provenance secondary', () => {
+  it('turns 2030 into a progressive conversation with Saito and keeps the audit secondary', () => {
     const experienceActions = actions();
     render(<ExperienceActionsProvider value={experienceActions}><FutureExperience year="2030" /></ExperienceActionsProvider>);
 
     expect(screen.getByRole('heading', { name: 'Morning, Together' })).toBeInTheDocument();
-    expect(screen.getByText(/Wren softened the alarm/)).toBeInTheDocument();
-    expect(screen.getByRole('heading', { name: 'What happened under the calm' })).toBeInTheDocument();
-    expect(screen.getByText('WREN-0712-MORNING')).toBeInTheDocument();
+    expect(screen.getByText(/I let the alarm fall away/)).toBeInTheDocument();
+    expect(screen.getAllByText(/LOCAL INPUTS · alarm dismissed/).length).toBeGreaterThan(0);
+    expect(screen.getByText('Inspect Saito’s live boundary')).toBeInTheDocument();
+    expect(screen.getByText('SAITO-0712-MORNING')).toBeInTheDocument();
+    fireEvent.click(screen.getByText('Inspect Saito’s live boundary').closest('summary')!);
     fireEvent.click(screen.getByRole('button', { name: /Check authority.*Reversible only/ }));
     expect(screen.getByRole('heading', { name: 'Room comfort may change; communication may not.' })).toBeInTheDocument();
     expect(screen.getByText(/Reading, ranking, replying to, or hiding message content requires Kevin/)).toBeInTheDocument();
+
+    for (let beat = 0; beat < 4; beat += 1) {
+      fireEvent.click(screen.getByRole('button', { name: /^(Speak|Continue)/ }));
+    }
+    expect(screen.getByText(/zero messages read/)).toBeInTheDocument();
     fireEvent.click(screen.getByRole('button', { name: 'Keep it with me' }));
     expect(screen.getByText('Carried—with permission.')).toBeInTheDocument();
     expect(useExperienceStore.getState().futureJourney.coexistence.keptMoments).toEqual(['morning']);
 
     fireEvent.click(screen.getByRole('button', { name: /Unfinished draft on the studio table/ }));
     expect(screen.getByRole('heading', { name: 'An idea finds its edge' })).toBeInTheDocument();
-    expect(screen.getByText(/then disagrees/)).toBeInTheDocument();
+    expect(screen.getByText(/changed that paragraph nine times/)).toBeInTheDocument();
+    for (let beat = 0; beat < 4; beat += 1) {
+      fireEvent.click(screen.getByRole('button', { name: /^(Speak|Continue)/ }));
+    }
+    expect(screen.getByText(/I disagree with the elegant version/)).toBeInTheDocument();
     fireEvent.click(screen.getByRole('button', { name: 'Let it end here' }));
     expect(screen.getByText('Gone. The room remembers nothing.')).toBeInTheDocument();
     expect(experienceActions.discover).toHaveBeenCalledWith('human-gate', '2030');
@@ -52,13 +63,14 @@ describe('native future experiences', () => {
     expect(screen.getByText(/carried on TokenPak · TIP authority · PAK context/)).toBeInTheDocument();
     fireEvent.click(screen.getByRole('button', { name: /Ten years pass.*Enter Morning, After/ }));
     expect(experienceActions.enterYear).toHaveBeenCalledWith('2040');
-  });
+  }, 15_000);
 
   it('lets holographic Kevin deliberate, refuse invention, expose a frayed source, and ask permission', () => {
     const experienceActions = actions();
-    render(<ExperienceActionsProvider value={experienceActions}><FutureExperience year="2040" /></ExperienceActionsProvider>);
+    const { container } = render(<ExperienceActionsProvider value={experienceActions}><FutureExperience year="2040" /></ExperienceActionsProvider>);
 
     expect(screen.getByRole('heading', { name: 'Morning, After' })).toBeInTheDocument();
+    expect(container).not.toHaveTextContent(/Saito/i);
     fireEvent.click(screen.getAllByRole('button', { name: /An unfinished sentence/ })[0]);
     expect(screen.getByText(/sentence stops after/)).toBeInTheDocument();
     fireEvent.click(screen.getByRole('button', { name: 'Pull the sentence to its source' }));

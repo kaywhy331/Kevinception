@@ -50,7 +50,7 @@ const temporalArtifacts = {
   },
   '2030': {
     id: 'agent-memory',
-    name: 'Wren Consent Thread',
+    name: '2030 Consent Thread',
     description: 'An ordinary moment allowed to travel from Morning, Together into the consciousness ten years ahead.'
   },
   '2040': {
@@ -59,6 +59,15 @@ const temporalArtifacts = {
     description: 'A source-bound fragment of the permissioned self that still points back to the first television signal.'
   }
 };
+
+function temporalArtifactsFor(year) {
+  return {
+    ...temporalArtifacts,
+    '2030': year === '2030'
+      ? { ...temporalArtifacts['2030'], name: 'Saito Consent Thread' }
+      : temporalArtifacts['2030']
+  };
+}
 
 for (const year of targetYears) {
   const filePath = `public/legacy/experience/${year}/index.html`;
@@ -72,7 +81,7 @@ for (const year of targetYears) {
   payload.eras = canonical.eras;
   payload.projects = canonical.projects;
   payload.knowledgeBase = canonical.knowledgeBase;
-  payload.temporalArtifacts = temporalArtifacts;
+  payload.temporalArtifacts = temporalArtifactsFor(year);
   payload.timelineContent = canonical.timelineContent;
 
   const replacement = `<script type="application/json" id="era-world-data">${serializeForHtml(payload)}</script>`;

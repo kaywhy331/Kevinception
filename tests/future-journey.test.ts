@@ -86,13 +86,15 @@ describe('future journey domain', () => {
     expect(state.echo.resonance).toBe(firstResonance);
     state = openEchoMemory(state, '2010');
     state = openEchoMemory(state, '2030');
+    expect(state.echo.response?.answer).toContain('an ambient companion');
+    expect(state.echo.response?.answer).not.toContain('Saito');
     expect(state.echo.synthesisReady).toBe(true);
     state = markEchoFinaleSeen(state);
     expect(state.echo.finaleSeen).toBe(true);
     expect(state.echo.resonance).toBe(100);
   });
 
-  it('lets Wren keep or forget moments only through explicit consent', () => {
+  it('lets Saito keep or forget moments only through explicit consent', () => {
     let state = createInitialCoexistenceState();
     state = selectCoexistenceMoment(state, 'making');
     state = resolveCompanionConsent(state, 'kept');
@@ -103,9 +105,14 @@ describe('future journey domain', () => {
     expect(state.refusedMoments).toEqual(['making']);
   });
 
-  it('gives every 2030 moment a complete inspectable agent decision trace', () => {
+  it('gives every 2030 moment a direct exchange synchronized to the inspectable agent record', () => {
     for (const moment of Object.values(coexistenceMoments)) {
       expect(Object.keys(moment.agent.steps)).toEqual(AGENT_TRACE_PHASES);
+      expect(moment.exchange).toHaveLength(AGENT_TRACE_PHASES.length);
+      expect(moment.exchange.map((beat) => beat.phase)).toEqual(AGENT_TRACE_PHASES);
+      expect(moment.exchange[0].speaker).toBe('saito');
+      expect(moment.exchange.some((beat) => beat.speaker === 'kevin')).toBe(true);
+      expect(moment.exchange.every((beat) => beat.signal.length > 20)).toBe(true);
       expect(moment.agent.confidence).toBeGreaterThan(0);
       expect(moment.agent.confidence).toBeLessThanOrEqual(100);
       expect(moment.agent.uncertainty.length).toBeGreaterThan(20);
@@ -115,6 +122,7 @@ describe('future journey domain', () => {
       }
     }
     expect(coexistenceMoments.morning.agent.steps.sense.detail).toContain('biometrics are not opened');
+    expect(coexistenceMoments.work.exchange[2].line).toContain('cannot spend your authority');
     expect(coexistenceMoments.work.agent.steps.govern.status).toBe('Human authority required');
     expect(coexistenceMoments.care.agent.steps.account.status).toBe('Ephemeral buffer');
   });

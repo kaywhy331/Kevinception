@@ -788,7 +788,7 @@ export const eras = [
     "label": "Co-Existence",
     "anchorYear": 2030,
     "subtitle": "Morning, Together",
-    "metaphor": "One ordinary day in Kevin’s apartment and studio with Wren, an ambient AI companion who anticipates, disagrees, helps, waits, and forgets whenever permission is withheld. TokenPak, TIP, and PAK remain the quiet provenance spine beneath the relationship.",
+    "metaphor": "One ordinary day in Kevin’s apartment and studio with an ambient AI companion who anticipates, disagrees, helps, waits, and forgets whenever permission is withheld. TokenPak, TIP, and PAK remain the quiet provenance spine beneath the relationship.",
     "emotionalTarget": "Intimacy, trust, productive disagreement, restraint, and companionship.",
     "status": "live",
     "contentMode": "speculative",

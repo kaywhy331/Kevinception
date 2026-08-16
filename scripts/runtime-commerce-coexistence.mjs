@@ -56,6 +56,28 @@ async function clickPageButton(label) {
   if (!clicked) throw new Error(`Could not find enabled page button containing “${label}”.`);
 }
 
+async function finishCoexistenceExchange() {
+  for (let beat = 0; beat < 4; beat += 1) {
+    const before = await page.$$eval('.coexistence-exchange li', (nodes) => nodes.length);
+    const advanced = await page.$eval('.coexistence-reply', (button) => {
+      if (!(button instanceof HTMLButtonElement) || button.disabled) return false;
+      button.click();
+      return true;
+    }).catch(() => false);
+    if (!advanced) throw new Error(`Could not advance Co-Existence exchange from beat ${before}.`);
+    await page.waitForFunction((count) => document.querySelectorAll('.coexistence-exchange li').length > count, {}, before);
+  }
+}
+
+async function traverseCommerceHistory(delta, expectedModule) {
+  await page.evaluate((step) => window.history.go(step), delta);
+  await page.waitForFunction((module) => {
+    const location = new URL(window.location.href);
+    return location.searchParams.get('module') === module
+      && document.querySelector('.interface-mode')?.classList.contains('is-visible');
+  }, { timeout: 30000 }, expectedModule);
+}
+
 function observePage(target) {
   target.on('console', (message) => {
     if (message.type() === 'error') report.consoleErrors.push(message.text());
@@ -209,11 +231,11 @@ try {
   commerce = await commerceFrame();
   await waitForModule(commerce, 'dashboard');
   await openModule(commerce, 'orders');
-  await page.goBack();
+  await traverseCommerceHistory(-1, 'dashboard');
   commerce = await commerceFrame();
   await waitForModule(commerce, 'dashboard');
   assert('Browser Back restores the previous Commerce module', new URL(page.url()).searchParams.get('module') === 'dashboard');
-  await page.goForward();
+  await traverseCommerceHistory(1, 'orders');
   commerce = await commerceFrame();
   await waitForModule(commerce, 'orders');
   assert('Browser Forward restores the next Commerce module', new URL(page.url()).searchParams.get('module') === 'orders');
@@ -363,16 +385,20 @@ try {
   await page.goto(`${base}/experience/?year=2030&view=interface`, { waitUntil: 'domcontentloaded', timeout: 45000 });
   await page.waitForSelector('.interface-mode.is-visible .future-native--2030', { timeout: 30000 });
   assert('The future interfaces are native and mount no 2030/2040 iframe', await page.$$eval('iframe', (frames) => frames.every((frame) => !/\/legacy\/experience\/(2030|2040)\//.test(frame.src))));
-  assert('Native Co-Existence exposes five ordinary moments with Wren', await page.$$eval('.coexistence-dayline button', (buttons) => buttons.length === 5) && await page.$eval('.future-native--2030', (node) => node.textContent.includes('Morning, Together') && node.textContent.includes('Wren')));
+  assert('Native Co-Existence exposes five ordinary moments with Saito', await page.$$eval('.coexistence-dayline button', (buttons) => buttons.length === 5) && await page.$eval('.future-native--2030', (node) => node.textContent.includes('Morning, Together') && node.textContent.includes('Saito')));
+  await finishCoexistenceExchange();
   await clickPageButton('Keep it with me');
   await clickPageButton('Studio table');
+  await finishCoexistenceExchange();
   await clickPageButton('Let it end here');
   await clickPageButton('Window desk');
+  await finishCoexistenceExchange();
   await clickPageButton('Let it end here');
   await clickPageButton('Open infrastructure receipt');
   assert('TokenPak, TIP, and PAK remain optional provenance rather than the 2030 hero', await page.$eval('.coexistence-provenance aside', (node) => node.textContent.includes('TokenPak') && node.textContent.includes('TIP authority') && node.textContent.includes('PAK context')));
   await clickPageButton('Enter Morning, After');
   await page.waitForSelector('.future-native--2040', { timeout: 30000 });
+  assert('Saito remains exclusive to the 2030 experience', await page.$eval('.future-native--2040', (node) => !/Saito/i.test(node.textContent ?? '')));
   assert('Consciousness reports the one memory permitted by the living day', await page.$eval('.future-masthead', (node) => node.textContent.includes('1/5 MEMORIES PERMITTED')));
   await clickPageButton('An unfinished sentence');
   await clickPageButton('Let Kevin recall');
