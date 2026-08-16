@@ -102,6 +102,8 @@ try {
   await finishCoexistenceExchange();
   assert('The conversation ends with Saito reporting the action it actually took', await page.$eval('.coexistence-exchange', (node) => node.textContent.includes('zero messages read')));
   assert('The finished exchange reveals the multi-domain work Saito already staged', await page.$eval('.coexistence-staged', (node) => node.textContent.includes('9:30 call moved itself') && node.textContent.includes('Waits for Kevin')));
+  assert('The pane and commitment dial anchor staged plans inside the room', await page.$eval('.coexistence-room', (node) => Boolean(node.querySelector('.coexistence-pane[data-live]') && node.querySelector('.coexistence-dial[data-armed]'))));
+  assert('A Live mode is offered for voiced, self-advancing exchanges', await page.$$eval('button', (buttons) => buttons.some((button) => /Live (on|off)/.test(button.textContent ?? ''))));
   await clickButton('Keep it with me');
   await clickButton('Studio table');
   await finishCoexistenceExchange();
@@ -110,9 +112,17 @@ try {
   await finishCoexistenceExchange();
   await clickButton('Let it end here');
   await clickButton('Dinner table');
-  assert('The 20:15 anchor recalls an eleven-week-old seed before opening the staged year', await page.$eval('.coexistence-dialogue', (node) => node.textContent.includes('A sentence becomes a year') && node.querySelector('.coexistence-seed')?.textContent.includes('Asia')));
+  assert('The 20:15 anchor holds its seed back until Saito speaks', await page.$eval('.coexistence-dialogue', (node) => {
+    const seed = node.querySelector('.coexistence-seed')?.textContent ?? '';
+    return node.textContent.includes('A sentence becomes a year') && seed.includes('Seed held') && !seed.includes('Asia');
+  }));
   await finishCoexistenceExchange();
-  assert('The staged year surfaces with receipts while booking stays behind the human gate', await page.$eval('.future-native--2030', (node) => node.textContent.includes('Nothing is booked, nothing is spent') && node.querySelector('.coexistence-staged li[data-state="gated"]')?.textContent.includes('booking')));
+  assert('The revealed seed and staged year surface while booking stays behind the human gate', await page.$eval('.future-native--2030', (node) => {
+    const seed = node.querySelector('.coexistence-seed')?.textContent ?? '';
+    return seed.includes('Seeded eleven weeks ago') && seed.includes('Asia')
+      && node.textContent.includes('Nothing is booked, nothing is spent')
+      && node.querySelector('.coexistence-staged li[data-state="gated"]')?.textContent.includes('booking');
+  }));
   await clickButton('Keep it with me');
   await clickButton('Open infrastructure receipt');
   assert('2030 keeps TokenPak/TIP/PAK secondary inside optional provenance', await page.$eval('.coexistence-provenance aside', (node) => node.textContent.includes('TokenPak') && node.textContent.includes('TIP authority') && node.textContent.includes('PAK context')));

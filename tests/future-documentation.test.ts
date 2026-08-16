@@ -17,6 +17,9 @@ describe('future-wing documentation truth', () => {
     expect(status).toContain('2030 consent materially changes 2040 recall');
     expect(status).toContain('multi-domain anticipation');
     expect(status).toContain('nine words about Asia');
+    expect(status).toContain('Seed held');
+    expect(status).toContain('Live mode');
+    expect(status).toContain('consent is never advanced by the machine');
     expect(status).toContain('“May I keep this?”');
     expect(status).toContain('final original/licensed sound design across all eras');
   });

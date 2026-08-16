@@ -122,6 +122,7 @@ describe('future journey domain', () => {
       expect(moment.incubation.domains.length).toBeGreaterThan(0);
       expect(moment.staged.length).toBeGreaterThanOrEqual(3);
       expect(moment.staged.some((item) => item.state === 'gated')).toBe(true);
+      expect(moment.staged.at(-1)?.state).toBe('gated');
       for (const phase of AGENT_TRACE_PHASES) {
         expect(moment.agent.steps[phase].summary.length).toBeGreaterThan(20);
         expect(moment.agent.steps[phase].detail.length).toBeGreaterThan(50);

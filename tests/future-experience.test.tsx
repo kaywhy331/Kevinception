@@ -31,7 +31,9 @@ describe('native future experiences', () => {
     render(<ExperienceActionsProvider value={experienceActions}><FutureExperience year="2030" /></ExperienceActionsProvider>);
 
     expect(screen.getByRole('heading', { name: 'Morning, Together' })).toBeInTheDocument();
+    expect(screen.getByRole('button', { name: /Live off/ })).toBeInTheDocument();
     expect(screen.getByText(/I let the alarm fall away/)).toBeInTheDocument();
+    expect(screen.getByText(/Seed held · 9 days/)).toBeInTheDocument();
     expect(screen.getAllByText(/LOCAL INPUTS · alarm dismissed/).length).toBeGreaterThan(0);
     expect(screen.getByText('Inspect Saito’s live boundary')).toBeInTheDocument();
     expect(screen.getByText('SAITO-0712-MORNING')).toBeInTheDocument();
@@ -63,10 +65,12 @@ describe('native future experiences', () => {
 
     fireEvent.click(screen.getByRole('button', { name: /Dinner table after the plates are cleared/ }));
     expect(screen.getByRole('heading', { name: 'A sentence becomes a year' })).toBeInTheDocument();
-    expect(screen.getByText('Seeded eleven weeks ago · This table')).toBeInTheDocument();
+    expect(screen.getByText(/Seed held · 63 days/)).toBeInTheDocument();
+    expect(screen.queryByText('Seeded eleven weeks ago · This table')).not.toBeInTheDocument();
     for (let beat = 0; beat < 4; beat += 1) {
       fireEvent.click(screen.getByRole('button', { name: /^(Speak|Continue)/ }));
     }
+    expect(screen.getByText('Seeded eleven weeks ago · This table')).toBeInTheDocument();
     expect(screen.getByText(/which two weeks of your life this becomes/)).toBeInTheDocument();
     expect(screen.getByText('Passport renewal drafted ahead of the March expiry')).toBeInTheDocument();
     expect(screen.getAllByText('Waits for Kevin').length).toBeGreaterThan(0);
