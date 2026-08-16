@@ -30,6 +30,25 @@ export type CoexistenceIncubation = {
   domains: readonly string[];
 };
 
+export type SaitoAuthorityTier = {
+  domains: string;
+  level: string;
+  meaning: string;
+};
+
+/**
+ * The standing delegation Kevin has granted, visible as an instrument rather
+ * than buried in settings. Every staged card exists because a tier allows it;
+ * commitment always happens at the dial.
+ */
+export const saitoAuthorityMap: readonly SaitoAuthorityTier[] = [
+  { domains: 'Home · Food · Entertainment · Information', level: 'Full auto', meaning: 'Act, then leave a receipt. Reversible by nature.' },
+  { domains: 'Health · Family', level: 'Notify first', meaning: 'Surface privately; act only on Kevin’s word.' },
+  { domains: 'Work · Projects · Travel', level: 'Stage to gate', meaning: 'Prepare everything; only the hand commits.' },
+  { domains: 'Money', level: 'Stage only', meaning: 'Refundable holds at most; spend is always the dial.' },
+  { domains: 'Social', level: 'Draft only', meaning: 'Written in Kevin’s voice; sent only by Kevin’s hand.' }
+];
+
 export const AGENT_TRACE_PHASES = [
   'sense',
   'interpret',
@@ -73,6 +92,12 @@ export type CoexistenceMoment = {
   seed: CoexistenceSeed;
   incubation: CoexistenceIncubation;
   staged: readonly CoexistenceStagedAction[];
+  /**
+   * Optional ambient caption for the shared pane while another moment is live.
+   * Deliberately absent for private incubations (family health, guests):
+   * those never surface on shared glass.
+   */
+  thread?: string;
   exchange: readonly CoexistenceExchangeBeat[];
   agent: CoexistenceAgentTrace;
 };
@@ -92,6 +117,7 @@ export const coexistenceMoments: Record<CoexistenceMomentId, CoexistenceMoment> 
       where: 'Kitchen doorway'
     },
     incubation: { span: '9 days', checks: 11, domains: ['work', 'weather', 'health', 'family', 'food'] },
+    thread: 'DAD’S VISIT · groceries timed · day 9',
     staged: [
       { domain: 'work', action: 'The 9:30 call moved itself to Thursday after the overnight flight delay', state: 'done' },
       { domain: 'health', action: 'Training run offered inside the 8:40 dry window', state: 'staged' },
@@ -182,6 +208,7 @@ export const coexistenceMoments: Record<CoexistenceMomentId, CoexistenceMoment> 
       where: 'Studio table'
     },
     incubation: { span: '3 weeks', checks: 240, domains: ['projects', 'research', 'education', 'funding'] },
+    thread: 'HARBOR · 240 submissions read',
     staged: [
       { domain: 'research', action: '240 Harbor submissions read overnight; three flagged as prior art', state: 'done' },
       { domain: 'projects', action: 'Comparison table mounted beside the draft, words untouched', state: 'done' },
@@ -272,6 +299,7 @@ export const coexistenceMoments: Record<CoexistenceMomentId, CoexistenceMoment> 
       where: 'Window desk'
     },
     incubation: { span: '2 days', checks: 23, domains: ['work', 'legal', 'communications', 'operations'] },
+    thread: 'LAUNCH · 3 rollouts simulated',
     staged: [
       { domain: 'work', action: 'Calendars aligned across four companies for the launch window', state: 'done' },
       { domain: 'operations', action: 'Three rollout simulations with rollback anchors', state: 'done' },
@@ -451,6 +479,7 @@ export const coexistenceMoments: Record<CoexistenceMomentId, CoexistenceMoment> 
       where: 'This table'
     },
     incubation: { span: '63 days', checks: 14, domains: ['travel', 'money', 'family', 'weather', 'documents', 'food'] },
+    thread: 'ASIA · fare corridor · day 63',
     staged: [
       { domain: 'documents', action: 'Passport renewal drafted ahead of the March expiry', state: 'staged' },
       { domain: 'travel', action: 'Tokyo fare corridor watched since June; next dip in nine days', state: 'done' },

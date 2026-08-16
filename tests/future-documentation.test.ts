@@ -20,6 +20,8 @@ describe('future-wing documentation truth', () => {
     expect(status).toContain('Seed held');
     expect(status).toContain('Live mode');
     expect(status).toContain('consent is never advanced by the machine');
+    expect(status).toContain('standing-authority map');
+    expect(status).toContain('never surface on shared glass');
     expect(status).toContain('“May I keep this?”');
     expect(status).toContain('final original/licensed sound design across all eras');
   });

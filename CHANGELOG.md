@@ -11,6 +11,8 @@
 - Made the reveal perform: seeds stay held (“Seed held · 63 days”) until the act beat, staged cards cascade in with the gated item landing last and scrolled into view, and the seed snaps in beside them.
 - Added an opt-in Live mode where Saito leads the exchange on a natural clock and speaks aloud when sound is on; any tap interrupts and consent stays entirely human.
 - Put the Saito pane and an arming brass commitment dial into the flat room, teased the 20:15 anchor on the dayline, and enlarged the dinner-table object with a quiet glow until visited.
+- Gave the pane an ambient idle state carrying the other days’ quiet incubations as threads (“ASIA · fare corridor · day 63”); private incubations never surface on shared glass.
+- Added an inspectable standing-authority map—Full auto / Notify first / Stage to gate / Stage only / Draft only—in both the interface and text experiences.
 
 ## 0.8.2 — V7.7 audit completion and production hardening
 

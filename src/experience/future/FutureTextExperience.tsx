@@ -15,6 +15,7 @@ import {
   getConsciousnessLine,
   getPermissionedMemorySource,
   getPermissionedMemoryState,
+  saitoAuthorityMap,
   type CompanionConsent,
   type AgentTracePhase,
   type ConsciousnessPhase,
@@ -108,6 +109,19 @@ function TextCoexistence() {
             </ul>
           </section>
         )}
+        <details className="future-text-agent future-text-authority">
+          <summary>Saito’s standing authority by domain</summary>
+          <ol>
+            {saitoAuthorityMap.map((tier) => (
+              <li key={tier.domains}>
+                <b>{tier.level}</b>
+                <strong>{tier.domains}</strong>
+                <p>{tier.meaning}</p>
+              </li>
+            ))}
+          </ol>
+          <footer>Commitment always happens by Kevin’s hand. Private incubations never surface on shared glass.</footer>
+        </details>
         <details className="future-text-agent">
           <summary>Inspect the full observable agent record</summary>
           <header>

@@ -90,6 +90,8 @@ The build should be treated as a **complete connected-environment implementation
 - The seed stays deliberately held—“Seed held · 63 days”—until the reveal beat, when it snaps in beside a staggered staged-card cascade whose gated item always lands last and scrolls into view
 - An opt-in Live mode lets Saito lead: beats self-advance on a natural clock, Saito’s lines are voiced when sound is on, any tap interrupts, and consent is never advanced by the machine
 - The flat room carries a Saito pane where staged domains surface at the reveal and a brass commitment dial that arms at authority checks; the dayline teases the 20:15 anchor—“a year is waiting”—until it is visited
+- While one moment is live, the pane carries the other days’ quiet incubations as ambient threads; private incubations—family health, guests—never surface on shared glass
+- An inspectable standing-authority map states each domain tier—Full auto, Notify first, Stage to gate, Stage only, Draft only—and that commitment always happens by Kevin’s hand at the dial
 - A synchronized live-activity line shows the currently observable signal or boundary without replacing the conversation with a dashboard
 - Every moment retains a secondary inspectable `Sense → Interpret → Check authority → Act or wait → Receipt` decision record with inputs, confidence, uncertainty, policy, action, retention, and exclusions—never a claim to reveal hidden chain-of-thought
 - The 3D room routes signals directly from the active object through Saito and fans out to every permitted room actuator the moment touches; at consequential work, the signal stops visibly at the human-authority gate, embodied as a physical commitment dial on the kitchen counter

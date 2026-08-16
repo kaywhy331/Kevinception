@@ -34,6 +34,11 @@ describe('native future experiences', () => {
     expect(screen.getByRole('button', { name: /Live off/ })).toBeInTheDocument();
     expect(screen.getByText(/I let the alarm fall away/)).toBeInTheDocument();
     expect(screen.getByText(/Seed held · 9 days/)).toBeInTheDocument();
+    expect(screen.getByText('ASIA · fare corridor · day 63')).toBeInTheDocument();
+    expect(screen.getByText('Saito’s standing authority')).toBeInTheDocument();
+    fireEvent.click(screen.getByText('Saito’s standing authority').closest('summary')!);
+    expect(screen.getByText('Refundable holds at most; spend is always the dial.')).toBeInTheDocument();
+    expect(screen.getByText(/Private incubations—family health, guests—never surface on shared glass/)).toBeInTheDocument();
     expect(screen.getAllByText(/LOCAL INPUTS · alarm dismissed/).length).toBeGreaterThan(0);
     expect(screen.getByText('Inspect Saito’s live boundary')).toBeInTheDocument();
     expect(screen.getByText('SAITO-0712-MORNING')).toBeInTheDocument();
@@ -81,7 +86,7 @@ describe('native future experiences', () => {
     expect(screen.getByText(/carried on TokenPak · TIP authority · PAK context/)).toBeInTheDocument();
     fireEvent.click(screen.getByRole('button', { name: /Ten years pass.*Enter Morning, After/ }));
     expect(experienceActions.enterYear).toHaveBeenCalledWith('2040');
-  }, 15_000);
+  }, 30_000);
 
   it('lets holographic Kevin deliberate, refuse invention, expose a frayed source, and ask permission', () => {
     const experienceActions = actions();

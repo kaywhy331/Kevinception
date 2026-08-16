@@ -25,6 +25,9 @@ describe('future functional text experience', () => {
     expect(screen.getByRole('heading', { name: 'An idea finds its edge' })).toBeInTheDocument();
     expect(screen.getByText(/changed that paragraph nine times/)).toBeInTheDocument();
     expect(screen.getByText(/PROJECT-ONLY INPUTS/)).toBeInTheDocument();
+    expect(screen.getByText('Saito’s standing authority by domain')).toBeInTheDocument();
+    fireEvent.click(screen.getByText('Saito’s standing authority by domain').closest('summary')!);
+    expect(screen.getByText('Refundable holds at most; spend is always the dial.')).toBeInTheDocument();
     fireEvent.click(screen.getByText('Inspect the full observable agent record').closest('summary')!);
     expect(screen.getByRole('heading', { name: 'Inputs, interpretation, authority, action, and retention' })).toBeInTheDocument();
     expect(screen.getByText(/Recommend · do not rewrite/)).toBeInTheDocument();

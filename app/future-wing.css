@@ -298,6 +298,7 @@
 .coexistence-pane span { color: #8a6f4d; font: 850 .36rem/1 var(--font-inter), sans-serif; letter-spacing: .16em; text-transform: uppercase; }
 .coexistence-pane b { color: #6d4f2e; font: 750 .4rem/1.25 var(--font-inter), sans-serif; letter-spacing: .1em; text-transform: uppercase; animation: saito-line-arrive .4s ease-out both; }
 .coexistence-pane b[data-state="gated"] { color: #a44a28; }
+.coexistence-pane b[data-thread] { color: #7d6a4c; font-weight: 650; letter-spacing: .08em; opacity: .85; animation: none; }
 .coexistence-pane[data-live] { border-color: rgba(224,154,62,.55); background: linear-gradient(160deg, rgba(255,232,190,.28), rgba(150,108,62,.12)); box-shadow: inset 0 0 22px rgba(255,214,140,.24), 0 0 14px rgba(255,196,94,.18); }
 .coexistence-pane[data-phase="govern"] { border-color: rgba(198,93,59,.5); }
 
@@ -364,6 +365,24 @@
 .coexistence-agent > article dt { color: #906044; font-size: .38rem; font-weight: 850; letter-spacing: .08em; text-transform: uppercase; }
 .coexistence-agent > article dd { margin: .17rem 0 0; color: #4e443b; font-size: .43rem; line-height: 1.35; }
 .coexistence-agent > footer { padding: .42rem .68rem; border-top: 1px solid rgba(82,55,35,.14); color: #817367; font-size: .42rem; line-height: 1.35; }
+
+.coexistence-authority { margin: .9rem 0; border: 1px solid rgba(82,55,35,.2); background: rgba(244,235,214,.36); }
+.coexistence-authority > summary { display: flex; align-items: center; justify-content: space-between; gap: .7rem; min-height: 40px; padding: .5rem .65rem; color: #4a382b; cursor: pointer; list-style: none; }
+.coexistence-authority > summary::-webkit-details-marker { display: none; }
+.coexistence-authority > summary::after { content: '+'; flex: 0 0 auto; color: #9d4f2d; font-size: 1rem; line-height: 1; }
+.coexistence-authority[open] > summary::after { content: '−'; }
+.coexistence-authority > summary span { color: #75462f; font-size: .5rem; font-weight: 850; letter-spacing: .06em; text-transform: uppercase; }
+.coexistence-authority > summary b { margin-left: auto; color: #5e5044; font-size: .44rem; text-align: right; }
+.coexistence-authority[open] > summary { border-bottom: 1px solid rgba(82,55,35,.16); background: rgba(255,248,230,.4); }
+.coexistence-authority > p { margin: 0; padding: .55rem .68rem 0; color: #6a5b4a; font: italic 520 .58rem/1.45 var(--font-display), sans-serif; }
+.coexistence-authority > ol { display: grid; gap: .4rem; margin: 0; padding: .6rem .68rem; list-style: none; }
+.coexistence-authority > ol li { display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: .1rem .6rem; padding: .42rem .55rem; border-left: 3px solid #c98b3f; background: rgba(255,248,231,.34); }
+.coexistence-authority > ol li span { grid-column: 1; color: #8d5739; font-size: .42rem; font-weight: 900; letter-spacing: .11em; text-transform: uppercase; }
+.coexistence-authority > ol li b { grid-column: 2; grid-row: 1 / span 2; align-self: center; color: #79663f; font-size: .42rem; font-weight: 850; letter-spacing: .1em; text-transform: uppercase; white-space: nowrap; }
+.coexistence-authority > ol li > p { grid-column: 1; margin: 0; color: #4a4238; font: 520 .56rem/1.42 var(--font-display), sans-serif; }
+.coexistence-authority > ol li:nth-child(4) { border-left-color: #b95132; }
+.coexistence-authority > ol li:nth-child(4) b { color: #a44a28; }
+.coexistence-authority > footer { padding: 0 .68rem .6rem; color: #7d6f5d; font-size: .5rem; font-style: italic; }
 
 .coexistence-consent { display: flex; flex-wrap: wrap; gap: .38rem; margin: .75rem 0 0; padding: .7rem 0 0; border: 0; border-top: 1px solid rgba(91,61,38,.18); }
 .coexistence-consent legend { width: 100%; margin-bottom: .45rem; color: #3f352c; font: 620 .78rem/1.3 var(--font-display), sans-serif; }
@@ -634,7 +653,7 @@
   .future-disclosure { min-height: 28px; padding: .28rem .6rem; }
   .future-disclosure p { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
 
-  .coexistence-stage { display: grid; grid-template-columns: minmax(0, 1fr); grid-template-rows: auto 270px auto auto; gap: .4rem; padding: .4rem; }
+  .coexistence-stage { display: grid; grid-template-columns: minmax(0, 1fr); grid-template-rows: auto 270px minmax(min-content, max-content) auto; gap: .4rem; padding: .4rem; overflow-y: auto; }
   .coexistence-dayline,
   .coexistence-room,
   .coexistence-dialogue,
@@ -657,7 +676,7 @@
   .coexistence-agent > ol { display: flex; overflow-x: auto; }
   .coexistence-agent > ol li { flex: 0 0 6rem; }
   .coexistence-agent > article dl { grid-template-columns: 1fr; }
-  .coexistence-forward { min-height: 42px; }
+  .coexistence-forward { min-height: 42px; border-top: 1px solid rgba(84,55,34,.3); background: rgba(247,240,224,.94); }
 
   .consciousness-stage { grid-template-columns: minmax(0, 1.08fr) minmax(118px, .52fr); grid-template-rows: 270px auto auto auto; gap: .35rem; padding: .35rem; overflow-y: auto; }
   .consciousness-room { grid-column: 1; grid-row: 1; min-height: 270px; }

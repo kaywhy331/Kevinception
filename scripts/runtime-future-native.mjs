@@ -89,6 +89,8 @@ try {
       && node.querySelector('.coexistence-live-status')?.textContent.includes('LOCAL INPUTS')
       && Boolean(node.querySelector('.coexistence-reply'))
   )));
+  assert('The pane carries the other days’ quiet incubations while a moment is live', await page.$eval('.coexistence-pane', (node) => /ASIA · fare corridor/.test(node.textContent ?? '') && /HARBOR/.test(node.textContent ?? '')));
+  assert('Saito’s standing authority map is inspectable by tier', await page.$eval('.coexistence-authority', (node) => node.textContent.includes('Full auto') && node.textContent.includes('Draft only') && node.textContent.includes('Money')));
   assert('2030 keeps Saito’s five-stage observable record available as a secondary inspector', await page.$eval('.coexistence-agent', (node) => (
     node.textContent.includes('Sense')
       && node.textContent.includes('Interpret')

@@ -18,6 +18,7 @@ import {
 import {
   AGENT_TRACE_PHASES,
   COEXISTENCE_MOMENT_IDS,
+  saitoAuthorityMap,
   advanceConsciousnessBehavior,
   createInitialCoexistenceState,
   createInitialConsciousnessState,
@@ -149,6 +150,21 @@ describe('future journey domain', () => {
     coexistence = resolveCompanionConsent(coexistence, 'refused', 'evening');
     expect(getPermissionedMemoryState(coexistence, 'boarding-stub')).toBe('withheld');
     expect(getConsciousnessLine(consciousnessCues['boarding-stub'], 'recall', 'withheld')).toContain('will not reconstruct');
+  });
+
+  it('states standing authority as an instrument and keeps private incubations off shared glass', () => {
+    expect(saitoAuthorityMap).toHaveLength(5);
+    expect(saitoAuthorityMap.map((tier) => tier.level)).toEqual(['Full auto', 'Notify first', 'Stage to gate', 'Stage only', 'Draft only']);
+    const money = saitoAuthorityMap.find((tier) => tier.domains === 'Money');
+    expect(money?.level).toBe('Stage only');
+    expect(money?.meaning).toContain('dial');
+    const social = saitoAuthorityMap.find((tier) => tier.domains === 'Social');
+    expect(social?.meaning).toContain('Kevin’s hand');
+
+    expect(coexistenceMoments.morning.thread).toBeTruthy();
+    expect(coexistenceMoments.evening.thread).toContain('ASIA');
+    expect(coexistenceMoments.care.thread).toBeUndefined();
+    expect(coexistenceMoments.gathering.thread).toBeUndefined();
   });
 
   it('allows 2040 to recall only memories that 2030 was permitted to keep', () => {

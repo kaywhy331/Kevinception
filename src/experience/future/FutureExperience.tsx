@@ -17,6 +17,7 @@ import {
   getConsciousnessLine,
   getPermissionedMemorySource,
   getPermissionedMemoryState,
+  saitoAuthorityMap,
   type CoexistenceState,
   type CoexistenceMoment,
   type CoexistenceMomentId,
@@ -188,9 +189,16 @@ function CoexistenceRoom({ activeMoment, activePhase, activeSignal, revealed, co
       <div className="coexistence-lounge" aria-hidden="true"><i></i><i></i></div>
       <div className="coexistence-pane" data-live={revealed || undefined} data-phase={activePhase} aria-hidden="true">
         <span>Saito pane</span>
-        {revealed && activeMomentContent.staged.slice(0, 3).map((item) => (
-          <b key={item.action} data-state={item.state}>{item.domain}</b>
-        ))}
+        {revealed
+          ? activeMomentContent.staged.slice(0, 3).map((item) => (
+            <b key={item.action} data-state={item.state}>{item.domain}</b>
+          ))
+          : COEXISTENCE_MOMENT_IDS
+            .filter((id) => id !== activeMoment)
+            .map((id) => coexistenceMoments[id].thread)
+            .filter((thread): thread is string => Boolean(thread))
+            .slice(0, 3)
+            .map((thread) => <b key={thread} data-thread>{thread}</b>)}
       </div>
       <div className="coexistence-dial" data-armed={(activePhase === 'govern' || revealed) || undefined} aria-hidden="true"><i></i></div>
       <div className="coexistence-room-label coexistence-room-label--kitchen" aria-hidden="true">Kitchen / local sensing</div>
@@ -391,6 +399,24 @@ function CoexistenceExperience() {
           <div className="coexistence-ambient" aria-label="Ambient details">{moment.ambient}</div>
 
           <AgentTrace key={moment.id} moment={moment} livePhase={activeBeat.phase} />
+
+          <details className="coexistence-authority">
+            <summary>
+              <span>Saito’s standing authority</span>
+              <b>5 tiers · the dial commits</b>
+            </summary>
+            <p>Every staged card exists because a tier allows it. Nothing below moves authority off Kevin.</p>
+            <ol aria-label="Standing delegation by domain">
+              {saitoAuthorityMap.map((tier) => (
+                <li key={tier.domains}>
+                  <span>{tier.domains}</span>
+                  <b>{tier.level}</b>
+                  <p>{tier.meaning}</p>
+                </li>
+              ))}
+            </ol>
+            <footer>Private incubations—family health, guests—never surface on shared glass.</footer>
+          </details>
 
           {exchangeComplete && (
             <fieldset className="coexistence-consent">
