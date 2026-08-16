@@ -93,6 +93,21 @@ function TextCoexistence() {
           </button>
         )}
         <p className="future-text-ambient"><b>In the room</b>{moment.ambient}</p>
+        <p className="future-text-seed"><b>Seed</b>{moment.seed.when} · {moment.seed.where} — {moment.seed.said}</p>
+        {!nextBeat && (
+          <section className="future-text-staged" aria-label="What Saito already staged">
+            <p><b>Quiet work</b>{moment.incubation.span} · {moment.incubation.checks} checks · {moment.incubation.domains.join(', ')}</p>
+            <ul>
+              {moment.staged.map((item) => (
+                <li key={item.action} data-state={item.state}>
+                  <b>{item.domain}</b>
+                  <span>{item.action}</span>
+                  <i>{item.state === 'done' ? 'done, reversible' : item.state === 'staged' ? 'staged, unsigned' : 'waits for Kevin'}</i>
+                </li>
+              ))}
+            </ul>
+          </section>
+        )}
         <details className="future-text-agent">
           <summary>Inspect the full observable agent record</summary>
           <header>
@@ -161,7 +176,7 @@ function TextConsciousness() {
         <p className="eyebrow">2040 · Consciousness</p>
         <h2 id="future-text-consciousness-title">Morning, After</h2>
         <p>In this imagined 2040, a cyberpunk holographic reproduction of Kevin notices, recalls, deliberates, speaks, initiates, acts, and refuses within the permissions Kevin left behind.</p>
-        <small>{coexistence.keptMoments.length}/5 memories permitted by the living day.</small>
+        <small>{coexistence.keptMoments.length}/6 memories permitted by the living day.</small>
       </header>
 
       <nav className="future-text-cues" aria-label="Environmental cues Kevin can notice">

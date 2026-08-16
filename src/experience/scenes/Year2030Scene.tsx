@@ -23,47 +23,71 @@ const momentObjects: Array<{
   { id: 'making', position: [0.45, 1.71, -1.12], color: '#b66b45' },
   { id: 'work', position: [3.22, 2.64, -3.58], color: '#e6b85c' },
   { id: 'care', position: [-4.42, 1.82, -1.52], color: '#d8764e' },
+  { id: 'evening', position: [-.55, 1.16, 1.92], color: '#caa050' },
   { id: 'gathering', position: [2.72, 1.16, 1.82], color: '#8aa08a' }
 ];
 
 const saitoPosition: [number, number, number] = [0, 4.18, -3.62];
+const commitmentDialPosition: [number, number, number] = [-1.62, 1.74, 1.05];
 
-const responseTargets: Record<CoexistenceMomentId, [number, number, number]> = {
-  morning: [-2.72, 5.55, .5],
-  making: [.15, 2.58, -.57],
-  work: [3.22, 2.64, -3.58],
-  care: [-4.42, 2.92, -1.52],
-  gathering: [2.85, 5.55, 1.55]
+type SaitoActionTarget = { to: [number, number, number]; gated?: boolean };
+
+/**
+ * One permissioned input fans out to every room surface Saito touches for that
+ * moment. A gated target stops short and renders the human-authority stop:
+ * staged plans surface anywhere, but commitment happens only at the dial.
+ */
+const responseTargets: Record<CoexistenceMomentId, readonly SaitoActionTarget[]> = {
+  morning: [
+    { to: [-2.72, 5.55, .5] },
+    { to: [.15, 2.58, -.57] },
+    { to: [-.55, 1.34, 1.92] },
+    { to: commitmentDialPosition, gated: true }
+  ],
+  making: [
+    { to: [.15, 2.58, -.57] },
+    { to: [.4, 5.55, -1.1] },
+    { to: commitmentDialPosition, gated: true }
+  ],
+  work: [
+    { to: [3.22, 2.64, -3.58], gated: true }
+  ],
+  care: [
+    { to: [-4.42, 2.92, -1.52] },
+    { to: commitmentDialPosition, gated: true }
+  ],
+  evening: [
+    { to: [.15, 2.58, -.57] },
+    { to: [-4.42, 2.92, -1.52] },
+    { to: [2.85, 5.55, 1.55] },
+    { to: commitmentDialPosition, gated: true }
+  ],
+  gathering: [
+    { to: [2.85, 5.55, 1.55] },
+    { to: commitmentDialPosition, gated: true }
+  ]
 };
 
-function SaitoSpatialResponse({ active, momentId, decision }: {
+function SaitoActionChannel({ active, target, index, color, privateRestraint, actStatus }: {
   active: boolean;
-  momentId: CoexistenceMomentId;
-  decision: 'unasked' | 'kept' | 'refused';
+  target: SaitoActionTarget;
+  index: number;
+  color: string;
+  privateRestraint: boolean;
+  actStatus: string;
 }) {
-  const incomingSignal = useRef<THREE.Mesh>(null);
   const outgoingSignal = useRef<THREE.Mesh>(null);
-  const object = momentObjects.find((item) => item.id === momentId)!;
-  const target = responseTargets[momentId];
-  const humanGate = momentId === 'work';
-  const privateRestraint = momentId === 'care';
-  const actionEnd: [number, number, number] = humanGate
+  const gated = Boolean(target.gated);
+  const actionEnd: [number, number, number] = gated
     ? [
-        saitoPosition[0] + (target[0] - saitoPosition[0]) * .58,
-        saitoPosition[1] + (target[1] - saitoPosition[1]) * .58,
-        saitoPosition[2] + (target[2] - saitoPosition[2]) * .58
+        saitoPosition[0] + (target.to[0] - saitoPosition[0]) * .58,
+        saitoPosition[1] + (target.to[1] - saitoPosition[1]) * .58,
+        saitoPosition[2] + (target.to[2] - saitoPosition[2]) * .58
       ]
-    : target;
-  const color = decision === 'refused' ? '#b65f44' : decision === 'kept' ? '#fff0ae' : object.color;
+    : target.to;
 
   useFrame(({ clock }) => {
-    const inputProgress = active ? (clock.elapsedTime * .42) % 1 : 0;
-    const actionProgress = active ? (clock.elapsedTime * .42 + .48) % 1 : 0;
-    incomingSignal.current?.position.lerpVectors(
-      new THREE.Vector3(...object.position),
-      new THREE.Vector3(...saitoPosition),
-      inputProgress
-    );
+    const actionProgress = active ? (clock.elapsedTime * .42 + .48 + index * .19) % 1 : 0;
     outgoingSignal.current?.position.lerpVectors(
       new THREE.Vector3(...saitoPosition),
       new THREE.Vector3(...actionEnd),
@@ -72,24 +96,62 @@ function SaitoSpatialResponse({ active, momentId, decision }: {
   });
 
   return (
+    <>
+      <CylinderBetween from={saitoPosition} to={actionEnd} radius={.016} color={gated ? '#c65d3b' : color} emissiveIntensity={active ? .72 : .07} transparent opacity={privateRestraint ? .1 : active ? .38 : .06} />
+      <mesh ref={outgoingSignal} userData={{ label: gated ? 'Saito stops at human authority' : 'Saito changes the permitted room surface' }}>
+        <sphereGeometry args={[gated ? .095 : .07, 16, 12]} />
+        <meshBasicMaterial color={gated ? '#e36a43' : '#fff0b7'} transparent opacity={privateRestraint ? .28 : active ? .9 : .1} />
+      </mesh>
+      <group position={actionEnd} userData={{ label: gated ? 'Human authority gate · no action beyond this point' : `Permitted response · ${actStatus}` }}>
+        <mesh rotation={gated ? [0, 0, Math.PI / 4] : [Math.PI / 2, 0, 0]}>
+          {gated ? <boxGeometry args={[.34, .34, .08]} /> : <torusGeometry args={[.26, .025, 8, 30]} />}
+          <meshStandardMaterial color={gated ? '#b95132' : color} emissive={color} emissiveIntensity={active ? 1.1 : .12} transparent opacity={privateRestraint ? .22 : active ? .78 : .12} />
+        </mesh>
+        {gated && <pointLight color="#d86742" intensity={active ? 1.8 : .08} distance={3.2} decay={2} />}
+      </group>
+    </>
+  );
+}
+
+function SaitoSpatialResponse({ active, momentId, decision }: {
+  active: boolean;
+  momentId: CoexistenceMomentId;
+  decision: 'unasked' | 'kept' | 'refused';
+}) {
+  const incomingSignal = useRef<THREE.Mesh>(null);
+  const object = momentObjects.find((item) => item.id === momentId)!;
+  const targets = responseTargets[momentId];
+  const privateRestraint = momentId === 'care';
+  const color = decision === 'refused' ? '#b65f44' : decision === 'kept' ? '#fff0ae' : object.color;
+  const actStatus = coexistenceMoments[momentId].agent.steps.act.status;
+
+  useFrame(({ clock }) => {
+    const inputProgress = active ? (clock.elapsedTime * .42) % 1 : 0;
+    incomingSignal.current?.position.lerpVectors(
+      new THREE.Vector3(...object.position),
+      new THREE.Vector3(...saitoPosition),
+      inputProgress
+    );
+  });
+
+  return (
     <group userData={{ label: `Saito spatial response · ${coexistenceMoments[momentId].agent.id}` }}>
       <CylinderBetween from={object.position} to={saitoPosition} radius={.011} color={color} emissiveIntensity={active ? .58 : .06} transparent opacity={active ? .28 : .05} />
-      <CylinderBetween from={saitoPosition} to={actionEnd} radius={.016} color={humanGate ? '#c65d3b' : color} emissiveIntensity={active ? .72 : .07} transparent opacity={privateRestraint ? .1 : active ? .38 : .06} />
       <mesh ref={incomingSignal} userData={{ label: 'Permissioned room input reaches Saito' }}>
         <sphereGeometry args={[.075, 16, 12]} />
         <meshBasicMaterial color="#fff9df" transparent opacity={active ? .95 : .12} />
       </mesh>
-      <mesh ref={outgoingSignal} userData={{ label: humanGate ? 'Saito stops at human authority' : 'Saito changes the permitted room surface' }}>
-        <sphereGeometry args={[humanGate ? .095 : .07, 16, 12]} />
-        <meshBasicMaterial color={humanGate ? '#e36a43' : '#fff0b7'} transparent opacity={privateRestraint ? .28 : active ? .9 : .1} />
-      </mesh>
-      <group position={actionEnd} userData={{ label: humanGate ? 'Human authority gate · no action beyond this point' : `Permitted response · ${coexistenceMoments[momentId].agent.steps.act.status}` }}>
-        <mesh rotation={humanGate ? [0, 0, Math.PI / 4] : [Math.PI / 2, 0, 0]}>
-          {humanGate ? <boxGeometry args={[.34, .34, .08]} /> : <torusGeometry args={[.26, .025, 8, 30]} />}
-          <meshStandardMaterial color={humanGate ? '#b95132' : color} emissive={color} emissiveIntensity={active ? 1.1 : .12} transparent opacity={privateRestraint ? .22 : active ? .78 : .12} />
-        </mesh>
-        {humanGate && <pointLight color="#d86742" intensity={active ? 1.8 : .08} distance={3.2} decay={2} />}
-      </group>
+      {targets.map((target, index) => (
+        <SaitoActionChannel
+          key={`${momentId}-${target.to.join(':')}`}
+          active={active}
+          target={target}
+          index={index}
+          color={color}
+          privateRestraint={privateRestraint}
+          actStatus={actStatus}
+        />
+      ))}
     </group>
   );
 }
@@ -121,6 +183,7 @@ function MomentObject({ id, active, decision, onSelect }: {
         {id === 'making' && <RoundedBox rotation={[-Math.PI / 2, 0, -.12]} args={[1.15, .72, .045]} radius={.03} smoothness={2} castShadow>{material}</RoundedBox>}
         {id === 'work' && <mesh><planeGeometry args={[1.25, 1.5]} /><meshPhysicalMaterial color="#e8c579" transparent opacity={active ? .28 : .08} roughness={.08} clearcoat={1} /></mesh>}
         {id === 'care' && <RoundedBox args={[.16, 2.2, .18]} radius={.03} smoothness={2}>{material}</RoundedBox>}
+        {id === 'evening' && <><mesh castShadow><cylinderGeometry args={[.24, .26, .05, 22]} />{material}</mesh><RoundedBox position={[.3, .07, .14]} rotation={[-Math.PI / 2, 0, .32]} args={[.34, .22, .03]} radius={.015} smoothness={2}>{material}</RoundedBox></>}
         {id === 'gathering' && <><mesh position={[-.16, 0, 0]}><cylinderGeometry args={[.14, .1, .34, 18]} />{material}</mesh><mesh position={[.16, 0, 0]}><cylinderGeometry args={[.14, .1, .34, 18]} />{material}</mesh></>}
         <ConsentMark decision={decision} color={object.color} />
       </group>
@@ -141,12 +204,24 @@ function ApartmentFurniture({ active }: { active: boolean }) {
         {[-.82, 0, .82].map((x) => <mesh key={x} position={[x, .84, .72]}><boxGeometry args={[.025, 1.1, .025]} /><meshStandardMaterial color="#bd9b72" roughness={.5} /></mesh>)}
       </group>
 
+      <group position={[-.55, 0, 1.92]} userData={{ label: 'Dinner table · where seeds are spoken' }}>
+        <mesh position={[0, 1.02, 0]} castShadow><cylinderGeometry args={[.92, .92, .07, 28]} /><meshStandardMaterial color="#8a6a4a" roughness={.5} /></mesh>
+        <mesh position={[0, .5, 0]}><cylinderGeometry args={[.09, .13, 1.0, 12]} /><meshStandardMaterial color="#5c4634" roughness={.62} /></mesh>
+      </group>
+
+      <group position={commitmentDialPosition} userData={{ label: 'Commitment dial · staged plans commit only by hand' }}>
+        <mesh castShadow><cylinderGeometry args={[.14, .16, .09, 20]} /><meshStandardMaterial color="#b08430" metalness={.72} roughness={.28} emissive="#7a4d18" emissiveIntensity={active ? .34 : .05} /></mesh>
+        <mesh position={[0, .07, 0]}><boxGeometry args={[.035, .05, .16]} /><meshStandardMaterial color="#5c3a16" metalness={.6} roughness={.3} /></mesh>
+      </group>
+
       <group position={[.42, 0, -1.22]} userData={{ label: 'Studio · mounted context zone' }}>
         <RoundedBox position={[0, 1.55, 0]} args={[3.35, .18, 1.55]} radius={.07} smoothness={3} castShadow receiveShadow>
           <meshStandardMaterial color="#8a5a3d" roughness={.52} />
         </RoundedBox>
         {[-1.38, 1.38].map((x) => <mesh key={x} position={[x, .72, 0]}><boxGeometry args={[.13, 1.55, 1.18]} /><meshStandardMaterial color="#4d4036" roughness={.66} /></mesh>)}
-        <GlassPanel position={[.15, 2.58, -.61]} size={[2.25, 1.42, .055]} color="#edc77f" opacity={active ? .16 : .035} frameColor="#5e4a3c" />
+        <group userData={{ label: 'Saito pane · staged plans surface here; the hand commits' }}>
+          <GlassPanel position={[.15, 2.58, -.61]} size={[2.25, 1.42, .055]} color="#edc77f" opacity={active ? .16 : .035} frameColor="#5e4a3c" />
+        </group>
         <mesh position={[.15, 2.58, -.57]}><planeGeometry args={[1.72, .74]} /><meshBasicMaterial color="#f5ddaa" transparent opacity={active ? .08 : .018} /></mesh>
       </group>
 

@@ -44,6 +44,8 @@ describe('native future experiences', () => {
       fireEvent.click(screen.getByRole('button', { name: /^(Speak|Continue)/ }));
     }
     expect(screen.getByText(/zero messages read/)).toBeInTheDocument();
+    expect(screen.getByText('Training run offered inside the 8:40 dry window')).toBeInTheDocument();
+    expect(screen.getByText('Four sealed envelopes—reading them stays behind Kevin’s rule')).toBeInTheDocument();
     fireEvent.click(screen.getByRole('button', { name: 'Keep it with me' }));
     expect(screen.getByText('Carried—with permission.')).toBeInTheDocument();
     expect(useExperienceStore.getState().futureJourney.coexistence.keptMoments).toEqual(['morning']);
@@ -58,6 +60,18 @@ describe('native future experiences', () => {
     fireEvent.click(screen.getByRole('button', { name: 'Let it end here' }));
     expect(screen.getByText('Gone. The room remembers nothing.')).toBeInTheDocument();
     expect(experienceActions.discover).toHaveBeenCalledWith('human-gate', '2030');
+
+    fireEvent.click(screen.getByRole('button', { name: /Dinner table after the plates are cleared/ }));
+    expect(screen.getByRole('heading', { name: 'A sentence becomes a year' })).toBeInTheDocument();
+    expect(screen.getByText('Seeded eleven weeks ago · This table')).toBeInTheDocument();
+    for (let beat = 0; beat < 4; beat += 1) {
+      fireEvent.click(screen.getByRole('button', { name: /^(Speak|Continue)/ }));
+    }
+    expect(screen.getByText(/which two weeks of your life this becomes/)).toBeInTheDocument();
+    expect(screen.getByText('Passport renewal drafted ahead of the March expiry')).toBeInTheDocument();
+    expect(screen.getAllByText('Waits for Kevin').length).toBeGreaterThan(0);
+    fireEvent.click(screen.getByRole('button', { name: 'Keep it with me' }));
+    expect(useExperienceStore.getState().futureJourney.coexistence.keptMoments).toEqual(['morning', 'evening']);
 
     fireEvent.click(screen.getByRole('button', { name: 'Open infrastructure receipt' }));
     expect(screen.getByText(/carried on TokenPak · TIP authority · PAK context/)).toBeInTheDocument();

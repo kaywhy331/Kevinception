@@ -126,7 +126,9 @@ describe('Commerce and Co-Existence chapters', () => {
     expect(JSON.stringify(chapterNarrative)).not.toContain('Saito');
     expect(JSON.stringify(eras)).not.toContain('Saito');
     expect(eras.find((era) => era.id === '2030')).toMatchObject({ label: 'Co-Existence', subtitle: 'Morning, Together', accent: '#d69b50' });
-    expect(Object.keys(coexistenceMoments)).toHaveLength(5);
+    expect(Object.keys(coexistenceMoments)).toHaveLength(6);
+    expect(coexistenceMoments.evening.seed.said).toContain('We should finally do Asia next year');
+    expect(coexistenceMoments.evening.staged.some((item) => item.state === 'gated')).toBe(true);
     const overlay = read('src/experience/ExperienceOverlay.tsx');
     const scene = read('src/experience/scenes/Year2030Scene.tsx');
     const futureText = read('src/experience/future/FutureTextExperience.tsx');

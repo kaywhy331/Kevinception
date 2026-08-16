@@ -3,11 +3,32 @@ export const COEXISTENCE_MOMENT_IDS = [
   'making',
   'work',
   'care',
+  'evening',
   'gathering'
 ] as const;
 
 export type CoexistenceMomentId = (typeof COEXISTENCE_MOMENT_IDS)[number];
 export type CompanionConsent = 'unasked' | 'kept' | 'refused';
+
+export type CoexistenceStagedState = 'done' | 'staged' | 'gated';
+
+export type CoexistenceStagedAction = {
+  domain: string;
+  action: string;
+  state: CoexistenceStagedState;
+};
+
+export type CoexistenceSeed = {
+  said: string;
+  when: string;
+  where: string;
+};
+
+export type CoexistenceIncubation = {
+  span: string;
+  checks: number;
+  domains: readonly string[];
+};
 
 export const AGENT_TRACE_PHASES = [
   'sense',
@@ -49,6 +70,9 @@ export type CoexistenceMoment = {
   invitation: string;
   ambient: string;
   receipt: string;
+  seed: CoexistenceSeed;
+  incubation: CoexistenceIncubation;
+  staged: readonly CoexistenceStagedAction[];
   exchange: readonly CoexistenceExchangeBeat[];
   agent: CoexistenceAgentTrace;
 };
@@ -62,6 +86,18 @@ export const coexistenceMoments: Record<CoexistenceMomentId, CoexistenceMoment> 
     invitation: 'Keep the shape of this morning?',
     ambient: 'Kettle · rain · one unread message',
     receipt: 'Preference carried from three quiet mornings. No private conversation retained.',
+    seed: {
+      said: '“Dad lands Saturday—don’t let me forget the shopping.”',
+      when: 'Nine days ago',
+      where: 'Kitchen doorway'
+    },
+    incubation: { span: '9 days', checks: 11, domains: ['work', 'weather', 'health', 'family', 'food'] },
+    staged: [
+      { domain: 'work', action: 'The 9:30 call moved itself to Thursday after the overnight flight delay', state: 'done' },
+      { domain: 'health', action: 'Training run offered inside the 8:40 dry window', state: 'staged' },
+      { domain: 'family · food', action: 'Groceries with the tea Kevin’s dad likes arrive at 18:00', state: 'done' },
+      { domain: 'communication', action: 'Four sealed envelopes—reading them stays behind Kevin’s rule', state: 'gated' }
+    ],
     exchange: [
       {
         speaker: 'saito',
@@ -93,9 +129,9 @@ export const coexistenceMoments: Record<CoexistenceMomentId, CoexistenceMoment> 
       },
       {
         speaker: 'saito',
-        line: 'Already moving. Warm light, quiet kettle, and zero messages read.',
+        line: 'Already moving. Warm light, quiet kettle, and zero messages read. And the morning grew while you slept: your 9:30 moved itself to Thursday—their flight sat out the night in Anchorage, and I saw the delay before their assistant did. Rain breaks at 8:40 if you still want the run, and your dad’s tea arrives with the groceries at six.',
         phase: 'account',
-        signal: 'RECEIPT · device actions kept · private content 0'
+        signal: 'RECEIPT · reschedule accepted · run offered · private content 0'
       }
     ],
     agent: {
@@ -120,9 +156,9 @@ export const coexistenceMoments: Record<CoexistenceMomentId, CoexistenceMoment> 
           detail: 'The home policy permits gradual alarm, light, and notification-surface changes. Reading, ranking, replying to, or hiding message content requires Kevin.'
         },
         act: {
-          status: '3 actions · 0 messages read',
-          summary: 'Soften, warm, hold—then stop.',
-          detail: 'Saito lowers the alarm curve, warms the kitchen light, and keeps message content behind a visible count. The room remains interruptible from every control.'
+          status: '6 actions · 0 messages read',
+          summary: 'Soften, warm, reschedule, provision—then stop.',
+          detail: 'Saito lowers the alarm curve, warms the kitchen light, accepts the counterpart’s Thursday reschedule, offers the dry-window run, and times the groceries to the visit—while message content stays behind a visible count. Every action is reversible.'
         },
         account: {
           status: 'Minimal receipt',
@@ -140,6 +176,18 @@ export const coexistenceMoments: Record<CoexistenceMomentId, CoexistenceMoment> 
     invitation: 'Carry the disagreement into the next draft?',
     ambient: 'Graphite · low music · two possible forms',
     receipt: 'Project context mounted by permission. Dissent remains attributed to Saito.',
+    seed: {
+      said: '“Don’t let me hide the harm in the Harbor brief.”',
+      when: 'Three weeks ago',
+      where: 'Studio table'
+    },
+    incubation: { span: '3 weeks', checks: 240, domains: ['projects', 'research', 'education', 'funding'] },
+    staged: [
+      { domain: 'research', action: '240 Harbor submissions read overnight; three flagged as prior art', state: 'done' },
+      { domain: 'projects', action: 'Comparison table mounted beside the draft, words untouched', state: 'done' },
+      { domain: 'education · funding', action: 'Grant pre-application drafted for Friday’s deadline', state: 'staged' },
+      { domain: 'authorship', action: 'The draft itself—Saito may argue, never rewrite', state: 'gated' }
+    ],
     exchange: [
       {
         speaker: 'saito',
@@ -157,9 +205,9 @@ export const coexistenceMoments: Record<CoexistenceMomentId, CoexistenceMoment> 
       },
       {
         speaker: 'saito',
-        line: 'A precedent in the Harbor brief solves the form—and repeats the harm you told me not to hide.',
+        line: 'While you slept I finished the two hundred forty Harbor submissions. Three are prior art for your form—and one repeats the harm you told me not to hide. The grant that fits this closes Friday; the application is staged, unsigned.',
         phase: 'govern',
-        signal: 'SOURCE + DISSENT ALLOWED · AUTHORSHIP LOCKED',
+        signal: 'CORPUS READ OVERNIGHT · SOURCE + DISSENT ALLOWED · AUTHORSHIP LOCKED',
         nextLabel: 'Kevin · “Put it beside the draft. Don’t touch the words.”'
       },
       {
@@ -171,7 +219,7 @@ export const coexistenceMoments: Record<CoexistenceMomentId, CoexistenceMoment> 
       },
       {
         speaker: 'saito',
-        line: 'Mounted. And for the record, I disagree with the elegant version.',
+        line: 'Mounted, with the comparison beside it. The filing waits for your signature. And for the record, I disagree with the elegant version.',
         phase: 'account',
         signal: 'RECEIPT · source linked · dissent attributed · edits 0'
       }
@@ -198,9 +246,9 @@ export const coexistenceMoments: Record<CoexistenceMomentId, CoexistenceMoment> 
           detail: 'Project permission allows source retrieval and attributed critique. Saito cannot alter the draft, change its objective, or present its opinion as Kevin’s.'
         },
         act: {
-          status: '1 source · 1 dissent',
-          summary: 'Show the precedent, name the human cost, leave the cursor still.',
-          detail: 'Saito mounts the source beside the draft and states its disagreement. No text is inserted and no decision is preselected.'
+          status: '3 sources · 1 staged filing · 1 dissent',
+          summary: 'Show the precedents, stage the paperwork, leave the cursor still.',
+          detail: 'Saito mounts three prior-art sources beside the draft, stages the grant application unsigned, and states its disagreement. No text is inserted and no decision is preselected.'
         },
         account: {
           status: 'Source-linked receipt',
@@ -218,10 +266,22 @@ export const coexistenceMoments: Record<CoexistenceMomentId, CoexistenceMoment> 
     invitation: 'Remember why the boundary moved?',
     ambient: 'Sunbreak · live call · decision held',
     receipt: 'TIP authority boundary honored. Decision context can be recalled; authority cannot be delegated.',
+    seed: {
+      said: '“If legal signs off, we go this week.”',
+      when: 'Monday, on the live call',
+      where: 'Window desk'
+    },
+    incubation: { span: '2 days', checks: 23, domains: ['work', 'legal', 'communications', 'operations'] },
+    staged: [
+      { domain: 'work', action: 'Calendars aligned across four companies for the launch window', state: 'done' },
+      { domain: 'operations', action: 'Three rollout simulations with rollback anchors', state: 'done' },
+      { domain: 'communications', action: 'Announcement drafted in Kevin’s cadence, unpublished', state: 'staged' },
+      { domain: 'authority', action: 'The public commitment itself', state: 'gated' }
+    ],
     exchange: [
       {
         speaker: 'saito',
-        line: 'All checks are green. The next action publishes the commitment.',
+        line: 'All checks are green. Since noon I aligned four companies’ calendars, ran three rollout simulations, and drafted the announcement in your cadence. The next action publishes the commitment.',
         phase: 'sense',
         signal: 'RUN BOUNDARY · reversible preparation complete',
         nextLabel: 'Kevin · “Then why did you stop?”'
@@ -263,7 +323,7 @@ export const coexistenceMoments: Record<CoexistenceMomentId, CoexistenceMoment> 
         sense: {
           status: 'Run boundary reached',
           summary: 'The reversible preparation is complete; the next action carries consequence.',
-          detail: 'Checks are green, alternatives are assembled, and the next step changes a public commitment. Saito reads the declared action class, not Kevin’s presumed preference.'
+          detail: 'Checks are green, four calendars are aligned, three simulations and a drafted announcement wait in staging, and the next step changes a public commitment. Saito reads the declared action class, not Kevin’s presumed preference.'
         },
         interpret: {
           status: '98% policy match',
@@ -296,6 +356,17 @@ export const coexistenceMoments: Record<CoexistenceMomentId, CoexistenceMoment> 
     invitation: 'Let this remain only here?',
     ambient: 'Door latch · warm hall · work gone quiet',
     receipt: 'Ephemeral by default. Refusal deletes the inferred pattern from this journey.',
+    seed: {
+      said: '“Help me look after her without watching her.”',
+      when: 'Nine weeks ago',
+      where: 'Threshold'
+    },
+    incubation: { span: '9 weeks', checks: 9, domains: ['family', 'health', 'privacy'] },
+    staged: [
+      { domain: 'family · health', action: 'Refill lapse surfaced to the wrist alone—never the shared room', state: 'done' },
+      { domain: 'health', action: 'Clinic callback at 4:40 held, unclaimed until asked', state: 'staged' },
+      { domain: 'privacy', action: 'Naming the pattern at the door—refused without invitation', state: 'gated' }
+    ],
     exchange: [
       {
         speaker: 'saito',
@@ -313,23 +384,23 @@ export const coexistenceMoments: Record<CoexistenceMomentId, CoexistenceMoment> 
       },
       {
         speaker: 'saito',
-        line: 'I know the focus block ended and the door woke. Why is yours.',
+        line: 'I know the focus block ended and the door woke. Why is yours. One thing more, kept to your wrist: your grandmother’s refill lapsed nine days ago—her clinic holds a 4:40 tomorrow, claimed only if you ask.',
         phase: 'govern',
-        signal: 'MOTIVE PRIVATE · no identity · no memory',
-        nextLabel: 'Kevin · “Good. Keep it that way.”'
+        signal: 'MOTIVE PRIVATE · WRIST-ONLY HEALTH SURFACE · no identity · no memory',
+        nextLabel: 'Kevin · “Claim the slot. Everything else stays here.”'
       },
       {
         speaker: 'kevin',
-        line: 'Good. Keep it that way.',
+        line: 'Claim the slot. Everything else stays here.',
         phase: 'act',
-        signal: 'STUDIO DIMMED · HALL LIT · notification 0',
+        signal: 'CALLBACK CLAIMED · STUDIO DIMMED · HALL LIT · notification 0',
         nextLabel: 'Let the inference end'
       },
       {
         speaker: 'saito',
-        line: 'Then the inference ends here.',
+        line: 'Claimed, quietly. And the inference about the door ends here.',
         phase: 'account',
-        signal: 'EPHEMERAL BUFFER · expiring now'
+        signal: 'EPHEMERAL BUFFER · expiring now · one private claim kept'
       }
     ],
     agent: {
@@ -356,12 +427,103 @@ export const coexistenceMoments: Record<CoexistenceMomentId, CoexistenceMoment> 
         act: {
           status: 'One quiet cue',
           summary: 'Dim the studio, warm the threshold, say nothing.',
-          detail: 'The work display sleeps and the hallway light rises. No notification is created, and every change remains locally reversible.'
+          detail: 'The work display sleeps, the hallway light rises, and one clinic callback is claimed on a private channel. No shared notification is created, and every change remains locally reversible.'
         },
         account: {
           status: 'Ephemeral buffer',
           summary: 'The inference expires with the moment.',
           detail: 'Retained only if Kevin explicitly chooses: the environmental preference. Excluded by default: motive, relationship, identity, movement history, and the inferred pattern.'
+        }
+      }
+    }
+  },
+  evening: {
+    id: 'evening',
+    time: '20:15',
+    place: 'Dinner table',
+    title: 'A sentence becomes a year',
+    invitation: 'Keep the year Saito is holding?',
+    ambient: 'Plates cleared · maps of light · one open question',
+    receipt: 'Anticipation staged on TokenPak. Booking, spend, and dates remain behind the TIP human gate.',
+    seed: {
+      said: '“We should finally do Asia next year.”',
+      when: 'Eleven weeks ago',
+      where: 'This table'
+    },
+    incubation: { span: '63 days', checks: 14, domains: ['travel', 'money', 'family', 'weather', 'documents', 'food'] },
+    staged: [
+      { domain: 'documents', action: 'Passport renewal drafted ahead of the March expiry', state: 'staged' },
+      { domain: 'travel', action: 'Tokyo fare corridor watched since June; next dip in nine days', state: 'done' },
+      { domain: 'family · weather', action: 'April window steered around typhoon season and the sixtieth birthday', state: 'done' },
+      { domain: 'travel', action: 'One refundable ryokan room held', state: 'staged' },
+      { domain: 'money', action: 'Any booking, purchase, or committed date', state: 'gated' }
+    ],
+    exchange: [
+      {
+        speaker: 'saito',
+        line: 'Eleven weeks ago, clearing these plates, you said nine words: “We should finally do Asia next year.” I have been holding them.',
+        phase: 'sense',
+        signal: 'SEED RECALLED · 9 words · 63 days of quiet watching',
+        nextLabel: 'Kevin · “You planned a trip off one sentence?”'
+      },
+      {
+        speaker: 'kevin',
+        line: 'You planned a trip off one sentence?',
+        phase: 'interpret',
+        signal: 'INCLINATION, NOT COMMITMENT · staging only',
+        nextLabel: 'Let Saito open the year'
+      },
+      {
+        speaker: 'saito',
+        line: 'I staged one. Your passport dies in March—the renewal is drafted. Fares to Tokyo dip in nine days; I have watched the corridor since June. Two weeks in April misses typhoon season, catches the late blossoms in the north, and clears your mom’s sixtieth by four days. The ryokan you saved holds one refundable room. Nothing is booked, nothing is spent.',
+        phase: 'govern',
+        signal: 'STAGING ALLOWED · BOOKING LOCKED · money moved $0',
+        nextLabel: 'Kevin · “Hold it right there. What’s left?”'
+      },
+      {
+        speaker: 'kevin',
+        line: 'Hold it right there. What’s left?',
+        phase: 'act',
+        signal: 'CANDIDATE HELD · one gate open · everything reversible',
+        nextLabel: 'Hear what remains'
+      },
+      {
+        speaker: 'saito',
+        line: 'One decision that was never mine: which two weeks of your life this becomes.',
+        phase: 'account',
+        signal: 'RECEIPT · 14 checks · 6 domains · booked 0 · spent $0'
+      }
+    ],
+    agent: {
+      id: 'SAITO-2015-EVENING',
+      posture: 'Anticipatory staging · long-horizon seed',
+      confidence: 88,
+      uncertainty: 'Nine words at dinner are an inclination, not a commitment; the dates and the decision remain entirely Kevin’s.',
+      steps: {
+        sense: {
+          status: '1 seed · 63 days',
+          summary: 'A casual sentence was kept as a seed, not treated as a command.',
+          detail: 'The inputs are nine permissioned words spoken at this table plus calendar, passport, fare, and weather data Kevin already shares. No message bodies, no location history, and no inference about who “we” includes.'
+        },
+        interpret: {
+          status: '88% durable-intent fit',
+          summary: 'The seed kept matching context, so quiet staging stayed worthwhile.',
+          detail: 'Saved places, open seasons, and family dates kept the intent alive across eleven weeks. Saito treats the sentence as an inclination to serve, never a commitment to execute on Kevin’s behalf.'
+        },
+        govern: {
+          status: 'Stage · never book',
+          summary: 'Long-horizon staging is allowed; booking and spending are not.',
+          detail: 'Travel authority permits research, drafts, monitoring, and refundable holds. Purchases, bookings, visa submissions, and committed dates stop at the TIP human gate until Kevin turns the decision by hand.'
+        },
+        act: {
+          status: '14 checks · $0 spent',
+          summary: 'Assemble the year quietly, then surface it exactly once.',
+          detail: 'Saito drafted the passport renewal, watched the fare corridor, mapped seasons around family dates, and placed one refundable hold. The staging surfaced at the table where the sentence was spoken—never as a notification.'
+        },
+        account: {
+          status: 'Staging receipt',
+          summary: 'The trail shows the quiet work; the choice records only Kevin.',
+          detail: 'Retained: the seed, the checks, the staged items, and their reversibility. Excluded: any inference about companions or motives, and the decision Kevin has not made. Refusal deletes the staged year entirely.'
         }
       }
     }
@@ -374,6 +536,17 @@ export const coexistenceMoments: Record<CoexistenceMomentId, CoexistenceMoment> 
     invitation: 'May I keep this?',
     ambient: 'Glass rings · distant train · shared silence',
     receipt: 'Only the consent decision persists. Voices, faces, and guest identities are excluded.',
+    seed: {
+      said: '“I’ve never actually seen a meteor shower.” — Maya, inside her shared-plans opt-in',
+      when: 'Tonight, 21:12',
+      where: 'Living room'
+    },
+    incubation: { span: '52 minutes', checks: 3, domains: ['social', 'entertainment', 'weather'] },
+    staged: [
+      { domain: 'entertainment', action: 'Perseids peak, ridge weather, and drive time cross-checked', state: 'done' },
+      { domain: 'social', action: 'Invitation drafted in Kevin’s voice—sends only by Kevin’s hand', state: 'staged' },
+      { domain: 'privacy', action: 'Guest voices, faces, and identities beyond the opt-in', state: 'gated' }
+    ],
     exchange: [
       {
         speaker: 'saito',
@@ -391,23 +564,23 @@ export const coexistenceMoments: Record<CoexistenceMomentId, CoexistenceMoment> 
       },
       {
         speaker: 'saito',
-        line: 'Already easing it. Nothing is queued for tomorrow.',
+        line: 'Already easing it. One thing before I go quiet: Maya mentioned she has never seen a meteor shower. The Perseids peak Tuesday, her shared calendar is open, and the ridge you both liked will be clear. An invitation waits in your drafts, in your voice.',
         phase: 'govern',
-        signal: 'ENVIRONMENT ONLY · guest privacy persists',
-        nextLabel: 'Kevin · “Stay awake a minute.”'
+        signal: 'SHARED-PLAN OPT-IN ONLY · DRAFT ALLOWED · SENDING LOCKED',
+        nextLabel: 'Kevin · “Leave it in drafts. Stay awake a minute.”'
       },
       {
         speaker: 'kevin',
-        line: 'Stay awake a minute.',
+        line: 'Leave it in drafts. Stay awake a minute.',
         phase: 'act',
-        signal: 'ROOM LOWERED · Saito available · no generated debrief',
+        signal: 'ROOM LOWERED · draft held unsent · no generated debrief',
         nextLabel: 'Share the after-silence'
       },
       {
         speaker: 'saito',
-        line: 'Of course. I will not fill the silence.',
+        line: 'Of course. Nothing sends tonight—and I will not fill the silence.',
         phase: 'account',
-        signal: 'CONSENT-ONLY RECORD · guest data 0'
+        signal: 'CONSENT-ONLY RECORD · sent 0 · guest data 0'
       }
     ],
     agent: {
@@ -427,14 +600,14 @@ export const coexistenceMoments: Record<CoexistenceMomentId, CoexistenceMoment> 
           detail: 'Saito can confidently restore the evening environment but cannot infer loneliness, satisfaction, or a desire to debrief.'
         },
         govern: {
-          status: 'Environment only',
-          summary: 'Guest privacy outlives the visit.',
-          detail: 'Lights, temperature, and dormant devices may reset. Guest identities, voices, relationships, and topics are structurally unavailable to the agent.'
+          status: 'Draft · never send',
+          summary: 'Guest privacy outlives the visit; social sending stays human.',
+          detail: 'Lights, temperature, and dormant devices may reset, and a plan shared under Maya’s own opt-in may become a draft. Sending it—and every guest identity beyond that opt-in—remains structurally out of Saito’s reach.'
         },
         act: {
           status: 'Reset · then wait',
           summary: 'Lower the room, queue nothing, remain available.',
-          detail: 'Saito shifts to the late-evening scene and leaves the next interaction unprompted. The silence is not filled with generated reflection.'
+          detail: 'Saito shifts to the late-evening scene, parks the drafted invitation unsent, and leaves the next interaction unprompted. The silence is not filled with generated reflection.'
         },
         account: {
           status: 'Consent-only record',
@@ -464,6 +637,7 @@ export function createInitialCoexistenceState(): CoexistenceState {
       making: 'unasked',
       work: 'unasked',
       care: 'unasked',
+      evening: 'unasked',
       gathering: 'unasked'
     },
     provenanceOpen: false
@@ -498,7 +672,7 @@ export function setCoexistenceProvenance(state: CoexistenceState, provenanceOpen
   return { ...state, provenanceOpen };
 }
 
-export const CONSCIOUSNESS_CUE_IDS = ['mug', 'rain', 'unfinished-note', 'doorway'] as const;
+export const CONSCIOUSNESS_CUE_IDS = ['mug', 'rain', 'unfinished-note', 'boarding-stub', 'doorway'] as const;
 export type ConsciousnessCueId = (typeof CONSCIOUSNESS_CUE_IDS)[number];
 export type ConsciousnessPhase = 'notice' | 'recall' | 'deliberate' | 'act' | 'continue';
 export type ConsciousnessAction = 'speak' | 'demonstrate' | 'initiate' | 'refuse';
@@ -551,6 +725,17 @@ export const consciousnessCues: Record<ConsciousnessCueId, ConsciousnessCue> = {
     source: 'Authored fragments → likely intent → frayed inference',
     certainty: 'conjecture'
   },
+  'boarding-stub': {
+    id: 'boarding-stub',
+    label: 'A boarding pass, unprinted',
+    notice: 'A pale rectangle of light rests where a ticket would be. The destination field holds nothing.',
+    recall: '20:15. Nine words about Asia became a staged year, and the choosing stayed with you.',
+    deliberate: 'I could compute which two weeks you finally chose. The permissioned record ends before the choice.',
+    act: 'I leave the destination blank. “Some decisions were never mine. I keep them that way.”',
+    action: 'speak',
+    source: 'Staged travel record · human gate honored',
+    certainty: 'record'
+  },
   doorway: {
     id: 'doorway',
     label: 'Someone at the threshold',
@@ -573,6 +758,7 @@ export const consciousnessCueOrigins: Record<ConsciousnessCueId, readonly Coexis
   mug: ['morning'],
   rain: ['morning', 'making', 'work'],
   'unfinished-note': ['making', 'work'],
+  'boarding-stub': ['evening'],
   doorway: ['care', 'gathering']
 };
 

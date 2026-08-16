@@ -101,6 +101,7 @@ try {
   assert('The live inspector exposes authority and data boundaries', await page.$eval('.coexistence-agent article', (node) => node.textContent.includes('Room comfort may change; communication may not.') && node.textContent.includes('requires Kevin')));
   await finishCoexistenceExchange();
   assert('The conversation ends with Saito reporting the action it actually took', await page.$eval('.coexistence-exchange', (node) => node.textContent.includes('zero messages read')));
+  assert('The finished exchange reveals the multi-domain work Saito already staged', await page.$eval('.coexistence-staged', (node) => node.textContent.includes('9:30 call moved itself') && node.textContent.includes('Waits for Kevin')));
   await clickButton('Keep it with me');
   await clickButton('Studio table');
   await finishCoexistenceExchange();
@@ -108,6 +109,11 @@ try {
   await clickButton('Window desk');
   await finishCoexistenceExchange();
   await clickButton('Let it end here');
+  await clickButton('Dinner table');
+  assert('The 20:15 anchor recalls an eleven-week-old seed before opening the staged year', await page.$eval('.coexistence-dialogue', (node) => node.textContent.includes('A sentence becomes a year') && node.querySelector('.coexistence-seed')?.textContent.includes('Asia')));
+  await finishCoexistenceExchange();
+  assert('The staged year surfaces with receipts while booking stays behind the human gate', await page.$eval('.future-native--2030', (node) => node.textContent.includes('Nothing is booked, nothing is spent') && node.querySelector('.coexistence-staged li[data-state="gated"]')?.textContent.includes('booking')));
+  await clickButton('Keep it with me');
   await clickButton('Open infrastructure receipt');
   assert('2030 keeps TokenPak/TIP/PAK secondary inside optional provenance', await page.$eval('.coexistence-provenance aside', (node) => node.textContent.includes('TokenPak') && node.textContent.includes('TIP authority') && node.textContent.includes('PAK context')));
   const coexistenceGeometry = await geometry('.future-native--2030');
@@ -117,7 +123,7 @@ try {
   await clickButton('Enter Morning, After');
   await page.waitForSelector('.future-native--2040', { timeout: 10000 });
   assert('Saito remains exclusive to the 2030 experience', await page.$eval('.future-native--2040', (node) => !/Saito/i.test(node.textContent ?? '')));
-  assert('2040 reports only the memory permitted in 2030', await page.$eval('.future-masthead', (node) => node.textContent.includes('1/5 MEMORIES PERMITTED')));
+  assert('2040 reports only the memories permitted in 2030', await page.$eval('.future-masthead', (node) => node.textContent.includes('2/6 MEMORIES PERMITTED')));
   await clickButton('An unfinished sentence');
   await clickButton('Let Kevin recall');
   await page.waitForFunction(() => document.querySelector('.consciousness-encounter blockquote')?.textContent.includes('deliberate blank'));
@@ -144,7 +150,7 @@ try {
   await open('/experience/?year=2040&view=text', '.text-mode .future-text--2040');
   const mobileText = await geometry('.text-mode');
   assert('Mobile future text mode has no horizontal overflow', mobileText.outerOverflow <= 1 && mobileText.componentOverflow <= 1, JSON.stringify(mobileText));
-  assert('Text mode preserves permissioned memory, source, and encounter state', await page.$eval('.future-text--2040', (node) => node.textContent.includes('1/5 memories permitted') && node.textContent.includes('deliberately withheld') && node.textContent.includes('May I keep this?')));
+  assert('Text mode preserves permissioned memory, source, and encounter state', await page.$eval('.future-text--2040', (node) => node.textContent.includes('2/6 memories permitted') && node.textContent.includes('deliberately withheld') && node.textContent.includes('May I keep this?')));
 
   await open('/experience/?year=2030&view=interface', '.future-native--2030');
   const mobileCoexistence = await geometry('.future-native--2030');

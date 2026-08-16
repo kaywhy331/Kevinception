@@ -17,6 +17,7 @@ import {
 } from '@/experience/future/futureJourney';
 import {
   AGENT_TRACE_PHASES,
+  COEXISTENCE_MOMENT_IDS,
   advanceConsciousnessBehavior,
   createInitialCoexistenceState,
   createInitialConsciousnessState,
@@ -116,6 +117,11 @@ describe('future journey domain', () => {
       expect(moment.agent.confidence).toBeGreaterThan(0);
       expect(moment.agent.confidence).toBeLessThanOrEqual(100);
       expect(moment.agent.uncertainty.length).toBeGreaterThan(20);
+      expect(moment.seed.said.length).toBeGreaterThan(10);
+      expect(moment.incubation.checks).toBeGreaterThan(0);
+      expect(moment.incubation.domains.length).toBeGreaterThan(0);
+      expect(moment.staged.length).toBeGreaterThanOrEqual(3);
+      expect(moment.staged.some((item) => item.state === 'gated')).toBe(true);
       for (const phase of AGENT_TRACE_PHASES) {
         expect(moment.agent.steps[phase].summary.length).toBeGreaterThan(20);
         expect(moment.agent.steps[phase].detail.length).toBeGreaterThan(50);
@@ -125,6 +131,23 @@ describe('future journey domain', () => {
     expect(coexistenceMoments.work.exchange[2].line).toContain('cannot spend your authority');
     expect(coexistenceMoments.work.agent.steps.govern.status).toBe('Human authority required');
     expect(coexistenceMoments.care.agent.steps.account.status).toBe('Ephemeral buffer');
+  });
+
+  it('stages long-horizon, multi-domain anticipation and keeps commitment behind the human gate', () => {
+    expect(COEXISTENCE_MOMENT_IDS).toHaveLength(6);
+    const evening = coexistenceMoments.evening;
+    expect(evening.seed.said).toContain('Asia');
+    expect(evening.incubation.domains.length).toBeGreaterThanOrEqual(5);
+    expect(evening.exchange[2].line).toContain('Nothing is booked, nothing is spent');
+    expect(evening.exchange[4].line).toContain('never mine');
+    expect(evening.staged.filter((item) => item.state === 'gated').map((item) => item.domain)).toContain('money');
+
+    let coexistence = resolveCompanionConsent(createInitialCoexistenceState(), 'kept', 'evening');
+    expect(getPermissionedMemoryState(coexistence, 'boarding-stub')).toBe('retained');
+    expect(getPermissionedMemorySource(coexistence, 'boarding-stub')).toContain('20:15 Dinner table');
+    coexistence = resolveCompanionConsent(coexistence, 'refused', 'evening');
+    expect(getPermissionedMemoryState(coexistence, 'boarding-stub')).toBe('withheld');
+    expect(getConsciousnessLine(consciousnessCues['boarding-stub'], 'recall', 'withheld')).toContain('will not reconstruct');
   });
 
   it('allows 2040 to recall only memories that 2030 was permitted to keep', () => {

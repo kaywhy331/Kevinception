@@ -16,6 +16,9 @@ describe('future journey world-state integration', () => {
     expect(scene).toContain('Saito stops at human authority');
     expect(scene).not.toContain('AgentDecisionRail');
     expect(scene).toContain('Saito in the room');
+    expect(scene).toContain('SaitoActionChannel');
+    expect(scene).toContain('Commitment dial');
+    expect(scene).toContain('responseTargets[momentId]');
     expect(scene).not.toContain('mission.artifact');
   });
 

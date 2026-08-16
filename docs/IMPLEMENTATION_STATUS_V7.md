@@ -82,12 +82,14 @@ The build should be treated as a **complete connected-environment implementation
 ### 2030 — Co-Existence / Morning, Together
 
 - Warm, spatially zoned smart home with a local-sensing kitchen, mounted-context studio, guest-safe living room, threshold, depth partition, and visible home nervous system
-- Five ordinary moments from 07:12 through 22:04, with Saito expressed through room-scale light, anticipation, productive disagreement, authority-aware restraint, silence, and intentional absence
+- Six ordinary moments from 07:12 through 22:04, with Saito expressed through room-scale light, anticipation, productive disagreement, authority-aware restraint, silence, and intentional absence
 - Each moment now unfolds as a progressive first-person Saito/Kevin exchange: Saito notices and speaks in context, Kevin answers or directs, the room reacts, and Saito reports what changed or why it stopped
-- Object-led interaction through the morning mug, shared draft, window desk, threshold, and after-gathering glasses
+- Object-led interaction through the morning mug, shared draft, window desk, threshold, dinner table, and after-gathering glasses
+- Every moment carries a visible anticipation grammar: a timestamped casual seed, a quiet incubation ledger, a staged multi-domain reveal at the act beat, at least one gated item, and a retention receipt
+- A 20:15 anchor moment demonstrates long-horizon, multi-domain anticipation: nine words about Asia become a staged year—passport renewal, fare corridors, seasons, family dates, and one refundable hold—while booking and spend stay behind the human gate
 - A synchronized live-activity line shows the currently observable signal or boundary without replacing the conversation with a dashboard
 - Every moment retains a secondary inspectable `Sense → Interpret → Check authority → Act or wait → Receipt` decision record with inputs, confidence, uncertainty, policy, action, retention, and exclusions—never a claim to reveal hidden chain-of-thought
-- The 3D room routes signals directly from the active object through Saito to a permitted room actuator; at consequential work, the signal stops visibly at the human-authority gate
+- The 3D room routes signals directly from the active object through Saito and fans out to every permitted room actuator the moment touches; at consequential work, the signal stops visibly at the human-authority gate, embodied as a physical commitment dial on the kitchen counter
 - Explicit Keep it with me / Let it end here consent for every moment, with refused memories removed from the journey
 - TokenPak, TIP, and PAK available only through an optional infrastructure receipt as the quiet provenance and authority spine beneath the relationship
 - Human Gate artifact recovered through the right to keep or forget rather than a generic approval node
@@ -96,6 +98,7 @@ The build should be treated as a **complete connected-environment implementation
 
 - The same apartment ten years later, rebuilt as black glass, rain, sodium amber, and vermilion cyberpunk atmosphere
 - Code-native holographic portrait of Kevin as the visual and narrative hero, including the same mug and a hand that cannot touch it
+- A fifth environmental cue—a boarding pass, unprinted—carries the 20:15 staged year into 2040 recall under the same consent rules
 - Environmental cues drive `Notice → Recall → Deliberate → Act → Continue`, including speaking, demonstrating, initiating, and refusing
 - 2030 consent materially changes 2040 recall, source language, cue treatment, and hologram stability; withheld memories remain deliberate blanks
 - Theatrical source trace distinguishes stable records, incomplete patterns, and frayed conjecture that Kevin refuses to promote into memory

@@ -20,6 +20,7 @@ import {
   type CoexistenceState,
   type CoexistenceMoment,
   type CoexistenceMomentId,
+  type CoexistenceStagedState,
   type AgentTracePhase,
   type CompanionConsent,
   type ConsciousnessCueId,
@@ -27,6 +28,12 @@ import {
   type EncounterRetention,
   type PermissionedMemoryState
 } from './futureWorld';
+
+const stagedStateLabels: Record<CoexistenceStagedState, string> = {
+  done: 'Done · reversible',
+  staged: 'Staged · unsigned',
+  gated: 'Waits for Kevin'
+};
 
 const agentTraceLabels: Record<AgentTracePhase, string> = {
   sense: 'Sense',
@@ -106,6 +113,8 @@ function AgentTrace({ moment, livePhase }: { moment: CoexistenceMoment; livePhas
           <div><dt>Posture</dt><dd>{trace.posture}</dd></div>
           <div><dt>Confidence</dt><dd>{trace.confidence}%</dd></div>
           <div><dt>Known gap</dt><dd>{trace.uncertainty}</dd></div>
+          <div><dt>Seeded</dt><dd>{moment.seed.when} · {moment.seed.said}</dd></div>
+          <div><dt>Incubation</dt><dd>{moment.incubation.span} · {moment.incubation.checks} checks · {moment.incubation.domains.join(' · ')}</dd></div>
         </dl>
       </article>
 
@@ -142,6 +151,7 @@ function CoexistenceRoom({ activeMoment, activePhase, activeSignal, consent, onS
   consent: CoexistenceState['consent'];
   onSelect: (id: CoexistenceMomentId) => void;
 }) {
+  const incubation = coexistenceMoments[activeMoment].incubation;
   const object = (id: CoexistenceMomentId, className: string, label: string) => {
     const decision = consent[id];
     return (
@@ -176,10 +186,15 @@ function CoexistenceRoom({ activeMoment, activePhase, activeSignal, consent, onS
       {object('making', 'coexistence-object--draft', 'Unfinished draft on the studio table')}
       {object('work', 'coexistence-object--window', 'Window desk at midday')}
       {object('care', 'coexistence-object--door', 'Apartment threshold at dusk')}
+      {object('evening', 'coexistence-object--table', 'Dinner table after the plates are cleared')}
       {object('gathering', 'coexistence-object--glasses', 'Glasses after friends have gone')}
       <div className="saito-presence" data-behavior={activeMoment} data-phase={activePhase} aria-label={`Saito is active through the room: ${activeSignal}`}>
         <i aria-hidden="true"></i><i aria-hidden="true"></i><i aria-hidden="true"></i>
         <span>{activeMoment === 'care' ? 'Saito · restrained' : 'Saito · present'}</span>
+      </div>
+      <div className="saito-thread" aria-hidden="true">
+        <span>quiet work</span>
+        <b>{incubation.span} · {incubation.checks} checks</b>
       </div>
       <div className="saito-room-signal" data-phase={activePhase} aria-hidden="true">
         <span>{agentTraceLabels[activePhase]}</span>
@@ -252,10 +267,17 @@ function CoexistenceExperience() {
           <p className="future-kicker">Live encounter · Saito speaks in context</p>
           <h2 id="coexistence-moment-title">{moment.title}</h2>
 
+          <p className="coexistence-seed">
+            <span>Seeded {moment.seed.when.toLowerCase()} · {moment.seed.where}</span>
+            <b>{moment.seed.said}</b>
+          </p>
+
           <div className="coexistence-live-status" data-phase={activeBeat.phase}>
             <div><i aria-hidden="true"></i><span>Saito · observable activity</span><b>{agentTraceLabels[activeBeat.phase]}</b></div>
             <p>{activeBeat.signal}</p>
           </div>
+
+          <p className="coexistence-incubation">{moment.incubation.span} of quiet work · {moment.incubation.checks} checks · {moment.incubation.domains.join(' · ')}</p>
 
           <ol className="coexistence-exchange" aria-label={`Live conversation between Kevin and Saito at ${moment.time}`}>
             {moment.exchange.slice(0, exchangeIndex + 1).map((beat, index) => (
@@ -271,6 +293,18 @@ function CoexistenceExperience() {
               <span>{nextBeat.speaker === 'kevin' ? 'Speak' : 'Continue'}</span>
               <b>{activeBeat.nextLabel}</b>
             </button>
+          )}
+
+          {exchangeIndex >= 3 && (
+            <ul className="coexistence-staged" aria-label="What Saito already staged">
+              {moment.staged.map((item) => (
+                <li key={`${item.domain}-${item.action}`} data-state={item.state}>
+                  <span>{item.domain}</span>
+                  <p>{item.action}</p>
+                  <b>{stagedStateLabels[item.state]}</b>
+                </li>
+              ))}
+            </ul>
           )}
 
           <div className="coexistence-ambient" aria-label="Ambient details">{moment.ambient}</div>
@@ -376,6 +410,7 @@ function ConsciousnessRoom({ selectedCue, coexistence, onSelect }: {
       {cueButton('mug', 'consciousness-cue--mug')}
       {cueButton('rain', 'consciousness-cue--rain')}
       {cueButton('unfinished-note', 'consciousness-cue--note')}
+      {cueButton('boarding-stub', 'consciousness-cue--stub')}
       {cueButton('doorway', 'consciousness-cue--door')}
     </section>
   );
@@ -432,7 +467,7 @@ function ConsciousnessExperience() {
       <div className="consciousness-smoke" aria-hidden="true"><i></i><i></i><i></i></div>
       <header className="future-masthead">
         <div><p>2040 · Consciousness</p><h1>Morning, After</h1><span>In this imagined 2040, a Kevin-shaped intelligence remembers, reasons, acts—and knows when not to.</span></div>
-        <div><b>{coexistence.keptMoments.length}/5 MEMORIES PERMITTED</b><SoundControl /></div>
+        <div><b>{coexistence.keptMoments.length}/6 MEMORIES PERMITTED</b><SoundControl /></div>
       </header>
 
       <div className="consciousness-stage">

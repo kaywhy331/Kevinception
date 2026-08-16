@@ -34,6 +34,7 @@ describe('future functional text experience', () => {
     fireEvent.click(screen.getByRole('button', { name: /Put it beside the draft/ }));
     fireEvent.click(screen.getByRole('button', { name: 'Hear Saito’s answer' }));
     expect(screen.getByText(/I disagree with the elegant version/)).toBeInTheDocument();
+    expect(screen.getByText('Grant pre-application drafted for Friday’s deadline')).toBeInTheDocument();
     fireEvent.click(screen.getByRole('button', { name: 'Let it end here' }));
     expect(screen.getByText('Gone. The room remembers nothing.')).toBeInTheDocument();
     expect(experienceActions.discover).toHaveBeenCalledWith('human-gate', '2030');

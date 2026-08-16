@@ -385,7 +385,7 @@ try {
   await page.goto(`${base}/experience/?year=2030&view=interface`, { waitUntil: 'domcontentloaded', timeout: 45000 });
   await page.waitForSelector('.interface-mode.is-visible .future-native--2030', { timeout: 30000 });
   assert('The future interfaces are native and mount no 2030/2040 iframe', await page.$$eval('iframe', (frames) => frames.every((frame) => !/\/legacy\/experience\/(2030|2040)\//.test(frame.src))));
-  assert('Native Co-Existence exposes five ordinary moments with Saito', await page.$$eval('.coexistence-dayline button', (buttons) => buttons.length === 5) && await page.$eval('.future-native--2030', (node) => node.textContent.includes('Morning, Together') && node.textContent.includes('Saito')));
+  assert('Native Co-Existence exposes six ordinary moments with Saito', await page.$$eval('.coexistence-dayline button', (buttons) => buttons.length === 6) && await page.$eval('.future-native--2030', (node) => node.textContent.includes('Morning, Together') && node.textContent.includes('Saito')));
   await finishCoexistenceExchange();
   await clickPageButton('Keep it with me');
   await clickPageButton('Studio table');
@@ -399,7 +399,7 @@ try {
   await clickPageButton('Enter Morning, After');
   await page.waitForSelector('.future-native--2040', { timeout: 30000 });
   assert('Saito remains exclusive to the 2030 experience', await page.$eval('.future-native--2040', (node) => !/Saito/i.test(node.textContent ?? '')));
-  assert('Consciousness reports the one memory permitted by the living day', await page.$eval('.future-masthead', (node) => node.textContent.includes('1/5 MEMORIES PERMITTED')));
+  assert('Consciousness reports the one memory permitted by the living day', await page.$eval('.future-masthead', (node) => node.textContent.includes('1/6 MEMORIES PERMITTED')));
   await clickPageButton('An unfinished sentence');
   await clickPageButton('Let Kevin recall');
   await page.waitForFunction(() => document.querySelector('.consciousness-encounter blockquote')?.textContent.includes('deliberate blank'));

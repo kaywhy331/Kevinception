@@ -1,5 +1,14 @@
 # Changelog
 
+## Unreleased — 2030 anticipation grammar
+
+- Gave every Co-Existence moment a visible anticipation grammar: a timestamped casual seed, a quiet incubation ledger, and a staged multi-domain reveal with done / staged / gated states beside the existing consent and receipt rails.
+- Added the 20:15 anchor moment, where nine words about Asia spoken eleven weeks earlier surface as a fully staged year—passport renewal, fare corridor, seasons, family dates, one refundable hold—with booking and spend held behind the human gate.
+- Wove unasked-for, cross-domain assists into the existing five moments (overnight flight reschedule, corpus read with a staged grant filing, four-company launch staging, a wrist-only family-health whisper, and a drafted-never-sent invitation) without weakening any restraint beat.
+- Fanned the 3D room's spatial response out to every permitted actuator per moment, added the dinner table, and embodied the human gate as a physical commitment dial on the kitchen counter.
+- Carried the staged year into 2040 as a sixth-consent-driven cue: a boarding pass, unprinted, whose destination stays blank because the choice was never the machine's.
+- Extended text-mode parity, runtime probes, and documentation to enforce the anticipation grammar.
+
 ## 0.8.2 — V7.7 audit completion and production hardening
 
 - Simplified the code-native six-era homepage portal into a no-scroll, single-entry splash; Profile, Case studies, Resume, and Contact remain available through the site navigation.
