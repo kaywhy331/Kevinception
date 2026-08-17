@@ -59,7 +59,7 @@ export const chapterNarrative: Record<YearId, ChapterNarrative> = {
     chapterName: 'Commerce',
     experienceName: 'StealStreet Commerce OS',
     medium: 'Proprietary commerce operating system and fulfillment workstation',
-    chapterThesis: 'Co-founding a multi-channel commerce operation taught Kevin to architect one proprietary system connecting vendor purchasing, inventory, 1.5 million catalog records, 20+ sales channels, customer orders, warehouse fulfillment, service, finance, reporting, automation, and the team.',
+    chapterThesis: 'Co-founding a multi-channel commerce operation taught Kevin to architect one proprietary system connecting vendor purchasing, inventory, 1.5 million catalog records, 15+ sales channels, customer orders, warehouse fulfillment, service, finance, reporting, automation, and the team.',
     transformation: 'Connection becomes commerce.',
     lesson: 'Kevin carried forward a systems architect’s view of operations: reduce cross-functional complexity into connected records, explicit handoffs, automation, and actionable exceptions without losing operator judgment.',
     capabilityLinks: ['Commerce systems architecture', 'ERP and workflow design', 'Marketplace automation', 'Warehouse and company operations'],
