@@ -16,16 +16,28 @@ beforeEach(() => useExperienceStore.setState({ futureJourney: createInitialFutur
 afterEach(cleanup);
 
 describe('future functional text experience', () => {
-  it('offers the complete coexistence day, consent, and optional provenance in 2030', () => {
+  it('offers the direct Saito exchange, synchronized audit, consent, and optional provenance in 2030', () => {
     const experienceActions = actions();
     render(<ExperienceActionsProvider value={experienceActions}><FutureTextExperience year="2030" /></ExperienceActionsProvider>);
 
     expect(screen.getByRole('heading', { name: 'Morning, Together' })).toBeInTheDocument();
     fireEvent.click(screen.getByRole('button', { name: /10:36Studio table/ }));
     expect(screen.getByRole('heading', { name: 'An idea finds its edge' })).toBeInTheDocument();
-    expect(screen.getByRole('heading', { name: 'What happened under the calm' })).toBeInTheDocument();
+    expect(screen.getByText(/changed that paragraph nine times/)).toBeInTheDocument();
+    expect(screen.getByText(/PROJECT-ONLY INPUTS/)).toBeInTheDocument();
+    expect(screen.getByText('Saito’s standing authority by domain')).toBeInTheDocument();
+    fireEvent.click(screen.getByText('Saito’s standing authority by domain').closest('summary')!);
+    expect(screen.getByText('Refundable holds at most; spend is always the dial.')).toBeInTheDocument();
+    fireEvent.click(screen.getByText('Inspect the full observable agent record').closest('summary')!);
+    expect(screen.getByRole('heading', { name: 'Inputs, interpretation, authority, action, and retention' })).toBeInTheDocument();
     expect(screen.getByText(/Recommend · do not rewrite/)).toBeInTheDocument();
-    expect(screen.getByText(/Wren cannot alter the draft/)).toBeInTheDocument();
+    expect(screen.getByText(/Saito cannot alter the draft/)).toBeInTheDocument();
+    fireEvent.click(screen.getByRole('button', { name: /I know. I’m missing the edge/ }));
+    fireEvent.click(screen.getByRole('button', { name: 'Ask Saito what it sees' }));
+    fireEvent.click(screen.getByRole('button', { name: /Put it beside the draft/ }));
+    fireEvent.click(screen.getByRole('button', { name: 'Hear Saito’s answer' }));
+    expect(screen.getByText(/I disagree with the elegant version/)).toBeInTheDocument();
+    expect(screen.getByText('Grant pre-application drafted for Friday’s deadline')).toBeInTheDocument();
     fireEvent.click(screen.getByRole('button', { name: 'Let it end here' }));
     expect(screen.getByText('Gone. The room remembers nothing.')).toBeInTheDocument();
     expect(experienceActions.discover).toHaveBeenCalledWith('human-gate', '2030');
@@ -37,8 +49,9 @@ describe('future functional text experience', () => {
 
   it('provides the same behavior loop, conjecture boundary, and final permission in 2040', () => {
     const experienceActions = actions();
-    render(<ExperienceActionsProvider value={experienceActions}><FutureTextExperience year="2040" /></ExperienceActionsProvider>);
+    const { container } = render(<ExperienceActionsProvider value={experienceActions}><FutureTextExperience year="2040" /></ExperienceActionsProvider>);
 
+    expect(container).not.toHaveTextContent(/Saito/i);
     fireEvent.click(screen.getByRole('button', { name: /An unfinished sentence/ }));
     fireEvent.click(screen.getByRole('button', { name: 'Pull the sentence to its source' }));
     expect(screen.getByText(/inference frays here/)).toBeInTheDocument();

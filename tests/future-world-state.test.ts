@@ -11,9 +11,14 @@ describe('future journey world-state integration', () => {
     expect(scene).toContain('coexistence.activeMoment === id');
     expect(scene).toContain('coexistence.consent[id]');
     expect(scene).toContain('<ConsentMark');
-    expect(scene).toContain('<AgentDecisionRail');
-    expect(scene).toContain('Wren decision rail');
-    expect(scene).toContain('Wren in the room');
+    expect(scene).toContain('<SaitoSpatialResponse');
+    expect(scene).toContain('Saito spatial response');
+    expect(scene).toContain('Saito stops at human authority');
+    expect(scene).not.toContain('AgentDecisionRail');
+    expect(scene).toContain('Saito in the room');
+    expect(scene).toContain('SaitoActionChannel');
+    expect(scene).toContain('Commitment dial');
+    expect(scene).toContain('responseTargets[momentId]');
     expect(scene).not.toContain('mission.artifact');
   });
 

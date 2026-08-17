@@ -17,6 +17,8 @@ import {
 } from '@/experience/future/futureJourney';
 import {
   AGENT_TRACE_PHASES,
+  COEXISTENCE_MOMENT_IDS,
+  saitoAuthorityMap,
   advanceConsciousnessBehavior,
   createInitialCoexistenceState,
   createInitialConsciousnessState,
@@ -86,13 +88,15 @@ describe('future journey domain', () => {
     expect(state.echo.resonance).toBe(firstResonance);
     state = openEchoMemory(state, '2010');
     state = openEchoMemory(state, '2030');
+    expect(state.echo.response?.answer).toContain('an ambient companion');
+    expect(state.echo.response?.answer).not.toContain('Saito');
     expect(state.echo.synthesisReady).toBe(true);
     state = markEchoFinaleSeen(state);
     expect(state.echo.finaleSeen).toBe(true);
     expect(state.echo.resonance).toBe(100);
   });
 
-  it('lets Wren keep or forget moments only through explicit consent', () => {
+  it('lets Saito keep or forget moments only through explicit consent', () => {
     let state = createInitialCoexistenceState();
     state = selectCoexistenceMoment(state, 'making');
     state = resolveCompanionConsent(state, 'kept');
@@ -103,20 +107,64 @@ describe('future journey domain', () => {
     expect(state.refusedMoments).toEqual(['making']);
   });
 
-  it('gives every 2030 moment a complete inspectable agent decision trace', () => {
+  it('gives every 2030 moment a direct exchange synchronized to the inspectable agent record', () => {
     for (const moment of Object.values(coexistenceMoments)) {
       expect(Object.keys(moment.agent.steps)).toEqual(AGENT_TRACE_PHASES);
+      expect(moment.exchange).toHaveLength(AGENT_TRACE_PHASES.length);
+      expect(moment.exchange.map((beat) => beat.phase)).toEqual(AGENT_TRACE_PHASES);
+      expect(moment.exchange[0].speaker).toBe('saito');
+      expect(moment.exchange.some((beat) => beat.speaker === 'kevin')).toBe(true);
+      expect(moment.exchange.every((beat) => beat.signal.length > 20)).toBe(true);
       expect(moment.agent.confidence).toBeGreaterThan(0);
       expect(moment.agent.confidence).toBeLessThanOrEqual(100);
       expect(moment.agent.uncertainty.length).toBeGreaterThan(20);
+      expect(moment.seed.said.length).toBeGreaterThan(10);
+      expect(moment.incubation.checks).toBeGreaterThan(0);
+      expect(moment.incubation.domains.length).toBeGreaterThan(0);
+      expect(moment.staged.length).toBeGreaterThanOrEqual(3);
+      expect(moment.staged.some((item) => item.state === 'gated')).toBe(true);
+      expect(moment.staged.at(-1)?.state).toBe('gated');
       for (const phase of AGENT_TRACE_PHASES) {
         expect(moment.agent.steps[phase].summary.length).toBeGreaterThan(20);
         expect(moment.agent.steps[phase].detail.length).toBeGreaterThan(50);
       }
     }
     expect(coexistenceMoments.morning.agent.steps.sense.detail).toContain('biometrics are not opened');
+    expect(coexistenceMoments.work.exchange[2].line).toContain('cannot spend your authority');
     expect(coexistenceMoments.work.agent.steps.govern.status).toBe('Human authority required');
     expect(coexistenceMoments.care.agent.steps.account.status).toBe('Ephemeral buffer');
+  });
+
+  it('stages long-horizon, multi-domain anticipation and keeps commitment behind the human gate', () => {
+    expect(COEXISTENCE_MOMENT_IDS).toHaveLength(6);
+    const evening = coexistenceMoments.evening;
+    expect(evening.seed.said).toContain('Asia');
+    expect(evening.incubation.domains.length).toBeGreaterThanOrEqual(5);
+    expect(evening.exchange[2].line).toContain('Nothing is booked, nothing is spent');
+    expect(evening.exchange[4].line).toContain('never mine');
+    expect(evening.staged.filter((item) => item.state === 'gated').map((item) => item.domain)).toContain('money');
+
+    let coexistence = resolveCompanionConsent(createInitialCoexistenceState(), 'kept', 'evening');
+    expect(getPermissionedMemoryState(coexistence, 'boarding-stub')).toBe('retained');
+    expect(getPermissionedMemorySource(coexistence, 'boarding-stub')).toContain('20:15 Dinner table');
+    coexistence = resolveCompanionConsent(coexistence, 'refused', 'evening');
+    expect(getPermissionedMemoryState(coexistence, 'boarding-stub')).toBe('withheld');
+    expect(getConsciousnessLine(consciousnessCues['boarding-stub'], 'recall', 'withheld')).toContain('will not reconstruct');
+  });
+
+  it('states standing authority as an instrument and keeps private incubations off shared glass', () => {
+    expect(saitoAuthorityMap).toHaveLength(5);
+    expect(saitoAuthorityMap.map((tier) => tier.level)).toEqual(['Full auto', 'Notify first', 'Stage to gate', 'Stage only', 'Draft only']);
+    const money = saitoAuthorityMap.find((tier) => tier.domains === 'Money');
+    expect(money?.level).toBe('Stage only');
+    expect(money?.meaning).toContain('dial');
+    const social = saitoAuthorityMap.find((tier) => tier.domains === 'Social');
+    expect(social?.meaning).toContain('Kevin’s hand');
+
+    expect(coexistenceMoments.morning.thread).toBeTruthy();
+    expect(coexistenceMoments.evening.thread).toContain('ASIA');
+    expect(coexistenceMoments.care.thread).toBeUndefined();
+    expect(coexistenceMoments.gathering.thread).toBeUndefined();
   });
 
   it('allows 2040 to recall only memories that 2030 was permitted to keep', () => {

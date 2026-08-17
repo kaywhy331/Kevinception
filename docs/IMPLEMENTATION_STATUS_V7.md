@@ -43,7 +43,7 @@ The build should be treated as a **complete connected-environment implementation
 - Muted-by-default persisted sound preference, synthesized interface feedback, and generated opt-in 2030/2040 atmospheres and event cues
 - WebGL capability detection
 - Runtime canvas error boundary that moves visitors into the text experience
-- Browser-local year visits, settings, artifact progress, Wren consent decisions, permissioned memories, holographic Kevin’s behavior phase, source trace, and encounter-retention choice
+- Browser-local year visits, settings, artifact progress, 2030 consent decisions, permissioned memories, holographic Kevin’s behavior phase, source trace, and encounter-retention choice
 
 ### 1990 — KevinVision
 
@@ -82,9 +82,19 @@ The build should be treated as a **complete connected-environment implementation
 ### 2030 — Co-Existence / Morning, Together
 
 - Warm, spatially zoned smart home with a local-sensing kitchen, mounted-context studio, guest-safe living room, threshold, depth partition, and visible home nervous system
-- Five ordinary moments from 07:12 through 22:04, with Wren expressed through room-scale light, anticipation, productive disagreement, authority-aware restraint, silence, and intentional absence
-- Object-led interaction through the morning mug, shared draft, window desk, threshold, and after-gathering glasses
-- Every moment exposes an inspectable `Sense → Interpret → Check authority → Act or wait → Receipt` decision record with inputs, confidence, uncertainty, policy, action, retention, and exclusions—never a claim to reveal hidden chain-of-thought
+- Six ordinary moments from 07:12 through 22:04, with Saito expressed through room-scale light, anticipation, productive disagreement, authority-aware restraint, silence, and intentional absence
+- Each moment now unfolds as a progressive first-person Saito/Kevin exchange: Saito notices and speaks in context, Kevin answers or directs, the room reacts, and Saito reports what changed or why it stopped
+- Object-led interaction through the morning mug, shared draft, window desk, threshold, dinner table, and after-gathering glasses
+- Every moment carries a visible anticipation grammar: a timestamped casual seed, a quiet incubation ledger, a staged multi-domain reveal at the act beat, at least one gated item, and a retention receipt
+- A 20:15 anchor moment demonstrates long-horizon, multi-domain anticipation: nine words about Asia become a staged year—passport renewal, fare corridors, seasons, family dates, and one refundable hold—while booking and spend stay behind the human gate
+- The seed stays deliberately held—“Seed held · 63 days”—until the reveal beat, when it snaps in beside a staggered staged-card cascade whose gated item always lands last and scrolls into view
+- An opt-in Live mode lets Saito lead: beats self-advance on a natural clock, Saito’s lines are voiced when sound is on, any tap interrupts, and consent is never advanced by the machine
+- The flat room carries a Saito pane where staged domains surface at the reveal and a brass commitment dial that arms at authority checks; the dayline teases the 20:15 anchor—“a year is waiting”—until it is visited
+- While one moment is live, the pane carries the other days’ quiet incubations as ambient threads; private incubations—family health, guests—never surface on shared glass
+- An inspectable standing-authority map states each domain tier—Full auto, Notify first, Stage to gate, Stage only, Draft only—and that commitment always happens by Kevin’s hand at the dial
+- A synchronized live-activity line shows the currently observable signal or boundary without replacing the conversation with a dashboard
+- Every moment retains a secondary inspectable `Sense → Interpret → Check authority → Act or wait → Receipt` decision record with inputs, confidence, uncertainty, policy, action, retention, and exclusions—never a claim to reveal hidden chain-of-thought
+- The 3D room routes signals directly from the active object through Saito and fans out to every permitted room actuator the moment touches; at consequential work, the signal stops visibly at the human-authority gate, embodied as a physical commitment dial on the kitchen counter
 - Explicit Keep it with me / Let it end here consent for every moment, with refused memories removed from the journey
 - TokenPak, TIP, and PAK available only through an optional infrastructure receipt as the quiet provenance and authority spine beneath the relationship
 - Human Gate artifact recovered through the right to keep or forget rather than a generic approval node
@@ -93,6 +103,7 @@ The build should be treated as a **complete connected-environment implementation
 
 - The same apartment ten years later, rebuilt as black glass, rain, sodium amber, and vermilion cyberpunk atmosphere
 - Code-native holographic portrait of Kevin as the visual and narrative hero, including the same mug and a hand that cannot touch it
+- A fifth environmental cue—a boarding pass, unprinted—carries the 20:15 staged year into 2040 recall under the same consent rules
 - Environmental cues drive `Notice → Recall → Deliberate → Act → Continue`, including speaking, demonstrating, initiating, and refusing
 - 2030 consent materially changes 2040 recall, source language, cue treatment, and hologram stability; withheld memories remain deliberate blanks
 - Theatrical source trace distinguishes stable records, incomplete patterns, and frayed conjecture that Kevin refuses to promote into memory
@@ -111,7 +122,7 @@ The build should be treated as a **complete connected-environment implementation
   - TV static to modem noise
   - Personal pages resolving into marketplace operations
   - Order signals accelerating into the creator feed
-  - Reactions resolving into an ordinary morning shared with Wren
+  - Reactions resolving into an ordinary morning shared with an ambient companion
   - A physical gesture becoming permissioned memory, with authored forward/reverse mug choreography
 - Direct previous, next, timeline, and Portfolio routes
 
@@ -121,7 +132,7 @@ The build should be treated as a **complete connected-environment implementation
 - Skip link and visible focus styles
 - Keyboard timeline controls and DOM equivalents for WebGL hotspots
 - Text experience with canonical content and artifact recovery in all six eras
-- Functional text parity for all five 2030 moments, Wren consent and optional provenance, all four 2040 cues, the full behavior loop, permission-driven recall, source certainty, and encounter retention
+- Functional text parity for all five 2030 moments, companion consent and optional provenance, all four 2040 cues, the full behavior loop, permission-driven recall, source certainty, and encounter retention
 - Reduced-motion support, including automatic first-visit OS preference detection
 - No-WebGL fallback
 - Canvas failure recovery

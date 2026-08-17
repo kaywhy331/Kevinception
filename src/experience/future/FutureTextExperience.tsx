@@ -1,6 +1,7 @@
 'use client';
 
 import Link from 'next/link';
+import { useState } from 'react';
 import type { YearId } from '@/content/data';
 import { useExperienceActions } from '../ExperienceContext';
 import { useExperienceStore } from '../store';
@@ -14,6 +15,7 @@ import {
   getConsciousnessLine,
   getPermissionedMemorySource,
   getPermissionedMemoryState,
+  saitoAuthorityMap,
   type CompanionConsent,
   type AgentTracePhase,
   type ConsciousnessPhase,
@@ -41,9 +43,17 @@ function TextCoexistence() {
   const selectMoment = useExperienceStore((state) => state.selectCoexistenceMoment);
   const resolveConsent = useExperienceStore((state) => state.resolveCompanionConsent);
   const setProvenance = useExperienceStore((state) => state.setCoexistenceProvenance);
+  const [exchangeIndex, setExchangeIndex] = useState(0);
   const { discover, navigateToYear } = useExperienceActions();
   const moment = coexistenceMoments[coexistence.activeMoment];
   const decision = coexistence.consent[moment.id];
+  const activeBeat = moment.exchange[Math.min(exchangeIndex, moment.exchange.length - 1)];
+  const nextBeat = moment.exchange[exchangeIndex + 1];
+
+  const chooseMoment = (id: typeof moment.id) => {
+    selectMoment(id);
+    setExchangeIndex(0);
+  };
 
   const decide = (next: Exclude<CompanionConsent, 'unasked'>) => {
     resolveConsent(next);
@@ -55,12 +65,12 @@ function TextCoexistence() {
       <header>
         <p className="eyebrow">2030 · Co-Existence</p>
         <h2 id="future-text-coexistence-title">Morning, Together</h2>
-        <p>Human and AI collaborators share an ordinary day. Wren makes each assist legible through observable inputs, interpretation, authority, action, and retention.</p>
+        <p>Saito notices the room, speaks first when useful, answers Kevin directly, acts within authority, and knows when silence is the better response.</p>
       </header>
 
-      <nav className="future-text-moments" aria-label="A compressed day with Wren">
+      <nav className="future-text-moments" aria-label="A compressed day with Saito">
         {COEXISTENCE_MOMENT_IDS.map((id) => (
-          <button key={id} type="button" aria-pressed={moment.id === id} onClick={() => selectMoment(id)}>
+          <button key={id} type="button" aria-pressed={moment.id === id} onClick={() => chooseMoment(id)}>
             <time>{coexistenceMoments[id].time}</time><b>{coexistenceMoments[id].place}</b><span>{coexistenceMoments[id].title}</span>
           </button>
         ))}
@@ -69,15 +79,54 @@ function TextCoexistence() {
       <article className="future-text-scene" aria-live="polite">
         <p className="eyebrow">{moment.time} · {moment.place}</p>
         <h3>{moment.title}</h3>
-        <dl>
-          <dt>Kevin</dt><dd>{moment.human}</dd>
-          <dt>Wren</dt><dd>{moment.companion}</dd>
-          <dt>In the room</dt><dd>{moment.ambient}</dd>
-        </dl>
-        <section className="future-text-agent" aria-labelledby="future-text-agent-title">
+        <p className="future-text-live"><b>Saito · {agentTraceLabels[activeBeat.phase]}</b>{activeBeat.signal}</p>
+        <ol className="future-text-exchange" aria-label={`Conversation between Kevin and Saito at ${moment.time}`}>
+          {moment.exchange.slice(0, exchangeIndex + 1).map((beat, index) => (
+            <li key={`${beat.phase}-${index}`} data-speaker={beat.speaker}>
+              <b>{beat.speaker === 'saito' ? 'Saito' : 'Kevin'}</b>
+              <p>{beat.line}</p>
+            </li>
+          ))}
+        </ol>
+        {nextBeat && (
+          <button className="future-text-primary" type="button" onClick={() => setExchangeIndex((current) => Math.min(current + 1, moment.exchange.length - 1))}>
+            {activeBeat.nextLabel}
+          </button>
+        )}
+        <p className="future-text-ambient"><b>In the room</b>{moment.ambient}</p>
+        <p className="future-text-seed"><b>Seed</b>{moment.seed.when} · {moment.seed.where} — {moment.seed.said}</p>
+        {!nextBeat && (
+          <section className="future-text-staged" aria-label="What Saito already staged">
+            <p><b>Quiet work</b>{moment.incubation.span} · {moment.incubation.checks} checks · {moment.incubation.domains.join(', ')}</p>
+            <ul>
+              {moment.staged.map((item) => (
+                <li key={item.action} data-state={item.state}>
+                  <b>{item.domain}</b>
+                  <span>{item.action}</span>
+                  <i>{item.state === 'done' ? 'done, reversible' : item.state === 'staged' ? 'staged, unsigned' : 'waits for Kevin'}</i>
+                </li>
+              ))}
+            </ul>
+          </section>
+        )}
+        <details className="future-text-agent future-text-authority">
+          <summary>Saito’s standing authority by domain</summary>
+          <ol>
+            {saitoAuthorityMap.map((tier) => (
+              <li key={tier.domains}>
+                <b>{tier.level}</b>
+                <strong>{tier.domains}</strong>
+                <p>{tier.meaning}</p>
+              </li>
+            ))}
+          </ol>
+          <footer>Commitment always happens by Kevin’s hand. Private incubations never surface on shared glass.</footer>
+        </details>
+        <details className="future-text-agent">
+          <summary>Inspect the full observable agent record</summary>
           <header>
-            <p className="eyebrow">Wren · inspectable decision trace</p>
-            <h4 id="future-text-agent-title">What happened under the calm</h4>
+            <p className="eyebrow">Saito · observable decision record</p>
+            <h4>Inputs, interpretation, authority, action, and retention</h4>
             <span>{moment.agent.id} · {moment.agent.confidence}% confidence</span>
           </header>
           <ol>
@@ -94,19 +143,21 @@ function TextCoexistence() {
             <dt>Known gap</dt><dd>{moment.agent.uncertainty}</dd>
           </dl>
           <footer>This is a decision record—not hidden chain-of-thought.</footer>
-        </section>
-        <fieldset>
-          <legend>{moment.invitation}</legend>
-          <button className="future-text-primary" type="button" aria-pressed={decision === 'kept'} onClick={() => decide('kept')}>Keep it with me</button>
-          <button type="button" aria-pressed={decision === 'refused'} onClick={() => decide('refused')}>Let it end here</button>
-          {decision !== 'unasked' && <output>{decision === 'kept' ? 'Carried—with permission.' : 'Gone. The room remembers nothing.'}</output>}
-        </fieldset>
+        </details>
+        {!nextBeat && (
+          <fieldset>
+            <legend>{moment.invitation}</legend>
+            <button className="future-text-primary" type="button" aria-pressed={decision === 'kept'} onClick={() => decide('kept')}>Keep it with me</button>
+            <button type="button" aria-pressed={decision === 'refused'} onClick={() => decide('refused')}>Let it end here</button>
+            {decision !== 'unasked' && <output>{decision === 'kept' ? 'Carried—with permission.' : 'Gone. The room remembers nothing.'}</output>}
+          </fieldset>
+        )}
         <button className="future-text-provenance" type="button" aria-expanded={coexistence.provenanceOpen} onClick={() => setProvenance(!coexistence.provenanceOpen)}>Open infrastructure receipt</button>
         {coexistence.provenanceOpen && <aside><b>carried on TokenPak · TIP authority · PAK context</b><p>{moment.receipt}</p></aside>}
       </article>
 
       <button className="future-text-primary" type="button" onClick={() => navigateToYear('2040')}>Ten years pass · Enter Morning, After</button>
-      <footer><b>Co-Existence:</b> AI is a daily companion; memory infrastructure is the quiet spine beneath the relationship.</footer>
+      <footer><b>Co-Existence:</b> Saito is experienced as a present conversational counterpart; the inspectable record remains the quiet spine beneath the relationship.</footer>
     </section>
   );
 }
@@ -139,7 +190,7 @@ function TextConsciousness() {
         <p className="eyebrow">2040 · Consciousness</p>
         <h2 id="future-text-consciousness-title">Morning, After</h2>
         <p>In this imagined 2040, a cyberpunk holographic reproduction of Kevin notices, recalls, deliberates, speaks, initiates, acts, and refuses within the permissions Kevin left behind.</p>
-        <small>{coexistence.keptMoments.length}/5 memories permitted by the living day.</small>
+        <small>{coexistence.keptMoments.length}/6 memories permitted by the living day.</small>
       </header>
 
       <nav className="future-text-cues" aria-label="Environmental cues Kevin can notice">

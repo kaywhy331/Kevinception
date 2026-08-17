@@ -37,7 +37,7 @@ export const artifacts: ArtifactDefinition[] = [
     }
   },
   {
-    id: 'human-gate', title: 'Human Gate', meaning: 'The interface changes; the right to remember remains human.', discoveryYear: '2030', discoveryHint: 'Tell Wren to keep one moment—or let it end—in Morning, Together.',
+    id: 'human-gate', title: 'Human Gate', meaning: 'The interface changes; the right to remember remains human.', discoveryYear: '2030', discoveryHint: 'Choose whether one moment may continue—or let it end—in Morning, Together.',
     transformations: {
       '1990': 'player choice', '2000': 'download confirmation', '2010': 'release or hold order', '2020': 'post or draft', '2030': 'keep / let end', '2040': 'remember / release encounter'
     }

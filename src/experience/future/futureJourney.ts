@@ -241,7 +241,7 @@ export const echoMemoryRecords: Record<EchoMemoryId, { title: string; signal: st
   '2000': { title: 'Connection', signal: 'The first online identity', reconstruction: 'Dial-up turned one computer into an entrance to people, scripts, pages, and shared imagination.', source: 'Connection chapter' },
   '2010': { title: 'Systems', signal: 'The connected customer promise', reconstruction: 'Orders, catalog data, inventory, fulfillment, service, and teams became one operating model.', source: 'Commerce chapter' },
   '2020': { title: 'Creation', signal: 'The compressed story', reconstruction: 'Publishing accelerated, signals became immediate, and ideas had to become tangible quickly.', source: 'Creation chapter' },
-  '2030': { title: 'Companionship', signal: 'The permissioned morning', reconstruction: 'Kevin and Wren shared ordinary life while human consent decided which moments could travel forward.', source: 'Co-Existence chapter' },
+  '2030': { title: 'Companionship', signal: 'The permissioned morning', reconstruction: 'Kevin shared ordinary life with an ambient companion while human consent decided which moments could travel forward.', source: 'Co-Existence chapter' },
   '2040': { title: 'Consciousness', signal: 'The permissioned self', reconstruction: 'A holographic Kevin can remember, deliberate, act, and refuse without turning inference into a claimed memory.', source: 'Consciousness chapter' }
 };
 

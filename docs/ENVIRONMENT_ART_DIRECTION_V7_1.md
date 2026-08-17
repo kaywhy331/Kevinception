@@ -40,9 +40,10 @@ The apartment contains:
 
 - Distinct local-sensing kitchen, mounted-context studio, guest-safe living, and private-threshold zones
 - Five human-scale objects that carry the day from a morning mug to after-gathering glasses
-- A room-scale Wren presence rather than a humanoid assistant or command-center dashboard
-- A five-node decision rail that makes Sense → Interpret → Authority → Act or wait → Receipt visible in the architecture
-- A marked human-authority gate and consent state linked to the active object
+- A room-scale Saito presence rather than a humanoid assistant or command-center dashboard
+- Direct object → Saito → permitted-actuator signal paths that make the home respond spatially instead of turning the room into a process diagram
+- A marked human-authority stop where Saito’s outgoing response visibly ends before consequential action
+- Brief first-person Saito/Kevin exchanges as the primary encounter, with the five-stage observable record available as secondary inspection
 - Quiet, inspectable infrastructure receipts for provenance and retention boundaries
 - Observation glass into the 2040 chamber
 

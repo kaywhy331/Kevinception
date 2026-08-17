@@ -119,21 +119,27 @@ describe('Commerce and Co-Existence chapters', () => {
     expect(html).not.toMatch(/https?:\/\/(?!kevinception\.com)/);
   });
 
-  it('defines 2030 as daily Co-Existence with Wren and permissioned memory', () => {
+  it('defines 2030 as daily Co-Existence with Saito and permissioned memory', () => {
     expect(chapterNarrative['2030'].chapterName).toBe('Co-Existence');
     expect(chapterNarrative['2030'].experienceName).toBe('Morning, Together');
-    expect(chapterNarrative['2030'].chapterThesis).toContain('Wren anticipates, disagrees, helps, waits');
+    expect(chapterNarrative['2030'].chapterThesis).toContain('an ambient companion anticipates, disagrees, helps, waits');
+    expect(JSON.stringify(chapterNarrative)).not.toContain('Saito');
+    expect(JSON.stringify(eras)).not.toContain('Saito');
     expect(eras.find((era) => era.id === '2030')).toMatchObject({ label: 'Co-Existence', subtitle: 'Morning, Together', accent: '#d69b50' });
-    expect(Object.keys(coexistenceMoments)).toHaveLength(5);
+    expect(Object.keys(coexistenceMoments)).toHaveLength(6);
+    expect(coexistenceMoments.evening.seed.said).toContain('We should finally do Asia next year');
+    expect(coexistenceMoments.evening.staged.some((item) => item.state === 'gated')).toBe(true);
     const overlay = read('src/experience/ExperienceOverlay.tsx');
     const scene = read('src/experience/scenes/Year2030Scene.tsx');
     const futureText = read('src/experience/future/FutureTextExperience.tsx');
     expect(overlay).toContain('<FutureTextExperience year="2030"');
-    expect(futureText).toContain('Wren makes each assist legible through observable inputs');
+    expect(futureText).toContain('Saito notices the room, speaks first when useful');
+    expect(futureText).toContain('future-text-exchange');
     expect(futureText).toContain('AGENT_TRACE_PHASES.map');
     expect(futureText).toContain('carried on TokenPak · TIP authority · PAK context');
-    expect(scene).toContain('Wren in the room');
-    expect(scene).toContain('AgentDecisionRail');
+    expect(scene).toContain('Saito in the room');
+    expect(scene).toContain('SaitoSpatialResponse');
+    expect(scene).toContain('Saito stops at human authority');
     expect(scene).toContain('coexistence.consent[id]');
     expect(scene).not.toContain('Human Governor');
   });
@@ -155,6 +161,8 @@ describe('Commerce and Co-Existence chapters', () => {
       expect(payload.timelineContent['2010'].operations.channelScale).toBe('20+ commerce channels');
       expect(payload.timelineContent['2040'].responses.memory).toContain('Commerce, Creation, Co-Existence, or Consciousness');
       expect(payload.temporalArtifacts['2010']).toMatchObject({ id: 'project-blueprint', name: 'Project Blueprint' });
+      expect(payload.temporalArtifacts['2030'].name).toBe(year === '2030' ? 'Saito Consent Thread' : '2030 Consent Thread');
+      expect(/Saito/i.test(html)).toBe(year === '2030');
     }
   });
 });

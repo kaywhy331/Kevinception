@@ -26,39 +26,74 @@ beforeEach(() => {
 afterEach(cleanup);
 
 describe('native future experiences', () => {
-  it('turns 2030 into a consent-based day with Wren and keeps provenance secondary', () => {
+  it('turns 2030 into a progressive conversation with Saito and keeps the audit secondary', () => {
     const experienceActions = actions();
     render(<ExperienceActionsProvider value={experienceActions}><FutureExperience year="2030" /></ExperienceActionsProvider>);
 
     expect(screen.getByRole('heading', { name: 'Morning, Together' })).toBeInTheDocument();
-    expect(screen.getByText(/Wren softened the alarm/)).toBeInTheDocument();
-    expect(screen.getByRole('heading', { name: 'What happened under the calm' })).toBeInTheDocument();
-    expect(screen.getByText('WREN-0712-MORNING')).toBeInTheDocument();
+    expect(screen.getByRole('button', { name: /Live off/ })).toBeInTheDocument();
+    expect(screen.getByText(/I let the alarm fall away/)).toBeInTheDocument();
+    expect(screen.getByText(/Seed held · 9 days/)).toBeInTheDocument();
+    expect(screen.getByText('ASIA · fare corridor · day 63')).toBeInTheDocument();
+    expect(screen.getByText('Saito’s standing authority')).toBeInTheDocument();
+    fireEvent.click(screen.getByText('Saito’s standing authority').closest('summary')!);
+    expect(screen.getByText('Refundable holds at most; spend is always the dial.')).toBeInTheDocument();
+    expect(screen.getByText(/Private incubations—family health, guests—never surface on shared glass/)).toBeInTheDocument();
+    expect(screen.getAllByText(/LOCAL INPUTS · alarm dismissed/).length).toBeGreaterThan(0);
+    expect(screen.getByText('Inspect Saito’s live boundary')).toBeInTheDocument();
+    expect(screen.getByText('SAITO-0712-MORNING')).toBeInTheDocument();
+    fireEvent.click(screen.getByText('Inspect Saito’s live boundary').closest('summary')!);
     fireEvent.click(screen.getByRole('button', { name: /Check authority.*Reversible only/ }));
     expect(screen.getByRole('heading', { name: 'Room comfort may change; communication may not.' })).toBeInTheDocument();
     expect(screen.getByText(/Reading, ranking, replying to, or hiding message content requires Kevin/)).toBeInTheDocument();
+
+    for (let beat = 0; beat < 4; beat += 1) {
+      fireEvent.click(screen.getByRole('button', { name: /^(Speak|Continue)/ }));
+    }
+    expect(screen.getByText(/zero messages read/)).toBeInTheDocument();
+    expect(screen.getByText('Training run offered inside the 8:40 dry window')).toBeInTheDocument();
+    expect(screen.getByText('Four sealed envelopes—reading them stays behind Kevin’s rule')).toBeInTheDocument();
     fireEvent.click(screen.getByRole('button', { name: 'Keep it with me' }));
     expect(screen.getByText('Carried—with permission.')).toBeInTheDocument();
     expect(useExperienceStore.getState().futureJourney.coexistence.keptMoments).toEqual(['morning']);
 
     fireEvent.click(screen.getByRole('button', { name: /Unfinished draft on the studio table/ }));
     expect(screen.getByRole('heading', { name: 'An idea finds its edge' })).toBeInTheDocument();
-    expect(screen.getByText(/then disagrees/)).toBeInTheDocument();
+    expect(screen.getByText(/changed that paragraph nine times/)).toBeInTheDocument();
+    for (let beat = 0; beat < 4; beat += 1) {
+      fireEvent.click(screen.getByRole('button', { name: /^(Speak|Continue)/ }));
+    }
+    expect(screen.getByText(/I disagree with the elegant version/)).toBeInTheDocument();
     fireEvent.click(screen.getByRole('button', { name: 'Let it end here' }));
     expect(screen.getByText('Gone. The room remembers nothing.')).toBeInTheDocument();
     expect(experienceActions.discover).toHaveBeenCalledWith('human-gate', '2030');
+
+    fireEvent.click(screen.getByRole('button', { name: /Dinner table after the plates are cleared/ }));
+    expect(screen.getByRole('heading', { name: 'A sentence becomes a year' })).toBeInTheDocument();
+    expect(screen.getByText(/Seed held · 63 days/)).toBeInTheDocument();
+    expect(screen.queryByText('Seeded eleven weeks ago · This table')).not.toBeInTheDocument();
+    for (let beat = 0; beat < 4; beat += 1) {
+      fireEvent.click(screen.getByRole('button', { name: /^(Speak|Continue)/ }));
+    }
+    expect(screen.getByText('Seeded eleven weeks ago · This table')).toBeInTheDocument();
+    expect(screen.getByText(/which two weeks of your life this becomes/)).toBeInTheDocument();
+    expect(screen.getByText('Passport renewal drafted ahead of the March expiry')).toBeInTheDocument();
+    expect(screen.getAllByText('Waits for Kevin').length).toBeGreaterThan(0);
+    fireEvent.click(screen.getByRole('button', { name: 'Keep it with me' }));
+    expect(useExperienceStore.getState().futureJourney.coexistence.keptMoments).toEqual(['morning', 'evening']);
 
     fireEvent.click(screen.getByRole('button', { name: 'Open infrastructure receipt' }));
     expect(screen.getByText(/carried on TokenPak · TIP authority · PAK context/)).toBeInTheDocument();
     fireEvent.click(screen.getByRole('button', { name: /Ten years pass.*Enter Morning, After/ }));
     expect(experienceActions.enterYear).toHaveBeenCalledWith('2040');
-  });
+  }, 30_000);
 
   it('lets holographic Kevin deliberate, refuse invention, expose a frayed source, and ask permission', () => {
     const experienceActions = actions();
-    render(<ExperienceActionsProvider value={experienceActions}><FutureExperience year="2040" /></ExperienceActionsProvider>);
+    const { container } = render(<ExperienceActionsProvider value={experienceActions}><FutureExperience year="2040" /></ExperienceActionsProvider>);
 
     expect(screen.getByRole('heading', { name: 'Morning, After' })).toBeInTheDocument();
+    expect(container).not.toHaveTextContent(/Saito/i);
     fireEvent.click(screen.getAllByRole('button', { name: /An unfinished sentence/ })[0]);
     expect(screen.getByText(/sentence stops after/)).toBeInTheDocument();
     fireEvent.click(screen.getByRole('button', { name: 'Pull the sentence to its source' }));

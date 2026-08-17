@@ -1,7 +1,7 @@
 'use client';
 
 import Link from 'next/link';
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import type { YearId } from '@/content/data';
 import { trackAnalyticsEvent } from '@/lib/analytics';
 import { playFutureCue, playInterfaceTone, startFutureAtmosphere } from '../audio';
@@ -17,9 +17,11 @@ import {
   getConsciousnessLine,
   getPermissionedMemorySource,
   getPermissionedMemoryState,
+  saitoAuthorityMap,
   type CoexistenceState,
   type CoexistenceMoment,
   type CoexistenceMomentId,
+  type CoexistenceStagedState,
   type AgentTracePhase,
   type CompanionConsent,
   type ConsciousnessCueId,
@@ -27,6 +29,12 @@ import {
   type EncounterRetention,
   type PermissionedMemoryState
 } from './futureWorld';
+
+const stagedStateLabels: Record<CoexistenceStagedState, string> = {
+  done: 'Done · reversible',
+  staged: 'Staged · unsigned',
+  gated: 'Waits for Kevin'
+};
 
 const agentTraceLabels: Record<AgentTracePhase, string> = {
   sense: 'Sense',
@@ -62,22 +70,28 @@ function SoundControl() {
   );
 }
 
-function AgentTrace({ moment }: { moment: CoexistenceMoment }) {
-  const [activePhase, setActivePhase] = useState<AgentTracePhase>('sense');
+function AgentTrace({ moment, livePhase }: { moment: CoexistenceMoment; livePhase: AgentTracePhase }) {
+  const [activePhase, setActivePhase] = useState<AgentTracePhase>(livePhase);
   const trace = moment.agent;
   const activeStep = trace.steps[activePhase];
 
+  useEffect(() => setActivePhase(livePhase), [livePhase]);
+
   return (
-    <section className="coexistence-agent" aria-labelledby="coexistence-agent-title">
+    <details className="coexistence-agent">
+      <summary>
+        <span>Inspect Saito’s live boundary</span>
+        <b>{agentTraceLabels[livePhase]} · {trace.steps[livePhase].status}</b>
+      </summary>
       <header>
         <div>
-          <p className="future-kicker">Wren · inspectable decision trace</p>
-          <h3 id="coexistence-agent-title">What happened under the calm</h3>
+          <p className="future-kicker">Observable agent record</p>
+          <h3>What Saito used, could do, and left alone</h3>
         </div>
         <span>{trace.id}</span>
       </header>
 
-      <ol aria-label="Wren’s agent loop">
+      <ol aria-label="Saito’s agent loop">
         {AGENT_TRACE_PHASES.map((phase, index) => (
           <li key={phase}>
             <button type="button" aria-pressed={activePhase === phase} onClick={() => setActivePhase(phase)}>
@@ -100,26 +114,34 @@ function AgentTrace({ moment }: { moment: CoexistenceMoment }) {
           <div><dt>Posture</dt><dd>{trace.posture}</dd></div>
           <div><dt>Confidence</dt><dd>{trace.confidence}%</dd></div>
           <div><dt>Known gap</dt><dd>{trace.uncertainty}</dd></div>
+          <div><dt>Seeded</dt><dd>{moment.seed.when} · {moment.seed.said}</dd></div>
+          <div><dt>Incubation</dt><dd>{moment.incubation.span} · {moment.incubation.checks} checks · {moment.incubation.domains.join(' · ')}</dd></div>
         </dl>
       </article>
 
       <footer>This is a decision record—inputs, policy, action, and retention—not hidden chain-of-thought.</footer>
-    </section>
+    </details>
   );
 }
 
-function Dayline({ activeMoment, onSelect }: { activeMoment: CoexistenceMomentId; onSelect: (id: CoexistenceMomentId) => void }) {
+function Dayline({ activeMoment, anchorTeased, onSelect }: {
+  activeMoment: CoexistenceMomentId;
+  anchorTeased: boolean;
+  onSelect: (id: CoexistenceMomentId) => void;
+}) {
   return (
-    <nav className="coexistence-dayline" aria-label="A day with Wren">
+    <nav className="coexistence-dayline" aria-label="A day with Saito">
       <p>One day, held lightly</p>
       <ol>
         {COEXISTENCE_MOMENT_IDS.map((id) => {
           const moment = coexistenceMoments[id];
+          const isAnchor = id === 'evening';
           return (
             <li key={id}>
-              <button type="button" aria-pressed={activeMoment === id} onClick={() => onSelect(id)}>
+              <button type="button" data-anchor={isAnchor || undefined} data-teased={(isAnchor && anchorTeased) || undefined} aria-pressed={activeMoment === id} onClick={() => onSelect(id)}>
                 <time>{moment.time}</time>
                 <span>{moment.place}</span>
+                {isAnchor && anchorTeased && <em>a year is waiting</em>}
               </button>
             </li>
           );
@@ -129,11 +151,16 @@ function Dayline({ activeMoment, onSelect }: { activeMoment: CoexistenceMomentId
   );
 }
 
-function CoexistenceRoom({ activeMoment, consent, onSelect }: {
+function CoexistenceRoom({ activeMoment, activePhase, activeSignal, revealed, consent, onSelect }: {
   activeMoment: CoexistenceMomentId;
+  activePhase: AgentTracePhase;
+  activeSignal: string;
+  revealed: boolean;
   consent: CoexistenceState['consent'];
   onSelect: (id: CoexistenceMomentId) => void;
 }) {
+  const activeMomentContent = coexistenceMoments[activeMoment];
+  const incubation = activeMomentContent.incubation;
   const object = (id: CoexistenceMomentId, className: string, label: string) => {
     const decision = consent[id];
     return (
@@ -151,7 +178,7 @@ function CoexistenceRoom({ activeMoment, consent, onSelect }: {
   };
 
   return (
-    <section className="coexistence-room" aria-label="Kevin’s apartment and studio across one day">
+    <section className="coexistence-room" data-agent-phase={activePhase} aria-label="Kevin’s apartment and studio across one day">
       <div className="coexistence-sun" aria-hidden="true"></div>
       <div className="coexistence-window" aria-hidden="true"><i></i><i></i><i></i></div>
       <div className="coexistence-ceiling-rail" aria-hidden="true"></div>
@@ -160,6 +187,20 @@ function CoexistenceRoom({ activeMoment, consent, onSelect }: {
       <div className="coexistence-table" aria-hidden="true"></div>
       <div className="coexistence-rug" aria-hidden="true"></div>
       <div className="coexistence-lounge" aria-hidden="true"><i></i><i></i></div>
+      <div className="coexistence-pane" data-live={revealed || undefined} data-phase={activePhase} aria-hidden="true">
+        <span>Saito pane</span>
+        {revealed
+          ? activeMomentContent.staged.slice(0, 3).map((item) => (
+            <b key={item.action} data-state={item.state}>{item.domain}</b>
+          ))
+          : COEXISTENCE_MOMENT_IDS
+            .filter((id) => id !== activeMoment)
+            .map((id) => coexistenceMoments[id].thread)
+            .filter((thread): thread is string => Boolean(thread))
+            .slice(0, 3)
+            .map((thread) => <b key={thread} data-thread>{thread}</b>)}
+      </div>
+      <div className="coexistence-dial" data-armed={(activePhase === 'govern' || revealed) || undefined} aria-hidden="true"><i></i></div>
       <div className="coexistence-room-label coexistence-room-label--kitchen" aria-hidden="true">Kitchen / local sensing</div>
       <div className="coexistence-room-label coexistence-room-label--studio" aria-hidden="true">Studio / mounted context</div>
       <div className="coexistence-room-label coexistence-room-label--living" aria-hidden="true">Living / guest-safe</div>
@@ -168,14 +209,20 @@ function CoexistenceRoom({ activeMoment, consent, onSelect }: {
       {object('making', 'coexistence-object--draft', 'Unfinished draft on the studio table')}
       {object('work', 'coexistence-object--window', 'Window desk at midday')}
       {object('care', 'coexistence-object--door', 'Apartment threshold at dusk')}
+      {object('evening', 'coexistence-object--table', 'Dinner table after the plates are cleared')}
       {object('gathering', 'coexistence-object--glasses', 'Glasses after friends have gone')}
-      <div className="wren-presence" data-behavior={activeMoment} aria-label={`Wren is present through the room: ${coexistenceMoments[activeMoment].companion}`}>
+      <div className="saito-presence" data-behavior={activeMoment} data-phase={activePhase} aria-label={`Saito is active through the room: ${activeSignal}`}>
         <i aria-hidden="true"></i><i aria-hidden="true"></i><i aria-hidden="true"></i>
-        <span>{activeMoment === 'care' ? 'Wren · private' : 'Wren · present'}</span>
+        <span>{activeMoment === 'care' ? 'Saito · restrained' : 'Saito · present'}</span>
       </div>
-      <div className="wren-trace-rail" data-behavior={activeMoment} aria-hidden="true">
-        {AGENT_TRACE_PHASES.map((phase) => <i key={phase} data-phase={phase}></i>)}
-        <b></b>
+      <div className="saito-thread" aria-hidden="true">
+        <span>quiet work</span>
+        <b>{incubation.span} · {incubation.checks} checks</b>
+      </div>
+      <div className="saito-room-signal" data-phase={activePhase} aria-hidden="true">
+        <span>{agentTraceLabels[activePhase]}</span>
+        <b>{activeSignal}</b>
+        <i></i>
       </div>
     </section>
   );
@@ -187,15 +234,77 @@ function CoexistenceExperience() {
   const resolveConsent = useExperienceStore((state) => state.resolveCompanionConsent);
   const setProvenance = useExperienceStore((state) => state.setCoexistenceProvenance);
   const sound = useExperienceStore((state) => state.sound);
+  const motion = useExperienceStore((state) => state.motion);
+  const [exchangeIndex, setExchangeIndex] = useState(0);
+  const [live, setLive] = useState(false);
+  const stagedReveal = useRef<HTMLUListElement>(null);
   const { discover, enterYear } = useExperienceActions();
   const moment = coexistenceMoments[coexistence.activeMoment];
   const decision = coexistence.consent[coexistence.activeMoment];
+  const activeBeat = moment.exchange[Math.min(exchangeIndex, moment.exchange.length - 1)];
+  const nextBeat = moment.exchange[exchangeIndex + 1];
+  const exchangeComplete = !nextBeat;
+  const revealed = exchangeIndex >= 3;
 
   const chooseMoment = (momentId: CoexistenceMomentId) => {
     selectMoment(momentId);
+    setExchangeIndex(0);
     playFutureCue('presence', sound);
     trackAnalyticsEvent('coexistence_moment_opened', { moment: momentId });
   };
+
+  const advanceExchange = () => {
+    if (!nextBeat) return;
+    const nextIndex = Math.min(exchangeIndex + 1, moment.exchange.length - 1);
+    setExchangeIndex(nextIndex);
+    playFutureCue(nextBeat.speaker === 'saito' ? 'presence' : 'signal', sound);
+    if (nextIndex === 3) {
+      playFutureCue('synthesis', sound);
+      trackAnalyticsEvent('coexistence_reveal_staged', { moment: moment.id });
+    }
+    trackAnalyticsEvent('coexistence_exchange_advanced', {
+      moment: moment.id,
+      phase: nextBeat.phase,
+      speaker: nextBeat.speaker
+    });
+  };
+
+  const toggleLive = () => {
+    const next = !live;
+    setLive(next);
+    playFutureCue(next ? 'presence' : 'signal', sound);
+    trackAnalyticsEvent('coexistence_live_toggled', { live: next });
+    if (!next && typeof window !== 'undefined' && 'speechSynthesis' in window) window.speechSynthesis.cancel();
+  };
+
+  // Live mode: Saito keeps the exchange moving on a natural clock. Any tap
+  // interrupts, and consent is never advanced by the machine.
+  useEffect(() => {
+    if (!live || !nextBeat) return;
+    const delay = Math.min(1400 + activeBeat.line.length * 26, 6200);
+    const timer = window.setTimeout(advanceExchange, delay);
+    return () => window.clearTimeout(timer);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [live, exchangeIndex, coexistence.activeMoment]);
+
+  // Live mode gives Saito a voice when sound is on.
+  useEffect(() => {
+    if (!live || !sound || activeBeat.speaker !== 'saito') return;
+    if (typeof window === 'undefined' || !('speechSynthesis' in window)) return;
+    window.speechSynthesis.cancel();
+    const utterance = new SpeechSynthesisUtterance(activeBeat.line);
+    utterance.rate = 0.96;
+    utterance.pitch = 0.82;
+    window.speechSynthesis.speak(utterance);
+    return () => window.speechSynthesis.cancel();
+  }, [live, sound, activeBeat]);
+
+  // Keep the staged reveal—especially its gated last card—in view when it lands.
+  useEffect(() => {
+    if (!revealed) return;
+    stagedReveal.current?.scrollIntoView?.({ behavior: motion === 'reduced' ? 'auto' : 'smooth', block: 'nearest' });
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [revealed]);
 
   const chooseConsent = (next: Exclude<CompanionConsent, 'unasked'>) => {
     resolveConsent(next);
@@ -208,30 +317,115 @@ function CoexistenceExperience() {
     <main className="future-native future-native--2030" data-future-native="2030" data-moment={moment.id}>
       <div className="coexistence-grain" aria-hidden="true"></div>
       <header className="future-masthead">
-        <div><p>2030 · Co-Existence</p><h1>Morning, Together</h1><span>A smart home where every assist exposes its inputs, boundary, action, and memory.</span></div>
-        <div><b>WREN · PRESENT</b><SoundControl /></div>
+        <div><p>2030 · Co-Existence</p><h1>Morning, Together</h1><span>An intelligent home where Saito notices, speaks, acts, and stops in the room with you.</span></div>
+        <div>
+          <b>SAITO · LOCAL · PRESENT</b>
+          <button className="future-sound-control coexistence-live-toggle" type="button" aria-pressed={live} onClick={toggleLive}>
+            <span aria-hidden="true">{live ? '◉' : '○'}</span> Live {live ? 'on' : 'off'}
+          </button>
+          <SoundControl />
+        </div>
       </header>
 
       <div className="coexistence-stage">
-        <Dayline activeMoment={moment.id} onSelect={chooseMoment} />
-        <CoexistenceRoom activeMoment={moment.id} consent={coexistence.consent} onSelect={chooseMoment} />
+        <Dayline activeMoment={moment.id} anchorTeased={coexistence.consent.evening === 'unasked' && moment.id !== 'evening'} onSelect={chooseMoment} />
+        <CoexistenceRoom
+          activeMoment={moment.id}
+          activePhase={activeBeat.phase}
+          activeSignal={activeBeat.signal}
+          revealed={revealed}
+          consent={coexistence.consent}
+          onSelect={chooseMoment}
+        />
 
         <section className="coexistence-dialogue" aria-live="polite" aria-labelledby="coexistence-moment-title">
           <div className="coexistence-dialogue__time"><time>{moment.time}</time><span>{moment.place}</span></div>
-          <p className="future-kicker">A day in two voices</p>
+          <p className="future-kicker">Live encounter · Saito speaks in context</p>
           <h2 id="coexistence-moment-title">{moment.title}</h2>
-          <blockquote><span>Kevin</span>{moment.human}</blockquote>
-          <blockquote><span>Wren</span>{moment.companion}</blockquote>
+
+          <p className="coexistence-seed" data-revealed={revealed || undefined}>
+            {revealed ? (
+              <>
+                <span>Seeded {moment.seed.when.toLowerCase()} · {moment.seed.where}</span>
+                <b>{moment.seed.said}</b>
+              </>
+            ) : (
+              <>
+                <span>Seed held · {moment.incubation.span}</span>
+                <b>Something you once said is still working. It surfaces when it matters.</b>
+              </>
+            )}
+          </p>
+
+          <div className="coexistence-live-status" data-phase={activeBeat.phase}>
+            <div><i aria-hidden="true"></i><span>Saito · observable activity</span><b>{agentTraceLabels[activeBeat.phase]}</b></div>
+            <p>{activeBeat.signal}</p>
+          </div>
+
+          <p className="coexistence-incubation">{moment.incubation.span} of quiet work · {moment.incubation.checks} checks · {moment.incubation.domains.join(' · ')}</p>
+
+          <ol className="coexistence-exchange" aria-label={`Live conversation between Kevin and Saito at ${moment.time}`}>
+            {moment.exchange.slice(0, exchangeIndex + 1).map((beat, index) => (
+              <li key={`${beat.phase}-${index}`} data-speaker={beat.speaker} data-current={index === exchangeIndex}>
+                <span>{beat.speaker === 'saito' ? 'Saito' : 'Kevin'}</span>
+                <p>{beat.line}</p>
+              </li>
+            ))}
+          </ol>
+
+          {nextBeat && (
+            <button className="coexistence-reply" type="button" onClick={advanceExchange}>
+              <span>{live ? 'Interrupt' : nextBeat.speaker === 'kevin' ? 'Speak' : 'Continue'}</span>
+              <b>{activeBeat.nextLabel}</b>
+            </button>
+          )}
+
+          {revealed && (
+            <ul className="coexistence-staged" ref={stagedReveal} aria-label="What Saito already staged">
+              {moment.staged.map((item, index) => (
+                <li
+                  key={`${item.domain}-${item.action}`}
+                  data-state={item.state}
+                  style={{ animationDelay: motion === 'reduced' ? '0ms' : `${index * 130}ms` }}
+                >
+                  <span>{item.domain}</span>
+                  <p>{item.action}</p>
+                  <b>{stagedStateLabels[item.state]}</b>
+                </li>
+              ))}
+            </ul>
+          )}
+
           <div className="coexistence-ambient" aria-label="Ambient details">{moment.ambient}</div>
 
-          <AgentTrace key={moment.id} moment={moment} />
+          <AgentTrace key={moment.id} moment={moment} livePhase={activeBeat.phase} />
 
-          <fieldset className="coexistence-consent">
-            <legend>{moment.invitation}</legend>
-            <button type="button" aria-pressed={decision === 'kept'} onClick={() => chooseConsent('kept')}>Keep it with me</button>
-            <button type="button" aria-pressed={decision === 'refused'} onClick={() => chooseConsent('refused')}>Let it end here</button>
-            {decision !== 'unasked' && <output>{decision === 'kept' ? 'Carried—with permission.' : 'Gone. The room remembers nothing.'}</output>}
-          </fieldset>
+          <details className="coexistence-authority">
+            <summary>
+              <span>Saito’s standing authority</span>
+              <b>5 tiers · the dial commits</b>
+            </summary>
+            <p>Every staged card exists because a tier allows it. Nothing below moves authority off Kevin.</p>
+            <ol aria-label="Standing delegation by domain">
+              {saitoAuthorityMap.map((tier) => (
+                <li key={tier.domains}>
+                  <span>{tier.domains}</span>
+                  <b>{tier.level}</b>
+                  <p>{tier.meaning}</p>
+                </li>
+              ))}
+            </ol>
+            <footer>Private incubations—family health, guests—never surface on shared glass.</footer>
+          </details>
+
+          {exchangeComplete && (
+            <fieldset className="coexistence-consent">
+              <legend>{moment.invitation}</legend>
+              <button type="button" aria-pressed={decision === 'kept'} onClick={() => chooseConsent('kept')}>Keep it with me</button>
+              <button type="button" aria-pressed={decision === 'refused'} onClick={() => chooseConsent('refused')}>Let it end here</button>
+              {decision !== 'unasked' && <output>{decision === 'kept' ? 'Carried—with permission.' : 'Gone. The room remembers nothing.'}</output>}
+            </fieldset>
+          )}
 
           <div className="coexistence-provenance">
             <button type="button" aria-expanded={coexistence.provenanceOpen} onClick={() => setProvenance(!coexistence.provenanceOpen)}>
@@ -252,7 +446,7 @@ function CoexistenceExperience() {
         </button>
       </div>
 
-      <footer className="future-disclosure"><span>Co-Existence</span><p>Wren exposes observable evidence, policy, action, and retention while private reasoning and human authority remain bounded.</p></footer>
+      <footer className="future-disclosure"><span>Co-Existence</span><p>Saito behaves as a conversational presence first. Observable inputs, authority, action, and retention remain available without exposing private reasoning.</p></footer>
     </main>
   );
 }
@@ -323,6 +517,7 @@ function ConsciousnessRoom({ selectedCue, coexistence, onSelect }: {
       {cueButton('mug', 'consciousness-cue--mug')}
       {cueButton('rain', 'consciousness-cue--rain')}
       {cueButton('unfinished-note', 'consciousness-cue--note')}
+      {cueButton('boarding-stub', 'consciousness-cue--stub')}
       {cueButton('doorway', 'consciousness-cue--door')}
     </section>
   );
@@ -379,7 +574,7 @@ function ConsciousnessExperience() {
       <div className="consciousness-smoke" aria-hidden="true"><i></i><i></i><i></i></div>
       <header className="future-masthead">
         <div><p>2040 · Consciousness</p><h1>Morning, After</h1><span>In this imagined 2040, a Kevin-shaped intelligence remembers, reasons, acts—and knows when not to.</span></div>
-        <div><b>{coexistence.keptMoments.length}/5 MEMORIES PERMITTED</b><SoundControl /></div>
+        <div><b>{coexistence.keptMoments.length}/6 MEMORIES PERMITTED</b><SoundControl /></div>
       </header>
 
       <div className="consciousness-stage">

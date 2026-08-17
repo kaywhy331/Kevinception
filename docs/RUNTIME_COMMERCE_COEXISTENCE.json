@@ -1,7 +1,7 @@
 {
-  "generatedAt": "2026-08-15T02:30:00.167Z",
+  "generatedAt": "2026-08-16T21:56:48.021Z",
   "browser": "/home/trix/.cache/ms-playwright/chromium-1234/chrome-linux64/chrome",
-  "base": "http://127.0.0.1:4322",
+  "base": "http://127.0.0.1:4321",
   "assertions": [
     {
       "name": "The direct dashboard module URL opens the Commerce interface",
@@ -81,12 +81,12 @@
     {
       "name": "The office clock projects the current month and day into 2010",
       "passed": true,
-      "detail": "8/14/2010"
+      "detail": "8/16/2010"
     },
     {
       "name": "Every seeded operational and culture date is in 2010 and not after the office date",
       "passed": true,
-      "detail": "8/14/2010 | 8/14/2010 | 8/13/2010 | 8/13/2010 | 8/13/2010 | 8/12/2010 | 8/11/2010 | 8/8/2010 | 8/14/2010 | 8/4/2010 | 8/12/2010 | 8/2/2010 | 8/14/2010 | 7/31/2010 | 8/14/2010 | 7/28/2010 | 8/10/2010 | 7/25/2010 | 8/6/2010 | 8/14/2010 | 8/12/2010 | 8/7/2010 | 7/31/2010 | 7/17/2010"
+      "detail": "8/16/2010 | 8/16/2010 | 8/15/2010 | 8/15/2010 | 8/15/2010 | 8/14/2010 | 8/13/2010 | 8/10/2010 | 8/16/2010 | 8/6/2010 | 8/14/2010 | 8/4/2010 | 8/16/2010 | 8/2/2010 | 8/16/2010 | 7/30/2010 | 8/12/2010 | 7/27/2010 | 8/8/2010 | 8/16/2010 | 8/14/2010 | 8/9/2010 | 8/2/2010 | 7/19/2010"
     },
     {
       "name": "Guest comments persist under the time-traveler identity",
@@ -409,12 +409,17 @@
       "detail": ""
     },
     {
-      "name": "Native Co-Existence exposes five ordinary moments with Wren",
+      "name": "Native Co-Existence exposes six ordinary moments with Saito",
       "passed": true,
       "detail": ""
     },
     {
       "name": "TokenPak, TIP, and PAK remain optional provenance rather than the 2030 hero",
+      "passed": true,
+      "detail": ""
+    },
+    {
+      "name": "Saito remains exclusive to the 2030 experience",
       "passed": true,
       "detail": ""
     },
