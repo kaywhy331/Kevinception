@@ -52,6 +52,9 @@ const phaseLabels: Record<ConsciousnessPhase, string> = {
   continue: 'Continue'
 };
 
+/** One beat on screen at a time: talk, then the reveal, then the question, then rest. */
+type CoexistenceBeat = 'exchange' | 'reveal' | 'consent' | 'settled';
+
 function SoundControl() {
   const sound = useExperienceStore((state) => state.sound);
   const toggleSound = useExperienceStore((state) => state.toggleSound);
@@ -78,23 +81,11 @@ function AgentTrace({ moment, livePhase }: { moment: CoexistenceMoment; livePhas
   useEffect(() => setActivePhase(livePhase), [livePhase]);
 
   return (
-    <details className="coexistence-agent">
-      <summary>
-        <span>Inspect Saito’s live boundary</span>
-        <b>{agentTraceLabels[livePhase]} · {trace.steps[livePhase].status}</b>
-      </summary>
-      <header>
-        <div>
-          <p className="future-kicker">Observable agent record</p>
-          <h3>What Saito used, could do, and left alone</h3>
-        </div>
-        <span>{trace.id}</span>
-      </header>
-
-      <ol aria-label="Saito’s agent loop">
+    <section className="coexistence-agent" aria-label="Saito’s agent loop">
+      <ol aria-label="Saito’s agent loop steps">
         {AGENT_TRACE_PHASES.map((phase, index) => (
           <li key={phase}>
-            <button type="button" aria-pressed={activePhase === phase} onClick={() => setActivePhase(phase)}>
+            <button type="button" aria-pressed={activePhase === phase} data-live={phase === livePhase || undefined} onClick={() => setActivePhase(phase)}>
               <span>{String(index + 1).padStart(2, '0')}</span>
               <b>{agentTraceLabels[phase]}</b>
               <small>{trace.steps[phase].status}</small>
@@ -120,7 +111,55 @@ function AgentTrace({ moment, livePhase }: { moment: CoexistenceMoment; livePhas
       </article>
 
       <footer>This is a decision record—inputs, policy, action, and retention—not hidden chain-of-thought.</footer>
-    </details>
+    </section>
+  );
+}
+
+function BoundaryLens({ moment, livePhase, onClose }: {
+  moment: CoexistenceMoment;
+  livePhase: AgentTracePhase;
+  onClose: () => void;
+}) {
+  useEffect(() => {
+    const onKeyDown = (event: KeyboardEvent) => {
+      if (event.key === 'Escape') onClose();
+    };
+    window.addEventListener('keydown', onKeyDown);
+    return () => window.removeEventListener('keydown', onKeyDown);
+  }, [onClose]);
+
+  return (
+    <section className="coexistence-lens" role="region" aria-label="Saito’s observable boundary">
+      <header>
+        <div>
+          <p className="future-kicker">Observable agent record · {moment.agent.id}</p>
+          <h2>What Saito used, could do, and left alone</h2>
+        </div>
+        <button type="button" onClick={onClose}>Close the boundary</button>
+      </header>
+
+      <AgentTrace key={moment.id} moment={moment} livePhase={livePhase} />
+
+      <section className="coexistence-authority" aria-labelledby="coexistence-authority-title">
+        <h3 id="coexistence-authority-title">Saito’s standing authority</h3>
+        <p>Every staged card exists because a tier allows it. Nothing below moves authority off Kevin—the dial commits.</p>
+        <ol aria-label="Standing delegation by domain">
+          {saitoAuthorityMap.map((tier) => (
+            <li key={tier.domains}>
+              <span>{tier.domains}</span>
+              <b>{tier.level}</b>
+              <p>{tier.meaning}</p>
+            </li>
+          ))}
+        </ol>
+        <footer>Private incubations—family health, guests—never surface on shared glass.</footer>
+      </section>
+
+      <aside className="coexistence-provenance">
+        <span>carried on TokenPak · TIP authority · PAK context</span>
+        <p>{moment.receipt}</p>
+      </aside>
+    </section>
   );
 }
 
@@ -201,9 +240,6 @@ function CoexistenceRoom({ activeMoment, activePhase, activeSignal, revealed, co
             .map((thread) => <b key={thread} data-thread>{thread}</b>)}
       </div>
       <div className="coexistence-dial" data-armed={(activePhase === 'govern' || revealed) || undefined} aria-hidden="true"><i></i></div>
-      <div className="coexistence-room-label coexistence-room-label--kitchen" aria-hidden="true">Kitchen / local sensing</div>
-      <div className="coexistence-room-label coexistence-room-label--studio" aria-hidden="true">Studio / mounted context</div>
-      <div className="coexistence-room-label coexistence-room-label--living" aria-hidden="true">Living / guest-safe</div>
       <div className="coexistence-hand coexistence-hand--human" aria-hidden="true"></div>
       {object('morning', 'coexistence-object--mug', 'Warm mug on the kitchen table')}
       {object('making', 'coexistence-object--draft', 'Unfinished draft on the studio table')}
@@ -232,12 +268,13 @@ function CoexistenceExperience() {
   const coexistence = useExperienceStore((state) => state.futureJourney.coexistence);
   const selectMoment = useExperienceStore((state) => state.selectCoexistenceMoment);
   const resolveConsent = useExperienceStore((state) => state.resolveCompanionConsent);
-  const setProvenance = useExperienceStore((state) => state.setCoexistenceProvenance);
   const sound = useExperienceStore((state) => state.sound);
   const motion = useExperienceStore((state) => state.motion);
   const [exchangeIndex, setExchangeIndex] = useState(0);
   const [live, setLive] = useState(false);
+  const [lensOpen, setLensOpen] = useState(false);
   const stagedReveal = useRef<HTMLUListElement>(null);
+  const consentBeat = useRef<HTMLFieldSetElement>(null);
   const { discover, enterYear } = useExperienceActions();
   const moment = coexistenceMoments[coexistence.activeMoment];
   const decision = coexistence.consent[coexistence.activeMoment];
@@ -245,6 +282,9 @@ function CoexistenceExperience() {
   const nextBeat = moment.exchange[exchangeIndex + 1];
   const exchangeComplete = !nextBeat;
   const revealed = exchangeIndex >= 3;
+  const beat: CoexistenceBeat = decision !== 'unasked'
+    ? 'settled'
+    : exchangeComplete ? 'consent' : revealed ? 'reveal' : 'exchange';
 
   const chooseMoment = (momentId: CoexistenceMomentId) => {
     selectMoment(momentId);
@@ -277,6 +317,13 @@ function CoexistenceExperience() {
     if (!next && typeof window !== 'undefined' && 'speechSynthesis' in window) window.speechSynthesis.cancel();
   };
 
+  const toggleLens = () => {
+    const next = !lensOpen;
+    setLensOpen(next);
+    playFutureCue(next ? 'signal' : 'presence', sound);
+    trackAnalyticsEvent('coexistence_lens_toggled', { open: next, moment: moment.id });
+  };
+
   // Live mode: Saito keeps the exchange moving on a natural clock. Any tap
   // interrupts, and consent is never advanced by the machine.
   useEffect(() => {
@@ -306,6 +353,13 @@ function CoexistenceExperience() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [revealed]);
 
+  // The consent question is a held beat: bring it on screen when the room dims for it.
+  useEffect(() => {
+    if (beat !== 'consent') return;
+    consentBeat.current?.scrollIntoView?.({ behavior: motion === 'reduced' ? 'auto' : 'smooth', block: 'nearest' });
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [beat]);
+
   const chooseConsent = (next: Exclude<CompanionConsent, 'unasked'>) => {
     resolveConsent(next);
     discover('human-gate', '2030');
@@ -314,12 +368,21 @@ function CoexistenceExperience() {
   };
 
   return (
-    <main className="future-native future-native--2030" data-future-native="2030" data-moment={moment.id}>
+    <main
+      className="future-native future-native--2030"
+      data-future-native="2030"
+      data-moment={moment.id}
+      data-beat={beat}
+      data-lens={lensOpen || undefined}
+    >
       <div className="coexistence-grain" aria-hidden="true"></div>
       <header className="future-masthead">
         <div><p>2030 · Co-Existence</p><h1>Morning, Together</h1><span>An intelligent home where Saito notices, speaks, acts, and stops in the room with you.</span></div>
         <div>
           <b>SAITO · LOCAL · PRESENT</b>
+          <button className="future-sound-control coexistence-lens-toggle" type="button" aria-pressed={lensOpen} onClick={toggleLens}>
+            <span aria-hidden="true">◫</span> Inspect Saito’s boundary
+          </button>
           <button className="future-sound-control coexistence-live-toggle" type="button" aria-pressed={live} onClick={toggleLive}>
             <span aria-hidden="true">{live ? '◉' : '○'}</span> Live {live ? 'on' : 'off'}
           </button>
@@ -340,7 +403,6 @@ function CoexistenceExperience() {
 
         <section className="coexistence-dialogue" aria-live="polite" aria-labelledby="coexistence-moment-title">
           <div className="coexistence-dialogue__time"><time>{moment.time}</time><span>{moment.place}</span></div>
-          <p className="future-kicker">Live encounter · Saito speaks in context</p>
           <h2 id="coexistence-moment-title">{moment.title}</h2>
 
           <p className="coexistence-seed" data-revealed={revealed || undefined}>
@@ -357,18 +419,11 @@ function CoexistenceExperience() {
             )}
           </p>
 
-          <div className="coexistence-live-status" data-phase={activeBeat.phase}>
-            <div><i aria-hidden="true"></i><span>Saito · observable activity</span><b>{agentTraceLabels[activeBeat.phase]}</b></div>
-            <p>{activeBeat.signal}</p>
-          </div>
-
-          <p className="coexistence-incubation">{moment.incubation.span} of quiet work · {moment.incubation.checks} checks · {moment.incubation.domains.join(' · ')}</p>
-
           <ol className="coexistence-exchange" aria-label={`Live conversation between Kevin and Saito at ${moment.time}`}>
-            {moment.exchange.slice(0, exchangeIndex + 1).map((beat, index) => (
-              <li key={`${beat.phase}-${index}`} data-speaker={beat.speaker} data-current={index === exchangeIndex}>
-                <span>{beat.speaker === 'saito' ? 'Saito' : 'Kevin'}</span>
-                <p>{beat.line}</p>
+            {moment.exchange.slice(0, exchangeIndex + 1).map((exchangeBeat, index) => (
+              <li key={`${exchangeBeat.phase}-${index}`} data-speaker={exchangeBeat.speaker} data-current={index === exchangeIndex}>
+                <span>{exchangeBeat.speaker === 'saito' ? 'Saito' : 'Kevin'}</span>
+                <p>{exchangeBeat.line}</p>
               </li>
             ))}
           </ol>
@@ -398,47 +453,17 @@ function CoexistenceExperience() {
 
           <div className="coexistence-ambient" aria-label="Ambient details">{moment.ambient}</div>
 
-          <AgentTrace key={moment.id} moment={moment} livePhase={activeBeat.phase} />
-
-          <details className="coexistence-authority">
-            <summary>
-              <span>Saito’s standing authority</span>
-              <b>5 tiers · the dial commits</b>
-            </summary>
-            <p>Every staged card exists because a tier allows it. Nothing below moves authority off Kevin.</p>
-            <ol aria-label="Standing delegation by domain">
-              {saitoAuthorityMap.map((tier) => (
-                <li key={tier.domains}>
-                  <span>{tier.domains}</span>
-                  <b>{tier.level}</b>
-                  <p>{tier.meaning}</p>
-                </li>
-              ))}
-            </ol>
-            <footer>Private incubations—family health, guests—never surface on shared glass.</footer>
-          </details>
-
           {exchangeComplete && (
-            <fieldset className="coexistence-consent">
+            <fieldset className="coexistence-consent" ref={consentBeat}>
               <legend>{moment.invitation}</legend>
               <button type="button" aria-pressed={decision === 'kept'} onClick={() => chooseConsent('kept')}>Keep it with me</button>
               <button type="button" aria-pressed={decision === 'refused'} onClick={() => chooseConsent('refused')}>Let it end here</button>
               {decision !== 'unasked' && <output>{decision === 'kept' ? 'Carried—with permission.' : 'Gone. The room remembers nothing.'}</output>}
             </fieldset>
           )}
-
-          <div className="coexistence-provenance">
-            <button type="button" aria-expanded={coexistence.provenanceOpen} onClick={() => setProvenance(!coexistence.provenanceOpen)}>
-              {coexistence.provenanceOpen ? 'Close infrastructure receipt' : 'Open infrastructure receipt'}
-            </button>
-            {coexistence.provenanceOpen && (
-              <aside>
-                <span>carried on TokenPak · TIP authority · PAK context</span>
-                <p>{moment.receipt}</p>
-              </aside>
-            )}
-          </div>
         </section>
+
+        {lensOpen && <BoundaryLens moment={moment} livePhase={activeBeat.phase} onClose={toggleLens} />}
 
         <button className="coexistence-forward" type="button" onClick={() => enterYear('2040')}>
           <span>Ten years pass</span>
@@ -451,13 +476,14 @@ function CoexistenceExperience() {
   );
 }
 
-function HologramPortrait({ onContinue, line, phase, memoryState, sourceOpen, certainty }: {
+function HologramPortrait({ onContinue, line, phase, memoryState, sourceOpen, certainty, consent }: {
   onContinue: () => void;
   line: string;
   phase: ConsciousnessPhase;
   memoryState: PermissionedMemoryState;
   sourceOpen: boolean;
   certainty: 'record' | 'pattern' | 'conjecture';
+  consent: CoexistenceState['consent'];
 }) {
   return (
     <button
@@ -471,15 +497,13 @@ function HologramPortrait({ onContinue, line, phase, memoryState, sourceOpen, ce
       aria-label={`Kevin hologram. Memory ${memoryState}. ${line}`}
     >
       <span className="consciousness-portrait__echo" aria-hidden="true">KEVIN</span>
-      <span className="consciousness-portrait__head" aria-hidden="true">
-        <i className="consciousness-portrait__hair"></i>
-        <i className="consciousness-portrait__brow"></i>
-        <i className="consciousness-portrait__eyes"></i>
-        <i className="consciousness-portrait__nose"></i>
-        <i className="consciousness-portrait__mouth"></i>
+      {/* The figure is literally made of permissioned memory: one band per 2030
+          moment. Refused moments render as deliberate blanks, not filled in. */}
+      <span className="consciousness-portrait__figure" aria-hidden="true">
+        {COEXISTENCE_MOMENT_IDS.map((id) => (
+          <i key={id} className={`consciousness-portrait__band consciousness-portrait__band--${id}`} data-state={consent[id]}></i>
+        ))}
       </span>
-      <span className="consciousness-portrait__neck" aria-hidden="true"></span>
-      <span className="consciousness-portrait__body" aria-hidden="true"></span>
       <span className="consciousness-portrait__scan" aria-hidden="true"></span>
       <span className="consciousness-portrait__trace" aria-hidden="true"><i></i><i></i><i></i></span>
       <span className="consciousness-portrait__memory">{memoryState === 'retained' ? 'PERMISSIONED MEMORY' : memoryState === 'withheld' ? 'DELIBERATE BLANK' : 'OBSERVATION ONLY'}</span>
@@ -538,6 +562,7 @@ function ConsciousnessExperience() {
   const line = getConsciousnessLine(cue, consciousness.behaviorPhase, memoryState);
   const phaseIndex = CONSCIOUSNESS_PHASES.indexOf(consciousness.behaviorPhase);
   const finished = consciousness.behaviorPhase === 'continue';
+  const unwitnessed = COEXISTENCE_MOMENT_IDS.every((id) => coexistence.consent[id] === 'unasked');
 
   const chooseCue = (cueId: ConsciousnessCueId) => {
     selectCue(cueId);
@@ -570,16 +595,35 @@ function ConsciousnessExperience() {
   };
 
   return (
-    <main className="future-native future-native--2040" data-future-native="2040" data-phase={consciousness.behaviorPhase} data-cue={cue.id} data-memory={memoryState}>
+    <main
+      className="future-native future-native--2040"
+      data-future-native="2040"
+      data-phase={consciousness.behaviorPhase}
+      data-cue={cue.id}
+      data-memory={memoryState}
+      data-retention={consciousness.encounterRetention}
+    >
       <div className="consciousness-smoke" aria-hidden="true"><i></i><i></i><i></i></div>
       <header className="future-masthead">
         <div><p>2040 · Consciousness</p><h1>Morning, After</h1><span>In this imagined 2040, a Kevin-shaped intelligence remembers, reasons, acts—and knows when not to.</span></div>
-        <div><b>{coexistence.keptMoments.length}/6 MEMORIES PERMITTED</b><SoundControl /></div>
+        <div>
+          <div className="consciousness-constellation" role="img" aria-label={`${coexistence.keptMoments.length} of 6 memories permitted`}>
+            {COEXISTENCE_MOMENT_IDS.map((id) => <i key={id} data-state={coexistence.consent[id]}></i>)}
+          </div>
+          <SoundControl />
+        </div>
       </header>
 
       <div className="consciousness-stage">
+        {unwitnessed && (
+          <aside className="consciousness-unwitnessed">
+            <p>He can only remember what you allowed. You allowed nothing—yet.</p>
+            <button type="button" onClick={() => enterYear('2030')}>Go live the morning first</button>
+          </aside>
+        )}
+
         <ConsciousnessRoom selectedCue={cue.id} coexistence={coexistence} onSelect={chooseCue} />
-        <HologramPortrait onContinue={continueBehavior} line={line} phase={consciousness.behaviorPhase} memoryState={memoryState} sourceOpen={consciousness.sourceTraceOpen} certainty={cue.certainty} />
+        <HologramPortrait onContinue={continueBehavior} line={line} phase={consciousness.behaviorPhase} memoryState={memoryState} sourceOpen={consciousness.sourceTraceOpen} certainty={cue.certainty} consent={coexistence.consent} />
 
         <section className="consciousness-encounter" aria-live="polite" aria-labelledby="consciousness-cue-title">
           <ol aria-label="Kevin’s behavior loop">
@@ -622,7 +666,7 @@ function ConsciousnessExperience() {
           {CONSCIOUSNESS_CUE_IDS.map((id) => <button key={id} type="button" aria-pressed={cue.id === id} onClick={() => chooseCue(id)}><span>{consciousnessCues[id].certainty} · {getPermissionedMemoryState(coexistence, id)}</span>{consciousnessCues[id].label}</button>)}
         </nav>
 
-        <div className="consciousness-exits"><button type="button" onClick={() => enterYear('2030')}>Return to the living morning</button><Link href="/work/">What Kevin made</Link><Link href="/contact/">Reach the living Kevin</Link></div>
+        <div className="consciousness-exits"><button type="button" onClick={() => enterYear('2030')}>Return to the living morning</button><Link href="/work/">What Kevin made</Link><Link className="consciousness-exits__reach" href="/contact/">Reach the living Kevin</Link></div>
       </div>
 
       <footer className="future-disclosure"><span>Consciousness, imagined</span><p>This is authored design fiction: a reproduction of Kevin’s patterns, voice, memory boundaries, and agency—not a claim that consciousness can be transferred.</p></footer>
