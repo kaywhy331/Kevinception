@@ -1,6 +1,6 @@
 {
-  "generatedAt": "2026-08-16T21:56:48.021Z",
-  "browser": "/home/trix/.cache/ms-playwright/chromium-1234/chrome-linux64/chrome",
+  "generatedAt": "2026-08-26T23:58:04.116Z",
+  "browser": "/tmp/claude-1000/-home-cali-home-cali-project-Kevinception/6764e3d9-19bd-4d5f-b5c5-15bd41c52fa5/scratchpad/chrome/chrome/linux-152.0.7977.64/chrome-linux64/chrome",
   "base": "http://127.0.0.1:4321",
   "assertions": [
     {
@@ -81,12 +81,12 @@
     {
       "name": "The office clock projects the current month and day into 2010",
       "passed": true,
-      "detail": "8/16/2010"
+      "detail": "8/26/2010"
     },
     {
       "name": "Every seeded operational and culture date is in 2010 and not after the office date",
       "passed": true,
-      "detail": "8/16/2010 | 8/16/2010 | 8/15/2010 | 8/15/2010 | 8/15/2010 | 8/14/2010 | 8/13/2010 | 8/10/2010 | 8/16/2010 | 8/6/2010 | 8/14/2010 | 8/4/2010 | 8/16/2010 | 8/2/2010 | 8/16/2010 | 7/30/2010 | 8/12/2010 | 7/27/2010 | 8/8/2010 | 8/16/2010 | 8/14/2010 | 8/9/2010 | 8/2/2010 | 7/19/2010"
+      "detail": "8/26/2010 | 8/26/2010 | 8/25/2010 | 8/25/2010 | 8/25/2010 | 8/24/2010 | 8/23/2010 | 8/20/2010 | 8/26/2010 | 8/16/2010 | 8/24/2010 | 8/14/2010 | 8/26/2010 | 8/12/2010 | 8/26/2010 | 8/9/2010 | 8/22/2010 | 8/6/2010 | 8/18/2010 | 8/26/2010 | 8/24/2010 | 8/19/2010 | 8/12/2010 | 7/29/2010"
     },
     {
       "name": "Guest comments persist under the time-traveler identity",
@@ -414,7 +414,17 @@
       "detail": ""
     },
     {
+      "name": "The audit stays behind the boundary lens until asked for",
+      "passed": true,
+      "detail": ""
+    },
+    {
       "name": "TokenPak, TIP, and PAK remain optional provenance rather than the 2030 hero",
+      "passed": true,
+      "detail": ""
+    },
+    {
+      "name": "The boundary lens carries the standing-authority map",
       "passed": true,
       "detail": ""
     },
@@ -425,6 +435,11 @@
     },
     {
       "name": "Consciousness reports the one memory permitted by the living day",
+      "passed": true,
+      "detail": ""
+    },
+    {
+      "name": "The hologram is built from the living day’s consent bands",
       "passed": true,
       "detail": ""
     },
