@@ -394,12 +394,19 @@ try {
   await clickPageButton('Window desk');
   await finishCoexistenceExchange();
   await clickPageButton('Let it end here');
-  await clickPageButton('Open infrastructure receipt');
-  assert('TokenPak, TIP, and PAK remain optional provenance rather than the 2030 hero', await page.$eval('.coexistence-provenance aside', (node) => node.textContent.includes('TokenPak') && node.textContent.includes('TIP authority') && node.textContent.includes('PAK context')));
+  assert('The audit stays behind the boundary lens until asked for', await page.$('.coexistence-lens') === null);
+  await clickPageButton('Inspect Saito');
+  await page.waitForSelector('.coexistence-lens', { timeout: 5000 });
+  assert('TokenPak, TIP, and PAK remain optional provenance rather than the 2030 hero', await page.$eval('.coexistence-lens .coexistence-provenance', (node) => node.textContent.includes('TokenPak') && node.textContent.includes('TIP authority') && node.textContent.includes('PAK context')));
+  assert('The boundary lens carries the standing-authority map', await page.$eval('.coexistence-lens', (node) => node.textContent.includes('Saito’s standing authority') && node.textContent.includes('spend is always the dial')));
+  await clickPageButton('Close the boundary');
   await clickPageButton('Enter Morning, After');
   await page.waitForSelector('.future-native--2040', { timeout: 30000 });
   assert('Saito remains exclusive to the 2030 experience', await page.$eval('.future-native--2040', (node) => !/Saito/i.test(node.textContent ?? '')));
-  assert('Consciousness reports the one memory permitted by the living day', await page.$eval('.future-masthead', (node) => node.textContent.includes('1/6 MEMORIES PERMITTED')));
+  assert('Consciousness reports the one memory permitted by the living day', await page.$eval('.future-masthead .consciousness-constellation', (node) => node.getAttribute('aria-label') === '1 of 6 memories permitted'));
+  assert('The hologram is built from the living day’s consent bands', await page.$$eval('.consciousness-portrait__band', (bands) => bands.length === 6
+    && bands.filter((band) => band.dataset.state === 'kept').length === 1
+    && bands.filter((band) => band.dataset.state === 'refused').length === 2));
   await clickPageButton('An unfinished sentence');
   await clickPageButton('Let Kevin recall');
   await page.waitForFunction(() => document.querySelector('.consciousness-encounter blockquote')?.textContent.includes('deliberate blank'));
