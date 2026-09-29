@@ -25,15 +25,15 @@ await page.setViewport({ width: 1440, height: 900, deviceScaleFactor: 1 });
 await visit('/', artifactPath('previews', 'v7-threshold.png'));
 await visit('/experience/', artifactPath('previews', 'v7-timeline.png'), 'canvas');
 for (const year of ['1990', '2000', '2010', '2020', '2030', '2040']) {
-  await visit(`/experience/?year=${year}`, artifactPath('previews', `v7-${year}-environment.png`), '.environment-panel');
+  await visit(`/experience/${year}/`, artifactPath('previews', `v7-${year}-environment.png`), '.environment-panel');
 }
-await visit('/experience/2010/', null, '.interface-mode.is-visible');
-await visit('/experience/2030/', null, '.interface-mode.is-visible');
+await visit('/experience/2010/?view=interface', null, '.interface-mode.is-visible');
+await visit('/experience/2030/?view=interface', null, '.interface-mode.is-visible');
 await visit('/about/', artifactPath('previews', 'v7-about.png'));
 await visit('/work/kevinception/', artifactPath('previews', 'v7-case-study.png'));
 
 await page.setViewport({ width: 390, height: 844, deviceScaleFactor: 1 });
-await visit('/experience/?year=2020', artifactPath('previews', 'v7-2020-mobile.png'), '.environment-panel');
+await visit('/experience/2020/', artifactPath('previews', 'v7-2020-mobile.png'), '.environment-panel');
 report.mobileOverflow = await page.evaluate(() => document.documentElement.scrollWidth - document.documentElement.clientWidth);
 
 await browser.close();

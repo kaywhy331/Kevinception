@@ -69,6 +69,8 @@
 .interface-mode {
   display: grid;
   grid-template-rows: 2.35rem minmax(0,1fr);
+  /* One column clamped to the viewport: wide chapter content must not widen the layer. */
+  grid-template-columns: minmax(0,1fr);
   background: #020305;
   backdrop-filter: none;
 }

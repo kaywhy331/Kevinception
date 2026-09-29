@@ -98,7 +98,7 @@ try {
   await page.setViewport({ width: 1440, height: 1000, deviceScaleFactor: 1 });
   await open('/', 'body');
   await page.evaluate(() => localStorage.removeItem('kevinception-v7'));
-  await open('/experience/?year=2030&view=interface', wing2030);
+  await open('/experience/2030/?view=interface', wing2030);
   assert('Desktop 2030 uses a native interface with no future iframe', await page.$$eval('iframe', (frames) => frames.every((frame) => !/\/legacy\/experience\/(2030|2040)\//.test(frame.src))));
   assert('2030 is a labelled region framed as imagined, not a nested main landmark', await page.$eval(wing2030, (node) => (
     node.tagName === 'SECTION'
@@ -183,7 +183,7 @@ try {
   assert('Desktop 2040 and its closing panel stay within the viewport', consciousnessGeometry.outerOverflow <= 1 && consciousnessGeometry.left >= 0 && consciousnessGeometry.right <= consciousnessGeometry.viewportWidth + 1 && consciousnessStageGeometry.componentOverflow <= 1, JSON.stringify({ root: consciousnessGeometry, stage: consciousnessStageGeometry }));
 
   await page.setViewport({ width: 390, height: 844, deviceScaleFactor: 1 });
-  await open('/experience/?year=2030&view=interface', wing2030);
+  await open('/experience/2030/?view=interface', wing2030);
   const mobileCoexistence = await geometry(wing2030);
   const mobileCoexistenceStage = await geometry(`${wing2030} ${part('stage')}`);
   assert('Mobile 2030 has no horizontal overflow', mobileCoexistence.outerOverflow <= 1 && mobileCoexistence.left >= 0 && mobileCoexistence.right <= mobileCoexistence.viewportWidth + 1 && mobileCoexistenceStage.componentOverflow <= 1 && mobileCoexistenceStage.left >= 0 && mobileCoexistenceStage.right <= mobileCoexistenceStage.viewportWidth + 1, JSON.stringify({ root: mobileCoexistence, stage: mobileCoexistenceStage }));
@@ -210,7 +210,7 @@ try {
   assert('Mobile 390px: the lens is fully visible after the stage has scrolled', scrolled > 0 && mobileLens.modal && mobileLens.hitInside && mobileLens.top >= 0 && mobileLens.left >= 0 && mobileLens.right <= mobileLens.viewportWidth && mobileLens.bottom <= mobileLens.viewportHeight, JSON.stringify({ scrolled, ...mobileLens }));
   await assertEscapeClosesOnlyTheLens('Mobile');
 
-  await open('/experience/?year=2040&view=interface', wing2040);
+  await open('/experience/2040/?view=interface', wing2040);
   const mobileConsciousness = await geometry(wing2040);
   const mobileConsciousnessStage = await geometry(`${wing2040} ${part('stage')}`);
   assert('Mobile 2040 has no horizontal overflow', mobileConsciousness.outerOverflow <= 1 && mobileConsciousness.left >= 0 && mobileConsciousness.right <= mobileConsciousness.viewportWidth + 1 && mobileConsciousnessStage.componentOverflow <= 1 && mobileConsciousnessStage.left >= 0 && mobileConsciousnessStage.right <= mobileConsciousnessStage.viewportWidth + 1, JSON.stringify({ root: mobileConsciousness, stage: mobileConsciousnessStage }));
@@ -223,7 +223,7 @@ try {
   }));
   assert('Mobile 2040 stacks the closing actions full width with 44px targets', closingTargets.actions.length >= 4 && closingTargets.actions.every((action) => action.height >= 44 && action.width >= Math.min(closingTargets.width * .9, 280) - 1), JSON.stringify(closingTargets));
 
-  await open('/experience/?year=2040&view=text', '.text-mode section[aria-labelledby="future-text-consciousness-title"]');
+  await open('/experience/2040/?view=text', '.text-mode section[aria-labelledby="future-text-consciousness-title"]');
   const mobileText = await geometry('.text-mode');
   assert('Mobile future text mode has no horizontal overflow', mobileText.outerOverflow <= 1 && mobileText.componentOverflow <= 1, JSON.stringify(mobileText));
   assert('Text mode preserves the earned memory line and the closing payoff', await page.$eval('section[aria-labelledby="future-text-consciousness-title"]', (node, closing) => node.textContent.includes('You kept 2 of 6 moments') && Boolean(node.querySelector(closing)?.textContent.includes('The interfaces changed.')), part('closing')));

@@ -96,7 +96,7 @@ try {
     localStorage.removeItem('kevinception-v7');
   });
 
-  await page.goto(`${base}/experience/?year=2010&module=dashboard`, { waitUntil: 'domcontentloaded', timeout: 45000 });
+  await page.goto(`${base}/experience/2010/?view=interface&module=dashboard`, { waitUntil: 'domcontentloaded', timeout: 45000 });
   let commerce = await commerceFrame();
   await waitForModule(commerce, 'dashboard');
 
@@ -179,7 +179,7 @@ try {
   }
 
   // Start a fresh history pair so Back/Forward exercise adjacent modules.
-  await page.goto(`${base}/experience/?year=2010&module=dashboard`, { waitUntil: 'domcontentloaded', timeout: 45000 });
+  await page.goto(`${base}/experience/2010/?view=interface&module=dashboard`, { waitUntil: 'domcontentloaded', timeout: 45000 });
   commerce = await commerceFrame();
   await waitForModule(commerce, 'dashboard');
   await openModule(commerce, 'orders');
@@ -334,7 +334,7 @@ try {
   page = await browser.newPage();
   observePage(page);
   await page.setViewport({ width: 1440, height: 1000, deviceScaleFactor: 1 });
-  await page.goto(`${base}/experience/?year=2030&view=interface`, { waitUntil: 'domcontentloaded', timeout: 45000 });
+  await page.goto(`${base}/experience/2030/?view=interface`, { waitUntil: 'domcontentloaded', timeout: 45000 });
   await page.waitForSelector('.interface-mode.is-visible .future-native--2030', { timeout: 30000 });
   assert('The future interfaces are native and mount no 2030/2040 iframe', await page.$$eval('iframe', (frames) => frames.every((frame) => !/\/legacy\/experience\/(2030|2040)\//.test(frame.src))));
   // The 2030/2040 beat flow, boundary lens and closing payoff are owned by

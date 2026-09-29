@@ -6,7 +6,7 @@ try {
   for (const year of ['2030', '2040']) {
     const page = await browser.newPage();
     await page.setViewport({ width: 2560, height: 1080, deviceScaleFactor: 1 });
-    const response = await page.goto(`${base}/experience/?year=${year}`, { waitUntil: 'networkidle2', timeout: 60000 });
+    const response = await page.goto(`${base}/experience/${year}/`, { waitUntil: 'networkidle2', timeout: 60000 });
     if (!response || response.status() >= 400) throw new Error(`${year} returned ${response?.status()}`);
     await page.waitForSelector('.environment-panel', { timeout: 30000 });
     await page.waitForSelector('.experience-canvas', { timeout: 30000 });

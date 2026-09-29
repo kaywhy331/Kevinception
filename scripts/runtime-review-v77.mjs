@@ -55,7 +55,7 @@ async function closeNativeDialog(frame, name) {
 }
 
 try {
-  await visit('/experience/?year=2020&view=interface', '2020-interface-desktop.png', { width: 1920, height: 1080, deviceScaleFactor: 1 });
+  await visit('/experience/2020/?view=interface', '2020-interface-desktop.png', { width: 1920, height: 1080, deviceScaleFactor: 1 });
   await page.waitForSelector('.interface-mode.is-visible', { timeout: 30000 });
   const outerControls = await page.$$eval('.interface-mode__bar nav button', (buttons) => buttons.map((button) => button.textContent?.trim()));
   assert('The outer interface frame exposes only Step back and Chapters', JSON.stringify(outerControls) === JSON.stringify(['Step back', 'Chapters']), JSON.stringify(outerControls));
@@ -148,17 +148,17 @@ try {
   assert('Custom interaction feedback stays within the device column when present', feedbackBounds.contained, `${feedbackBounds.feedbackCount} visible feedback items; native share may use browser UI`);
   await page.screenshot({ path: path.join(outputDir, '2020-interface-interactions.png'), fullPage: false });
 
-  await visit('/experience/?year=2030', '2030-straight-desktop.png', { width: 1920, height: 1080, deviceScaleFactor: 1 });
+  await visit('/experience/2030/', '2030-straight-desktop.png', { width: 1920, height: 1080, deviceScaleFactor: 1 });
   await page.waitForSelector('.environment-panel', { timeout: 30000 });
-  await visit('/experience/?year=2040', '2040-straight-desktop.png', { width: 1920, height: 1080, deviceScaleFactor: 1 });
-  await page.waitForSelector('.environment-panel', { timeout: 30000 });
-
-  await visit('/experience/?year=2030', '2030-straight-ultrawide.png', { width: 2560, height: 1080, deviceScaleFactor: 1 });
-  await page.waitForSelector('.environment-panel', { timeout: 30000 });
-  await visit('/experience/?year=2040', '2040-straight-ultrawide.png', { width: 2560, height: 1080, deviceScaleFactor: 1 });
+  await visit('/experience/2040/', '2040-straight-desktop.png', { width: 1920, height: 1080, deviceScaleFactor: 1 });
   await page.waitForSelector('.environment-panel', { timeout: 30000 });
 
-  await visit('/experience/?year=2020&view=interface', '2020-interface-mobile.png', { width: 390, height: 844, deviceScaleFactor: 1 });
+  await visit('/experience/2030/', '2030-straight-ultrawide.png', { width: 2560, height: 1080, deviceScaleFactor: 1 });
+  await page.waitForSelector('.environment-panel', { timeout: 30000 });
+  await visit('/experience/2040/', '2040-straight-ultrawide.png', { width: 2560, height: 1080, deviceScaleFactor: 1 });
+  await page.waitForSelector('.environment-panel', { timeout: 30000 });
+
+  await visit('/experience/2020/?view=interface', '2020-interface-mobile.png', { width: 390, height: 844, deviceScaleFactor: 1 });
   await page.waitForSelector('.interface-mode.is-visible', { timeout: 30000 });
   const mobileOverflow = await page.evaluate(() => document.documentElement.scrollWidth - document.documentElement.clientWidth);
   report.mobileOverflow = mobileOverflow;
