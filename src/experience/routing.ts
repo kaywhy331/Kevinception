@@ -1,5 +1,5 @@
-import type { YearId } from '@/content/data';
-import { getYearFromPath, YEAR_ORDER } from './config';
+import { site, type YearId } from '@/content/data';
+import { eraConfigs, getYearFromPath, YEAR_ORDER } from './config';
 
 /**
  * Deep-link contract for the immersive journey.
@@ -82,4 +82,23 @@ export function experienceHref(year: YearId | null, view: ExperienceView = 'envi
 
 export function currentHref() {
   return `${window.location.pathname}${window.location.search}`;
+}
+
+function commerceModuleLabel(module: string | null) {
+  if (module === 'home') return 'StealStreet Home';
+  if (!module || module === 'dashboard') return 'Operations Dashboard';
+  if (module === 'settings') return 'Settings / Administration';
+  return module.split('-').map((word) => word.charAt(0).toUpperCase() + word.slice(1)).join(' ');
+}
+
+/**
+ * The document title for a journey location. Chapter titles match the static
+ * route metadata; the 2010 interface prefixes the active StealStreet module,
+ * which changes without a route change.
+ */
+export function experienceDocumentTitle(year: YearId | null, view: ExperienceView, module: string | null = null) {
+  if (!year || view === 'timeline') return `Chapters | ${site.name}`;
+  const config = eraConfigs[year];
+  const chapter = `${year} ${config.chapterName} — ${config.experienceName} | ${site.name}`;
+  return year === '2010' && view === 'interface' ? `${commerceModuleLabel(module)} — ${chapter}` : chapter;
 }

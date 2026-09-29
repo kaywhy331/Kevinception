@@ -4,7 +4,8 @@ import { ExperienceActionsProvider } from '@/experience/ExperienceContext';
 import { ExperienceOverlay } from '@/experience/ExperienceOverlay';
 import { ExperienceShell, timelineInputAvailable } from '@/experience/ExperienceShell';
 import { overviewPose, responsiveVerticalFov } from '@/experience/CameraRig';
-import { experienceHref, parseExperienceLocation } from '@/experience/routing';
+import { experienceDocumentTitle, experienceHref, parseExperienceLocation } from '@/experience/routing';
+import { eraConfigs } from '@/experience/config';
 import { createInitialFutureJourney } from '@/experience/future/futureJourney';
 import { useExperienceStore } from '@/experience/store';
 
@@ -83,6 +84,16 @@ describe('experience deep links', () => {
     expect(parseExperienceLocation('/experience/2010/', '?view=interface&module=administration')).toMatchObject({ year: '2010', view: 'interface', module: 'settings', canonical: false });
     expect(parseExperienceLocation('/experience/', '?year=2000&view=interface')).toMatchObject({ year: '2000', view: 'interface', canonical: false });
     expect(parseExperienceLocation('/experience/', '?year=nope')).toMatchObject({ year: null, view: 'timeline', canonical: false });
+  });
+
+  it('titles the tab after the chapter, and after the active StealStreet module in 2010', () => {
+    const chapter2010 = `2010 ${eraConfigs['2010'].chapterName} — ${eraConfigs['2010'].experienceName} | Kevinception`;
+    expect(experienceDocumentTitle(null, 'timeline')).toBe('Chapters | Kevinception');
+    expect(experienceDocumentTitle('2010', 'environment')).toBe(chapter2010);
+    expect(experienceDocumentTitle('2010', 'interface', 'dashboard')).toBe(`Operations Dashboard — ${chapter2010}`);
+    expect(experienceDocumentTitle('2010', 'interface', 'purchase-orders')).toBe(`Purchase Orders — ${chapter2010}`);
+    expect(experienceDocumentTitle('2010', 'interface', 'settings')).toBe(`Settings / Administration — ${chapter2010}`);
+    expect(experienceDocumentTitle('2030', 'interface', 'dashboard')).not.toContain('Dashboard');
   });
 });
 

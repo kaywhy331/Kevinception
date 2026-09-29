@@ -107,7 +107,7 @@ try {
   assert('The dashboard presents the full eight-stage operating flow', await commerce.$$eval('.kz-flow button', (nodes) => nodes.length === 8 && nodes[0].textContent.includes('Vendors') && nodes[7].textContent.includes('Customer')));
   assert('The dashboard presents a structured exception queue and verified scale ledger', await commerce.$eval('.kz-dashboard', (node) => Boolean(node.querySelector('.kz-exception-table') && node.querySelector('.kz-scale-ledger'))));
   assert('The embedded dashboard removes duplicate era chrome', await commerce.evaluate(() => getComputedStyle(document.querySelector('.kz-era-bar')).display === 'none'));
-  assert('The canonical dashboard URL and document title identify the active module', new URL(page.url()).searchParams.get('module') === 'dashboard' && (await page.title()).startsWith('Operations Dashboard — 2010 StealStreet Commerce OS'));
+  assert('The canonical dashboard URL and document title identify the active module', new URL(page.url()).searchParams.get('module') === 'dashboard' && (await page.title()).startsWith('Operations Dashboard — 2010 ') && (await page.title()).includes('StealStreet Commerce OS'));
   const desktopGeometry = await commerce.evaluate(() => {
     const flow = document.querySelector('.kz-flow');
     const dashboard = document.querySelector('.kz-dashboard');

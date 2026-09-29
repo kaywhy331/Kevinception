@@ -15,7 +15,7 @@ import { ExperienceOverlay } from './ExperienceOverlay';
 import { CanvasErrorBoundary } from './CanvasErrorBoundary';
 import { playFutureCue, playInterfaceTone } from './audio';
 import { getWebGLRendererName, resolveAdaptivePreferences } from './performanceProfile';
-import { currentHref, experienceHref, normalizeCommerceModule, parseExperienceLocation, type ExperienceView } from './routing';
+import { currentHref, experienceDocumentTitle, experienceHref, normalizeCommerceModule, parseExperienceLocation, type ExperienceView } from './routing';
 
 const ExperienceCanvas = dynamic(() => import('./ExperienceCanvas'), {
   ssr: false,
@@ -47,6 +47,12 @@ export function timelineInputAvailable() {
 
 function hasModifier(event: KeyboardEvent) {
   return event.metaKey || event.ctrlKey || event.altKey;
+}
+
+/** Same-path URL changes (view, 2010 module) never re-run route metadata, so retitle here. */
+function syncDocumentTitle() {
+  const { year, view, module } = parseExperienceLocation(window.location.pathname, window.location.search);
+  document.title = experienceDocumentTitle(year, view, module);
 }
 
 export function ExperienceShell({ children }: { children: React.ReactNode }) {
@@ -87,6 +93,7 @@ export function ExperienceShell({ children }: { children: React.ReactNode }) {
     const samePath = new URL(href, window.location.origin).pathname === window.location.pathname;
     if (samePath) {
       window.history[mode === 'replace' ? 'replaceState' : 'pushState'](window.history.state, '', href);
+      syncDocumentTitle();
       return;
     }
     if (mode === 'replace') router.replace(href, { scroll: false });
@@ -174,6 +181,7 @@ export function ExperienceShell({ children }: { children: React.ReactNode }) {
     const canonicalHref = experienceHref(year, view, location.module);
     if (!location.canonical || canonicalHref !== href) commitUrl(canonicalHref, 'replace');
     if (year === '2010' && view === 'interface') window.setTimeout(() => syncLegacyModule(location.module), 60);
+    syncDocumentTitle();
   }, [changeYear, commitUrl, settleView, syncLegacyModule]);
 
   const syncFromLocationRef = useRef(syncFromLocation);
@@ -363,6 +371,7 @@ export function ExperienceShell({ children }: { children: React.ReactNode }) {
       if (event.data.type === 'kevinception:legacy-ready') {
         const location = parseExperienceLocation(window.location.pathname, window.location.search);
         if (location.year === '2010') syncLegacyModule(location.module);
+        syncDocumentTitle();
         return;
       }
       if (event.data.type === 'kevinception:module') {
@@ -374,6 +383,7 @@ export function ExperienceShell({ children }: { children: React.ReactNode }) {
           window.history[replace ? 'replaceState' : 'pushState'](window.history.state, '', href);
           if (layerEntry.current) layerEntry.current = replace ? { ...layerEntry.current, href } : { ...layerEntry.current, clean: false };
         }
+        syncDocumentTitle();
         syncLegacyModule(module);
         return;
       }

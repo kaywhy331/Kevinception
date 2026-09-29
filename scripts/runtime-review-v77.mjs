@@ -57,8 +57,9 @@ async function closeNativeDialog(frame, name) {
 try {
   await visit('/experience/2020/?view=interface', '2020-interface-desktop.png', { width: 1920, height: 1080, deviceScaleFactor: 1 });
   await page.waitForSelector('.interface-mode.is-visible', { timeout: 30000 });
-  const outerControls = await page.$$eval('.interface-mode__bar nav button', (buttons) => buttons.map((button) => button.textContent?.trim()));
-  assert('The outer interface frame exposes only Step back and Chapters', JSON.stringify(outerControls) === JSON.stringify(['Step back', 'Chapters']), JSON.stringify(outerControls));
+  const outerControls = await page.$$eval('.interface-mode__bar > button, .interface-mode__bar nav button', (buttons) => buttons.map((button) => button.getAttribute('aria-label') ?? button.textContent?.trim()));
+  const expectedControls = ['Back to the 2020 room', 'About chapter 4, Creation: 2020 KevTok', 'Previous chapter: 2010 Commerce', 'Next chapter: 2030 Co-Existence'];
+  assert('The outer interface frame offers only the room, the chapter, and previous/next chapter', JSON.stringify(outerControls) === JSON.stringify(expectedControls), JSON.stringify(outerControls));
   const frameHeight = await page.$eval('.interface-mode__bar', (node) => node.getBoundingClientRect().height);
   assert('The outer interface frame remains slim', frameHeight <= 48, `${frameHeight}px`);
 
