@@ -4,18 +4,31 @@ import { useMemo, useRef, useState } from 'react';
 import { RoundedBox } from '@react-three/drei';
 import { useFrame } from '@react-three/fiber';
 import * as THREE from 'three';
+import { timelineContent } from '@/content/data';
 import { eraConfigs } from '../config';
 import { useExperienceActions } from '../ExperienceContext';
-import { DeviceScreen, Dust, Hoverable } from './SceneUtils';
+import { useExperienceStore } from '../store';
+import { DeviceScreen, Dust, Hoverable, useScreenTexture } from './SceneUtils';
 import { Cable, PictureFrame, RoomShell, Rug } from './EnvironmentPrimitives';
-import { EraScreenPortal } from './EraScreenPortal';
+import { NextEraWindow } from './EraScreenPortal';
 import { MEDIA_SURFACE_Y, MediaConsole } from './SceneLayout';
 
 const channels = [2, 3, 4, 5, 7, 9, 13];
+const broadcasts = new Map<number, { name: string; kicker: string }>(timelineContent['1990'].channels.map((item) => [item.number, { name: item.name, kicker: item.kicker }]));
 
-export function Year1990Scene({ active }: { active: boolean; timeline: boolean }) {
+/** What the tube shows on each channel: the broadcast lineup, or the console on Channel 3. */
+function channelProgram(channel: number, consoleOn: boolean) {
+  if (channel === 3) return consoleOn
+    ? { kicker: 'CONSOLE INPUT', name: 'The Circuit of Time', footer: 'PRESS START' }
+    : { kicker: 'CONSOLE INPUT', name: 'No cartridge signal', footer: 'POWER THE CONSOLE' };
+  const broadcast = broadcasts.get(channel);
+  return broadcast ? { kicker: broadcast.kicker, name: broadcast.name, footer: '' } : { kicker: 'NO SIGNAL', name: '· · ·', footer: '' };
+}
+
+export function Year1990Scene({ active }: { active: boolean }) {
   const config = eraConfigs['1990'];
   const { enterYear, discover } = useExperienceActions();
+  const signalFound = useExperienceStore((state) => state.artifacts['signal-fragment'].discoveredYears.includes('1990'));
   const [tvOn, setTvOn] = useState(true);
   const [consoleOn, setConsoleOn] = useState(false);
   const [channelIndex, setChannelIndex] = useState(0);
@@ -32,6 +45,14 @@ export function Year1990Scene({ active }: { active: boolean; timeline: boolean }
     return ['#3a526d', '#18344f', '#5a4735', '#26433d'][channelIndex % 4];
   }, [tvOn, consoleOn, channel, channelIndex]);
 
+  const program = channelProgram(channel, consoleOn);
+  const screenTexture = useScreenTexture([
+    { text: `CH ${String(channel).padStart(2, '0')} · ${program.kicker}`, size: 24, color: '#f7f0c8' },
+    { text: program.name, size: channel === 13 ? 30 : 38, color: channel === 3 && consoleOn ? '#9dffb0' : '#ffffff' },
+    ...(program.footer ? [{ text: program.footer, size: 22, color: '#ffd75a' }] : [])
+  ], { background: screenColor, scanlines: true });
+  const channelTexture = useScreenTexture([{ text: `CH ${String(channel).padStart(2, '0')}`, size: 64, color: '#1b1f16' }], { width: 256, height: 128, background: '#e9f0da' });
+
   const toggleConsole = () => {
     setConsoleOn((value) => !value);
     setTvOn(true);
@@ -46,7 +67,7 @@ export function Year1990Scene({ active }: { active: boolean; timeline: boolean }
       <Dust center={[0, 2.5, 0]} spread={[9, 5.5, 7]} color="#ffdf93" active={active} count={active ? 62 : 14} />
       <MediaConsole position={[0, 0, 0.2]} size={[7.5, 2.45]} topColor="#5f3e29" bodyColor="#352416" />
       <PictureFrame position={[-3.7, 3.75, -3.36]} size={[1.5, 1.95]} frameColor="#2c1b11" imageColor="#7e6a4b" accent="#ffca6c" />
-      <PictureFrame position={[3.3, 4.05, -3.36]} size={[2.1, 1.25]} frameColor="#241b16" imageColor="#40566f" accent="#6cb6ff" />
+      <NextEraWindow fromYear="1990" position={[3.3, 4.05, -3.3]} size={[1.9, 1.08]} active={active} frameColor="#241b16" />
 
       <group position={[-4.05, 0, -1.25]}>
         <mesh position={[0, 1.3, 0]} castShadow><cylinderGeometry args={[0.08, 0.1, 2.55, 14]} /><meshStandardMaterial color="#49382a" roughness={0.72} /></mesh>
@@ -66,14 +87,13 @@ export function Year1990Scene({ active }: { active: boolean; timeline: boolean }
         <Hoverable label="Enter KevinVision" onClick={() => enterYear('1990')}>
           <group position={[-0.42, 0.12, 1.04]}>
             <DeviceScreen size={[3.88, 2.5]} color={screenColor} emissive={tvOn ? config.accent : '#000000'} active={active && tvOn} radius={0.27} />
-            {tvOn && <mesh position={[0, 0, 0.105]}><planeGeometry args={[3.62, 2.26]} /><meshBasicMaterial color={screenColor} transparent opacity={channel === 13 ? 0.46 : 0.25} /></mesh>}
-            <EraScreenPortal fromYear="1990" size={[3.62, 2.26]} position={[0, 0, 0.12]} active={active} enabled={tvOn && !consoleOn} />
-            {tvOn && <group position={[-1.5, 0.96, 0.14]}><mesh><boxGeometry args={[0.4, 0.23, 0.04]} /><meshStandardMaterial color="#0d1114" transparent opacity={0.72} /></mesh><mesh position={[0, 0, 0.025]}><planeGeometry args={[0.31, 0.14]} /><meshBasicMaterial color="#e9f0da" /></mesh></group>}
+            {tvOn && screenTexture && <mesh position={[0, 0, 0.105]}><planeGeometry args={[3.62, 2.26]} /><meshBasicMaterial map={screenTexture} transparent opacity={channel === 13 ? 0.7 : 0.94} toneMapped={false} /></mesh>}
+            {tvOn && <group position={[-1.5, 0.96, 0.14]}><mesh><boxGeometry args={[0.4, 0.23, 0.04]} /><meshStandardMaterial color="#0d1114" transparent opacity={0.72} /></mesh><mesh position={[0, 0, 0.025]}><planeGeometry args={[0.31, 0.14]} /><meshBasicMaterial map={channelTexture ?? undefined} color={channelTexture ? '#ffffff' : '#e9f0da'} /></mesh></group>}
           </group>
         </Hoverable>
         <group position={[1.95, -0.1, 1.06]}>
           <Hoverable label="Television power" onClick={() => setTvOn((value) => !value)}><mesh position={[0, 0.7, 0]} castShadow><cylinderGeometry args={[0.19, 0.19, 0.15, 24]} /><meshStandardMaterial color={tvOn ? '#d8b354' : '#24201d'} emissive={tvOn ? '#7c4b0b' : '#000000'} emissiveIntensity={0.5} roughness={0.38} /></mesh></Hoverable>
-          <Hoverable label="Change channel" onClick={() => setChannelIndex((value) => (value + 1) % channels.length)}><mesh position={[0, 0.02, 0]} rotation={[Math.PI / 2, 0, 0]} castShadow><cylinderGeometry args={[0.31, 0.31, 0.18, 24]} /><meshStandardMaterial color="#111214" roughness={0.42} /></mesh></Hoverable>
+          <Hoverable label={`Change channel (now ${channel})`} onClick={() => setChannelIndex((value) => (value + 1) % channels.length)}><mesh position={[0, 0.02, 0]} rotation={[Math.PI / 2, 0, 0]} castShadow><cylinderGeometry args={[0.31, 0.31, 0.18, 24]} /><meshStandardMaterial color="#111214" roughness={0.42} /></mesh></Hoverable>
           {Array.from({ length: 6 }).map((_, index) => <mesh key={index} position={[-0.16 + (index % 2) * 0.32, -0.52 - Math.floor(index / 2) * 0.13, 0]}><boxGeometry args={[0.2, 0.032, 0.05]} /><meshStandardMaterial color="#151619" roughness={0.82} /></mesh>)}
           <mesh position={[0, -1.18, 0]}><boxGeometry args={[0.62, 0.1, 0.09]} /><meshStandardMaterial color={tvOn ? '#7ec597' : '#291717'} emissive={tvOn ? '#2f8a52' : '#250000'} emissiveIntensity={0.68} /></mesh>
         </group>
@@ -83,7 +103,7 @@ export function Year1990Scene({ active }: { active: boolean; timeline: boolean }
         <RoundedBox args={[2.45, 0.5, 1.25]} radius={0.12} smoothness={4} castShadow><meshStandardMaterial color="#c8c6bd" roughness={0.62} /></RoundedBox>
         <mesh position={[-0.2, 0.2, -0.12]} castShadow><boxGeometry args={[1.35, 0.09, 0.72]} /><meshStandardMaterial color="#3d3e40" roughness={0.48} /></mesh>
         <mesh position={[-0.28, 0.0, 0.64]}><boxGeometry args={[1.15, 0.1, 0.045]} /><meshStandardMaterial color="#151618" /></mesh>
-        <Hoverable label="Console power" onClick={toggleConsole}><mesh position={[0.78, 0.04, 0.64]} castShadow><boxGeometry args={[0.3, 0.2, 0.11]} /><meshStandardMaterial color={consoleOn ? '#c93e3c' : '#4b4b48'} emissive={consoleOn ? '#741010' : '#000000'} emissiveIntensity={0.6} /></mesh></Hoverable>
+        <Hoverable label="Power on the cartridge console" onClick={toggleConsole} found={signalFound}><mesh position={[0.78, 0.04, 0.64]} castShadow><boxGeometry args={[0.3, 0.2, 0.11]} /><meshStandardMaterial color={consoleOn ? '#c93e3c' : '#4b4b48'} emissive={consoleOn ? '#741010' : '#000000'} emissiveIntensity={0.6} /></mesh></Hoverable>
         <mesh position={[0.78, -0.13, 0.64]}><boxGeometry args={[0.3, 0.08, 0.08]} /><meshStandardMaterial color="#77766f" /></mesh>
       </group>
 

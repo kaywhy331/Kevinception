@@ -6,9 +6,10 @@ import { useFrame } from '@react-three/fiber';
 import * as THREE from 'three';
 import { eraConfigs } from '../config';
 import { useExperienceActions } from '../ExperienceContext';
+import { useExperienceStore } from '../store';
 import { DeviceScreen, Dust, Hoverable } from './SceneUtils';
-import { LightBar, PictureFrame, RoomShell } from './EnvironmentPrimitives';
-import { EraScreenPortal } from './EraScreenPortal';
+import { LightBar, RoomShell } from './EnvironmentPrimitives';
+import { NextEraWindow } from './EraScreenPortal';
 import { DESK_SURFACE_Y, GroundedDesk } from './SceneLayout';
 
 const graphPoints: Array<[number, number, number]> = [
@@ -20,9 +21,10 @@ const graphPoints: Array<[number, number, number]> = [
   [1.05, 0.5, 0.13]
 ];
 
-export function Year2020Scene({ active }: { active: boolean; timeline: boolean }) {
+export function Year2020Scene({ active }: { active: boolean }) {
   const config = eraConfigs['2020'];
   const { enterYear, discover } = useExperienceActions();
+  const messageFound = useExperienceStore((state) => state.artifacts['next-layer-message'].discoveredYears.includes('2020'));
   const [ringOn, setRingOn] = useState(true);
   const reactions = useRef<THREE.Group>(null);
   const reactionData = useMemo(() => Array.from({ length: 4 }, (_, index) => ({
@@ -53,9 +55,9 @@ export function Year2020Scene({ active }: { active: boolean; timeline: boolean }
       ))}
       <LightBar position={[-3.9, 5.5, -2.5]} length={2.4} color="#4fcfff" intensity={active ? 0.78 : 0.08} rotation={[0, 0.15, 0]} />
       <LightBar position={[3.9, 5.5, -2.5]} length={2.4} color="#ff4f91" intensity={active ? 0.88 : 0.08} rotation={[0, -0.15, 0]} />
-      <PictureFrame position={[0, 4.25, -3.35]} size={[1.55, 1.05]} frameColor="#13151a" imageColor="#5b3650" accent="#ff5c8a" />
+      <NextEraWindow fromYear="2020" position={[0, 4.25, -3.3]} size={[1.7, 1.02]} active={active} frameColor="#13151a" />
 
-      <Hoverable label="Open KevTok" onClick={() => { discover('next-layer-message', '2020'); enterYear('2020'); }}>
+      <Hoverable label="Open KevTok" onClick={() => { discover('next-layer-message', '2020'); enterYear('2020'); }} found={messageFound}>
         <group position={[-0.78, DESK_SURFACE_Y + 0.75, 0.72]} rotation={[0, -0.035, 0]}>
           <RoundedBox args={[0.72, 1.35, 0.16]} radius={0.13} smoothness={5} castShadow><meshStandardMaterial color="#0f1014" metalness={0.52} roughness={0.24} /></RoundedBox>
           <DeviceScreen position={[0, 0, 0.095]} size={[0.58, 1.08]} color="#1d0d20" emissive="#ff3d7d" active={active} radius={0.1} glass />
@@ -77,7 +79,6 @@ export function Year2020Scene({ active }: { active: boolean; timeline: boolean }
         <group position={[0, 0.96, -0.77]} rotation={[-0.055, 0, 0]}>
           <RoundedBox args={[3.0, 1.8, 0.16]} radius={0.08} smoothness={3} castShadow><meshStandardMaterial color="#454951" metalness={0.4} roughness={0.36} /></RoundedBox>
           <mesh position={[0, 0, 0.1]}><planeGeometry args={[2.72, 1.52]} /><meshStandardMaterial color="#111827" emissive="#31527c" emissiveIntensity={active ? 0.28 : 0.06} /></mesh>
-          <EraScreenPortal fromYear="2020" size={[2.72, 1.52]} position={[0, 0, 0.145]} active={active} />
           {[-0.52, -0.18, 0.16, 0.5].map((y) => <mesh key={y} position={[0, y, 0.115]}><boxGeometry args={[2.4, 0.018, 0.018]} /><meshBasicMaterial color="#263348" transparent opacity={0.75} /></mesh>)}
           <Line points={graphPoints} color="#5ee8ff" lineWidth={2.2} transparent opacity={0.95} />
           {graphPoints.map((point, index) => <mesh key={index} position={point}><sphereGeometry args={[0.055, 14, 14]} /><meshBasicMaterial color={index === graphPoints.length - 1 ? '#ff6b9d' : '#7ff5d4'} /></mesh>)}

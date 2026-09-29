@@ -1,29 +1,99 @@
 'use client';
 
-import { useEffect, useMemo, useRef, useState } from 'react';
+import { useEffect, useLayoutEffect, useMemo, useRef, useState } from 'react';
 import { Html, RoundedBox, useCursor } from '@react-three/drei';
-import { useFrame } from '@react-three/fiber';
+import { useFrame, useThree } from '@react-three/fiber';
 import * as THREE from 'three';
-import type { ArtifactId } from '../artifacts';
-import type { YearId } from '@/content/data';
-import { useExperienceActions } from '../ExperienceContext';
 import { useExperienceStore } from '../store';
 
-export function Hoverable({ children, onClick, label }: { children: React.ReactNode; onClick: () => void; label: string }) {
+const GLOW_SECONDS = 1.4;
+
+/** A brief expanding ring that marks an artifact the moment it is recovered. */
+function DiscoveryGlow({ position }: { position: [number, number, number] }) {
+  const ring = useRef<THREE.Mesh>(null);
+  const material = useRef<THREE.MeshBasicMaterial>(null);
+  const started = useRef<number | null>(null);
+  const invalidate = useThree((state) => state.invalidate);
+  const [done, setDone] = useState(false);
+  useFrame(({ clock }) => {
+    if (done || !ring.current || !material.current) return;
+    started.current ??= clock.elapsedTime;
+    const progress = Math.min(1, (clock.elapsedTime - started.current) / GLOW_SECONDS);
+    ring.current.scale.setScalar(0.35 + progress * 1.9);
+    material.current.opacity = 0.85 * (1 - progress);
+    if (progress >= 1) setDone(true);
+    else invalidate();
+  });
+  useEffect(() => { invalidate(); }, [invalidate]);
+  if (done) return null;
+  return (
+    <mesh ref={ring} position={position} raycast={() => {}} renderOrder={30}>
+      <ringGeometry args={[0.32, 0.4, 40]} />
+      <meshBasicMaterial ref={material} color="#fff3c4" transparent opacity={0.85} depthTest={false} depthWrite={false} toneMapped={false} side={THREE.DoubleSide} />
+    </mesh>
+  );
+}
+
+/**
+ * Wraps an interactive object. In a room (environment view) it shows a visible
+ * hotspot pip anchored above the object, whose label appears on hover or focus;
+ * it is also the keyboard control. In the overview and behind layers it is inert.
+ */
+export function Hoverable({ children, onClick, label, found }: { children: React.ReactNode; onClick: () => void; label: string; found?: boolean }) {
+  const interactive = useExperienceStore((state) => state.viewMode === 'environment');
   const [hovered, setHovered] = useState(false);
-  useCursor(hovered, 'pointer', 'auto');
+  const [anchor, setAnchor] = useState<[number, number, number] | null>(null);
+  const group = useRef<THREE.Group>(null);
+  const wasFound = useRef(found);
+  const [celebrate, setCelebrate] = useState(false);
+  useCursor(hovered && interactive, 'pointer', 'auto');
+
+  useLayoutEffect(() => {
+    const node = group.current;
+    if (!node) return;
+    node.updateWorldMatrix(true, true);
+    const box = new THREE.Box3();
+    node.children.forEach((child) => box.expandByObject(child));
+    if (box.isEmpty()) return;
+    const top = new THREE.Vector3((box.min.x + box.max.x) / 2, box.max.y, box.max.z);
+    node.worldToLocal(top);
+    setAnchor([top.x, top.y + 0.16, top.z]);
+  }, []);
+
+  useEffect(() => {
+    if (found && !wasFound.current) setCelebrate(true);
+    wasFound.current = found;
+  }, [found]);
+
+  useEffect(() => {
+    if (!interactive) setHovered(false);
+  }, [interactive]);
+
   return (
     <group
-      onClick={(event) => { event.stopPropagation(); onClick(); }}
-      onPointerOver={(event) => { event.stopPropagation(); setHovered(true); }}
-      onPointerOut={() => setHovered(false)}
+      ref={group}
+      onClick={interactive ? (event) => { event.stopPropagation(); onClick(); } : undefined}
+      onPointerOver={interactive ? (event) => { event.stopPropagation(); setHovered(true); } : undefined}
+      onPointerOut={interactive ? () => setHovered(false) : undefined}
       userData={{ label }}
       scale={hovered ? 1.025 : 1}
     >
       {children}
-      <Html center className="scene-hotspot-control" zIndexRange={[8, 0]}>
-        <button type="button" onClick={onClick}>{label}</button>
-      </Html>
+      {celebrate && anchor && <DiscoveryGlow position={anchor} />}
+      {interactive && anchor && (
+        <Html position={anchor} center className="scene-hotspot-control" zIndexRange={[8, 0]}>
+          <button
+            type="button"
+            className={`scene-hotspot${hovered ? ' is-hovered' : ''}${found ? ' is-found' : ''}`}
+            onClick={onClick}
+            onPointerEnter={() => setHovered(true)}
+            onPointerLeave={() => setHovered(false)}
+          >
+            <i aria-hidden="true"></i>
+            <span>{label}</span>
+          </button>
+        </Html>
+      )}
     </group>
   );
 }
@@ -67,37 +137,46 @@ export function DeviceScreen({
   );
 }
 
-export function ArtifactMesh({
-  id, year, position, color, active, shape = 'box', scale = 1
-}: {
-  id: ArtifactId;
-  year: YearId;
-  position: [number, number, number];
-  color: string;
-  active: boolean;
-  shape?: 'box' | 'sphere' | 'octahedron' | 'cylinder';
-  scale?: number;
-}) {
-  const { discover } = useExperienceActions();
-  const found = useExperienceStore((state) => state.artifacts[id].discoveredYears.includes(year));
-  const ref = useRef<THREE.Mesh>(null);
-  useFrame(({ clock }, delta) => {
-    if (!active || !ref.current) return;
-    ref.current.rotation.y += delta * (found ? 0.55 : 0.25);
-    ref.current.position.y = position[1] + Math.sin(clock.elapsedTime * 1.3 + position[0]) * 0.08;
-  });
-  const geometry = shape === 'sphere' ? <sphereGeometry args={[0.28 * scale, 18, 18]} />
-    : shape === 'octahedron' ? <octahedronGeometry args={[0.32 * scale]} />
-      : shape === 'cylinder' ? <cylinderGeometry args={[0.28 * scale, 0.28 * scale, 0.12 * scale, 24]} />
-        : <boxGeometry args={[0.46 * scale, 0.34 * scale, 0.14 * scale]} />;
-  return (
-    <Hoverable label={`Discover ${id}`} onClick={() => discover(id, year)}>
-      <mesh ref={ref} position={position} castShadow>
-        {geometry}
-        <meshStandardMaterial color={found ? '#ffffff' : color} emissive={color} emissiveIntensity={found ? 1.3 : active ? 0.55 : 0.1} roughness={0.25} />
-      </mesh>
-    </Hoverable>
-  );
+type ScreenTextLine = { text: string; size: number; color?: string; weight?: number };
+
+/**
+ * Draws short lines of era text into a canvas texture (no web-font download).
+ * Used for the 1990 channel read-out and the 2000 sign-on screen.
+ */
+export function useScreenTexture(lines: ScreenTextLine[], { width = 512, height = 320, background = '#000000', font = 'ui-monospace, Menlo, Consolas, monospace', scanlines = false }: {
+  width?: number; height?: number; background?: string; font?: string; scanlines?: boolean;
+} = {}) {
+  const key = JSON.stringify(lines);
+  const texture = useMemo(() => {
+    if (typeof document === 'undefined') return null;
+    const canvas = document.createElement('canvas');
+    canvas.width = width;
+    canvas.height = height;
+    const context = canvas.getContext('2d');
+    if (!context) return null;
+    context.fillStyle = background;
+    context.fillRect(0, 0, width, height);
+    const total = lines.reduce((sum, line) => sum + line.size * 1.3, 0);
+    let y = (height - total) / 2;
+    context.textAlign = 'center';
+    context.textBaseline = 'top';
+    lines.forEach((line) => {
+      context.font = `${line.weight ?? 700} ${line.size}px ${font}`;
+      context.fillStyle = line.color ?? '#ffffff';
+      context.fillText(line.text, width / 2, y, width * 0.9);
+      y += line.size * 1.3;
+    });
+    if (scanlines) {
+      context.fillStyle = 'rgba(0,0,0,0.18)';
+      for (let row = 0; row < height; row += 4) context.fillRect(0, row, width, 1);
+    }
+    const result = new THREE.CanvasTexture(canvas);
+    result.colorSpace = THREE.SRGBColorSpace;
+    return result;
+    // `key` captures the line content, so a new array with the same text reuses the texture.
+  }, [key, width, height, background, font, scanlines]);
+  useEffect(() => () => texture?.dispose(), [texture]);
+  return texture;
 }
 
 export function Dust({ center, count = 80, spread = [8, 5, 7], color = '#ffffff', active = true }: {
@@ -128,19 +207,5 @@ export function Dust({ center, count = 80, spread = [8, 5, 7], color = '#ffffff'
       </bufferGeometry>
       <pointsMaterial color={color} size={0.018} transparent opacity={active ? 0.42 : 0.08} depthWrite={false} />
     </points>
-  );
-}
-
-export function Pedestal({ position, width = 9, depth = 7, color = '#15171d' }: { position: [number, number, number]; width?: number; depth?: number; color?: string }) {
-  return (
-    <group position={position}>
-      <RoundedBox args={[width, 0.34, depth]} radius={0.18} smoothness={3} receiveShadow>
-        <meshStandardMaterial color={color} roughness={0.85} metalness={0.05} />
-      </RoundedBox>
-      <mesh position={[0, -0.24, 0]} receiveShadow>
-        <cylinderGeometry args={[Math.min(width, depth) * 0.32, Math.min(width, depth) * 0.36, 0.15, 48]} />
-        <meshStandardMaterial color="#07080b" roughness={0.9} />
-      </mesh>
-    </group>
   );
 }

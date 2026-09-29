@@ -1,5 +1,4 @@
 /* V7.6 narrative architecture, chapter orientation, and performance UI. */
-.timeline-panel,
 .environment-panel {
   position: absolute;
   left: 50%;
@@ -43,20 +42,61 @@
 .year-selector button.is-active em { color: color-mix(in srgb, var(--era-accent) 72%, white); }
 .persistent-year-selector { position: fixed; z-index: 24; }
 
+/* Chapters overview: every room is in view; this compact panel names the highlighted one. */
+.overview-panel {
+  position: absolute;
+  left: 50%;
+  bottom: 1.1rem;
+  translate: -50% 0;
+  z-index: 22;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  width: min(760px, calc(100% - 1.6rem));
+  padding: .85rem 1rem;
+  border-radius: 16px;
+  pointer-events: auto;
+}
+.overview-panel .eyebrow { margin: 0; font-size: .62rem; letter-spacing: .14em; }
+.overview-panel h1 { margin: .1rem 0 .2rem; font-size: clamp(1.5rem, 3vw, 2.3rem); line-height: 1; }
+.overview-panel__selection { margin: 0; color: #c6cfdd; font-size: .8rem; }
+.overview-panel__selection span { color: var(--era-accent); font-weight: 900; }
+.overview-panel .button-row { flex-wrap: nowrap; margin: 0; }
+.overview-label-anchor { pointer-events: none; }
+.overview-label {
+  display: grid;
+  justify-items: center;
+  gap: .08rem;
+  min-width: 7.4rem;
+  padding: .55rem .8rem .6rem;
+  border: 1px solid color-mix(in srgb, var(--era-accent) 38%, rgba(255,255,255,.14));
+  border-radius: 14px;
+  background: rgba(7,9,14,.8);
+  color: #c8d0dc;
+  text-align: center;
+  cursor: pointer;
+  pointer-events: auto;
+  backdrop-filter: blur(10px);
+  transition: transform .2s ease, border-color .2s ease, background .2s ease;
+}
+.overview-label span { color: var(--era-accent); font-size: 1.35rem; font-weight: 900; line-height: 1; letter-spacing: -.03em; }
+.overview-label b { color: white; font-size: .86rem; }
+.overview-label em { color: #9aa5b5; font-size: .66rem; font-style: normal; white-space: nowrap; }
+.overview-label.is-active { border-color: var(--era-accent); background: color-mix(in srgb, var(--era-accent) 18%, rgba(7,9,14,.9)); transform: translateY(-4px) scale(1.06); box-shadow: 0 0 34px color-mix(in srgb, var(--era-accent) 32%, transparent); }
+.overview-label:focus-visible { outline: 2px solid white; outline-offset: 3px; }
+
 .interface-mode { transition: opacity .22s ease, visibility 0s linear 0s; }
 .interface-mode.is-hidden { opacity: 0; visibility: hidden; pointer-events: none; transition: opacity .16s ease, visibility 0s linear .16s; }
 .interface-mode.is-visible { opacity: 1; visibility: visible; pointer-events: auto; }
 .interface-mode__bar { position: relative; z-index: 45; }
-.interface-mode__identity { display: grid !important; gap: .08rem !important; }
-.interface-mode__identity span { color: var(--era-accent); font-size: .66rem; font-weight: 850; letter-spacing: .05em; text-transform: uppercase; }
-.interface-mode__identity b { color: white; font-size: .84rem; }
-.interface-mode__bar nav { max-width: 72vw; overflow-x: auto; scrollbar-width: thin; }
 .interface-mode__device { position: relative; overflow: hidden; }
 .interface-mode__frame { position: absolute; inset: clamp(.35rem, 1vw, .8rem); width: calc(100% - clamp(.7rem, 2vw, 1.6rem)); height: calc(100% - clamp(.7rem, 2vw, 1.6rem)); }
 .interface-mode__frame.is-cached { display: none; }
 .interface-loading { position: absolute; inset: 0; z-index: 2; display: grid; place-items: center; align-content: center; gap: .8rem; background: radial-gradient(circle, color-mix(in srgb, var(--era-accent) 14%, #08090d), #08090d 68%); }
 .interface-loading p { margin: 0; color: #dce3ed; font-size: .8rem; letter-spacing: .04em; }
 .chapter-takeaway-panel { position: absolute; top: 4.25rem; right: 1rem; z-index: 44; width: min(430px, calc(100% - 2rem)); padding: 1rem; border: 1px solid color-mix(in srgb, var(--era-accent) 38%, rgba(255,255,255,.14)); border-radius: 14px; background: rgba(8,10,16,.97); box-shadow: 0 24px 80px rgba(0,0,0,.55); pointer-events: auto; }
+.chapter-takeaway-panel:focus { outline: none; }
 .chapter-takeaway-panel h2 { margin: .15rem 0 .5rem; font-size: 1.3rem; color: white; }
 .chapter-takeaway-panel p { margin: .4rem 0; color: #bdc6d4; font-size: .82rem; }
 .chapter-takeaway-panel .chapter-bridge { color: var(--era-accent); font-weight: 750; }
@@ -66,49 +106,117 @@
 .experience-hint p { flex: 1; margin: 0; color: #c8d0dc; font-size: .73rem; }
 .experience-hint button { border: 1px solid rgba(255,255,255,.16); border-radius: 999px; background: var(--era-accent); color: #081018; font-weight: 800; padding: .45rem .7rem; cursor: pointer; }
 .experience-toolbar { transition: opacity .2s ease; }
-.mode-interface .experience-toolbar { opacity: 0; pointer-events: none; }
 .transition-overlay { pointer-events: none; }
 .transition-copy { position: relative; z-index: 3; display: grid; gap: .45rem; padding: 1rem; text-align: center; }
 .transition-copy strong { color: white; font-size: clamp(1.25rem, 3vw, 2.2rem); letter-spacing: .03em; text-transform: uppercase; }
 .transition-copy p { margin: 0; color: #dbe4ef; font-size: .76rem; font-weight: 750; letter-spacing: .08em; text-transform: uppercase; }
-.transition-time-jump { background: #02040a; animation: time-jump-fade .3s both; }
-.transition-time-jump span { inset: -8%; background: radial-gradient(circle at center, white 0 1px, var(--era-accent) 2px 5%, transparent 25%), repeating-radial-gradient(circle at center, transparent 0 18px, color-mix(in srgb, var(--era-accent) 30%, transparent) 20px 21px); filter: blur(.25px); animation: time-jump-pulse .3s ease-out both; }
+.transition-skip { position: absolute; bottom: 1.4rem; left: 50%; z-index: 3; translate: -50% 0; color: rgba(230,236,245,.62); font-size: .66rem; font-weight: 700; letter-spacing: .12em; text-transform: uppercase; }
+.transition-time-jump { background: #02040a; animation: time-jump-fade var(--transition-duration) both; }
+.transition-time-jump span { inset: -8%; background: radial-gradient(circle at center, white 0 1px, var(--era-accent) 2px 5%, transparent 25%), repeating-radial-gradient(circle at center, transparent 0 18px, color-mix(in srgb, var(--era-accent) 30%, transparent) 20px 21px); filter: blur(.25px); animation: time-jump-pulse var(--transition-duration) ease-out both; }
 @keyframes time-jump-fade { 0% { opacity: 0 } 18%, 70% { opacity: 1 } 100% { opacity: 0 } }
 @keyframes time-jump-pulse { 0% { transform: scale(.45); opacity: 0 } 42% { transform: scale(1); opacity: 1 } 100% { transform: scale(1.5); opacity: 0 } }
 
+/* Artifact counter chip and the shared discovery toast. */
+.artifact-chip { display: inline-flex; align-items: center; gap: .3rem; }
+.artifact-chip i { color: var(--era-accent); font-style: normal; font-size: .72em; }
+.artifact-chip span { min-width: 0 !important; height: auto !important; margin: 0 !important; border-radius: 0 !important; background: none !important; color: inherit !important; font-weight: 800; }
+.discovery-toast-region { position: absolute; right: 1rem; bottom: 6.8rem; z-index: 58; width: min(26rem, calc(100% - 2rem)); pointer-events: none; }
+.discovery-toast {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr) auto;
+  grid-template-areas: "mark copy close" "mark action action";
+  align-items: center;
+  gap: .35rem .75rem;
+  padding: .8rem .8rem .8rem .95rem;
+  border: 1px solid var(--era-accent);
+  border-radius: var(--era-radius, 14px);
+  background: color-mix(in srgb, var(--era-surface, #0b0e15) 92%, black);
+  color: var(--era-ink, white);
+  box-shadow: 0 22px 60px rgba(0,0,0,.5), 0 0 40px color-mix(in srgb, var(--era-accent) 22%, transparent);
+  pointer-events: auto;
+  animation: discovery-in .32s cubic-bezier(.2,.8,.2,1) both;
+}
+.discovery-toast__mark { grid-area: mark; display: grid; place-items: center; width: 2.4rem; height: 2.4rem; border-radius: 50%; background: color-mix(in srgb, var(--era-accent) 22%, transparent); color: var(--era-accent); font-style: normal; font-size: 1.1rem; box-shadow: 0 0 22px color-mix(in srgb, var(--era-accent) 40%, transparent); }
+.discovery-toast > div { grid-area: copy; display: grid; gap: .1rem; min-width: 0; }
+.discovery-toast .eyebrow { margin: 0; color: var(--era-accent); font-size: .6rem; letter-spacing: .14em; }
+.discovery-toast strong { font-size: 1rem; }
+.discovery-toast small { color: var(--era-muted, #aeb8c8); font-size: .72rem; }
+.discovery-toast__action { grid-area: action; justify-self: start; min-height: 2.25rem; padding: .4rem .8rem; border: 1px solid var(--era-accent); border-radius: 999px; background: var(--era-accent); color: #081018; font-weight: 800; font-size: .74rem; cursor: pointer; }
+.discovery-toast__close { grid-area: close; align-self: start; width: 2rem; height: 2rem; border: 0; border-radius: 50%; background: transparent; color: var(--era-muted, #aeb8c8); font-size: 1.1rem; cursor: pointer; }
+@keyframes discovery-in { from { opacity: 0; translate: 0 12px; } to { opacity: 1; translate: 0 0; } }
+
+/* Settings, help, and the menu's way out. */
+.settings-option { display: grid; grid-template-columns: auto minmax(0, 1fr); align-items: start; gap: .6rem; padding: .35rem .2rem; cursor: pointer; }
+.settings-option input { margin-top: .2rem; accent-color: var(--era-accent); }
+.settings-option span { display: grid; gap: .05rem; }
+.settings-option b { color: white; font-size: .86rem; }
+.settings-option small { color: var(--muted); font-size: .74rem; }
+.settings-reset { margin-top: .75rem; padding: .8rem; border: 1px solid color-mix(in srgb, #ff8e9f 50%, var(--line)); border-radius: 10px; }
+.settings-reset p { margin: 0 0 .6rem; color: #e6ebf2; font-size: .82rem; }
+.settings-reset .button-row { margin: 0; gap: .5rem; }
+.settings-reset button { padding: .55rem .8rem; border: 1px solid var(--line); border-radius: 8px; background: #171b26; cursor: pointer; }
+.settings-reset .settings-reset__confirm { border-color: #ff8e9f; background: #3a1720; color: white; }
+.help-links { display: flex; flex-wrap: wrap; gap: .45rem; }
+.help-links a { padding: .5rem .8rem; border: 1px solid var(--line); border-radius: 999px; background: #151923; font-size: .8rem; }
+.modal-backdrop--drawer { place-items: stretch end; padding: 0; }
+.modal-backdrop--drawer .artifact-drawer { position: relative; }
+
 @media (min-aspect-ratio: 21/9) and (min-width: 1300px) {
-  .timeline-panel, .environment-panel { bottom: 5.4rem; width: min(780px, 49vw); }
+  .environment-panel { bottom: 5.4rem; width: min(780px, 49vw); }
   .year-selector { width: min(840px, 52vw); }
 }
 
 @media (max-width: 900px) {
-  .timeline-panel, .environment-panel { width: min(760px, calc(100% - 1.4rem)); }
-  .chapter-card .secondary-action { display: none; }
+  .environment-panel { width: min(760px, calc(100% - 1.4rem)); }
 }
 
 @media (max-width: 640px) {
   .experience-toolbar { inset: .5rem .5rem auto; }
   .experience-mark b { display: none; }
-  .experience-toolbar nav > * { padding: .48rem .6rem; }
-  .timeline-panel, .environment-panel { bottom: 5.15rem; width: calc(100% - 1.1rem); min-height: 64px; padding: .58rem .65rem; gap: .45rem; }
+  .environment-panel { bottom: 5.15rem; width: calc(100% - 1.1rem); min-height: 64px; padding: .58rem .65rem; gap: .45rem; }
   .chapter-card h1 { font-size: 1.18rem; }
   .chapter-card__experience, .chapter-card strong, .chapter-card .eyebrow, .chapter-card .era-details { display: none; }
   .chapter-card__actions { margin: 0; }
-  .chapter-card .primary-action { padding: .55rem .65rem; font-size: .7rem; }
+  .chapter-card .primary-action { padding: .55rem .75rem; font-size: .74rem; }
+  .overview-panel { bottom: .6rem; width: calc(100% - 1.1rem); padding: .7rem .75rem; flex-direction: column; align-items: stretch; gap: .6rem; }
+  .overview-panel .button-row { display: grid; grid-template-columns: 1fr auto; gap: .45rem; }
+  .overview-label { min-width: 0; padding: .35rem .5rem; }
+  .overview-label span { font-size: .95rem; }
+  .overview-label b { font-size: .64rem; }
+  .overview-label em { display: none; }
   .year-selector { width: calc(100% - 1.1rem); bottom: .45rem; grid-template-columns: repeat(6, 1fr); overflow-x: auto; }
   .year-selector button { min-width: 72px; padding: .4rem; }
   .year-selector button b { font-size: .62rem; }
   .year-selector button em { display: none; }
   .experience-hint { top: 4.25rem; border-radius: 14px; align-items: flex-start; }
   .experience-hint p { font-size: .68rem; }
-  .interface-mode__bar { padding: .55rem .65rem; }
-  .interface-mode__identity b { max-width: 145px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
-  .interface-mode__bar nav button { font-size: .68rem; padding: .42rem .55rem; }
-  .interface-mode__bar nav button:nth-child(3), .interface-mode__bar nav button:nth-child(5) { display: none; }
-  .chapter-takeaway-panel { top: 4rem; right: .55rem; width: calc(100% - 1.1rem); }
+  .chapter-takeaway-panel { top: 3.4rem; right: .55rem; width: calc(100% - 1.1rem); }
+  .discovery-toast-region { left: .55rem; right: .55rem; bottom: 5.2rem; width: auto; }
 }
 
 @media (prefers-reduced-motion: reduce) {
   .interface-mode { transition: opacity .16s ease, visibility 0s linear 0s; }
   .experience-toolbar { transition: opacity .16s ease; }
+  .scene-hotspot i::after { animation: none; }
+  .discovery-toast { animation: none; }
 }
+
+/* In-app motion settings apply even when the OS preference is not set. */
+.experience-overlay:not([data-motion='full']) .discovery-toast,
+.experience-overlay:not([data-motion='full']) .overview-label { animation: none; transition: none; }
+.experience-overlay:not([data-motion='full']) .transition-overlay span { transform: none !important; animation: none; opacity: .2; }
+.experience-overlay[data-motion='minimal'] *,
+.experience-overlay[data-motion='minimal'] *::before,
+.experience-overlay[data-motion='minimal'] *::after { animation: none !important; transition: none !important; }
+.experience-root:has(.experience-overlay:not([data-motion='full'])) .scene-hotspot i::after { animation: none; }
+
+/* Text version header: way back to the visuals, every chapter, and the menu. */
+.text-mode > header { justify-content: space-between; align-items: center; flex-wrap: wrap; }
+.text-mode > header > .text-mode__chapters,
+.text-mode > header > .experience-menu { padding: 0; border: 0; background: none; }
+.text-mode__chapters { display: flex; gap: .25rem; max-width: 100%; overflow-x: auto; }
+.text-mode__chapters button { padding: .4rem .65rem; border: 1px solid var(--line); border-radius: 8px; background: transparent; color: #c8d0dc; font-weight: 800; cursor: pointer; }
+.text-mode__chapters button[aria-current] { border-color: var(--era-accent); background: color-mix(in srgb, var(--era-accent) 16%, transparent); color: white; }
+.text-mode > header .experience-menu__trigger { padding: .5rem .75rem; border: 1px solid var(--line); border-radius: 8px; background: #131722; }
+.text-mode h1:focus { outline: none; }
+.text-mode__visual { cursor: pointer; }
