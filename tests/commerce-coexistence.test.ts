@@ -151,7 +151,7 @@ describe('Commerce and Co-Existence chapters', () => {
   });
 
   it('keeps every shared legacy payload synchronized with the canonical chapters', () => {
-    for (const year of ['1990', '2020', '2030', '2040']) {
+    for (const year of ['1990', '2020']) {
       const html = read(`public/legacy/experience/${year}/index.html`);
       const payload = JSON.parse(html.match(/id="era-world-data">([\s\S]*?)<\/script>/)?.[1] || '{}');
       expect(payload.eras.find((era: { id: string }) => era.id === '2010')).toMatchObject({ label: 'Commerce', subtitle: 'StealStreet Commerce OS' });

@@ -1,25 +1,8 @@
-import fs from 'node:fs';
 import path from 'node:path';
-import puppeteer from 'puppeteer-core';
+import { artifactPath, baseUrl as base, launchBrowser, writeReport } from './lib/browser.mjs';
 
-const base = process.env.BASE_URL ?? 'http://127.0.0.1:4321';
-const outputDir = 'docs/previews/v77';
-
-function browserCandidates() {
-  return [
-    process.env.CHROME_PATH,
-    process.env.CHROMIUM_PATH,
-    '/usr/bin/google-chrome',
-    '/usr/bin/google-chrome-stable',
-    '/usr/bin/chromium',
-    '/usr/bin/chromium-browser'
-  ].filter(Boolean);
-}
-
-const executablePath = browserCandidates().find((candidate) => fs.existsSync(candidate));
-if (!executablePath) throw new Error('No supported Chromium browser was found.');
-
-fs.mkdirSync(outputDir, { recursive: true });
+const outputDir = path.dirname(artifactPath('previews', 'v77', '.keep'));
+const { browser, executablePath } = await launchBrowser();
 const report = {
   generatedAt: new Date().toISOString(),
   browser: executablePath,
@@ -35,19 +18,6 @@ function assert(name, condition, detail = '') {
   report.assertions.push({ name, passed: Boolean(condition), detail });
   if (!condition) throw new Error(`${name}${detail ? `: ${detail}` : ''}`);
 }
-
-const browser = await puppeteer.launch({
-  executablePath,
-  headless: true,
-  args: [
-    '--no-sandbox',
-    '--disable-dev-shm-usage',
-    '--ignore-gpu-blocklist',
-    '--enable-webgl',
-    '--use-angle=swiftshader',
-    '--enable-unsafe-swiftshader'
-  ]
-});
 
 const page = await browser.newPage();
 page.on('console', (message) => {
@@ -200,7 +170,7 @@ try {
   assert('The mobile KevTok device has no horizontal overflow', mobileInnerOverflow <= 1, `${mobileInnerOverflow}px`);
 } finally {
   await browser.close();
-  fs.writeFileSync('docs/RUNTIME_REVIEW_V77.json', JSON.stringify(report, null, 2));
+  writeReport('runtime-review-v77', report);
 }
 
 if (report.pageErrors.length || report.consoleErrors.length) {

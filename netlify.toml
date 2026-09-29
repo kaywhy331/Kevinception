@@ -1,3 +1,169 @@
 [build]
 command = "npm run build"
 publish = "out"
+
+# Permanent redirects for retired V6 URLs. Source of truth: deploy/redirects.json
+# (npm run check:security enforces parity across every deploy target).
+# force = true so a rule still applies while a file exists at the old path.
+
+[[redirects]]
+from = "/experience/gen-x/"
+to = "/experience/1990/"
+status = 301
+force = true
+
+[[redirects]]
+from = "/experience/xennial/"
+to = "/experience/2000/"
+status = 301
+force = true
+
+[[redirects]]
+from = "/experience/millennial/"
+to = "/experience/2010/"
+status = 301
+force = true
+
+[[redirects]]
+from = "/experience/gen-z/"
+to = "/experience/2020/"
+status = 301
+force = true
+
+[[redirects]]
+from = "/experience/gen-alpha/"
+to = "/experience/2030/"
+status = 301
+force = true
+
+[[redirects]]
+from = "/experience/gen-beta/"
+to = "/experience/2040/"
+status = 301
+force = true
+
+[[redirects]]
+from = "/portfolio/"
+to = "/about/"
+status = 301
+force = true
+
+[[redirects]]
+from = "/legacy/"
+to = "/experience/"
+status = 301
+force = true
+
+[[redirects]]
+from = "/legacy/experience/"
+to = "/experience/"
+status = 301
+force = true
+
+[[redirects]]
+from = "/legacy/experience/gen-x/"
+to = "/experience/1990/"
+status = 301
+force = true
+
+[[redirects]]
+from = "/legacy/experience/xennial/"
+to = "/experience/2000/"
+status = 301
+force = true
+
+[[redirects]]
+from = "/legacy/experience/millennial/"
+to = "/experience/2010/"
+status = 301
+force = true
+
+[[redirects]]
+from = "/legacy/experience/gen-z/"
+to = "/experience/2020/"
+status = 301
+force = true
+
+[[redirects]]
+from = "/legacy/experience/gen-alpha/"
+to = "/experience/2030/"
+status = 301
+force = true
+
+[[redirects]]
+from = "/legacy/experience/gen-beta/"
+to = "/experience/2040/"
+status = 301
+force = true
+
+[[redirects]]
+from = "/legacy/experience/2030/"
+to = "/experience/2030/"
+status = 301
+force = true
+
+[[redirects]]
+from = "/legacy/experience/2040/"
+to = "/experience/2040/"
+status = 301
+force = true
+
+[[redirects]]
+from = "/legacy/about/"
+to = "/about/"
+status = 301
+force = true
+
+[[redirects]]
+from = "/legacy/portfolio/"
+to = "/about/"
+status = 301
+force = true
+
+[[redirects]]
+from = "/legacy/resume/"
+to = "/resume/"
+status = 301
+force = true
+
+[[redirects]]
+from = "/legacy/contact/"
+to = "/contact/"
+status = 301
+force = true
+
+[[redirects]]
+from = "/legacy/work/"
+to = "/work/"
+status = 301
+force = true
+
+[[redirects]]
+from = "/legacy/work/agentic-work-fleet/"
+to = "/work/agentic-work-fleet/"
+status = 301
+force = true
+
+[[redirects]]
+from = "/legacy/work/kevin-online/"
+to = "/work/kevin-online/"
+status = 301
+force = true
+
+[[redirects]]
+from = "/legacy/work/kevinception/"
+to = "/work/kevinception/"
+status = 301
+force = true
+
+[[redirects]]
+from = "/legacy/work/mcp-knowledge-logistics/"
+to = "/work/mcp-knowledge-logistics/"
+status = 301
+force = true
+
+[[redirects]]
+from = "/legacy/work/tokenpak/"
+to = "/work/tokenpak/"
+status = 301
+force = true

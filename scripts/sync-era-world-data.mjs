@@ -1,7 +1,14 @@
 import fs from 'node:fs';
 
+// Copies the canonical content records into the legacy era applications that
+// still embed an `era-world-data` payload (1990 and 2020; 2030/2040 are native
+// React chapters and 2000/2010 carry no payload).
+//
+//   npm run sync:legacy-data           rewrite the payloads
+//   npm run sync:legacy-data -- --check fail if any payload is out of date
+const checkOnly = process.argv.includes('--check');
 const sourcePath = 'src/content/data.ts';
-const targetYears = ['1990', '2020', '2030', '2040'];
+const targetYears = ['1990', '2020'];
 const source = fs.readFileSync(sourcePath, 'utf8');
 
 function parseJsonExport(name, closingToken) {
@@ -69,6 +76,7 @@ function temporalArtifactsFor(year) {
   };
 }
 
+const stale = [];
 for (const year of targetYears) {
   const filePath = `public/legacy/experience/${year}/index.html`;
   const html = fs.readFileSync(filePath, 'utf8');
@@ -85,6 +93,19 @@ for (const year of targetYears) {
   payload.timelineContent = canonical.timelineContent;
 
   const replacement = `<script type="application/json" id="era-world-data">${serializeForHtml(payload)}</script>`;
-  fs.writeFileSync(filePath, synchronizeEraLabels(html.replace(pattern, replacement)));
+  const next = synchronizeEraLabels(html.replace(pattern, replacement));
+  if (checkOnly) {
+    if (next !== html) stale.push(filePath);
+    continue;
+  }
+  fs.writeFileSync(filePath, next);
   console.log(`Synchronized ${filePath}`);
+}
+
+if (checkOnly) {
+  if (stale.length) {
+    console.error(`Legacy era payloads are out of date: ${stale.join(', ')}\nRun npm run sync:legacy-data and commit the result.`);
+    process.exit(1);
+  }
+  console.log(`Legacy era payloads match the canonical content (${targetYears.join(', ')}).`);
 }

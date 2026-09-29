@@ -1,0 +1,10 @@
+.next
+out
+artifacts
+coverage
+node_modules
+package-lock.json
+public/legacy
+docs/archive
+*.md
+next-env.d.ts

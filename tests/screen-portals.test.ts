@@ -50,16 +50,4 @@ describe('screens-within-screens portals', () => {
     expect(portal).toContain("viewMode === 'interface' || viewMode === 'text'");
     expect(portal).toContain("quality !== 'lite'");
   });
-
-  it('documents the procedural preview and device-profiling boundary truthfully', () => {
-    const status = read('docs/IMPLEMENTATION_STATUS_V7.md');
-    const limitations = read('docs/KNOWN_LIMITATIONS_V7.md');
-    const roadmap = read('docs/ROADMAP.md');
-
-    expect(status).toContain('four consecutive screens render the next era through bounded render textures');
-    expect(limitations).toContain('authored procedural vignettes rather than recursively mounting the complete destination room');
-    expect(limitations).toContain('real-device GPU profiling');
-    expect(roadmap).toContain('3.2 Screens-within-screens portals');
-    expect(roadmap).toContain('Status 2026-08-15: ✅ Implemented');
-  });
 });

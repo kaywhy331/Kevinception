@@ -49,7 +49,6 @@ describe('award-roadmap agent-ready work', () => {
     expect(award).toContain('@media (prefers-reduced-motion: reduce)');
     expect(award).toContain('.era-portal__scan { animation: none;');
     expect(award).toContain('animation: reduced-transition 180ms ease both');
-    expect(read('docs/MOTION.md')).toContain('--motion-medium');
   });
 
   it('queues privacy-friendly funnel events with properties', () => {

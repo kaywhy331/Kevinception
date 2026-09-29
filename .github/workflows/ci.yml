@@ -3,23 +3,34 @@ on:
   push:
     branches: [main]
   pull_request:
+  schedule:
+    # Weekly run so new dependency advisories surface without a code change.
+    - cron: '17 6 * * 1'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: ${{ github.event_name == 'pull_request' }}
 
 jobs:
   verify:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
+    timeout-minutes: 20
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4.4.0
         with:
           fetch-depth: 0
-      - uses: actions/setup-node@v4
+      - uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020 # v4.4.0
         with:
-          node-version: 22
+          node-version-file: .nvmrc
           cache: npm
       - name: Install locked dependencies
         run: npm ci
-      - name: Production dependency audit
-        run: npm run audit
       - name: Patch whitespace
+        if: github.event_name == 'pull_request' || github.event_name == 'push'
         shell: bash
         run: |
           if [ "${{ github.event_name }}" = "pull_request" ]; then
@@ -36,15 +47,75 @@ jobs:
         run: npm run typecheck
       - name: Unit tests
         run: npm run test
+      - name: Syntax-check legacy and script JavaScript
+        run: npm run check:legacy-js
       - name: Validate canonical content and configuration
         run: npm run check:content
+      - name: Legacy era payloads match canonical content
+        run: npm run check:legacy-data
       - name: Production build
         run: npm run build
       - name: Validate generated routes
         run: npm run check:build
-      - name: Enforce JavaScript bundle budgets
+      - name: Enforce per-route and total bundle budgets
         run: npm run check:bundle
       - name: Validate local links
         run: npm run check:links
-      - name: Validate security configuration
+      - name: Validate security headers and redirects
         run: npm run check:security
+      - name: Upload static export
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
+        with:
+          name: static-export
+          path: out
+          include-hidden-files: true
+          retention-days: 3
+
+  # Advisories in upstream packages should be visible but must not block
+  # unrelated pull requests; the weekly schedule keeps them from going stale.
+  audit:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 10
+    continue-on-error: true
+    steps:
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4.4.0
+      - uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020 # v4.4.0
+        with:
+          node-version-file: .nvmrc
+      - name: Production dependency audit
+        run: npm audit --omit=dev --audit-level=moderate --package-lock-only
+
+  browser-smoke:
+    needs: verify
+    uses: ./.github/workflows/browser-smoke.yml
+
+  container-smoke:
+    needs: verify
+    runs-on: ubuntu-24.04
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4.4.0
+      - uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020 # v4.4.0
+        with:
+          node-version-file: .nvmrc
+      - uses: actions/download-artifact@d3f86a106a0bac45b974a628896c90dbdf5c8093 # v4.3.0
+        with:
+          name: static-export
+          path: out
+      - name: Serve the export with the production nginx configuration
+        run: |
+          docker run -d --name kevinception-nginx -p 8080:80 \
+            -v "$PWD/out:/usr/share/nginx/html:ro" \
+            -v "$PWD/deploy/nginx.conf:/etc/nginx/conf.d/default.conf:ro" \
+            -v "$PWD/deploy/nginx-security-headers.conf:/etc/nginx/snippets/kevinception-security-headers.conf:ro" \
+            nginx:1.27-alpine
+          docker exec kevinception-nginx nginx -t
+          for attempt in $(seq 1 30); do
+            curl --silent --fail http://127.0.0.1:8080/ > /dev/null && break
+            sleep 1
+          done
+      - name: Assert headers, compression, caching, and redirects
+        run: BASE_URL=http://127.0.0.1:8080 npm run smoke:headers
+      - name: nginx logs
+        if: failure()
+        run: docker logs kevinception-nginx

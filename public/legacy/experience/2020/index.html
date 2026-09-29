@@ -3,6 +3,7 @@
   <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="robots" content="noindex">
     <title>Creator Media 2020 — KevTok | Kevinception</title>
     <meta name="description" content="A finite vertical feed of short-form motion stories about Kevin, his systems thinking, current projects, and the arrival of AI as a collaborator.">
     <meta name="theme-color" content="#09090d">
@@ -186,6 +187,9 @@ html[data-embedded="true"] main{min-height:100vh!important;}
   
 <script>
 (function(){
+  // Only behave as an embedded interface inside the Kevinception shell (or with ?embed=1).
+  // On a direct visit the page keeps its own navigation and ordinary links.
+  if(!(window.parent!==window||new URLSearchParams(window.location.search).get('embed')==='1')) return;
   document.documentElement.dataset.embedded='true';
   document.addEventListener('click',function(event){
     var anchor=event.target && event.target.closest ? event.target.closest('a[href^="/"]') : null;
