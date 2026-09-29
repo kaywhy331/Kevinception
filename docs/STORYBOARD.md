@@ -1,8 +1,8 @@
 # Kevinception — Storyboard and user journeys
 
-**Product direction:** R3F-first hybrid experience  
-**Timeline:** 1990 → 2000 → 2010 → 2020 → 2030 → 2040  
-**Purpose:** Define every primary route, cinematic scene, interaction loop, transition, content reveal, mobile adaptation, and user journey.  
+**Product direction:** R3F-first hybrid experience\
+**Timeline:** 1990 → 2000 → 2010 → 2020 → 2030 → 2040\
+**Purpose:** Define every primary route, cinematic scene, interaction loop, transition, content reveal, mobile adaptation, and user journey.\
 **Status:** Design intent, originally written for the V7 planning baseline (2026-07-20). Pages 5, 7, and 8 were rewritten for 0.9.0 to match the shipped chapters (StealStreet Commerce OS, Morning, Together, Morning, After). Elsewhere, where this storyboard and the product differ, `NARRATIVE.md` and the code win. The standalone Profile page (`/portfolio`) has since merged into About.
 
 ---
@@ -256,7 +256,7 @@ The tube television lights up.
 
 Text panel:
 
-> **1990 — KevinVision**  
+> **1990 — KevinVision**\
 > Technology feels like magic. Games, channels, buttons, and signals teach that an interface can open another world.
 
 Actions:
@@ -678,8 +678,8 @@ A conversation can open other windows without closing the IM.
 
 Example:
 
-> Visitor: Show me a project where Kevin turned a messy process into a system.  
-> Buddy: The strongest match is [Project]. Kevin clarified the operating model, connected the workflow, and designed the execution system.  
+> Visitor: Show me a project where Kevin turned a messy process into a system.\
+> Buddy: The strongest match is [Project]. Kevin clarified the operating model, connected the workflow, and designed the execution system.\
 > Actions: Open Project · Quick Results · How He Approached It
 
 #### Kevin Explorer
