@@ -1,54 +1,6 @@
-import fs from 'node:fs';
-import path from 'node:path';
-import os from 'node:os';
-import puppeteer from 'puppeteer-core';
+import { artifactPath, baseUrl as base, launchBrowser, writeReport } from './lib/browser.mjs';
 
-const base = process.env.BASE_URL ?? 'http://127.0.0.1:4321';
-
-function candidates() {
-  const list = [process.env.CHROME_PATH, process.env.CHROMIUM_PATH];
-  if (process.platform === 'win32') {
-    for (const root of [process.env.PROGRAMFILES, process.env['PROGRAMFILES(X86)'], process.env.LOCALAPPDATA]) {
-      if (!root) continue;
-      list.push(
-        path.join(root, 'Google', 'Chrome', 'Application', 'chrome.exe'),
-        path.join(root, 'Chromium', 'Application', 'chrome.exe'),
-        path.join(root, 'Microsoft', 'Edge', 'Application', 'msedge.exe')
-      );
-    }
-  } else if (process.platform === 'darwin') {
-    list.push(
-      '/Applications/Google Chrome.app/Contents/MacOS/Google Chrome',
-      '/Applications/Chromium.app/Contents/MacOS/Chromium',
-      '/Applications/Microsoft Edge.app/Contents/MacOS/Microsoft Edge'
-    );
-  } else {
-    list.push('/usr/bin/chromium', '/usr/bin/chromium-browser', '/usr/bin/google-chrome', '/usr/bin/google-chrome-stable');
-    const playwrightCache = path.join(os.homedir(), '.cache', 'ms-playwright');
-    if (fs.existsSync(playwrightCache)) {
-      for (const directory of fs.readdirSync(playwrightCache).sort().reverse()) {
-        list.push(
-          path.join(playwrightCache, directory, 'chrome-linux64', 'chrome'),
-          path.join(playwrightCache, directory, 'chrome-linux', 'chrome')
-        );
-      }
-    }
-  }
-  return list.filter(Boolean);
-}
-
-const executablePath = candidates().find((candidate) => fs.existsSync(candidate));
-if (!executablePath) {
-  console.error('No supported Chromium browser was found. Set CHROME_PATH to Chrome, Chromium, or Edge.');
-  process.exit(1);
-}
-
-fs.mkdirSync('docs/previews', { recursive: true });
-const browser = await puppeteer.launch({
-  executablePath,
-  headless: true,
-  args: ['--no-sandbox', '--disable-dev-shm-usage', '--ignore-gpu-blocklist', '--enable-webgl', '--use-angle=swiftshader']
-});
+const { browser, executablePath } = await launchBrowser();
 const report = { generatedAt: new Date().toISOString(), browser: executablePath, base, pages: [], consoleErrors: [], pageErrors: [], requestFailures: [] };
 const page = await browser.newPage();
 page.on('console', (message) => { if (message.type() === 'error') report.consoleErrors.push(message.text()); });
@@ -70,21 +22,21 @@ async function visit(route, screenshot, readySelector = 'body') {
 }
 
 await page.setViewport({ width: 1440, height: 900, deviceScaleFactor: 1 });
-await visit('/', 'docs/previews/v7-threshold.png');
-await visit('/experience/', 'docs/previews/v7-timeline.png', 'canvas');
+await visit('/', artifactPath('previews', 'v7-threshold.png'));
+await visit('/experience/', artifactPath('previews', 'v7-timeline.png'), 'canvas');
 for (const year of ['1990', '2000', '2010', '2020', '2030', '2040']) {
-  await visit(`/experience/?year=${year}`, `docs/previews/v7-${year}-environment.png`, '.environment-panel');
+  await visit(`/experience/?year=${year}`, artifactPath('previews', `v7-${year}-environment.png`), '.environment-panel');
 }
 await visit('/experience/2010/', null, '.interface-mode.is-visible');
 await visit('/experience/2030/', null, '.interface-mode.is-visible');
-await visit('/portfolio/', 'docs/previews/v7-portfolio.png');
-await visit('/work/kevinception/', 'docs/previews/v7-case-study.png');
+await visit('/about/', artifactPath('previews', 'v7-about.png'));
+await visit('/work/kevinception/', artifactPath('previews', 'v7-case-study.png'));
 
 await page.setViewport({ width: 390, height: 844, deviceScaleFactor: 1 });
-await visit('/experience/?year=2020', 'docs/previews/v7-2020-mobile.png', '.environment-panel');
+await visit('/experience/?year=2020', artifactPath('previews', 'v7-2020-mobile.png'), '.environment-panel');
 report.mobileOverflow = await page.evaluate(() => document.documentElement.scrollWidth - document.documentElement.clientWidth);
 
 await browser.close();
-fs.writeFileSync('docs/RUNTIME_VERIFICATION_V7.json', JSON.stringify(report, null, 2));
+writeReport('runtime-verification', report);
 console.log(JSON.stringify(report, null, 2));
 if (report.pageErrors.length || report.consoleErrors.length || report.requestFailures.length || report.mobileOverflow > 1) process.exit(1);

@@ -1,32 +1,6 @@
-import fs from 'node:fs';
-import os from 'node:os';
-import path from 'node:path';
-import puppeteer from 'puppeteer-core';
+import { baseUrl as base, launchBrowser, writeReport } from './lib/browser.mjs';
 
-const base = process.env.BASE_URL ?? 'http://127.0.0.1:4321';
-const browserCandidates = [
-  process.env.CHROME_PATH,
-  process.env.CHROMIUM_PATH,
-  '/usr/bin/google-chrome',
-  '/usr/bin/google-chrome-stable',
-  '/usr/bin/chromium',
-  '/usr/bin/chromium-browser'
-].filter(Boolean);
-const playwrightCache = path.join(os.homedir(), '.cache', 'ms-playwright');
-if (fs.existsSync(playwrightCache)) {
-  for (const directory of fs.readdirSync(playwrightCache).sort().reverse()) {
-    browserCandidates.push(
-      path.join(playwrightCache, directory, 'chrome-linux64', 'chrome'),
-      path.join(playwrightCache, directory, 'chrome-linux', 'chrome')
-    );
-  }
-}
-const executablePath = browserCandidates.find((candidate) => fs.existsSync(candidate));
-if (!executablePath) throw new Error('No supported Chromium browser was found.');
-
-const browser = await puppeteer.launch({
-  executablePath,
-  headless: true,
+const { browser, executablePath } = await launchBrowser({
   args: ['--no-sandbox', '--disable-dev-shm-usage', '--enable-unsafe-swiftshader']
 });
 let page = await browser.newPage();
@@ -423,7 +397,7 @@ try {
   assert('The reviewed flows emit no unexpected request failures', report.requestFailures.length === 0, report.requestFailures.join(' | '));
 } finally {
   await browser.close();
-  fs.writeFileSync(path.join('docs', 'RUNTIME_COMMERCE_COEXISTENCE.json'), JSON.stringify(report, null, 2));
+  writeReport('runtime-commerce-coexistence', report);
 }
 
 console.log(JSON.stringify(report, null, 2));
