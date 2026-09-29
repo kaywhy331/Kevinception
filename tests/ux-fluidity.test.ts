@@ -72,8 +72,8 @@ describe('V7 fluid experience pass', () => {
     expect(canvas).toContain('function FrameBudgetController');
     expect(canvas).toContain("setFrameloop('demand')");
     expect(canvas).toContain("setFrameloop('never')");
-    expect(nexus).toContain('if (!active || !detail) return');
-    expect(echo).toContain('if (!active) return');
+    expect(nexus).toContain('if (!active || !detail || !animate) return');
+    expect(echo).toContain('if (!active || !animate) return');
     expect(echo).not.toContain('shards.current');
     expect(kevtok).toContain('if (!active || !reactions.current) return');
   });

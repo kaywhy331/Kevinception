@@ -5,22 +5,9 @@ import { createJSONStorage, persist } from 'zustand/middleware';
 import type { YearId } from '@/content/data';
 import type { ArtifactId } from './artifacts';
 import {
-  advanceFutureMission as advanceFutureMissionState,
-  beginFutureMission as beginFutureMissionState,
   createInitialFutureJourney,
   hydrateFutureJourney,
-  interpretEchoThought as interpretEchoThoughtState,
-  markEchoFinaleSeen as markEchoFinaleSeenState,
-  openEchoMemory as openEchoMemoryState,
-  resolveFutureMission as resolveFutureMissionState,
-  selectFutureMission as selectFutureMissionState,
-  setFutureAnswer as setFutureAnswerState,
-  setFutureAutonomy as setFutureAutonomyState,
-  setFutureObjective as setFutureObjectiveState,
-  type EchoMemoryId,
-  type FutureDecision,
-  type FutureJourneyState,
-  type FutureMissionId
+  type FutureJourneyState
 } from './future/futureJourney';
 import {
   advanceConsciousnessBehavior as advanceConsciousnessBehaviorState,
@@ -73,16 +60,6 @@ type ExperienceStore = {
   setArtifactsOpen: (open: boolean) => void;
   setWebglAvailable: (available: boolean) => void;
   discoverArtifact: (id: ArtifactId, year: YearId) => void;
-  chooseFutureMission: (missionId: FutureMissionId) => void;
-  setFutureObjective: (objective: string) => void;
-  setFutureAnswer: (questionId: string, answer: string) => void;
-  setFutureAutonomy: (autonomy: number) => void;
-  beginFutureMission: () => void;
-  advanceFutureMission: () => void;
-  resolveFutureMission: (decision: FutureDecision) => void;
-  interpretEchoThought: (thought: string) => void;
-  openEchoMemory: (memoryId: EchoMemoryId) => void;
-  markEchoFinaleSeen: () => void;
   selectCoexistenceMoment: (momentId: CoexistenceMomentId) => void;
   resolveCompanionConsent: (decision: Exclude<CompanionConsent, 'unasked'>) => void;
   setCoexistenceProvenance: (open: boolean) => void;
@@ -141,16 +118,6 @@ export const useExperienceStore = create<ExperienceStore>()(
           }
         };
       }),
-      chooseFutureMission: (missionId) => set((state) => ({ futureJourney: selectFutureMissionState(state.futureJourney, missionId) })),
-      setFutureObjective: (objective) => set((state) => ({ futureJourney: setFutureObjectiveState(state.futureJourney, objective) })),
-      setFutureAnswer: (questionId, answer) => set((state) => ({ futureJourney: setFutureAnswerState(state.futureJourney, questionId, answer) })),
-      setFutureAutonomy: (autonomy) => set((state) => ({ futureJourney: setFutureAutonomyState(state.futureJourney, autonomy) })),
-      beginFutureMission: () => set((state) => ({ futureJourney: beginFutureMissionState(state.futureJourney) })),
-      advanceFutureMission: () => set((state) => ({ futureJourney: advanceFutureMissionState(state.futureJourney) })),
-      resolveFutureMission: (decision) => set((state) => ({ futureJourney: resolveFutureMissionState(state.futureJourney, decision) })),
-      interpretEchoThought: (thought) => set((state) => ({ futureJourney: interpretEchoThoughtState(state.futureJourney, thought) })),
-      openEchoMemory: (memoryId) => set((state) => ({ futureJourney: openEchoMemoryState(state.futureJourney, memoryId) })),
-      markEchoFinaleSeen: () => set((state) => ({ futureJourney: markEchoFinaleSeenState(state.futureJourney) })),
       selectCoexistenceMoment: (momentId) => set((state) => ({
         futureJourney: { ...state.futureJourney, coexistence: selectCoexistenceMomentState(state.futureJourney.coexistence, momentId) }
       })),
@@ -181,7 +148,9 @@ export const useExperienceStore = create<ExperienceStore>()(
     }),
     {
       name: 'kevinception-v7',
-      version: 4,
+      // v5 retires the Nexus mission / Echo models: hydrateFutureJourney keeps
+      // only the 2030/2040 world state and drops the old mission/echo keys.
+      version: 5,
       storage: createJSONStorage(() => localStorage),
       migrate: (persistedState, version) => {
         const state = persistedState && typeof persistedState === 'object'

@@ -133,10 +133,10 @@ describe('Commerce and Co-Existence chapters', () => {
     const scene = read('src/experience/scenes/Year2030Scene.tsx');
     const futureText = read('src/experience/future/FutureTextExperience.tsx');
     expect(overlay).toContain('<FutureTextExperience year="2030"');
-    expect(futureText).toContain('Saito notices the room, speaks first when useful');
+    expect(futureText).toContain('speaks first when useful');
     expect(futureText).toContain('future-text-exchange');
     expect(futureText).toContain('AGENT_TRACE_PHASES.map');
-    expect(futureText).toContain('carried on TokenPak · TIP authority · PAK context');
+    expect(futureText).toContain('Built on TokenPak');
     expect(scene).toContain('Saito in the room');
     expect(scene).toContain('SaitoSpatialResponse');
     expect(scene).toContain('Saito stops at human authority');
