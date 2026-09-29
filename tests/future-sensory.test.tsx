@@ -84,5 +84,6 @@ describe('future transition and sound design', () => {
     expect(overlay).toContain('future-handoff-node--target');
     expect(styles).toContain('@keyframes future-handoff-packet');
     expect(styles).toContain('.transition-agents-to-echo.is-reverse');
+    expect(read('src/experience/ExperienceShell.tsx')).toContain("playFutureCue('handoff', state.sound)");
   });
 });

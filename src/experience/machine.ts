@@ -5,9 +5,7 @@ type Destination = 'timeline' | 'environment' | 'interface' | 'text';
 export const experienceMachine = setup({
   types: {
     events: {} as
-      | { type: 'SHOW_TIMELINE' }
       | { type: 'SHOW_ENVIRONMENT' }
-      | { type: 'ENTER_INTERFACE' }
       | { type: 'EXIT_INTERFACE' }
       | { type: 'START_TRANSITION' }
       | { type: 'END_TRANSITION'; destination: Exclude<Destination, 'text'> }
@@ -22,7 +20,6 @@ export const experienceMachine = setup({
     timeline: {
       on: {
         SHOW_ENVIRONMENT: 'environment',
-        ENTER_INTERFACE: 'interface',
         START_TRANSITION: 'transitioning',
         SHOW_TEXT: 'text',
         SYNC_VIEW: [
@@ -35,8 +32,6 @@ export const experienceMachine = setup({
     },
     environment: {
       on: {
-        SHOW_TIMELINE: 'timeline',
-        ENTER_INTERFACE: 'interface',
         START_TRANSITION: 'transitioning',
         SHOW_TEXT: 'text',
         SYNC_VIEW: [
@@ -50,7 +45,6 @@ export const experienceMachine = setup({
     interface: {
       on: {
         EXIT_INTERFACE: 'environment',
-        SHOW_TIMELINE: 'timeline',
         START_TRANSITION: 'transitioning',
         SHOW_TEXT: 'text',
         SYNC_VIEW: [

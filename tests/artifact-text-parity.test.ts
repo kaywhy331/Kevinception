@@ -13,7 +13,9 @@ describe('artifact completion and text fallback parity', () => {
     expect(artifacts.map((artifact) => artifact.discoveryYear)).toEqual(['1990', '2000', '2010', '2020', '2030']);
     const scene = read('src/experience/scenes/Year2010Scene.tsx');
     expect(scene).toContain("discover('project-blueprint', '2010')");
-    expect(scene).toContain('label="Discover Project Blueprint"');
+    // The hotspot names the object, not the answer (it used to read "Discover Project Blueprint").
+    expect(scene).toContain('label="Inspect the operating-system map"');
+    expect(scene).not.toContain('Discover Project Blueprint');
   });
 
   it('reports unique recovery progress and provides a completion payoff', () => {

@@ -1,11 +1,13 @@
 'use client';
 
-import { PerspectiveCamera, RenderTexture } from '@react-three/drei';
+import { PerspectiveCamera, RenderTexture, RoundedBox } from '@react-three/drei';
 import { useFrame } from '@react-three/fiber';
 import { useRef } from 'react';
 import * as THREE from 'three';
 import type { YearId } from '@/content/data';
 import { eraConfigs } from '../config';
+import { useExperienceActions } from '../ExperienceContext';
+import { Hoverable } from './SceneUtils';
 import { useExperienceStore } from '../store';
 import type { Quality } from '../types';
 import {
@@ -205,5 +207,36 @@ export function EraScreenPortal({ fromYear, size, position = [0, 0, 0], rotation
         </mesh>
       ) : <StaticPortalPreview targetYear={targetYear} size={size} quality={quality} />}
     </group>
+  );
+}
+
+/**
+ * A framed “window” on the back wall that previews the next era. The room's own
+ * device screen shows its own era; this window is the teaser for what comes
+ * next, and selecting it travels there.
+ */
+export function NextEraWindow({ fromYear, position, size, active, frameColor = '#1d1a17' }: {
+  fromYear: ScreenPortalSourceYear;
+  position: [number, number, number];
+  size: [number, number];
+  active: boolean;
+  frameColor?: string;
+}) {
+  const { navigateToYear } = useExperienceActions();
+  const targetYear = SCREEN_PORTAL_TARGETS[fromYear];
+  const target = eraConfigs[targetYear];
+  return (
+    <Hoverable label={`Look ahead: ${targetYear} ${target.chapterName}`} onClick={() => navigateToYear(targetYear)}>
+      <group position={position}>
+        <RoundedBox args={[size[0] + 0.24, size[1] + 0.24, 0.1]} radius={0.05} smoothness={2} castShadow>
+          <meshStandardMaterial color={frameColor} roughness={0.6} metalness={0.15} />
+        </RoundedBox>
+        <mesh position={[0, -size[1] / 2 - 0.07, 0.056]}>
+          <boxGeometry args={[size[0] * 0.5, 0.035, 0.012]} />
+          <meshBasicMaterial color={target.accent} toneMapped={false} />
+        </mesh>
+        <EraScreenPortal fromYear={fromYear} size={size} position={[0, 0, 0.056]} active={active} />
+      </group>
+    </Hoverable>
   );
 }

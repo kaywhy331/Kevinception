@@ -18,10 +18,17 @@ describe('screens-within-screens portals', () => {
       '2020': '2030'
     });
 
+    // Each room's own device shows its own era; a framed wall window carries the
+    // next-era preview (and travels there when selected).
+    const portal = read('src/experience/scenes/EraScreenPortal.tsx');
+    expect(portal).toContain('export function NextEraWindow');
+    expect(portal).toContain('<EraScreenPortal fromYear={fromYear}');
+    expect(portal).toContain('navigateToYear(targetYear)');
     for (const sourceYear of Object.keys(SCREEN_PORTAL_TARGETS)) {
       const scene = read(`src/experience/scenes/Year${sourceYear}Scene.tsx`);
-      expect(scene).toContain("import { EraScreenPortal } from './EraScreenPortal'");
-      expect(scene).toContain(`<EraScreenPortal fromYear="${sourceYear}"`);
+      expect(scene).toContain("import { NextEraWindow } from './EraScreenPortal'");
+      expect(scene).toContain(`<NextEraWindow fromYear="${sourceYear}"`);
+      expect(scene).not.toContain('<EraScreenPortal');
     }
   });
 

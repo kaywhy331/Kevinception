@@ -8,40 +8,67 @@ import { CameraRig } from './CameraRig';
 import { ExperienceWorld } from './ExperienceWorld';
 import { useExperienceStore } from './store';
 import { getWebGLRendererName, resolveAdaptivePreferences } from './performanceProfile';
+import type { Quality } from './types';
 
 const HighQualityEffects = lazy(() => import('./HighQualityEffects'));
 
+type Frameloop = 'always' | 'demand' | 'never';
+
+/** Frames per second for ambient life (dust, screens, antenna) once the visitor is idle. */
+const AMBIENT_FPS: Record<Quality, number> = { high: 30, standard: 24, lite: 12 };
+const IDLE_AFTER: Record<Quality, number> = { high: 3500, standard: 3500, lite: 1500 };
+
+/**
+ * Runs the render loop at full rate while the visitor interacts, then settles
+ * into a low-rate ambient loop rather than freezing. `setFrameloop` resets the
+ * R3F clock, so it is only called when the mode actually changes.
+ */
 function FrameBudgetController() {
-  const { setFrameloop, invalidate } = useThree();
+  const setFrameloop = useThree((state) => state.setFrameloop);
+  const invalidate = useThree((state) => state.invalidate);
+  const get = useThree((state) => state.get);
   const motion = useExperienceStore((state) => state.motion);
   const viewMode = useExperienceStore((state) => state.viewMode);
   const quality = useExperienceStore((state) => state.quality);
 
   useEffect(() => {
     let idleTimer: number | null = null;
-    const clearIdle = () => {
-      if (idleTimer !== null) window.clearTimeout(idleTimer);
-      idleTimer = null;
+    let ambientTimer: number | null = null;
+    const reduced = motion !== 'full';
+    const layerOpen = viewMode === 'interface' || viewMode === 'text';
+    const setLoop = (mode: Frameloop) => {
+      if (get().frameloop !== mode) setFrameloop(mode);
     };
-    const demandOnly = motion === 'reduced' || viewMode === 'interface' || viewMode === 'text';
-    const sleep = () => {
-      setFrameloop('demand');
+    const clearTimers = () => {
+      if (idleTimer !== null) window.clearTimeout(idleTimer);
+      if (ambientTimer !== null) window.clearInterval(ambientTimer);
+      idleTimer = null;
+      ambientTimer = null;
+    };
+    const settle = () => {
+      clearTimers();
+      setLoop('demand');
       invalidate();
+      if (!reduced && !layerOpen) ambientTimer = window.setInterval(() => invalidate(), 1000 / AMBIENT_FPS[quality]);
     };
     const wake = () => {
-      clearIdle();
       if (document.hidden) {
-        setFrameloop('never');
+        clearTimers();
+        setLoop('never');
         return;
       }
-      if (demandOnly) {
-        sleep();
+      if (reduced || layerOpen) {
+        clearTimers();
+        setLoop('demand');
+        invalidate();
         return;
       }
-      setFrameloop('always');
-      idleTimer = window.setTimeout(sleep, quality === 'lite' ? 850 : 3500);
+      if (ambientTimer !== null) window.clearInterval(ambientTimer);
+      ambientTimer = null;
+      setLoop('always');
+      if (idleTimer !== null) window.clearTimeout(idleTimer);
+      idleTimer = window.setTimeout(settle, IDLE_AFTER[quality]);
     };
-    const onVisibility = () => wake();
 
     wake();
     window.addEventListener('pointermove', wake, { passive: true });
@@ -49,36 +76,41 @@ function FrameBudgetController() {
     window.addEventListener('wheel', wake, { passive: true });
     window.addEventListener('touchstart', wake, { passive: true });
     window.addEventListener('keydown', wake);
-    document.addEventListener('visibilitychange', onVisibility);
+    document.addEventListener('visibilitychange', wake);
     return () => {
-      clearIdle();
+      clearTimers();
       window.removeEventListener('pointermove', wake);
       window.removeEventListener('pointerdown', wake);
       window.removeEventListener('wheel', wake);
       window.removeEventListener('touchstart', wake);
       window.removeEventListener('keydown', wake);
-      document.removeEventListener('visibilitychange', onVisibility);
+      document.removeEventListener('visibilitychange', wake);
     };
-  }, [invalidate, motion, quality, setFrameloop, viewMode]);
+  }, [get, invalidate, motion, quality, setFrameloop, viewMode]);
 
   return null;
 }
+
+const DPR: Record<Quality, [number, number]> = {
+  high: [1, 1.75],
+  standard: [1, 1.5],
+  lite: [0.75, 1]
+};
 
 export default function ExperienceCanvas() {
   const quality = useExperienceStore((state) => state.quality);
   const motion = useExperienceStore((state) => state.motion);
   const viewMode = useExperienceStore((state) => state.viewMode);
   const applyAdaptivePreferences = useExperienceStore((state) => state.applyAdaptivePreferences);
-  const dpr: [number, number] = quality === 'high' ? [1, 1.7] : quality === 'standard' ? [0.85, 1.25] : [0.65, 1];
   return (
     <Canvas
       className="experience-canvas"
       shadows={quality === 'high'}
-      dpr={dpr}
+      dpr={DPR[quality]}
       frameloop="always"
-      performance={{ min: 0.55, max: 1, debounce: 240 }}
+      performance={{ min: 0.6, max: 1, debounce: 240 }}
       gl={{ antialias: quality !== 'lite', powerPreference: 'high-performance', alpha: false }}
-      camera={{ position: [0, 6.8, 15.5], fov: 42, near: 0.1, far: 160 }}
+      camera={{ position: [0, 6.8, 15.5], fov: 42, near: 0.1, far: 180 }}
       onCreated={({ gl }) => {
         gl.outputColorSpace = THREE.SRGBColorSpace;
         gl.toneMapping = THREE.ACESFilmicToneMapping;
@@ -87,12 +119,12 @@ export default function ExperienceCanvas() {
       }}
     >
       <Suspense fallback={null}>
-        <AdaptiveDpr pixelated={quality === 'lite'} />
+        <AdaptiveDpr />
         <FrameBudgetController />
         <CameraRig />
         <ExperienceWorld />
-        {quality === 'high' && motion === 'full' && viewMode !== 'interface' && (
-          <Suspense fallback={null}><HighQualityEffects /></Suspense>
+        {quality === 'high' && motion === 'full' && (
+          <Suspense fallback={null}><HighQualityEffects enabled={viewMode !== 'interface' && viewMode !== 'text'} /></Suspense>
         )}
       </Suspense>
     </Canvas>
