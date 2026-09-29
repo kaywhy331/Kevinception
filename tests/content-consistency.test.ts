@@ -34,7 +34,8 @@ describe('content consistency', () => {
   });
 
   it('keeps the synchronized legacy payloads on the same figure', () => {
-    for (const year of ['1990', '2020', '2030', '2040']) {
+    // 2030/2040 are native React chapters; only 1990 and 2020 still embed a synced legacy payload.
+    for (const year of ['1990', '2020']) {
       const html = fs.readFileSync(path.join(process.cwd(), `public/legacy/experience/${year}/index.html`), 'utf8');
       const payload = html.match(/id="era-world-data">([\s\S]*?)<\/script>/)?.[1] ?? '';
       const conflicting = [...payload.matchAll(CHANNEL_CLAIM)].filter((match) => `${match[1] ?? match[2]}+` !== HISTORICAL_CHANNEL_COUNT);
