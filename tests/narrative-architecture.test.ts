@@ -17,8 +17,9 @@ describe('V7.6 narrative architecture', () => {
     for (const year of CHAPTER_ORDER) {
       expect(chapterNarrative[year].chapterThesis.length).toBeGreaterThan(80);
       expect(chapterNarrative[year].capabilityLinks.length).toBeGreaterThanOrEqual(4);
-      expect(eraConfigs[year].title).toBe(eraConfigs[year].experienceName);
-      expect(eraConfigs[year].product).toBe(eraConfigs[year].medium);
+      expect(eraConfigs[year]).not.toHaveProperty('title');
+      expect(eraConfigs[year]).not.toHaveProperty('product');
+      expect(eraConfigs[year].experienceName).toBe(chapterNarrative[year].experienceName);
     }
   });
 

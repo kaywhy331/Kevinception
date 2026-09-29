@@ -13,7 +13,7 @@ describe('V7.7 device-native navigation', () => {
     expect(camera).toContain("const futureRoom = activeYear === '2030' || activeYear === '2040'");
     expect(camera).toContain('position: [stationX, narrow ? 5.75');
     expect(camera).toContain('target: [stationX, futureRoom ? 2.2');
-    expect(camera).toContain("motion === 'reduced' || futureRoom");
+    expect(camera).toContain("motion !== 'full' || (futureRoom && viewMode !== 'timeline')");
     expect(camera).not.toContain('futureCameraOffset');
     expect(camera).not.toContain('futureTargetOffset');
   });
@@ -22,9 +22,9 @@ describe('V7.7 device-native navigation', () => {
     const overlay = read('src/experience/ExperienceOverlay.tsx');
     const styles = read('app/device-native-pass.css');
     expect(overlay).toContain('interface-mode__chapter');
-    expect(overlay).toContain('aria-label="Experience frame controls"');
-    expect(overlay).toContain('>Step back</button>');
-    expect(overlay).toContain('>Chapters</button>');
+    expect(overlay).toContain('className="interface-mode__back"');
+    expect(overlay).toContain('aria-label="Chapter steps"');
+    expect(overlay).not.toContain('>Step back</button>');
     expect(overlay).toContain(".era-utility{display:none!important}");
     expect(styles).toContain('grid-template-rows: 2.35rem minmax(0,1fr)');
     expect(styles).toContain('.mode-interface .experience-toolbar { display: none; }');
@@ -36,7 +36,7 @@ describe('V7.7 device-native navigation', () => {
     expect(overlay).toContain('experience-menu__popover');
     expect(overlay).toContain('Artifacts <span>{foundCount}/{artifacts.length}</span>');
     expect(overlay).toContain('Text version');
-    expect(overlay).toContain('<div className="experience-menu">');
+    expect(overlay).toContain('<div className="experience-menu" ref={wrapper}');
     expect(overlay).not.toContain('experience-menu hide-below-680');
   });
 
@@ -63,7 +63,7 @@ describe('V7.7 device-native navigation', () => {
     expect(mobileNav).toContain('onClick={() => setOpen(false)}');
     expect(chrome).toContain('<Link href="/experience/">Timeline</Link>');
     expect(chrome).toContain('<Link href="/work/">Case studies</Link>');
-    expect(timelinePage).toContain("title: 'Timeline'");
+    expect(timelinePage).toContain("title: 'Chapters'");
     expect(caseStudiesPage).toContain("title: 'Case studies'");
     expect(styles).toContain('.site-header__mobile-nav { display: block; }');
     expect(styles).not.toContain('nav a:not(.site-header__cta) { display: none; }');
@@ -104,9 +104,10 @@ describe('V7.7 device-native navigation', () => {
     const globalStyles = read('app/globals.css');
     const environmentStyles = read('app/environment-pass.css');
     expect(overlay).toContain('className="experience-menu"');
-    expect(overlay).toContain('className="hide-below-640" href="/portfolio/"');
+    // Site links live in the Menu at every width instead of being hidden on phones.
+    expect(overlay).not.toContain('hide-below-640');
+    expect(overlay).toContain('<Link role="menuitem" href="/contact/"');
     expect(globalStyles).not.toContain('.hide-below-680 { display: none !important; }');
-    expect(globalStyles).toContain('.hide-below-640 { display: none !important; }');
     expect(globalStyles).toContain('-webkit-line-clamp: 3');
     expect(globalStyles).toContain('.artifact-drawer section small { color: #7f8998; }');
     expect(globalStyles).not.toMatch(/\.experience-toolbar[^\n]*:nth-child/);
@@ -124,9 +125,13 @@ describe('V7.7 device-native navigation', () => {
     expect(shell).toContain('tabIndex={-1}');
     expect(timelinePage).not.toContain('id="main-content"');
     expect(eraPage).not.toContain('id="main-content"');
-    expect(sceneUtils).toContain('<Html center className="scene-hotspot-control"');
-    expect(sceneUtils).toContain('<button type="button" onClick={onClick}>{label}</button>');
-    expect(styles).toContain('.scene-hotspot-control button:focus-visible');
+    expect(sceneUtils).toContain('<Html position={anchor} center className="scene-hotspot-control"');
+    expect(sceneUtils).toContain('onClick={onClick}');
+    expect(sceneUtils).toContain('<span>{label}</span>');
+    expect(styles).toContain('.scene-hotspot:focus-visible');
+    expect(styles).toContain('.scene-hotspot:hover span');
+    // Hotspots leave the tab order whenever a layer covers the scene.
+    expect(shell).toContain('<div className="experience-scene" inert={sceneInert}>');
   });
 
   it('loads a device-native KevTok layer inside the embedded 2020 interface', () => {

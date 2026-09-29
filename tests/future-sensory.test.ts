@@ -25,7 +25,7 @@ describe('future transition and sound design', () => {
     expect(future).toContain("playFutureCue('presence', sound)");
     expect(future).toContain("'consent' : 'refusal'");
     expect(future).toContain("'conjecture' : 'agency'");
-    expect(shell).toContain("playFutureCue('handoff', sound)");
+    expect(shell).toContain("playFutureCue('handoff', state.sound)");
   });
 
   it('choreographs the selected mug and its consent between 2030 and 2040', () => {

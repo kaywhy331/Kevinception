@@ -18,7 +18,7 @@ describe('V7.5 visual scene refinements', () => {
     const scene = read('src/experience/scenes/Year2000Scene.tsx');
     expect(scene).toContain('position={[4.42, 1.47, 0.05]}');
     expect(scene).toContain('color="#bcb7a6"');
-    expect(scene).toContain('Inspect 56K modem');
+    expect(scene).toContain('Inspect the 56K modem');
     expect(scene).not.toContain('<Cable');
     expect(scene).not.toContain('ArtifactMesh');
   });
@@ -29,7 +29,7 @@ describe('V7.5 visual scene refinements', () => {
     expect(scene).toContain('function Parcel');
     expect(scene).toContain('<Shelf');
     expect(scene).toContain('<Line points={systemMapPoints}');
-    expect(scene).toContain('Discover Project Blueprint');
+    expect(scene).toContain('Inspect the operating-system map');
     expect(scene).not.toContain('phone');
     expect(scene).not.toContain('Camera');
     expect(scene).not.toContain('<Cable');

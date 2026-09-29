@@ -22,7 +22,8 @@ describe('V7 connected physical environment pass', () => {
     expect(layout).toContain('DESK_SURFACE_Y = 1.55');
     expect(layout).toContain('GroundedDesk');
     expect(layout).toContain('MediaConsole');
-    expect(layout).toContain('FloorPedestal');
+    // The unused FloorPedestal/Pedestal primitives were removed as dead code.
+    expect(layout).not.toContain('FloorPedestal');
     expect(livingRoom).toContain('<MediaConsole');
     expect(computerRoom).toContain('<GroundedDesk');
   });
@@ -73,6 +74,7 @@ describe('V7 connected physical environment pass', () => {
     expect(styles).toContain('.persistent-year-selector');
     expect(layout).not.toContain('PersistentTimelineNav');
     expect(overlay).toContain('function ChapterCard');
-    expect(overlay).toContain("showChapterNavigation && <YearSelector />");
+    expect(overlay).toContain("(viewMode === 'environment' || viewMode === 'transition') && <YearSelector />");
+    expect(overlay).toContain("viewMode === 'timeline' && <OverviewPanel />");
   });
 });
