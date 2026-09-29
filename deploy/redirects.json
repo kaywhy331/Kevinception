@@ -1,0 +1,32 @@
+{
+  "$comment": "Single source for permanent (301) redirects. Every deploy target (netlify.toml, public/_redirects, vercel.json, deploy/nginx.conf, deploy/cloudfront-viewer-request.js) must carry each entry; npm run check:security enforces parity. Paths are matched with or without the trailing slash.",
+  "redirects": [
+    { "from": "/experience/gen-x/", "to": "/experience/1990/" },
+    { "from": "/experience/xennial/", "to": "/experience/2000/" },
+    { "from": "/experience/millennial/", "to": "/experience/2010/" },
+    { "from": "/experience/gen-z/", "to": "/experience/2020/" },
+    { "from": "/experience/gen-alpha/", "to": "/experience/2030/" },
+    { "from": "/experience/gen-beta/", "to": "/experience/2040/" },
+    { "from": "/portfolio/", "to": "/about/" },
+    { "from": "/legacy/", "to": "/experience/" },
+    { "from": "/legacy/experience/", "to": "/experience/" },
+    { "from": "/legacy/experience/gen-x/", "to": "/experience/1990/" },
+    { "from": "/legacy/experience/xennial/", "to": "/experience/2000/" },
+    { "from": "/legacy/experience/millennial/", "to": "/experience/2010/" },
+    { "from": "/legacy/experience/gen-z/", "to": "/experience/2020/" },
+    { "from": "/legacy/experience/gen-alpha/", "to": "/experience/2030/" },
+    { "from": "/legacy/experience/gen-beta/", "to": "/experience/2040/" },
+    { "from": "/legacy/experience/2030/", "to": "/experience/2030/" },
+    { "from": "/legacy/experience/2040/", "to": "/experience/2040/" },
+    { "from": "/legacy/about/", "to": "/about/" },
+    { "from": "/legacy/portfolio/", "to": "/about/" },
+    { "from": "/legacy/resume/", "to": "/resume/" },
+    { "from": "/legacy/contact/", "to": "/contact/" },
+    { "from": "/legacy/work/", "to": "/work/" },
+    { "from": "/legacy/work/agentic-work-fleet/", "to": "/work/agentic-work-fleet/" },
+    { "from": "/legacy/work/kevin-online/", "to": "/work/kevin-online/" },
+    { "from": "/legacy/work/kevinception/", "to": "/work/kevinception/" },
+    { "from": "/legacy/work/mcp-knowledge-logistics/", "to": "/work/mcp-knowledge-logistics/" },
+    { "from": "/legacy/work/tokenpak/", "to": "/work/tokenpak/" }
+  ]
+}

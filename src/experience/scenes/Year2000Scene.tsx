@@ -6,15 +6,21 @@ import { useFrame } from '@react-three/fiber';
 import * as THREE from 'three';
 import { eraConfigs } from '../config';
 import { useExperienceActions } from '../ExperienceContext';
-import { DeviceScreen, Dust, Hoverable } from './SceneUtils';
+import { useExperienceStore } from '../store';
+import { DeviceScreen, Dust, Hoverable, useScreenTexture } from './SceneUtils';
 import { PictureFrame, RoomShell } from './EnvironmentPrimitives';
-import { EraScreenPortal } from './EraScreenPortal';
+import { NextEraWindow } from './EraScreenPortal';
 import { DESK_SURFACE_Y, GroundedDesk, WallDisplay } from './SceneLayout';
 
-export function Year2000Scene({ active }: { active: boolean; timeline: boolean }) {
+export function Year2000Scene({ active }: { active: boolean }) {
   const config = eraConfigs['2000'];
   const { enterYear, discover } = useExperienceActions();
+  const handleFound = useExperienceStore((state) => state.artifacts['identity-handle'].discoveredYears.includes('2000'));
   const [power, setPower] = useState(true);
+  const signOnTexture = useScreenTexture([
+    { text: config.experienceName, size: 46, color: '#ffffff' },
+    { text: 'Sign on · choose a screen name', size: 22, color: '#d9ecff', weight: 600 }
+  ], { background: '#1d5f8c', font: 'Tahoma, Verdana, sans-serif' });
   const modemLights = useRef<THREE.Group>(null);
   useFrame(({ clock }) => {
     if (!active || !power || !modemLights.current) return;
@@ -32,7 +38,7 @@ export function Year2000Scene({ active }: { active: boolean; timeline: boolean }
       <GroundedDesk position={[-0.25, 0, 0.35]} size={[7.65, 3.0]} topColor="#6f523d" legColor="#3b2d25" drawers />
 
       <PictureFrame position={[-3.75, 4.12, -3.36]} size={[1.65, 1.2]} frameColor="#20252b" imageColor="#354d68" accent="#6bbcff" />
-      <PictureFrame position={[3.75, 4.0, -3.36]} size={[1.45, 1.75]} frameColor="#2b2622" imageColor="#7b694f" accent="#f6c96c" />
+      <NextEraWindow fromYear="2000" position={[3.75, 4.1, -3.3]} size={[1.5, 1.0]} active={active} frameColor="#2b2622" />
       <group position={[0.2, 4.15, -3.33]}>
         <RoundedBox args={[3.4, 1.28, 0.12]} radius={0.06} smoothness={2} castShadow><meshStandardMaterial color="#6e5945" roughness={0.95} /></RoundedBox>
         {[
@@ -51,8 +57,7 @@ export function Year2000Scene({ active }: { active: boolean; timeline: boolean }
         <Hoverable label="Enter Kevin Online" onClick={() => enterYear('2000')}>
           <group position={[0, 0.2, 1.08]}>
             <DeviceScreen size={[3.75, 2.55]} color={power ? '#07152b' : '#020202'} emissive={power ? '#197fb9' : '#000000'} active={active && power} radius={0.28} glass />
-            {power && <mesh position={[0, 0, 0.105]}><planeGeometry args={[3.5, 2.3]} /><meshBasicMaterial color="#1d638e" transparent opacity={0.22} /></mesh>}
-            <EraScreenPortal fromYear="2000" size={[3.5, 2.3]} position={[0, 0, 0.12]} active={active} enabled={power} />
+            {power && signOnTexture && <mesh position={[0, 0, 0.105]}><planeGeometry args={[3.5, 2.3]} /><meshBasicMaterial map={signOnTexture} transparent opacity={0.92} toneMapped={false} /></mesh>}
           </group>
         </Hoverable>
         <group position={[0, -1.55, 1.1]}>
@@ -92,7 +97,7 @@ export function Year2000Scene({ active }: { active: boolean; timeline: boolean }
         </group>
       ))}
 
-      <Hoverable label="Inspect 56K modem" onClick={() => discover('identity-handle', '2000')}>
+      <Hoverable label="Inspect the 56K modem" onClick={() => discover('identity-handle', '2000')} found={handleFound}>
         <group position={[2.65, DESK_SURFACE_Y + 0.2, 1.35]}>
           <RoundedBox args={[1.5, 0.38, 0.8]} radius={0.09} smoothness={3} castShadow><meshStandardMaterial color="#aaa594" roughness={0.56} /></RoundedBox>
           <mesh position={[0, 0, 0.41]}><boxGeometry args={[1.25, 0.24, 0.035]} /><meshStandardMaterial color="#3a3c3f" roughness={0.48} /></mesh>

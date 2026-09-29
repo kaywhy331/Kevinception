@@ -5,12 +5,12 @@ import type { YearId } from '@/content/data';
 import type { ArtifactId } from './artifacts';
 
 type ExperienceActions = {
-  /** Preview a year in the physical timeline without opening its application. */
+  /** Move to a chapter's room (or its text version while reading text). */
   navigateToYear: (year: YearId) => void;
   /** Enter the selected year's functional interface directly. */
   enterYear: (year?: YearId) => void;
+  /** Open the Chapters overview. */
   showTimeline: () => void;
-  openInterface: () => void;
   closeInterface: () => void;
   showTextMode: () => void;
   closeTextMode: () => void;

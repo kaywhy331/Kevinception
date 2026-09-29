@@ -1,6 +1,6 @@
 'use client';
 
-import { useRef } from 'react';
+import { useMemo, useRef } from 'react';
 import { RoundedBox } from '@react-three/drei';
 import { useFrame } from '@react-three/fiber';
 import * as THREE from 'three';
@@ -28,6 +28,7 @@ const momentObjects: Array<{
 ];
 
 const saitoPosition: [number, number, number] = [0, 4.18, -3.62];
+const saitoVector = new THREE.Vector3(...saitoPosition);
 const commitmentDialPosition: [number, number, number] = [-1.62, 1.74, 1.05];
 
 type SaitoActionTarget = { to: [number, number, number]; gated?: boolean };
@@ -68,8 +69,9 @@ const responseTargets: Record<CoexistenceMomentId, readonly SaitoActionTarget[]>
   ]
 };
 
-function SaitoActionChannel({ active, target, index, color, privateRestraint, actStatus }: {
+function SaitoActionChannel({ active, animate, target, index, color, privateRestraint, actStatus }: {
   active: boolean;
+  animate: boolean;
   target: SaitoActionTarget;
   index: number;
   color: string;
@@ -85,20 +87,27 @@ function SaitoActionChannel({ active, target, index, color, privateRestraint, ac
         saitoPosition[2] + (target.to[2] - saitoPosition[2]) * .58
       ]
     : target.to;
+  // Targets are module constants, so the vector is built once per channel.
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  const actionEndVector = useMemo(() => new THREE.Vector3(...actionEnd), [target]);
+  // With motion reduced the signal holds mid-flight: a legible still frame. The
+  // array is memoized so re-renders never snap an animating signal back.
+  const restingPosition = useMemo<[number, number, number]>(
+    () => (animate ? saitoPosition : saitoVector.clone().lerp(actionEndVector, .6).toArray()),
+    [animate, actionEndVector]
+  );
 
+  // Allocation-free, and idle whenever the room is not live or motion is reduced.
   useFrame(({ clock }) => {
-    const actionProgress = active ? (clock.elapsedTime * .42 + .48 + index * .19) % 1 : 0;
-    outgoingSignal.current?.position.lerpVectors(
-      new THREE.Vector3(...saitoPosition),
-      new THREE.Vector3(...actionEnd),
-      actionProgress
-    );
+    if (!active || !animate) return;
+    const actionProgress = (clock.elapsedTime * .42 + .48 + index * .19) % 1;
+    outgoingSignal.current?.position.lerpVectors(saitoVector, actionEndVector, actionProgress);
   });
 
   return (
     <>
       <CylinderBetween from={saitoPosition} to={actionEnd} radius={.016} color={gated ? '#c65d3b' : color} emissiveIntensity={active ? .72 : .07} transparent opacity={privateRestraint ? .1 : active ? .38 : .06} />
-      <mesh ref={outgoingSignal} userData={{ label: gated ? 'Saito stops at human authority' : 'Saito changes the permitted room surface' }}>
+      <mesh ref={outgoingSignal} position={restingPosition} userData={{ label: gated ? 'Saito stops at human authority' : 'Saito changes the permitted room surface' }}>
         <sphereGeometry args={[gated ? .095 : .07, 16, 12]} />
         <meshBasicMaterial color={gated ? '#e36a43' : '#fff0b7'} transparent opacity={privateRestraint ? .28 : active ? .9 : .1} />
       </mesh>
@@ -113,8 +122,9 @@ function SaitoActionChannel({ active, target, index, color, privateRestraint, ac
   );
 }
 
-function SaitoSpatialResponse({ active, momentId, decision }: {
+function SaitoSpatialResponse({ active, animate, momentId, decision }: {
   active: boolean;
+  animate: boolean;
   momentId: CoexistenceMomentId;
   decision: 'unasked' | 'kept' | 'refused';
 }) {
@@ -124,20 +134,17 @@ function SaitoSpatialResponse({ active, momentId, decision }: {
   const privateRestraint = momentId === 'care';
   const color = decision === 'refused' ? '#b65f44' : decision === 'kept' ? '#fff0ae' : object.color;
   const actStatus = coexistenceMoments[momentId].agent.steps.act.status;
+  const objectVector = useMemo(() => new THREE.Vector3(...object.position), [object]);
 
   useFrame(({ clock }) => {
-    const inputProgress = active ? (clock.elapsedTime * .42) % 1 : 0;
-    incomingSignal.current?.position.lerpVectors(
-      new THREE.Vector3(...object.position),
-      new THREE.Vector3(...saitoPosition),
-      inputProgress
-    );
+    if (!active || !animate) return;
+    incomingSignal.current?.position.lerpVectors(objectVector, saitoVector, (clock.elapsedTime * .42) % 1);
   });
 
   return (
     <group userData={{ label: `Saito spatial response · ${coexistenceMoments[momentId].agent.id}` }}>
       <CylinderBetween from={object.position} to={saitoPosition} radius={.011} color={color} emissiveIntensity={active ? .58 : .06} transparent opacity={active ? .28 : .05} />
-      <mesh ref={incomingSignal} userData={{ label: 'Permissioned room input reaches Saito' }}>
+      <mesh ref={incomingSignal} position={object.position} userData={{ label: 'Permissioned room input reaches Saito' }}>
         <sphereGeometry args={[.075, 16, 12]} />
         <meshBasicMaterial color="#fff9df" transparent opacity={active ? .95 : .12} />
       </mesh>
@@ -145,6 +152,7 @@ function SaitoSpatialResponse({ active, momentId, decision }: {
         <SaitoActionChannel
           key={`${momentId}-${target.to.join(':')}`}
           active={active}
+          animate={animate}
           target={target}
           index={index}
           color={color}
@@ -259,14 +267,15 @@ function ApartmentFurniture({ active }: { active: boolean }) {
 
 export function Year2030Scene({ active, detail = true }: { active: boolean; timeline: boolean; detail?: boolean }) {
   const config = eraConfigs['2030'];
-  const { enterYear, discover } = useExperienceActions();
+  const { enterYear } = useExperienceActions();
   const coexistence = useExperienceStore((state) => state.futureJourney.coexistence);
   const selectMoment = useExperienceStore((state) => state.selectCoexistenceMoment);
+  const animate = useExperienceStore((state) => state.motion) !== 'reduced';
   const saito = useRef<THREE.Group>(null);
   const hand = useRef<THREE.Group>(null);
 
   useFrame(({ clock }) => {
-    if (!active || !detail) return;
+    if (!active || !detail || !animate) return;
     if (saito.current) {
       const breath = 1 + Math.sin(clock.elapsedTime * 1.15) * .018;
       saito.current.scale.setScalar(breath);
@@ -275,17 +284,15 @@ export function Year2030Scene({ active, detail = true }: { active: boolean; time
     if (hand.current) hand.current.position.x = -2.15 + Math.sin(clock.elapsedTime * .72) * .28;
   });
 
-  const chooseMoment = (id: CoexistenceMomentId) => {
-    selectMoment(id);
-    if (id === 'care') discover('human-gate', '2030');
-  };
+  // Artifacts unlock only through story events (a consent decision), never a bare click.
+  const chooseMoment = (id: CoexistenceMomentId) => selectMoment(id);
 
   if (!detail) {
     return (
       <group position={[config.stationX, 0, 0]}>
         <RoomShell floorColor="#a48668" wallColor="#d7d2bd" sideColor="#c6b89c" ceilingColor="#eee5d2" trimColor="#765741" accent="#d69b50" openLeft openRight active={false} floorRoughness={.7} />
         <ApartmentFurniture active={false} />
-        <SaitoSpatialResponse active={false} momentId={coexistence.activeMoment} decision={coexistence.consent[coexistence.activeMoment]} />
+        <SaitoSpatialResponse active={false} animate={false} momentId={coexistence.activeMoment} decision={coexistence.consent[coexistence.activeMoment]} />
         <mesh position={[0, 4.18, -3.62]}><icosahedronGeometry args={[.34, 2]} /><meshStandardMaterial color="#ffd78a" emissive="#f3ad45" emissiveIntensity={.18} transparent opacity={.52} /></mesh>
       </group>
     );
@@ -308,7 +315,7 @@ export function Year2030Scene({ active, detail = true }: { active: boolean; time
       </group>
 
       {momentObjects.map(({ id }) => <MomentObject key={id} id={id} active={coexistence.activeMoment === id} decision={coexistence.consent[id]} onSelect={() => chooseMoment(id)} />)}
-      <SaitoSpatialResponse active={active} momentId={coexistence.activeMoment} decision={coexistence.consent[coexistence.activeMoment]} />
+      <SaitoSpatialResponse active={active} animate={animate} momentId={coexistence.activeMoment} decision={coexistence.consent[coexistence.activeMoment]} />
 
        <Hoverable label="Enter Morning, Together with Saito" onClick={() => enterYear('2030')}>
          <group ref={saito} position={[0, 4.18, -3.62]} userData={{ label: `Saito in the room · ${coexistenceMoments[coexistence.activeMoment].title}` }}>
@@ -319,11 +326,12 @@ export function Year2030Scene({ active, detail = true }: { active: boolean; time
            {[0, Math.PI / 2].map((rotation) => <mesh key={rotation} rotation={[rotation, 0, Math.PI / 4]}><torusGeometry args={[.52, .018, 8, 42]} /><meshBasicMaterial color="#ffe5ad" transparent opacity={active ? .7 : .12} /></mesh>)}
            <mesh rotation={[Math.PI / 2, 0, 0]}><torusGeometry args={[.7, .012, 8, 48]} /><meshBasicMaterial color="#c96e3d" transparent opacity={active ? .42 : .08} /></mesh>
            <mesh position={[0, -.03, .08]}><sphereGeometry args={[.08, 16, 12]} /><meshBasicMaterial color="#fffbe8" /></mesh>
-           {active && coexistence.activeMoment !== 'care' && <pointLight position={[0, 0, .5]} color="#ffc15c" intensity={2.9} distance={8.5} decay={2} />}
+           {/* Always mounted: toggling a light changes the light count and forces a shader recompile. */}
+           <pointLight position={[0, 0, .5]} color="#ffc15c" intensity={active && coexistence.activeMoment !== 'care' ? 2.9 : 0} distance={8.5} decay={2} />
          </group>
        </Hoverable>
 
-      <spotLight position={[1.8, 5.75, 2.7]} target-position={[0, 1.45, .35]} color="#ffe4b0" intensity={active ? 3.4 : .28} distance={15} angle={.72} penumbra={.74} castShadow={active} />
+      <spotLight position={[1.8, 5.75, 2.7]} target-position={[0, 1.45, .35]} color="#ffe4b0" intensity={active ? 3.4 : .28} distance={15} angle={.72} penumbra={.74} castShadow />
     </group>
   );
 }

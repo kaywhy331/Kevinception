@@ -8,7 +8,7 @@ export const CASE_STUDY_CHAPTERS = [
   { id: 'approach', label: 'Approach' },
   { id: 'decisions', label: 'Decisions' },
   { id: 'deliverables', label: 'Deliverables' },
-  { id: 'outcomes', label: 'Outcomes' },
+  { id: 'outcomes', label: 'What shipped' },
   { id: 'artifacts', label: 'Artifacts' },
   { id: 'learnings', label: 'Learnings' }
 ] as const;

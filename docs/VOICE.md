@@ -2,7 +2,7 @@
 
 - **Status:** Active editorial contract
 - **Owner:** Kevin approves facts; agents apply the voice
-- **Last audit:** 2026-08-10
+- **Last audit:** 2026-08-10; glossary updated for 0.9.0 names
 
 ## The voice
 
@@ -27,9 +27,15 @@ Third person is reserved for neutral metadata, conventional resume/case-study ev
 | **Kevinception** | The public site and its six-era experience | Use without a version number in visitor copy. |
 | **the Kevinception build** | The project described in the Kevinception case study | Use when the site and the work of building it could be confused. |
 | **Timeline** | The immersive route at `/experience/` | Global navigation label. “Chapters” is allowed inside the experience for its chapter chooser. |
-| **Profile** | Kevin's approach and capabilities at `/portfolio/` | Global navigation label. It is not a second work archive. |
+| **About** | Kevin's origin, approach, and capabilities at `/about/` | Global navigation label. The former Profile page (`/portfolio/`) is merged here and `/portfolio/` redirects permanently to `/about/`. |
 | **Case studies** | The project archive at `/work/` | The only surface that lists every project card. |
-| **KevinVision / Kevin Online / Kevazon Marketplace / KevTok / Kevin Nexus / Kevin Echo** | Era-native interfaces or speculative personas | Keep exact capitalization. Kevin Echo must retain its simulated-representation disclosure. |
+| **Curiosity / Connection / Commerce / Creation / Co-Existence / Consciousness** | The six chapter names (1990–2040) | Lead with these on the landing page, timeline, and chapter cards. Defined once in `src/content/narrative.ts`. |
+| **KevinVision / Kevin Online / StealStreet Commerce OS / KevTok / Morning, Together / Morning, After** | The in-world experience for each chapter | Keep exact capitalization and punctuation (the comma in “Morning, Together”). Pair with the chapter name in environment labels. |
+| **Saito** | The 2030 household intelligence in Morning, Together | A first-person conversational counterpart, not an assistant brand. Consequential actions always stop at Kevin's hand. |
+| **holographic Kevin** | The 2040 figure in Morning, After | An authored reproduction built from permissioned memory, not transferred consciousness. Keep that disclosure wherever the figure speaks. |
+| **TokenPak / TIP / PAK** | Real infrastructure projects shown as 2030 provenance | Appear only in the optional infrastructure receipt, never as the lead of the scene. |
+
+Retired names: KevinBook and Kevazon Marketplace (2010), Kevin Nexus (2030), and Kevin Echo (2040). Do not use them in visitor copy; they survive only in archived planning documents and internal identifiers such as file names.
 
 ## Plain-language glossary
 
@@ -46,10 +52,9 @@ Third person is reserved for neutral metadata, conventional resume/case-study ev
 | Surface | Voice check |
 |---|---|
 | Home | First-person invitation; direct routes named by visitor intent. |
-| Profile | First-person positioning and current work; no duplicate project archive. |
 | Case studies | Neutral evidence voice; project claims remain limited to the existing source facts. |
 | Resume | Conventional implied-first-person action language; unconfirmed dates and credentials remain guarded in source. |
-| About | First-person origin and working method. |
+| About | First-person origin, working method, positioning, and current work; no duplicate project archive. |
 | Contact | First-person instructions and a direct email action. |
 | Timeline | Deliberate third-person chapter narration, with plain labels for controls and fallback routes. |
 

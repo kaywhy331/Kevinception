@@ -7,12 +7,24 @@ export function generateStaticParams() {
   return YEAR_ORDER.map((year) => ({ year }));
 }
 
+/**
+ * `/experience/<year>/` is the canonical deep link for a chapter's room. The
+ * interface and text views use `?view=interface` / `?view=text` on the same
+ * path, so every view of a chapter shares this metadata.
+ */
 export async function generateMetadata({ params }: { params: Promise<{ year: string }> }): Promise<Metadata> {
   const { year: rawYear } = await params;
   if (!YEAR_ORDER.includes(rawYear as YearId)) return {};
   const year = rawYear as YearId;
   const config = eraConfigs[year];
-  return { title: `${year} ${config.chapterName} — ${config.experienceName}`, description: config.chapterThesis };
+  const title = `${year} ${config.chapterName} — ${config.experienceName}`;
+  const url = `/experience/${year}/`;
+  return {
+    title,
+    description: config.chapterThesis,
+    alternates: { canonical: url },
+    openGraph: { title: `${title} · Kevinception`, description: config.chapterThesis, url }
+  };
 }
 
 export default async function EraPage({ params }: { params: Promise<{ year: string }> }) {

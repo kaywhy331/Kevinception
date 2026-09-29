@@ -1,32 +1,6 @@
-import fs from 'node:fs';
-import os from 'node:os';
-import path from 'node:path';
-import puppeteer from 'puppeteer-core';
+import { baseUrl as base, launchBrowser, writeReport } from './lib/browser.mjs';
 
-const base = process.env.BASE_URL ?? 'http://127.0.0.1:4321';
-const browserCandidates = [
-  process.env.CHROME_PATH,
-  process.env.CHROMIUM_PATH,
-  '/usr/bin/google-chrome',
-  '/usr/bin/google-chrome-stable',
-  '/usr/bin/chromium',
-  '/usr/bin/chromium-browser'
-].filter(Boolean);
-const playwrightCache = path.join(os.homedir(), '.cache', 'ms-playwright');
-if (fs.existsSync(playwrightCache)) {
-  for (const directory of fs.readdirSync(playwrightCache).sort().reverse()) {
-    browserCandidates.push(
-      path.join(playwrightCache, directory, 'chrome-linux64', 'chrome'),
-      path.join(playwrightCache, directory, 'chrome-linux', 'chrome')
-    );
-  }
-}
-const executablePath = browserCandidates.find((candidate) => fs.existsSync(candidate));
-if (!executablePath) throw new Error('No supported Chromium browser was found.');
-
-const browser = await puppeteer.launch({
-  executablePath,
-  headless: true,
+const { browser, executablePath } = await launchBrowser({
   args: ['--no-sandbox', '--disable-dev-shm-usage', '--enable-unsafe-swiftshader']
 });
 let page = await browser.newPage();
@@ -45,28 +19,6 @@ const report = {
 function assert(name, condition, detail = '') {
   report.assertions.push({ name, passed: Boolean(condition), detail });
   if (!condition) throw new Error(`${name}${detail ? `: ${detail}` : ''}`);
-}
-
-async function clickPageButton(label) {
-  const clicked = await page.$$eval('button', (buttons, expected) => {
-    const button = buttons.find((candidate) => candidate.textContent?.trim().includes(expected) && !candidate.disabled);
-    button?.click();
-    return Boolean(button);
-  }, label);
-  if (!clicked) throw new Error(`Could not find enabled page button containing “${label}”.`);
-}
-
-async function finishCoexistenceExchange() {
-  for (let beat = 0; beat < 4; beat += 1) {
-    const before = await page.$$eval('.coexistence-exchange li', (nodes) => nodes.length);
-    const advanced = await page.$eval('.coexistence-reply', (button) => {
-      if (!(button instanceof HTMLButtonElement) || button.disabled) return false;
-      button.click();
-      return true;
-    }).catch(() => false);
-    if (!advanced) throw new Error(`Could not advance Co-Existence exchange from beat ${before}.`);
-    await page.waitForFunction((count) => document.querySelectorAll('.coexistence-exchange li').length > count, {}, before);
-  }
 }
 
 async function traverseCommerceHistory(delta, expectedModule) {
@@ -144,7 +96,7 @@ try {
     localStorage.removeItem('kevinception-v7');
   });
 
-  await page.goto(`${base}/experience/?year=2010&module=dashboard`, { waitUntil: 'domcontentloaded', timeout: 45000 });
+  await page.goto(`${base}/experience/2010/?view=interface&module=dashboard`, { waitUntil: 'domcontentloaded', timeout: 45000 });
   let commerce = await commerceFrame();
   await waitForModule(commerce, 'dashboard');
 
@@ -155,7 +107,7 @@ try {
   assert('The dashboard presents the full eight-stage operating flow', await commerce.$$eval('.kz-flow button', (nodes) => nodes.length === 8 && nodes[0].textContent.includes('Vendors') && nodes[7].textContent.includes('Customer')));
   assert('The dashboard presents a structured exception queue and verified scale ledger', await commerce.$eval('.kz-dashboard', (node) => Boolean(node.querySelector('.kz-exception-table') && node.querySelector('.kz-scale-ledger'))));
   assert('The embedded dashboard removes duplicate era chrome', await commerce.evaluate(() => getComputedStyle(document.querySelector('.kz-era-bar')).display === 'none'));
-  assert('The canonical dashboard URL and document title identify the active module', new URL(page.url()).searchParams.get('module') === 'dashboard' && (await page.title()).startsWith('Operations Dashboard — 2010 StealStreet Commerce OS'));
+  assert('The canonical dashboard URL and document title identify the active module', new URL(page.url()).searchParams.get('module') === 'dashboard' && (await page.title()).startsWith('Operations Dashboard — 2010 ') && (await page.title()).includes('StealStreet Commerce OS'));
   const desktopGeometry = await commerce.evaluate(() => {
     const flow = document.querySelector('.kz-flow');
     const dashboard = document.querySelector('.kz-dashboard');
@@ -227,7 +179,7 @@ try {
   }
 
   // Start a fresh history pair so Back/Forward exercise adjacent modules.
-  await page.goto(`${base}/experience/?year=2010&module=dashboard`, { waitUntil: 'domcontentloaded', timeout: 45000 });
+  await page.goto(`${base}/experience/2010/?view=interface&module=dashboard`, { waitUntil: 'domcontentloaded', timeout: 45000 });
   commerce = await commerceFrame();
   await waitForModule(commerce, 'dashboard');
   await openModule(commerce, 'orders');
@@ -382,41 +334,18 @@ try {
   page = await browser.newPage();
   observePage(page);
   await page.setViewport({ width: 1440, height: 1000, deviceScaleFactor: 1 });
-  await page.goto(`${base}/experience/?year=2030&view=interface`, { waitUntil: 'domcontentloaded', timeout: 45000 });
+  await page.goto(`${base}/experience/2030/?view=interface`, { waitUntil: 'domcontentloaded', timeout: 45000 });
   await page.waitForSelector('.interface-mode.is-visible .future-native--2030', { timeout: 30000 });
   assert('The future interfaces are native and mount no 2030/2040 iframe', await page.$$eval('iframe', (frames) => frames.every((frame) => !/\/legacy\/experience\/(2030|2040)\//.test(frame.src))));
-  assert('Native Co-Existence exposes six ordinary moments with Saito', await page.$$eval('.coexistence-dayline button', (buttons) => buttons.length === 6) && await page.$eval('.future-native--2030', (node) => node.textContent.includes('Morning, Together') && node.textContent.includes('Saito')));
-  await finishCoexistenceExchange();
-  await clickPageButton('Keep it with me');
-  await clickPageButton('Studio table');
-  await finishCoexistenceExchange();
-  await clickPageButton('Let it end here');
-  await clickPageButton('Window desk');
-  await finishCoexistenceExchange();
-  await clickPageButton('Let it end here');
-  await clickPageButton('Open infrastructure receipt');
-  assert('TokenPak, TIP, and PAK remain optional provenance rather than the 2030 hero', await page.$eval('.coexistence-provenance aside', (node) => node.textContent.includes('TokenPak') && node.textContent.includes('TIP authority') && node.textContent.includes('PAK context')));
-  await clickPageButton('Enter Morning, After');
-  await page.waitForSelector('.future-native--2040', { timeout: 30000 });
-  assert('Saito remains exclusive to the 2030 experience', await page.$eval('.future-native--2040', (node) => !/Saito/i.test(node.textContent ?? '')));
-  assert('Consciousness reports the one memory permitted by the living day', await page.$eval('.future-masthead', (node) => node.textContent.includes('1/6 MEMORIES PERMITTED')));
-  await clickPageButton('An unfinished sentence');
-  await clickPageButton('Let Kevin recall');
-  await page.waitForFunction(() => document.querySelector('.consciousness-encounter blockquote')?.textContent.includes('deliberate blank'));
-  await clickPageButton('Pull the sentence to its source');
-  assert('Holographic Kevin exposes withheld conjecture instead of inventing memory', await page.$eval('.consciousness-source', (node) => node.textContent.includes('deliberately withheld') && node.textContent.includes('thread ends here')));
-  await clickPageButton('Let Kevin deliberate');
-  await clickPageButton('Let Kevin speak / act / refuse');
-  await clickPageButton('Let Kevin continue');
-  await page.waitForSelector('.consciousness-retention', { timeout: 5000 });
-  assert('The behavior loop ends with explicit encounter permission', await page.$eval('.consciousness-retention', (node) => node.textContent.includes('May I keep this?') && node.textContent.includes('No—let me disappear')));
+  // The 2030/2040 beat flow, boundary lens and closing payoff are owned by
+  // scripts/runtime-future-native.mjs; this probe only guards the native mount.
 
   assert('The reviewed flows emit no console errors', report.consoleErrors.length === 0, report.consoleErrors.join(' | '));
   assert('The reviewed flows emit no page errors', report.pageErrors.length === 0, report.pageErrors.join(' | '));
   assert('The reviewed flows emit no unexpected request failures', report.requestFailures.length === 0, report.requestFailures.join(' | '));
 } finally {
   await browser.close();
-  fs.writeFileSync(path.join('docs', 'RUNTIME_COMMERCE_COEXISTENCE.json'), JSON.stringify(report, null, 2));
+  writeReport('runtime-commerce-coexistence', report);
 }
 
 console.log(JSON.stringify(report, null, 2));

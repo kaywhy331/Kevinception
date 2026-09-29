@@ -3,9 +3,10 @@
 import { Line, RoundedBox } from '@react-three/drei';
 import { eraConfigs } from '../config';
 import { useExperienceActions } from '../ExperienceContext';
+import { useExperienceStore } from '../store';
 import { DeviceScreen, Dust, Hoverable } from './SceneUtils';
 import { LightBar, PictureFrame, RoomShell, Shelf } from './EnvironmentPrimitives';
-import { EraScreenPortal } from './EraScreenPortal';
+import { NextEraWindow } from './EraScreenPortal';
 import { DESK_SURFACE_Y, GroundedDesk } from './SceneLayout';
 
 const systemMapPoints: Array<[number, number, number]> = [
@@ -42,9 +43,10 @@ function InventoryBin({ position, color, label }: { position: [number, number, n
   );
 }
 
-export function Year2010Scene({ active }: { active: boolean; timeline: boolean }) {
+export function Year2010Scene({ active }: { active: boolean }) {
   const config = eraConfigs['2010'];
   const { enterYear, discover } = useExperienceActions();
+  const blueprintFound = useExperienceStore((state) => state.artifacts['project-blueprint'].discoveredYears.includes('2010'));
 
   return (
     <group position={[config.stationX, 0, 0]}>
@@ -63,10 +65,12 @@ export function Year2010Scene({ active }: { active: boolean; timeline: boolean }
         <Parcel position={[0, -1.28, 0.08]} size={[1.65, 0.48, 0.65]} color="#b4814d" />
       </group>
 
+      <NextEraWindow fromYear="2010" position={[-0.95, 4.55, -3.3]} size={[1.7, 0.95]} active={active} frameColor="#3a3f44" />
+
       <LightBar position={[-2.15, 5.5, -2.6]} length={3.2} color="#fff1cf" intensity={active ? 0.82 : 0.08} />
       <LightBar position={[2.75, 5.5, -2.6]} length={3.2} color="#d5e9ff" intensity={active ? 0.68 : 0.07} />
 
-      <Hoverable label="Discover Project Blueprint" onClick={() => discover('project-blueprint', '2010')}>
+      <Hoverable label="Inspect the operating-system map" onClick={() => discover('project-blueprint', '2010')} found={blueprintFound}>
         <group>
           <PictureFrame position={[2.95, 4.18, -3.35]} size={[2.55, 1.34]} frameColor="#3f4141" imageColor="#d8e2e6" accent="#5d91bd" />
           {[-0.62, 0, 0.62].map((x, index) => <mesh key={x} position={[2.95 + x, 4.18 + (index === 1 ? 0.22 : -0.16), -3.275]}><boxGeometry args={[0.42, 0.12, 0.018]} /><meshBasicMaterial color={index === 1 ? '#e69a42' : '#557c9c'} /></mesh>)}
@@ -81,7 +85,6 @@ export function Year2010Scene({ active }: { active: boolean; timeline: boolean }
           <group position={[0, 1.15, -0.82]} rotation={[-0.035, 0, 0]}>
             <RoundedBox args={[3.8, 2.18, 0.2]} radius={0.1} smoothness={4} castShadow><meshStandardMaterial color="#444a50" metalness={0.38} roughness={0.32} /></RoundedBox>
             <DeviceScreen position={[0, 0, 0.13]} size={[3.48, 1.88]} color="#f4f6f8" emissive="#73a9d6" active={active} radius={0.07} glass />
-            <EraScreenPortal fromYear="2010" size={[3.23, 1.66]} position={[0, 0, 0.285]} active={active} />
             <mesh position={[0, 0.7, 0.23]}><boxGeometry args={[3.23, 0.21, 0.018]} /><meshBasicMaterial color="#263442" /></mesh>
             <mesh position={[-1.22, 0.68, 0.25]}><boxGeometry args={[0.58, 0.1, 0.018]} /><meshBasicMaterial color="#ffb548" /></mesh>
             <mesh position={[-1.22, 0.27, 0.24]}><boxGeometry args={[0.62, 0.48, 0.018]} /><meshBasicMaterial color="#e7edf1" /></mesh>

@@ -1,25 +1,8 @@
-import fs from 'node:fs';
 import path from 'node:path';
-import puppeteer from 'puppeteer-core';
+import { artifactPath, baseUrl as base, launchBrowser, writeReport } from './lib/browser.mjs';
 
-const base = process.env.BASE_URL ?? 'http://127.0.0.1:4321';
-const outputDir = 'docs/previews/v77';
-
-function browserCandidates() {
-  return [
-    process.env.CHROME_PATH,
-    process.env.CHROMIUM_PATH,
-    '/usr/bin/google-chrome',
-    '/usr/bin/google-chrome-stable',
-    '/usr/bin/chromium',
-    '/usr/bin/chromium-browser'
-  ].filter(Boolean);
-}
-
-const executablePath = browserCandidates().find((candidate) => fs.existsSync(candidate));
-if (!executablePath) throw new Error('No supported Chromium browser was found.');
-
-fs.mkdirSync(outputDir, { recursive: true });
+const outputDir = path.dirname(artifactPath('previews', 'v77', '.keep'));
+const { browser, executablePath } = await launchBrowser();
 const report = {
   generatedAt: new Date().toISOString(),
   browser: executablePath,
@@ -35,19 +18,6 @@ function assert(name, condition, detail = '') {
   report.assertions.push({ name, passed: Boolean(condition), detail });
   if (!condition) throw new Error(`${name}${detail ? `: ${detail}` : ''}`);
 }
-
-const browser = await puppeteer.launch({
-  executablePath,
-  headless: true,
-  args: [
-    '--no-sandbox',
-    '--disable-dev-shm-usage',
-    '--ignore-gpu-blocklist',
-    '--enable-webgl',
-    '--use-angle=swiftshader',
-    '--enable-unsafe-swiftshader'
-  ]
-});
 
 const page = await browser.newPage();
 page.on('console', (message) => {
@@ -73,6 +43,10 @@ async function kevtokFrame() {
   const frame = page.frames().find((candidate) => candidate.url().includes('/legacy/experience/2020/'));
   if (!frame) throw new Error('The KevTok iframe was not found.');
   await frame.waitForSelector('.kt-app[data-device-native="true"]', { timeout: 30000 });
+  // A first visit plays the era's power-on screen; press power like a visitor would.
+  const power = await frame.$('[data-era-enter]');
+  if (power && await power.isVisible()) await power.click();
+  await frame.waitForSelector('[data-kt-nav="discover"]', { visible: true, timeout: 30000 });
   return frame;
 }
 
@@ -85,10 +59,11 @@ async function closeNativeDialog(frame, name) {
 }
 
 try {
-  await visit('/experience/?year=2020&view=interface', '2020-interface-desktop.png', { width: 1920, height: 1080, deviceScaleFactor: 1 });
+  await visit('/experience/2020/?view=interface', '2020-interface-desktop.png', { width: 1920, height: 1080, deviceScaleFactor: 1 });
   await page.waitForSelector('.interface-mode.is-visible', { timeout: 30000 });
-  const outerControls = await page.$$eval('.interface-mode__bar nav button', (buttons) => buttons.map((button) => button.textContent?.trim()));
-  assert('The outer interface frame exposes only Step back and Chapters', JSON.stringify(outerControls) === JSON.stringify(['Step back', 'Chapters']), JSON.stringify(outerControls));
+  const outerControls = await page.$$eval('.interface-mode__bar > button, .interface-mode__bar nav button', (buttons) => buttons.map((button) => button.getAttribute('aria-label') ?? button.textContent?.trim()));
+  const expectedControls = ['Back to the 2020 room', 'About chapter 4, Creation: 2020 KevTok', 'Previous chapter: 2010 Commerce', 'Next chapter: 2030 Co-Existence'];
+  assert('The outer interface frame offers only the room, the chapter, and previous/next chapter', JSON.stringify(outerControls) === JSON.stringify(expectedControls), JSON.stringify(outerControls));
   const frameHeight = await page.$eval('.interface-mode__bar', (node) => node.getBoundingClientRect().height);
   assert('The outer interface frame remains slim', frameHeight <= 48, `${frameHeight}px`);
 
@@ -178,17 +153,17 @@ try {
   assert('Custom interaction feedback stays within the device column when present', feedbackBounds.contained, `${feedbackBounds.feedbackCount} visible feedback items; native share may use browser UI`);
   await page.screenshot({ path: path.join(outputDir, '2020-interface-interactions.png'), fullPage: false });
 
-  await visit('/experience/?year=2030', '2030-straight-desktop.png', { width: 1920, height: 1080, deviceScaleFactor: 1 });
+  await visit('/experience/2030/', '2030-straight-desktop.png', { width: 1920, height: 1080, deviceScaleFactor: 1 });
   await page.waitForSelector('.environment-panel', { timeout: 30000 });
-  await visit('/experience/?year=2040', '2040-straight-desktop.png', { width: 1920, height: 1080, deviceScaleFactor: 1 });
-  await page.waitForSelector('.environment-panel', { timeout: 30000 });
-
-  await visit('/experience/?year=2030', '2030-straight-ultrawide.png', { width: 2560, height: 1080, deviceScaleFactor: 1 });
-  await page.waitForSelector('.environment-panel', { timeout: 30000 });
-  await visit('/experience/?year=2040', '2040-straight-ultrawide.png', { width: 2560, height: 1080, deviceScaleFactor: 1 });
+  await visit('/experience/2040/', '2040-straight-desktop.png', { width: 1920, height: 1080, deviceScaleFactor: 1 });
   await page.waitForSelector('.environment-panel', { timeout: 30000 });
 
-  await visit('/experience/?year=2020&view=interface', '2020-interface-mobile.png', { width: 390, height: 844, deviceScaleFactor: 1 });
+  await visit('/experience/2030/', '2030-straight-ultrawide.png', { width: 2560, height: 1080, deviceScaleFactor: 1 });
+  await page.waitForSelector('.environment-panel', { timeout: 30000 });
+  await visit('/experience/2040/', '2040-straight-ultrawide.png', { width: 2560, height: 1080, deviceScaleFactor: 1 });
+  await page.waitForSelector('.environment-panel', { timeout: 30000 });
+
+  await visit('/experience/2020/?view=interface', '2020-interface-mobile.png', { width: 390, height: 844, deviceScaleFactor: 1 });
   await page.waitForSelector('.interface-mode.is-visible', { timeout: 30000 });
   const mobileOverflow = await page.evaluate(() => document.documentElement.scrollWidth - document.documentElement.clientWidth);
   report.mobileOverflow = mobileOverflow;
@@ -200,7 +175,7 @@ try {
   assert('The mobile KevTok device has no horizontal overflow', mobileInnerOverflow <= 1, `${mobileInnerOverflow}px`);
 } finally {
   await browser.close();
-  fs.writeFileSync('docs/RUNTIME_REVIEW_V77.json', JSON.stringify(report, null, 2));
+  writeReport('runtime-review-v77', report);
 }
 
 if (report.pageErrors.length || report.consoleErrors.length) {

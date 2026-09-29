@@ -1,5 +1,6 @@
 import type { YearId } from '@/content/data';
 import { CHAPTER_ORDER, chapterNarrative, type ChapterNarrative } from '@/content/narrative';
+import type { MotionPreference } from './types';
 
 export type TransitionId = 'static-modem' | 'profile-flatten' | 'portrait-rotate' | 'signals-to-agents' | 'agents-to-echo' | 'timeline-fade' | 'time-jump';
 
@@ -23,14 +24,11 @@ export type EraDesignLanguage = {
 
 export type EraConfig = ChapterNarrative & {
   id: YearId;
-  /** Backward-compatible alias for the in-world experience name. */
-  title: string;
-  /** Backward-compatible alias for the era medium. */
-  product: string;
   accent: string;
   designLanguage: EraDesignLanguage;
   stationX: number;
-  legacyPath: string;
+  /** Iframe app for eras 1990–2020. 2030/2040 are native React and have none. */
+  legacyPath?: string;
   transitionToNext?: TransitionId;
 };
 
@@ -75,7 +73,7 @@ const technicalConfig: Record<YearId, Pick<EraConfig, 'accent' | 'designLanguage
       name: 'Ambient domestic', texture: 'warm-fiber', chrome: 'Permissioned objects', typeTreatment: 'Quiet humanist labels', motionCharacter: 'Breath and deliberate handoff',
       secondary: '#84b8a1', surface: '#21170f', raisedSurface: '#332419', ink: '#fff4df', muted: '#cdbda8', line: '#75593c', radius: '24px', easing: 'cubic-bezier(.33,1,.68,1)'
     },
-    stationX: 18, legacyPath: '/legacy/experience/2030/index.html?embed=1', transitionToNext: 'agents-to-echo'
+    stationX: 18, transitionToNext: 'agents-to-echo'
   },
   '2040': {
     accent: '#ff9e2f',
@@ -83,7 +81,7 @@ const technicalConfig: Record<YearId, Pick<EraConfig, 'accent' | 'designLanguage
       name: 'Holographic afterimage', texture: 'refracted-rain', chrome: 'Black glass and sodium trace', typeTreatment: 'Archival signal caps', motionCharacter: 'Echo, refraction, and held frames',
       secondary: '#ff4f2e', surface: '#050403', raisedSurface: '#130d08', ink: '#fff0d4', muted: '#c9a98a', line: '#813f20', radius: '10px', easing: 'cubic-bezier(.65,0,.35,1)'
     },
-    stationX: 30, legacyPath: '/legacy/experience/2040/index.html?embed=1'
+    stationX: 30
   }
 };
 
@@ -93,9 +91,7 @@ export const eraConfigs = Object.fromEntries(
     return [year, {
       id: year,
       ...narrative,
-      ...technicalConfig[year],
-      title: narrative.experienceName,
-      product: narrative.medium
+      ...technicalConfig[year]
     } satisfies EraConfig];
   })
 ) as Record<YearId, EraConfig>;
@@ -140,4 +136,29 @@ export function transitionBetween(from: YearId | null, to: YearId): TransitionId
   if (toIndex === fromIndex + 1) return eraConfigs[from].transitionToNext ?? 'timeline-fade';
   if (toIndex === fromIndex - 1) return eraConfigs[to].transitionToNext ?? 'timeline-fade';
   return 'timeline-fade';
+}
+
+/** True for every motion level other than `full` (`reduced` and `minimal`). */
+export function isReducedMotion(motion: MotionPreference) {
+  return motion !== 'full';
+}
+
+/**
+ * One source of truth for transition timing. The shell's completion timer, the
+ * overlay animation, the camera tween, and the future conduit all read this.
+ * Authored era bridges land in the 0.8–1.2s range and are skippable.
+ */
+export function getTransitionDuration(id: TransitionId, motion: MotionPreference) {
+  if (motion === 'minimal') return 0;
+  if (motion === 'reduced') return id === 'timeline-fade' ? 0 : 240;
+  if (id === 'timeline-fade') return 360;
+  if (id === 'time-jump') return 820;
+  if (id === 'agents-to-echo') return 1200;
+  return 1000;
+}
+
+/** Camera tween length for a settled view change (no authored overlay). */
+export function getCameraTweenSeconds(motion: MotionPreference, fromOverview = false) {
+  if (motion !== 'full') return 0.01;
+  return fromOverview ? 1.05 : 0.8;
 }

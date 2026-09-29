@@ -6,8 +6,7 @@
       "ContentTypeOptions": { "Override": true },
       "FrameOptions": { "FrameOption": "SAMEORIGIN", "Override": true },
       "ReferrerPolicy": { "ReferrerPolicy": "strict-origin-when-cross-origin", "Override": true },
-      "StrictTransportSecurity": { "AccessControlMaxAgeSec": 31536000, "IncludeSubdomains": true, "Preload": false, "Override": true },
-      "XSSProtection": { "Protection": true, "ModeBlock": true, "Override": true }
+      "StrictTransportSecurity": { "AccessControlMaxAgeSec": 31536000, "IncludeSubdomains": true, "Preload": false, "Override": true }
     },
     "CustomHeadersConfig": {
       "Items": [

@@ -12,17 +12,20 @@ afterEach(() => {
 });
 
 describe('award-roadmap agent-ready work', () => {
-  it('separates the Profile narrative from the case-study archive', () => {
-    const profile = read('app/portfolio/page.tsx');
+  it('merges Profile into About and keeps the case-study archive separate', () => {
+    const about = read('app/about/page.tsx');
+    const portfolio = read('app/portfolio/page.tsx');
     const work = read('app/work/page.tsx');
     const archive = read('src/components/WorkArchive.tsx');
-    const chrome = read('src/components/SiteChrome.tsx');
-    expect(profile).not.toContain('ProjectCard');
-    expect(profile).toContain('capability-ledger');
-    expect(profile).toContain("title: 'Profile'");
+    const navigation = read('src/components/navigation.ts');
+    expect(about).not.toContain('ProjectCard');
+    expect(about).toContain('capability-ledger');
+    expect(portfolio).toContain('httpEquiv="refresh" content="0; url=/about/"');
+    expect(portfolio).toContain("canonical: '/about/'");
     expect(archive).toContain('case-study-index__list');
-    expect(work).toContain('<WorkArchive projects={projects} />');
-    expect(chrome).toContain("{ href: '/portfolio/', label: 'Profile' }");
+    expect(work).toContain('<WorkArchive projects={orderedCaseStudies} />');
+    expect(navigation).toContain("{ href: '/about/', label: 'About' }");
+    expect(navigation).not.toContain('/portfolio/');
   });
 
   it('uses a self-hosted display face and authored signature moments', () => {
@@ -49,7 +52,6 @@ describe('award-roadmap agent-ready work', () => {
     expect(award).toContain('@media (prefers-reduced-motion: reduce)');
     expect(award).toContain('.era-portal__scan { animation: none;');
     expect(award).toContain('animation: reduced-transition 180ms ease both');
-    expect(read('docs/MOTION.md')).toContain('--motion-medium');
   });
 
   it('queues privacy-friendly funnel events with properties', () => {

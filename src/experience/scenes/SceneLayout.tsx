@@ -94,32 +94,6 @@ export function MediaConsole({
   );
 }
 
-export function FloorPedestal({
-  position,
-  size = [1, 0.55, 1],
-  color = '#d4d9dc',
-  accent
-}: {
-  position: [number, number, number];
-  size?: [number, number, number];
-  color?: string;
-  accent?: string;
-}) {
-  return (
-    <group position={position}>
-      <RoundedBox position={[0, size[1] / 2, 0]} args={size} radius={Math.min(0.16, size[1] * 0.22)} smoothness={3} castShadow receiveShadow>
-        <meshStandardMaterial color={color} roughness={0.42} metalness={0.12} />
-      </RoundedBox>
-      {accent && (
-        <mesh position={[0, size[1] * 0.62, size[2] / 2 + 0.025]}>
-          <boxGeometry args={[size[0] * 0.62, 0.055, 0.04]} />
-          <meshStandardMaterial color={accent} emissive={accent} emissiveIntensity={0.45} />
-        </mesh>
-      )}
-    </group>
-  );
-}
-
 export function WallDisplay({
   position,
   size = [2.5, 1.5],

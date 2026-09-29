@@ -1,5 +1,16 @@
 # Changelog
 
+## Unreleased — future-wing restage (staging + typography)
+
+- Restaged Morning, Together as theatre instead of a dashboard: the dialogue column now carries only the story (time, title, seed, exchange, staged reveal, consent), and a beat state machine (`exchange → reveal → consent → settled`) dims the room and holds the page still for each consent question.
+- Moved the agent trace, standing-authority map, incubation ledger, and infrastructure receipt into a single boundary lens—one inspectable overlay opened from the masthead (Escape closes it)—so transparency stays on demand without crowding the conversation.
+- Gave the six moments six lighting states: the page gradient, room brightness, and sun position now track the day from 07:12 morning gold to 22:04 lamplight, making time-of-day the navigation feedback.
+- Rebuilt the future-wing type scale with a 12px floor: Saito/Kevin dialogue is now the largest recurring text on the page (display serif at ~16–19px), one kicker style replaces seven micro-label styles, and the decorative room captions were removed.
+- Rebuilt the 2040 hologram from permissioned memory itself: six light bands—one per 2030 moment—form the figure, kept moments glow, refused moments stay dashed deliberate blanks, so the consent mechanic is the portrait rather than a caption.
+- Made the 2040 permission mechanic legible on arrival: a six-slot memory constellation replaces the “N/6” micro-label, and an explicit “He can only remember what you allowed” invitation appears when no 2030 moment was witnessed.
+- Made the ending happen to the room: choosing “let me disappear” actually disperses the hologram and dims the apartment, and both retention outcomes light up the “Reach the living Kevin” exit.
+- Replaced the future wing’s universal reduced-motion kill switch with a designed variant: ambient loops hold a legible frame while state changes still announce themselves as short fades.
+
 ## Unreleased — 2030 anticipation grammar
 
 - Gave every Co-Existence moment a visible anticipation grammar: a timestamped casual seed, a quiet incubation ledger, and a staged multi-domain reveal with done / staged / gated states beside the existing consent and receipt rails.

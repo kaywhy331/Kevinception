@@ -3,8 +3,9 @@
   <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="robots" content="noindex">
     <title>Commerce 2010 — StealStreet Commerce OS | Kevinception</title>
-    <meta name="description" content="Explore a reconstruction of the proprietary StealStreet commerce ERP connecting purchasing, 1.5 million catalog records, 20+ channels, inventory, fulfillment, service, reporting, and administration.">
+    <meta name="description" content="Explore a reconstruction of the proprietary StealStreet commerce ERP connecting purchasing, 1.5 million catalog records, 15+ channels, inventory, fulfillment, service, reporting, and administration.">
     <meta name="theme-color" content="#2a1712">
     <meta name="color-scheme" content="light">
     <link rel="canonical" href="https://kevinception.com/experience/2010/">
@@ -97,7 +98,7 @@
       <dialog class="kz-dialog kz-disclosure-dialog" data-dialog="disclosure">
         <article>
           <header><div><p>Portfolio context</p><h2>About this reconstruction</h2></div><button type="button" data-dialog-close aria-label="Close disclosure">×</button></header>
-          <div class="kz-dialog-body"><p>This interface reconstructs the scope and operating model of the proprietary system Kevin helped design and build while co-founding One Stop Deals / StealStreet.</p><dl><div><dt>Verified historical scale</dt><dd>Approximately 1.5 million catalog records / SKUs and 20+ commerce channels.</dd></div><div><dt>Illustrative interface records</dt><dd>Names, dates, quantities, financial values, queue counts, and workflow activity are seeded examples used to demonstrate how the ERP connected the business.</dd></div></dl></div>
+          <div class="kz-dialog-body"><p>This interface reconstructs the scope and operating model of the proprietary system Kevin helped design and build while co-founding One Stop Deals / StealStreet.</p><dl><div><dt>Verified historical scale</dt><dd>Approximately 1.5 million catalog records / SKUs and 15+ commerce channels.</dd></div><div><dt>Illustrative interface records</dt><dd>Names, dates, quantities, financial values, queue counts, and workflow activity are seeded examples used to demonstrate how the ERP connected the business.</dd></div></dl></div>
         </article>
       </dialog>
 
@@ -128,7 +129,8 @@
     <script type="module" src="/legacy/assets/client/kevazon.js?v=20260813-timetraveler1"></script>
     <script>
       (function(){
-        if(window.parent!==window||new URLSearchParams(window.location.search).get('embed')==='1')document.documentElement.dataset.embedded='true';
+        if(!(window.parent!==window||new URLSearchParams(window.location.search).get('embed')==='1'))return;
+        document.documentElement.dataset.embedded='true';
         document.addEventListener('click',function(event){var anchor=event.target&&event.target.closest?event.target.closest('a[href^="/"]'):null;if(!anchor)return;var href=anchor.getAttribute('href');if(!href||href.indexOf('/legacy/')===0||href.indexOf('/assets/')===0)return;event.preventDefault();window.parent.postMessage({type:'kevinception:navigate',href:href},window.location.origin)},true);
       })();
     </script>

@@ -13,7 +13,7 @@ describe('Commerce and Co-Existence chapters', () => {
     expect(chapterNarrative['2010'].experienceName).toBe('StealStreet Commerce OS');
     expect(eras.find((era) => era.id === '2010')?.label).toBe('Commerce');
     expect(timelineContent['2010'].operations.catalogScale).toBe('1.5M catalog records');
-    expect(timelineContent['2010'].operations.channelScale).toBe('20+ commerce channels');
+    expect(timelineContent['2010'].operations.channelScale).toBe('15+ commerce channels');
     expect(timelineContent['2010'].operations.lifecycle.map((stage) => stage.label)).toEqual([
       'Vendors', 'Purchase Orders', 'Inventory', 'Catalog', 'Marketplaces', 'Customer Orders', 'Warehouse', 'Customer'
     ]);
@@ -133,10 +133,10 @@ describe('Commerce and Co-Existence chapters', () => {
     const scene = read('src/experience/scenes/Year2030Scene.tsx');
     const futureText = read('src/experience/future/FutureTextExperience.tsx');
     expect(overlay).toContain('<FutureTextExperience year="2030"');
-    expect(futureText).toContain('Saito notices the room, speaks first when useful');
+    expect(futureText).toContain('speaks first when useful');
     expect(futureText).toContain('future-text-exchange');
     expect(futureText).toContain('AGENT_TRACE_PHASES.map');
-    expect(futureText).toContain('carried on TokenPak · TIP authority · PAK context');
+    expect(futureText).toContain('Built on TokenPak');
     expect(scene).toContain('Saito in the room');
     expect(scene).toContain('SaitoSpatialResponse');
     expect(scene).toContain('Saito stops at human authority');
@@ -151,14 +151,14 @@ describe('Commerce and Co-Existence chapters', () => {
   });
 
   it('keeps every shared legacy payload synchronized with the canonical chapters', () => {
-    for (const year of ['1990', '2020', '2030', '2040']) {
+    for (const year of ['1990', '2020']) {
       const html = read(`public/legacy/experience/${year}/index.html`);
       const payload = JSON.parse(html.match(/id="era-world-data">([\s\S]*?)<\/script>/)?.[1] || '{}');
       expect(payload.eras.find((era: { id: string }) => era.id === '2010')).toMatchObject({ label: 'Commerce', subtitle: 'StealStreet Commerce OS' });
       expect(payload.eras.find((era: { id: string }) => era.id === '2030')).toMatchObject({ label: 'Co-Existence', subtitle: 'Morning, Together' });
       expect(payload.eras.find((era: { id: string }) => era.id === '2040')).toMatchObject({ label: 'Consciousness', subtitle: 'Morning, After' });
       expect(payload.timelineContent['2010'].operations.catalogScale).toBe('1.5M catalog records');
-      expect(payload.timelineContent['2010'].operations.channelScale).toBe('20+ commerce channels');
+      expect(payload.timelineContent['2010'].operations.channelScale).toBe('15+ commerce channels');
       expect(payload.timelineContent['2040'].responses.memory).toContain('Commerce, Creation, Co-Existence, or Consciousness');
       expect(payload.temporalArtifacts['2010']).toMatchObject({ id: 'project-blueprint', name: 'Project Blueprint' });
       expect(payload.temporalArtifacts['2030'].name).toBe(year === '2030' ? 'Saito Consent Thread' : '2030 Consent Thread');

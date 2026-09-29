@@ -1,0 +1,6 @@
+{
+  "rules": {
+    "no-duplicate-selectors": true,
+    "declaration-no-important": true
+  }
+}

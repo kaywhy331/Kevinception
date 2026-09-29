@@ -5,7 +5,8 @@ describe('experience configuration', () => {
   it('has one complete manifest per year', () => {
     expect(Object.keys(eraConfigs)).toEqual(YEAR_ORDER);
     for (const year of YEAR_ORDER) {
-      expect(eraConfigs[year].legacyPath).toContain(`/experience/${year}/index.html`);
+      if (year === '2030' || year === '2040') expect(eraConfigs[year].legacyPath).toBeUndefined();
+      else expect(eraConfigs[year].legacyPath).toContain(`/experience/${year}/index.html`);
       expect(eraConfigs[year].stationX).toBeTypeOf('number');
     }
   });

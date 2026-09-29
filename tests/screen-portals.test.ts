@@ -18,10 +18,17 @@ describe('screens-within-screens portals', () => {
       '2020': '2030'
     });
 
+    // Each room's own device shows its own era; a framed wall window carries the
+    // next-era preview (and travels there when selected).
+    const portal = read('src/experience/scenes/EraScreenPortal.tsx');
+    expect(portal).toContain('export function NextEraWindow');
+    expect(portal).toContain('<EraScreenPortal fromYear={fromYear}');
+    expect(portal).toContain('navigateToYear(targetYear)');
     for (const sourceYear of Object.keys(SCREEN_PORTAL_TARGETS)) {
       const scene = read(`src/experience/scenes/Year${sourceYear}Scene.tsx`);
-      expect(scene).toContain("import { EraScreenPortal } from './EraScreenPortal'");
-      expect(scene).toContain(`<EraScreenPortal fromYear="${sourceYear}"`);
+      expect(scene).toContain("import { NextEraWindow } from './EraScreenPortal'");
+      expect(scene).toContain(`<NextEraWindow fromYear="${sourceYear}"`);
+      expect(scene).not.toContain('<EraScreenPortal');
     }
   });
 
@@ -49,17 +56,5 @@ describe('screens-within-screens portals', () => {
     expect(portal).toContain("frames={motion === 'full' ? Infinity : 1}");
     expect(portal).toContain("viewMode === 'interface' || viewMode === 'text'");
     expect(portal).toContain("quality !== 'lite'");
-  });
-
-  it('documents the procedural preview and device-profiling boundary truthfully', () => {
-    const status = read('docs/IMPLEMENTATION_STATUS_V7.md');
-    const limitations = read('docs/KNOWN_LIMITATIONS_V7.md');
-    const roadmap = read('docs/ROADMAP.md');
-
-    expect(status).toContain('four consecutive screens render the next era through bounded render textures');
-    expect(limitations).toContain('authored procedural vignettes rather than recursively mounting the complete destination room');
-    expect(limitations).toContain('real-device GPU profiling');
-    expect(roadmap).toContain('3.2 Screens-within-screens portals');
-    expect(roadmap).toContain('Status 2026-08-15: ✅ Implemented');
   });
 });

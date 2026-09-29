@@ -1,42 +1,35 @@
 'use client';
 
 import Link from 'next/link';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import type { YearId } from '@/content/data';
 import { useExperienceActions } from '../ExperienceContext';
 import { useExperienceStore } from '../store';
+import { FutureClosing } from './FutureClosing';
 import {
+  AGENT_TRACE_LABELS,
   AGENT_TRACE_PHASES,
   COEXISTENCE_MOMENT_IDS,
   CONSCIOUSNESS_CUE_IDS,
   CONSCIOUSNESS_PHASES,
+  CONSCIOUSNESS_PHASE_LABELS,
+  CONSENT_OUTCOMES,
+  FUTURE_IMAGINED_LINE,
+  SAITO_INTRO,
+  STAGED_STATE_LABELS,
+  UNWITNESSED_LINE,
   coexistenceMoments,
   consciousnessCues,
+  getConsciousnessContinueLabel,
   getConsciousnessLine,
+  getEarnedMemoryLine,
+  getNextUnaskedMoment,
   getPermissionedMemorySource,
   getPermissionedMemoryState,
   saitoAuthorityMap,
   type CompanionConsent,
-  type AgentTracePhase,
-  type ConsciousnessPhase,
   type EncounterRetention
 } from './futureWorld';
-
-const agentTraceLabels: Record<AgentTracePhase, string> = {
-  sense: 'Sense',
-  interpret: 'Interpret',
-  govern: 'Check authority',
-  act: 'Act or wait',
-  account: 'Receipt'
-};
-
-const phaseLabels: Record<ConsciousnessPhase, string> = {
-  notice: 'Notice',
-  recall: 'Recall',
-  deliberate: 'Deliberate',
-  act: 'Speak, demonstrate, initiate, or refuse',
-  continue: 'Continue'
-};
 
 function TextCoexistence() {
   const coexistence = useExperienceStore((state) => state.futureJourney.coexistence);
@@ -47,8 +40,13 @@ function TextCoexistence() {
   const { discover, navigateToYear } = useExperienceActions();
   const moment = coexistenceMoments[coexistence.activeMoment];
   const decision = coexistence.consent[moment.id];
-  const activeBeat = moment.exchange[Math.min(exchangeIndex, moment.exchange.length - 1)];
+  const lastIndex = moment.exchange.length - 1;
+  const activeBeat = moment.exchange[Math.min(exchangeIndex, lastIndex)];
   const nextBeat = moment.exchange[exchangeIndex + 1];
+  const revealed = exchangeIndex >= moment.revealAt;
+  const nextMoment = getNextUnaskedMoment(coexistence);
+
+  useEffect(() => { setExchangeIndex(0); }, [coexistence.activeMoment]);
 
   const chooseMoment = (id: typeof moment.id) => {
     selectMoment(id);
@@ -63,12 +61,12 @@ function TextCoexistence() {
   return (
     <section className="future-text future-text--2030" aria-labelledby="future-text-coexistence-title">
       <header>
-        <p className="eyebrow">2030 · Co-Existence</p>
+        <p className="eyebrow">2030 · Co-Existence · Imagined</p>
         <h2 id="future-text-coexistence-title">Morning, Together</h2>
-        <p>Saito notices the room, speaks first when useful, answers Kevin directly, acts within authority, and knows when silence is the better response.</p>
+        <p>{SAITO_INTRO} It notices the room, speaks first when useful, acts within the authority Kevin gave it, and knows when silence is the better response. {FUTURE_IMAGINED_LINE}</p>
       </header>
 
-      <nav className="future-text-moments" aria-label="A compressed day with Saito">
+      <nav className="future-text-moments" aria-label="A day with Saito">
         {COEXISTENCE_MOMENT_IDS.map((id) => (
           <button key={id} type="button" aria-pressed={moment.id === id} onClick={() => chooseMoment(id)}>
             <time>{coexistenceMoments[id].time}</time><b>{coexistenceMoments[id].place}</b><span>{coexistenceMoments[id].title}</span>
@@ -76,10 +74,10 @@ function TextCoexistence() {
         ))}
       </nav>
 
-      <article className="future-text-scene" aria-live="polite">
+      <article className="future-text-scene">
         <p className="eyebrow">{moment.time} · {moment.place}</p>
         <h3>{moment.title}</h3>
-        <p className="future-text-live"><b>Saito · {agentTraceLabels[activeBeat.phase]}</b>{activeBeat.signal}</p>
+        <p className="future-text-live"><b>Saito · {AGENT_TRACE_LABELS[activeBeat.phase]}</b>{activeBeat.signal}</p>
         <ol className="future-text-exchange" aria-label={`Conversation between Kevin and Saito at ${moment.time}`}>
           {moment.exchange.slice(0, exchangeIndex + 1).map((beat, index) => (
             <li key={`${beat.phase}-${index}`} data-speaker={beat.speaker}>
@@ -88,29 +86,35 @@ function TextCoexistence() {
             </li>
           ))}
         </ol>
+        <p className="sr-only" role="status">{activeBeat.speaker === 'saito' ? 'Saito' : 'Kevin'}: {activeBeat.line}</p>
         {nextBeat && (
-          <button className="future-text-primary" type="button" onClick={() => setExchangeIndex((current) => Math.min(current + 1, moment.exchange.length - 1))}>
-            {activeBeat.nextLabel}
-          </button>
+          <div className="future-text-links">
+            <button className="future-text-primary" type="button" onClick={() => setExchangeIndex((current) => Math.min(current + 1, lastIndex))}>
+              {activeBeat.nextLabel}
+            </button>
+            <button type="button" onClick={() => setExchangeIndex(lastIndex)}>Skip to the question</button>
+          </div>
         )}
         <p className="future-text-ambient"><b>In the room</b>{moment.ambient}</p>
-        <p className="future-text-seed"><b>Seed</b>{moment.seed.when} · {moment.seed.where} — {moment.seed.said}</p>
-        {!nextBeat && (
-          <section className="future-text-staged" aria-label="What Saito already staged">
-            <p><b>Quiet work</b>{moment.incubation.span} · {moment.incubation.checks} checks · {moment.incubation.domains.join(', ')}</p>
-            <ul>
-              {moment.staged.map((item) => (
-                <li key={item.action} data-state={item.state}>
-                  <b>{item.domain}</b>
-                  <span>{item.action}</span>
-                  <i>{item.state === 'done' ? 'done, reversible' : item.state === 'staged' ? 'staged, unsigned' : 'waits for Kevin'}</i>
-                </li>
-              ))}
-            </ul>
-          </section>
+        {revealed && (
+          <>
+            <p className="future-text-seed"><b>First said</b>{moment.seed.when} · {moment.seed.where} — {moment.seed.said}</p>
+            <section className="future-text-staged" aria-label="What Saito already prepared">
+              <p><b>Quiet work</b>{moment.incubation.span} · {moment.incubation.checks} checks · {moment.incubation.domains.join(', ')}</p>
+              <ul>
+                {moment.staged.map((item) => (
+                  <li key={item.action} data-state={item.state}>
+                    <b>{item.domain}</b>
+                    <span>{item.action}</span>
+                    <i>{STAGED_STATE_LABELS[item.state]}</i>
+                  </li>
+                ))}
+              </ul>
+            </section>
+          </>
         )}
         <details className="future-text-agent future-text-authority">
-          <summary>Saito’s standing authority by domain</summary>
+          <summary>What Saito may do on its own</summary>
           <ol>
             {saitoAuthorityMap.map((tier) => (
               <li key={tier.domains}>
@@ -120,26 +124,26 @@ function TextCoexistence() {
               </li>
             ))}
           </ol>
-          <footer>Commitment always happens by Kevin’s hand. Private incubations never surface on shared glass.</footer>
+          <footer>Kevin always commits by hand. Private quiet work never surfaces on shared screens.</footer>
         </details>
         <details className="future-text-agent">
-          <summary>Inspect the full observable agent record</summary>
+          <summary>What Saito did and didn’t do</summary>
           <header>
-            <p className="eyebrow">Saito · observable decision record</p>
-            <h4>Inputs, interpretation, authority, action, and retention</h4>
-            <span>{moment.agent.id} · {moment.agent.confidence}% confidence</span>
+            <p className="eyebrow">Saito’s record · {moment.time} {moment.place}</p>
+            <h4>Inputs, interpretation, authority, action, and memory</h4>
+            <span>{moment.agent.confidence}% confidence</span>
           </header>
           <ol>
             {AGENT_TRACE_PHASES.map((phase) => (
               <li key={phase}>
-                <b>{agentTraceLabels[phase]} · {moment.agent.steps[phase].status}</b>
+                <b>{AGENT_TRACE_LABELS[phase]} · {moment.agent.steps[phase].status}</b>
                 <strong>{moment.agent.steps[phase].summary}</strong>
                 <p>{moment.agent.steps[phase].detail}</p>
               </li>
             ))}
           </ol>
           <dl>
-            <dt>Posture</dt><dd>{moment.agent.posture}</dd>
+            <dt>Stance</dt><dd>{moment.agent.posture}</dd>
             <dt>Known gap</dt><dd>{moment.agent.uncertainty}</dd>
           </dl>
           <footer>This is a decision record—not hidden chain-of-thought.</footer>
@@ -149,15 +153,23 @@ function TextCoexistence() {
             <legend>{moment.invitation}</legend>
             <button className="future-text-primary" type="button" aria-pressed={decision === 'kept'} onClick={() => decide('kept')}>Keep it with me</button>
             <button type="button" aria-pressed={decision === 'refused'} onClick={() => decide('refused')}>Let it end here</button>
-            {decision !== 'unasked' && <output>{decision === 'kept' ? 'Carried—with permission.' : 'Gone. The room remembers nothing.'}</output>}
+            {decision !== 'unasked' && <output>{CONSENT_OUTCOMES[decision]}</output>}
+            {decision !== 'unasked' && nextMoment && (
+              <button type="button" onClick={() => chooseMoment(nextMoment)}>Next moment · {coexistenceMoments[nextMoment].time} {coexistenceMoments[nextMoment].place} →</button>
+            )}
           </fieldset>
         )}
-        <button className="future-text-provenance" type="button" aria-expanded={coexistence.provenanceOpen} onClick={() => setProvenance(!coexistence.provenanceOpen)}>Open infrastructure receipt</button>
-        {coexistence.provenanceOpen && <aside><b>carried on TokenPak · TIP authority · PAK context</b><p>{moment.receipt}</p></aside>}
+        <button className="future-text-provenance" type="button" aria-expanded={coexistence.provenanceOpen} onClick={() => setProvenance(!coexistence.provenanceOpen)}>Built on TokenPak</button>
+        {coexistence.provenanceOpen && (
+          <aside>
+            <p>{moment.receipt}</p>
+            <p>Saito imagines where TokenPak—the local-first context layer I’m building now—could lead. <Link href="/work/tokenpak/">Read the TokenPak case study</Link></p>
+          </aside>
+        )}
       </article>
 
       <button className="future-text-primary" type="button" onClick={() => navigateToYear('2040')}>Ten years pass · Enter Morning, After</button>
-      <footer><b>Co-Existence:</b> Saito is experienced as a present conversational counterpart; the inspectable record remains the quiet spine beneath the relationship.</footer>
+      <footer><b>Imagined:</b> Saito is design fiction. What it notices, may do, and keeps stays inspectable—without exposing private reasoning.</footer>
     </section>
   );
 }
@@ -169,12 +181,19 @@ function TextConsciousness() {
   const advance = useExperienceStore((state) => state.advanceConsciousnessBehavior);
   const setSourceTrace = useExperienceStore((state) => state.setConsciousnessSourceTrace);
   const resolveRetention = useExperienceStore((state) => state.resolveEncounterRetention);
+  const resetFutureJourney = useExperienceStore((state) => state.resetFutureJourney);
   const { discover, navigateToYear } = useExperienceActions();
   const cue = consciousnessCues[consciousness.selectedCue];
   const memoryState = getPermissionedMemoryState(coexistence, cue.id);
   const memorySource = getPermissionedMemorySource(coexistence, cue.id);
   const phaseIndex = CONSCIOUSNESS_PHASES.indexOf(consciousness.behaviorPhase);
+  const continueLabel = getConsciousnessContinueLabel(consciousness.behaviorPhase);
   const finished = consciousness.behaviorPhase === 'continue';
+  const retention = consciousness.encounterRetention;
+  const released = retention === 'released';
+  const unwitnessed = COEXISTENCE_MOMENT_IDS.every((id) => coexistence.consent[id] === 'unasked');
+  const earnedLine = getEarnedMemoryLine(coexistence);
+  const line = getConsciousnessLine(cue, consciousness.behaviorPhase, memoryState);
 
   const continueBehavior = () => {
     if (finished) return;
@@ -187,44 +206,57 @@ function TextConsciousness() {
   return (
     <section className="future-text future-text--2040" data-memory={memoryState} aria-labelledby="future-text-consciousness-title">
       <header>
-        <p className="eyebrow">2040 · Consciousness</p>
+        <p className="eyebrow">2040 · Consciousness · Imagined</p>
         <h2 id="future-text-consciousness-title">Morning, After</h2>
-        <p>In this imagined 2040, a cyberpunk holographic reproduction of Kevin notices, recalls, deliberates, speaks, initiates, acts, and refuses within the permissions Kevin left behind.</p>
-        <small>{coexistence.keptMoments.length}/6 memories permitted by the living day.</small>
+        <p>Ten years on, a holographic reproduction of Kevin notices, recalls, deliberates, and acts—or refuses—within the permissions left behind in 2030.</p>
+        {unwitnessed ? (
+          <p className="future-text-memory-line">{UNWITNESSED_LINE} <button type="button" onClick={() => navigateToYear('2030')}>Go live the morning first</button></p>
+        ) : earnedLine && <p className="future-text-memory-line">{earnedLine}</p>}
       </header>
 
-      <nav className="future-text-cues" aria-label="Environmental cues Kevin can notice">
+      <nav className="future-text-cues" aria-label="Things Kevin can notice">
         {CONSCIOUSNESS_CUE_IDS.map((id) => (
-          <button key={id} type="button" data-memory={getPermissionedMemoryState(coexistence, id)} aria-pressed={cue.id === id} onClick={() => selectCue(id)}>
+          <button key={id} type="button" disabled={released} data-memory={getPermissionedMemoryState(coexistence, id)} aria-pressed={cue.id === id} onClick={() => selectCue(id)}>
             <span>{consciousnessCues[id].certainty} · {getPermissionedMemoryState(coexistence, id)}</span><b>{consciousnessCues[id].label}</b>
           </button>
         ))}
       </nav>
 
-      <article className="future-text-scene future-text-scene--consciousness" aria-live="polite">
-        <ol className="future-text-behavior" aria-label="Kevin’s behavior loop">
-          {CONSCIOUSNESS_PHASES.map((phase) => <li key={phase} aria-current={phase === consciousness.behaviorPhase ? 'step' : undefined}>{phaseLabels[phase]}</li>)}
-        </ol>
-        <p className="eyebrow">{phaseLabels[consciousness.behaviorPhase]} · {cue.action}</p>
-        <h3>{cue.label}</h3>
-        <blockquote>“{getConsciousnessLine(cue, consciousness.behaviorPhase, memoryState)}”</blockquote>
-        {finished && <p>What Kevin chose: “{cue.act}”</p>}
-        {!finished && <button className="future-text-primary" type="button" onClick={continueBehavior}>Continue Kevin’s thought</button>}
-        <button className="future-text-provenance" type="button" aria-expanded={consciousness.sourceTraceOpen} onClick={() => setSourceTrace(!consciousness.sourceTraceOpen)}>Pull the sentence to its source</button>
-        {consciousness.sourceTraceOpen && <aside data-certainty={cue.certainty} data-memory={memoryState}><b>{cue.certainty}</b><p>{memorySource}</p><small>Behavior basis · {cue.source}</small>{cue.certainty === 'conjecture' && <small>The inference frays here; it will not become a claimed memory.</small>}</aside>}
+      {retention !== 'unasked' ? (
+        <FutureClosing
+          retention={retention}
+          variant="text"
+          onStartOver={() => navigateToYear('1990')}
+          onLiveAgain={() => { resetFutureJourney(); navigateToYear('2030'); }}
+        />
+      ) : (
+        <article className="future-text-scene future-text-scene--consciousness">
+          <ol className="future-text-behavior" aria-label="Kevin’s behavior loop">
+            {CONSCIOUSNESS_PHASES.map((phase) => <li key={phase} aria-current={phase === consciousness.behaviorPhase ? 'step' : undefined}>{CONSCIOUSNESS_PHASE_LABELS[phase]}</li>)}
+          </ol>
+          <p className="eyebrow">{CONSCIOUSNESS_PHASE_LABELS[consciousness.behaviorPhase]} · {cue.action}</p>
+          <h3>{cue.label}</h3>
+          <blockquote>“{line}”</blockquote>
+          <p className="sr-only" role="status">{line}</p>
+          {finished && <p>What he chose: “{cue.act}”</p>}
+          {continueLabel && <button className="future-text-primary" type="button" onClick={continueBehavior}>{continueLabel}</button>}
+          <button className="future-text-provenance" type="button" aria-expanded={consciousness.sourceTraceOpen} onClick={() => setSourceTrace(!consciousness.sourceTraceOpen)}>Pull the sentence to its source</button>
+          {consciousness.sourceTraceOpen && <aside data-certainty={cue.certainty} data-memory={memoryState}><b>{cue.certainty}</b><p>{memorySource}</p><small>Behavior basis · {cue.source}</small>{cue.certainty === 'conjecture' && <small>The thread ends here. Kevin will not turn inference into memory.</small>}</aside>}
 
-        {finished && (
-          <fieldset>
-            <legend>“May I keep this?”</legend>
-            <button className="future-text-primary" type="button" aria-pressed={consciousness.encounterRetention === 'kept'} onClick={() => retain('kept')}>Yes—only this encounter</button>
-            <button type="button" aria-pressed={consciousness.encounterRetention === 'released'} onClick={() => retain('released')}>No—let me disappear</button>
-            {consciousness.encounterRetention !== 'unasked' && <output>{consciousness.encounterRetention === 'kept' ? 'Then I will remember that you chose to stay.' : 'Then this is the last trace. Goodbye.'}</output>}
-          </fieldset>
-        )}
-      </article>
+          {finished && (
+            <fieldset>
+              <legend>“May I keep this?”</legend>
+              <button className="future-text-primary" type="button" onClick={() => retain('kept')}>Yes—only this encounter</button>
+              <button type="button" onClick={() => retain('released')}>No—let me disappear</button>
+            </fieldset>
+          )}
+        </article>
+      )}
 
-      <div className="future-text-links"><button type="button" onClick={() => navigateToYear('2030')}>Return to the living morning</button><Link href="/work/">What Kevin made</Link><Link href="/contact/">Reach the living Kevin</Link></div>
-      <footer><b>Consciousness, imagined:</b> an authored reproduction, not a claim that a biological person can be transferred.</footer>
+      {retention === 'unasked' && (
+        <div className="future-text-links"><Link href="/contact/">Reach the living Kevin</Link><Link href="/work/">What Kevin made</Link><button type="button" onClick={() => navigateToYear('2030')}>Return to the living morning</button></div>
+      )}
+      <footer><b>Imagined:</b> authored design fiction—a reproduction of Kevin’s patterns, voice, and memory boundaries, not a claim that consciousness can be transferred.</footer>
     </section>
   );
 }

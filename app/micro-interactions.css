@@ -13,8 +13,10 @@
     border-color var(--motion-fast) var(--ease-out),
     background var(--motion-fast) var(--ease-out),
     box-shadow var(--motion-fast) var(--ease-out);
-  will-change: transform;
 }
+
+/* Promote to a layer only while the pointer is actually pulling the button. */
+:where(.site-shell, .landing-page) .primary-action[data-magnetic-active='true'] { will-change: transform; }
 
 :where(.site-shell, .landing-page) .primary-action:hover {
   transform: translate3d(var(--magnet-x), calc(var(--magnet-y) - 2px), 0) scale(var(--press-scale));

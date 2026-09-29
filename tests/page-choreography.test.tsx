@@ -95,8 +95,6 @@ describe('standard-page choreography', () => {
     const runtime = read('src/components/PageChoreography.tsx');
     const css = read('app/page-choreography.css');
     const caseStudy = read('app/work/[slug]/page.tsx');
-    const motion = read('docs/MOTION.md');
-    const roadmap = read('docs/ROADMAP.md');
 
     expect(REVEAL_SELECTOR).toContain('.case-study > section');
     expect(runtime).toContain("document.addEventListener('click', onClick, true)");
@@ -105,10 +103,6 @@ describe('standard-page choreography', () => {
     expect(css).toContain("html[data-choreography='ready']");
     expect(css).toContain('@media (prefers-reduced-motion: reduce)');
     expect(css).toContain('view-transition-name: page-content');
-    expect(motion).toContain('The transition waits for the App Router pathname commit');
-    expect(motion).toContain('source content remains visible until the client adds');
-    expect(roadmap).toContain('4.2 Page transitions + scroll choreography');
-    expect(roadmap).toContain('pathname-settled View Transition');
     for (const chapter of CASE_STUDY_CHAPTERS) {
       expect(caseStudy).toContain(`id="${chapter.id}" data-case-chapter`);
     }

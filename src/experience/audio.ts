@@ -214,3 +214,91 @@ export function startFutureAtmosphere(year: FutureSoundYear, enabled: boolean) {
     handle.stop();
   };
 }
+
+export type PastSoundYear = '1990' | '2000' | '2010' | '2020';
+
+type AmbienceRecipe = {
+  noise: { filter: BiquadFilterType; frequency: number; q: number; gain: number };
+  tones: Array<{ frequency: number; gain: number; type: OscillatorType }>;
+  level: number;
+};
+
+/** Quiet room tone for each past era: tube hiss, a computer fan, office air, a creator's pad. */
+const pastAmbience: Record<PastSoundYear, AmbienceRecipe> = {
+  '1990': { noise: { filter: 'bandpass', frequency: 5200, q: 0.7, gain: 0.35 }, tones: [{ frequency: 60, gain: 0.5, type: 'sine' }], level: 0.012 },
+  '2000': { noise: { filter: 'lowpass', frequency: 900, q: 0.5, gain: 0.8 }, tones: [{ frequency: 120, gain: 0.18, type: 'triangle' }], level: 0.014 },
+  '2010': { noise: { filter: 'lowpass', frequency: 420, q: 0.4, gain: 1 }, tones: [], level: 0.012 },
+  '2020': { noise: { filter: 'lowpass', frequency: 300, q: 0.4, gain: 0.25 }, tones: [{ frequency: 220, gain: 0.4, type: 'sine' }, { frequency: 329.63, gain: 0.25, type: 'sine' }], level: 0.008 }
+};
+
+let activeAmbience: AtmosphereHandle | null = null;
+
+export function stopEraAmbience() {
+  activeAmbience?.stop();
+  activeAmbience = null;
+}
+
+/** Starts the past era's room tone (sound must be on); returns a cleanup that fades it out. */
+export function startEraAmbience(year: PastSoundYear, enabled: boolean) {
+  stopEraAmbience();
+  const audio = getAudioContext(enabled);
+  if (!audio) return () => undefined;
+  const recipe = pastAmbience[year];
+  const now = audio.currentTime;
+  const master = audio.createGain();
+  master.gain.setValueAtTime(AUDIO_FLOOR, now);
+  master.gain.exponentialRampToValueAtTime(recipe.level, now + 1.2);
+  master.connect(audio.destination);
+
+  const buffer = audio.createBuffer(1, audio.sampleRate * 2, audio.sampleRate);
+  const data = buffer.getChannelData(0);
+  for (let index = 0; index < data.length; index += 1) data[index] = Math.random() * 2 - 1;
+  const noise = audio.createBufferSource();
+  noise.buffer = buffer;
+  noise.loop = true;
+  const filter = audio.createBiquadFilter();
+  filter.type = recipe.noise.filter;
+  filter.frequency.setValueAtTime(recipe.noise.frequency, now);
+  filter.Q.setValueAtTime(recipe.noise.q, now);
+  const noiseGain = audio.createGain();
+  noiseGain.gain.setValueAtTime(recipe.noise.gain, now);
+  noise.connect(filter).connect(noiseGain).connect(master);
+  noise.start(now);
+
+  const oscillators = recipe.tones.map((tone) => {
+    const oscillator = audio.createOscillator();
+    const gain = audio.createGain();
+    oscillator.type = tone.type;
+    oscillator.frequency.setValueAtTime(tone.frequency, now);
+    gain.gain.setValueAtTime(tone.gain, now);
+    oscillator.connect(gain).connect(master);
+    oscillator.start(now);
+    return { oscillator, gain };
+  });
+
+  let stopped = false;
+  const handle: AtmosphereHandle = {
+    stop: () => {
+      if (stopped) return;
+      stopped = true;
+      const stopAt = audio.currentTime;
+      master.gain.cancelScheduledValues(stopAt);
+      master.gain.setValueAtTime(Math.max(AUDIO_FLOOR, master.gain.value), stopAt);
+      master.gain.exponentialRampToValueAtTime(AUDIO_FLOOR, stopAt + 0.3);
+      noise.stop(stopAt + 0.32);
+      oscillators.forEach(({ oscillator }) => oscillator.stop(stopAt + 0.32));
+      window.setTimeout(() => {
+        noise.disconnect();
+        filter.disconnect();
+        noiseGain.disconnect();
+        oscillators.forEach(({ oscillator, gain }) => { oscillator.disconnect(); gain.disconnect(); });
+        master.disconnect();
+      }, 400);
+    }
+  };
+  activeAmbience = handle;
+  return () => {
+    if (activeAmbience === handle) activeAmbience = null;
+    handle.stop();
+  };
+}

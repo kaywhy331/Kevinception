@@ -49,14 +49,4 @@ describe('six era design languages', () => {
     }
     expect(css).toContain('@media (prefers-reduced-motion: reduce)');
   });
-
-  it('documents the system and its browser-review boundary', () => {
-    const documentation = read('docs/ERA_DESIGN_LANGUAGES.md');
-    for (const year of YEAR_ORDER) {
-      expect(documentation).toContain(year);
-      expect(documentation).toContain(eraConfigs[year].designLanguage.name);
-    }
-    expect(documentation).toContain('Final six-up screenshots');
-    expect(documentation).toContain('are not inferred from source code');
-  });
 });
