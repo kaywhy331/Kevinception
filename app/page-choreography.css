@@ -54,7 +54,7 @@ html[data-choreography='ready'] [data-reveal='ready'][data-revealed='true'] {
 .case-study__chapters > span {
   padding-left: .5rem;
   color: var(--muted);
-  font-size: .58rem;
+  font-size: .75rem;
   font-weight: 800;
   letter-spacing: .14em;
   text-transform: uppercase;
@@ -81,12 +81,12 @@ html[data-choreography='ready'] [data-reveal='ready'][data-revealed='true'] {
   border: 1px solid transparent;
   border-radius: 9px;
   color: #aeb7c5;
-  font-size: .66rem;
+  font-size: .8rem;
   white-space: nowrap;
   transition: color var(--motion-fast) var(--ease-out), border-color var(--motion-fast) var(--ease-out), background var(--motion-fast) var(--ease-out);
 }
 
-.case-study__chapters a small { color: #718094; font: 700 .48rem/1 ui-monospace, monospace; }
+.case-study__chapters a small { color: #8a97aa; font: 700 .75rem/1 ui-monospace, monospace; }
 .case-study__chapters a:is(:hover, :focus-visible) { color: white; background: rgba(255,255,255,.055); }
 .case-study__chapters a[aria-current='location'] {
   border-color: color-mix(in srgb, var(--accent-2) 42%, var(--line));

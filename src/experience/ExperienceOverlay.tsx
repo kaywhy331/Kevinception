@@ -306,7 +306,7 @@ function TextMode() {
           <>
             <h2>One commerce operating system</h2>
             <div className="text-mode__grid">
-              <section><p className="eyebrow">Verified operating scale</p><h3>1.5M catalog records · 20+ commerce channels</h3><p>One Stop Deals and StealStreet operations spanned direct-to-consumer, wholesale, Amazon FBA, direct fulfillment, international marketplaces, vendor purchasing, and warehouse fulfillment.</p></section>
+              <section><p className="eyebrow">Verified operating scale</p><h3>1.5M catalog records · 15+ commerce channels</h3><p>One Stop Deals and StealStreet operations spanned direct-to-consumer, wholesale, Amazon FBA, direct fulfillment, international marketplaces, vendor purchasing, and warehouse fulfillment.</p></section>
               <section><p className="eyebrow">End-to-end lifecycle</p><h3>Vendor → PO → inventory → catalog → marketplace → order → warehouse → customer</h3><p>Customer service, returns, finance, reporting, employees, projects, administration, and automation connected to the same proprietary platform.</p></section>
             </div>
             <h2>Representative cross-channel records</h2>

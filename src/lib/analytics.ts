@@ -28,8 +28,3 @@ function plausible() {
 export function trackAnalyticsEvent(event: string, props: AnalyticsProps = {}) {
   plausible()?.(event, { props });
 }
-
-export function trackAnalyticsPageview() {
-  if (typeof window === 'undefined') return;
-  plausible()?.('pageview', { u: window.location.href });
-}

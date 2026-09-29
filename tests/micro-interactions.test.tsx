@@ -99,6 +99,9 @@ describe('standard-page micro interactions', () => {
 
     expect(css).toContain('--ease-spring: cubic-bezier(.2, .8, .2, 1.18)');
     expect(css).toContain('@media (hover: none), (pointer: coarse), (prefers-reduced-motion: reduce)');
-    expect(projectCard).toContain('data-interactive-card');
+    // Archive rows are large editorial text; the tilt stays opt-in and is not applied to them.
+    expect(projectCard).not.toMatch(/<article[^>]*data-interactive-card/);
+    expect(css).toContain("[data-magnetic-active='true'] { will-change: transform; }");
+    expect(css.split("[data-magnetic-active='true']")[0]).not.toMatch(/\.primary-action \{[^}]*will-change/);
   });
 });

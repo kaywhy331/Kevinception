@@ -66,7 +66,7 @@ export const chapterNarrative: Record<YearId, ChapterNarrative> = {
     bridgeToNext: 'Commerce becomes creation.',
     transitionLine: 'Order signals accelerate into the creator feed.',
     emotionalGoal: 'Operational scale, systems thinking, automation, and customer commitment',
-    description: 'Explore a reconstruction of the proprietary operating system behind One Stop Deals and StealStreet: follow the vendor-to-customer lifecycle, inspect a 1.5-million-record catalog, normalize 20+ channels, and route cross-functional exceptions.',
+    description: 'Explore a reconstruction of the proprietary operating system behind One Stop Deals and StealStreet: follow the vendor-to-customer lifecycle, inspect a 1.5-million-record catalog, normalize 15+ channels, and route cross-functional exceptions.',
     enterLabel: 'Open Commerce Operations',
     deviceLabel: 'Fulfillment workstation'
   },
@@ -79,7 +79,7 @@ export const chapterNarrative: Record<YearId, ChapterNarrative> = {
     transformation: 'Commerce becomes creation.',
     lesson: 'Kevin carried forward a creator’s bias toward making ideas tangible, communicating quickly, testing signals, and building experiences people choose to engage with.',
     capabilityLinks: ['Product creation', 'Storytelling', 'Branding', 'Audience behavior'],
-    bridgeToNext: 'Creation becomes coexistence.',
+    bridgeToNext: 'Creation becomes co-existence.',
     transitionLine: 'Reactions reorganize into a human-and-AI collaboration system.',
     emotionalGoal: 'Speed, signal, creativity, and proof',
     description: 'Navigate concise clips about Kevin, systems thinking, projects, automation, AI, branding, marketing, and changing consumer behavior.',
@@ -109,7 +109,7 @@ export const chapterNarrative: Record<YearId, ChapterNarrative> = {
     medium: 'Cyberpunk holographic reproduction of Kevin’s self and consciousness',
     chapterThesis: 'In this imagined future, a Kevin-shaped intelligence notices, recalls, deliberates, speaks, acts, and refuses from permissioned memories and values while revealing what is record, pattern, or conjecture.',
     transformation: 'Co-Existence becomes consciousness.',
-    lesson: 'Kevin’s final layer connects memory architecture, values, agency, and source integrity into a self that can act as him only within the boundaries the living Kevin and others allowed it to keep.',
+    lesson: 'Kevin’s final chapter connects memory architecture, values, agency, and source integrity into a self that can act as him only within the boundaries the living Kevin and others allowed it to keep.',
     capabilityLinks: ['Memory architecture', 'Deliberative intelligence', 'Source integrity', 'Consent and identity'],
     emotionalGoal: 'Recognition, uncanniness, agency, reflection, and permission',
     description: 'Encounter a cyberpunk holographic Kevin in the apartment after the living morning: let him notice environmental cues, trace each thought to its source, choose an action or refusal, and ask whether this meeting may remain.',
@@ -119,8 +119,9 @@ export const chapterNarrative: Record<YearId, ChapterNarrative> = {
 };
 
 export const narrativeSite = {
-  title: 'Kevinception — Six Digital Eras. One Evolving Mind.',
-  description: 'Kevin Yang’s interactive portfolio follows six stages of his relationship with technology—Curiosity, Connection, Commerce, Creation, Co-Existence, and Consciousness—each experienced through a defining interface of its era.'
+  title: 'Kevinception — One life. Six eras of technology.',
+  tagline: 'One life. Six eras of technology.',
+  description: 'Kevin Yang’s interactive portfolio follows six chapters of his relationship with technology—Curiosity, Connection, Commerce, Creation, Co-Existence, and Consciousness—each experienced through a defining interface of its era.'
 } as const;
 
 export const kevinOriginNarrative = {

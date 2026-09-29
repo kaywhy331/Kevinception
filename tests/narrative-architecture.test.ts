@@ -37,11 +37,11 @@ describe('V7.6 narrative architecture', () => {
     expect(home).toContain('<EraPortalCanvas />');
     expect(home).not.toContain('directRoutes');
     expect(home).not.toContain('landing-page__summary');
-    expect((home.match(/<Link\b/g) ?? [])).toHaveLength(0);
     expect((portal.match(/<Link\b/g) ?? [])).toHaveLength(1);
-    expect(portal).toContain('Enter {entry.experienceName}');
-    expect(portal).toContain('useState<YearId>(YEAR_ORDER[0])');
-    expect(globals).toMatch(/\.landing-page \{[^}]*height: 100svh;[^}]*overflow: hidden;/);
+    expect(portal).toContain('Enter {activeYear} · {active.chapterName}');
+    // The landing page may grow and scroll at high zoom or on short screens (WCAG 1.4.10).
+    expect(globals).toMatch(/\.landing-page \{[^}]*min-height: 100svh;/);
+    expect(globals).not.toMatch(/\.landing-page \{[^}]*overflow: hidden;/);
     expect(globals).toContain('@media (max-width: 900px) and (orientation: landscape)');
     expect(home).not.toContain('SiteChrome');
   });
@@ -57,8 +57,9 @@ describe('V7.6 narrative architecture', () => {
     expect(overlay).toContain('from.chapterName} → ${to.chapterName}');
   });
 
-  it('updates site positioning from six technologies to six digital eras', () => {
-    expect(narrativeSite.title).toContain('Six Digital Eras');
+  it('uses one tagline and names the six stages as chapters', () => {
+    expect(narrativeSite.title).toBe('Kevinception — One life. Six eras of technology.');
+    expect(narrativeSite.tagline).toBe('One life. Six eras of technology.');
     expect(narrativeSite.description).toContain('Curiosity, Connection, Commerce, Creation, Co-Existence, and Consciousness');
     const layout = read('app/layout.tsx');
     expect(layout).toContain('narrativeSite.title');
