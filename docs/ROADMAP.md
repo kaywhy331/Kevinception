@@ -1,9 +1,9 @@
 # Kevinception — Road to Award-Winning
 
 - **Date:** 2026-08-10
-- **Author:** Trix (Claude Code), from full design review + code audit + V7 docs (`KNOWN_LIMITATIONS_V7.md`, `IMPLEMENTATION_STATUS_V7.md`)
+- **Author:** Trix (Claude Code), from full design review + code audit + V7 docs (`KNOWN_LIMITATIONS.md`, `archive/IMPLEMENTATION_STATUS_V7.md`)
 - **Goal:** Take Kevinception from "complete vertical slice" to an award-caliber personal brand/portfolio — Awwwards SOTD / CSSDA / FWA submission quality.
-- **Baseline:** Phase 0 (design remediation, 2026-08-10) is done: fonts load, mobile nav exists, OG wired, contact works, labels unified, scaffolding removed. See `DESIGN-REMEDIATION-REPORT.md`.
+- **Baseline:** Phase 0 (design remediation, 2026-08-10) is done: fonts load, mobile nav exists, OG wired, contact works, labels unified, scaffolding removed. See `archive/DESIGN-REMEDIATION-REPORT.md`.
 
 ## How awards judge — and where Kevinception stands
 
@@ -88,7 +88,7 @@ Homepage hero: replace the CSS orbit with a live mini-canvas or captured scene l
 
 ## Phase 3 — Immersive experience elevation
 
-*Why third: executes Phase 2's direction in the 3D core. This is where SOTD is won or lost. Items map directly to `KNOWN_LIMITATIONS_V7.md`.*
+*Why third: executes Phase 2's direction in the 3D core. This is where SOTD is won or lost. Items map directly to `KNOWN_LIMITATIONS.md`.*
 
 **3.1 Scene fidelity decision + pass** [K decision, A execute] (L)
 Two valid paths: (a) artist-authored GLB + baked textures per era, or (b) **deliberate stylized art direction executed consistently on procedural geometry** (cheaper, still award-viable if intentional — think refined low-poly dioramas with excellent lighting). Either way: lighting pass, material pass, per-era post-processing grades (current global Bloom/Noise/Vignette becomes per-era).

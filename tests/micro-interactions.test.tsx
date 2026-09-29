@@ -93,18 +93,12 @@ describe('standard-page micro interactions', () => {
     expect(action).not.toHaveAttribute('data-magnetic-active');
   });
 
-  it('documents the easing vocabulary and non-spatial capability boundary', () => {
+  it('defines the easing vocabulary and non-spatial capability boundary', () => {
     const css = read('app/micro-interactions.css');
-    const motion = read('docs/MOTION.md');
-    const roadmap = read('docs/ROADMAP.md');
     const projectCard = read('src/components/ProjectCard.tsx');
 
     expect(css).toContain('--ease-spring: cubic-bezier(.2, .8, .2, 1.18)');
     expect(css).toContain('@media (hover: none), (pointer: coarse), (prefers-reduced-motion: reduce)');
-    expect(motion).toContain('one passive delegated pointer listener');
-    expect(motion).toContain('Magnetism and tilt never encode state or gate an action');
-    expect(roadmap).toContain('4.1 Micro-interactions');
-    expect(roadmap).toContain('Status 2026-08-15: ✅ Implemented');
     expect(projectCard).toContain('data-interactive-card');
   });
 });

@@ -1,8 +1,9 @@
-# Kevinception V7 — Full Storyboard and User Journey
+# Kevinception — Storyboard and user journeys
 
 **Product direction:** R3F-first hybrid experience  
 **Timeline:** 1990 → 2000 → 2010 → 2020 → 2030 → 2040  
-**Purpose:** Define every primary route, cinematic scene, interaction loop, transition, content reveal, mobile adaptation, and user journey.
+**Purpose:** Define every primary route, cinematic scene, interaction loop, transition, content reveal, mobile adaptation, and user journey.  
+**Status:** Design intent, originally written for the V7 planning baseline (2026-07-20). Pages 5, 7, and 8 were rewritten for 0.9.0 to match the shipped chapters (StealStreet Commerce OS, Morning, Together, Morning, After). Elsewhere, where this storyboard and the product differ, `NARRATIVE.md` and the code win. The standalone Profile page (`/portfolio`) has since merged into About.
 
 ---
 
@@ -18,14 +19,14 @@ The narrative progression is:
 |---:|---|---|---|
 | 1990 | Tube television and 8-bit console | Technology feels magical | Wonder and play |
 | 2000 | Kevin Online and the early web | Technology becomes a world to explore | Connection and discovery |
-| 2010 | KevinBook social profile | Technology becomes identity and community | Self-definition and participation |
-| 2020 | KevTok short-form feed | Technology becomes compressed creativity and distribution | Velocity and signal |
-| 2030 | Kevin Nexus autonomous-agent workspace | Technology becomes delegated intelligence | Augmentation and orchestration |
-| 2040 | Kevin Echo holographic consciousness interface | Technology becomes continuity of perspective | Reflection and transcendence |
+| 2010 | StealStreet Commerce OS (Commerce) | Technology becomes operations at scale | Competence and systems ownership |
+| 2020 | KevTok short-form feed (Creation) | Technology becomes compressed creativity and distribution | Velocity and signal |
+| 2030 | Morning, Together (Co-Existence) | Technology becomes a household intelligence that notices, stages, and waits for consent | Trust, restraint, and ordinary warmth |
+| 2040 | Morning, After (Consciousness) | Technology becomes a permissioned memory of a person | Reflection and a slight uncanniness |
 
 The central story is:
 
-> A child fascinated by screens and game systems becomes an explorer of the internet, a participant in digital culture, a builder of products and systems, an orchestrator of intelligent agents, and eventually a speculative digital echo whose memories preserve the path.
+> A child fascinated by screens and game systems becomes an explorer of the internet, a builder of commerce systems, a creator, someone who lives alongside a household intelligence that asks before it keeps anything, and eventually a holographic reproduction that can only remember what was allowed.
 
 ---
 
@@ -34,7 +35,7 @@ The central story is:
 ```text
 /
 ├── Start the experience → /experience
-├── View Kevin's work    → /portfolio
+├── View Kevin's work    → /work
 └── Resume / Contact shortcuts
 
 /experience
@@ -45,12 +46,11 @@ The central story is:
 ├── /experience/2030
 └── /experience/2040
 
-/portfolio
-├── /work
+/work
 │   └── /work/[project-slug]
-├── /resume
-├── /about
-└── /contact
+/resume
+/about        (includes the former /portfolio Profile; /portfolio redirects here)
+/contact
 ```
 
 The immersive routes use one persistent React Three Fiber canvas. The URL changes as the camera moves between eras, but the visitor experiences one continuous world.
@@ -207,7 +207,7 @@ Secondary links:
 
 The page recognizes local progress and displays:
 
-> Continue from 2010 — KevinBook
+> Continue from 2010 — StealStreet Commerce OS
 
 Actions:
 
@@ -454,7 +454,7 @@ Answers appear as a deliberately low-budget public-access call-in program. The s
 Most of the signal is scrambled. Adjusting the antenna or tracking may reveal:
 
 - A screen name from 2000.
-- A KevinBook notification.
+- A StealStreet order notification.
 - A vertical-video fragment.
 - An agent identifier.
 - A holographic memory code.
@@ -766,155 +766,48 @@ The visitor opens a profile image, blog post, or shared media item.
 1. The selected object fills the CRT.
 2. Scanlines disappear.
 3. The display becomes flatter and wider.
-4. The browser chrome transforms into KevinBook navigation.
+4. The browser chrome transforms into the StealStreet Commerce OS workspace.
 5. The surrounding desk updates to 2010.
 
 ---
 
-## Page 5 — `/experience/2010` — KevinBook
+## Page 5 — `/experience/2010` — StealStreet Commerce OS
 
 ### Purpose
 
-Show the era when technology becomes social identity, community, public expression, networking, and an increasingly professional digital presence.
+Show the commerce chapter as the operating system Kevin worked inside: the One Stop Deals / StealStreet operations platform, reconstructed as an explorable enterprise command center.
 
 ### Emotional target
 
-Participation, connection, self-definition, and the realization that technology is no longer separate from everyday life.
+Competence, scale, and the satisfaction of a system that closes its loops.
 
 ### Environment
 
-A brighter 2010 desk:
-
-- Laptop or flat-panel monitor.
-- Early smartphone.
-- Digital camera.
-- Charging cables.
-- Coffee cup or notebook.
-- Notification glow.
+A fulfillment workstation with an in-house commerce system map, packing bench, parcels, inventory shelving, and label equipment. The Project Blueprint artifact is the commerce operating-system map itself.
 
 ### Entry storyboard
 
-#### Frame 1 — Profile loads
+#### Frame 1 — The dashboard
 
-KevinBook opens directly to Kevin’s profile. No login friction.
+The focused interface opens on the operations dashboard with scale signals taken from canonical content (the catalog-record and channel counts in `src/content`).
 
-A subtle notification indicates that an old connection from Kevin Online has appeared.
+#### Frame 2 — Follow one order
 
-#### Frame 2 — Profile overview
+The visitor follows the end-to-end lifecycle: Vendor → Purchase Order → Inventory → Catalog → Marketplace → Customer Order → Warehouse → Customer.
 
-Visible areas:
+#### Frame 3 — Resolve an exception
 
-- Profile image.
-- Cover image made from technology artifacts.
-- Short bio.
-- Current focus.
-- Interests.
-- Mutual connections or capability network.
-- Wall feed.
-
-Tabs:
-
-- Wall
-- About
-- Projects
-- Photos
-- Notes
-
-#### Frame 3 — Guided prompt
-
-A small Messenger-style guide asks:
-
-> Want Kevin’s timeline, projects, or the story behind how he works?
-
-The visitor can dismiss it and browse normally.
-
-### Tab storyboard
-
-#### Wall
-
-The Wall is a chronological story feed.
-
-Post types:
-
-- Verified milestone posts.
-- Technology moments.
-- Project launches.
-- Short reflections.
-- Shared links from the 2000 world.
-- Photos or screenshots.
-
-Visitor actions:
-
-- Like.
-- Comment.
-- Share internally.
-- Open full story.
-
-A project post expands into a concise case-study preview and offers a full canonical route.
-
-#### About
-
-Sections:
-
-- Overview.
-- Work and capabilities.
-- How Kevin thinks.
-- Technology interests.
-- Contact and links.
-
-This page is the cleanest immersive-era summary of Kevin.
-
-#### Projects
-
-Projects are presented as application pages, events, or shared links.
-
-Each card shows:
-
-- Problem.
-- Kevin’s role.
-- Main decision.
-- Result or evidence.
-- Open full project.
-
-#### Photos
-
-Albums organize visual artifacts:
-
-- Early technology.
-- Interface experiments.
-- Project work.
-- Behind the scenes.
-- Timeline artifacts.
-
-Selecting an image may reveal the same object in another era.
-
-#### Notes
-
-Longer writing about:
-
-- Systems thinking.
-- Product and operational design.
-- Automation.
-- Technology’s effect on identity.
-- What Kevin was learning during the decade.
+Representative Orders, Purchase Orders, Catalog, Marketplaces, Warehouse, and Reports workspaces surface actionable exceptions. Fixing one (for example shipping an order or repairing a listing) visibly updates the connected records.
 
 ### Secondary functions
 
-- Publish a local visitor status.
-- Poke Kevin.
-- Send a message.
-- Accept or ignore a playful application request.
-- Search profile content.
-- View notifications.
+Company hub, customer service, returns, finance, automation, permissions, audit, vendor, inventory, and administration evidence; cross-entity search; browser Back/Forward restore the active module.
 
 ### 2010 Easter eggs
 
-- Poke response.
-- Application request parody.
-- “Relationship status with technology.”
-- Old mobile-upload album.
-- A wall post authored by a 2000 buddy.
-- Hidden profile field that references 2030.
+- A discoverable archive inventory.
+- Persistent Project Blueprint recovery.
+- The time-traveler welcome for visitors arriving from another era.
 
 ### Exit transition to 2020
 
@@ -1041,264 +934,103 @@ Actions:
 
 - Hidden Drafts folder.
 - Algorithm-joke caption.
-- Duet with a KevinBook post.
+- Duet with a StealStreet product listing.
 - Creator analytics parody.
-- A comment from Kevin Echo.
+- A comment from holographic Kevin.
 - Saved 2000 attachment reappears as a video asset.
 
 ### Exit transition to 2030
 
-1. Comments, captions, likes, and saved icons detach from the phone.
-2. They become floating structured nodes.
-3. The phone fades.
-4. Nodes connect into an agent network.
-5. A central objective appears.
+1. The phone's light spills into the room.
+2. The studio dissolves into a warm apartment at 07:12.
+3. Saito speaks first.
 
 ---
 
-## Page 7 — `/experience/2030` — Kevin Nexus
+## Page 7 — `/experience/2030` — Morning, Together
 
 ### Purpose
 
-Show a credible near-future model of human collaboration with autonomous agents, while demonstrating Kevin’s thinking about systems, orchestration, context, governance, and human control.
+Show a credible near-future life alongside a household intelligence, Saito, and make Kevin's thinking about context, authority, and consent felt through ordinary moments rather than a dashboard.
 
 ### Emotional target
 
-Capability, leverage, transparency, and cautious optimism.
+Warmth, trust, restraint, and the relief of being asked.
 
 ### Content status
 
-All claims about the year 2030 must be visibly labeled as projection, scenario, or speculation.
+Everything in 2030 is design fiction and is labeled as such. TokenPak, TIP, and PAK are real projects and appear only in an optional infrastructure receipt as provenance.
 
 ### Environment
 
-A clean spatial intelligence workspace:
+A warm, spatially zoned smart home: a local-sensing kitchen, a mounted-context studio, a guest-safe living room, a threshold, a dinner table, and a visible home nervous system. A brass commitment dial on the kitchen counter embodies the human-authority gate.
 
-- Central objective core.
-- Five agent nodes.
-- Shared memory layer.
-- Evidence panel.
-- Task queue.
-- Human approval gate.
-- Visible data handoffs.
+### Moment storyboard
 
-Avoid a cluttered science-fiction dashboard.
+The chapter is six ordinary moments from 07:12 to 22:04. The page lighting, room brightness, and sun position follow the time of day. Each moment runs as a beat sequence, `exchange → reveal → consent → settled`:
 
-### Entry storyboard
+1. **Exchange.** Saito notices something and speaks first. Kevin answers or directs. The room responds to the active object (the mug, the shared draft, the window desk, the threshold, the dinner table, the glasses).
+2. **Reveal.** A casual seed from earlier (“Seed held · 63 days”) surfaces as a staged, multi-domain result. Done and staged items land first; the gated item lands last.
+3. **Consent.** The room dims and the page holds still for one question: keep this moment with me, or let it end here. Nothing consequential is committed except by Kevin's hand at the dial.
+4. **Settled.** Saito reports what changed or why it stopped, with a retention receipt.
 
-#### Frame 1 — Statement
+The 20:15 anchor moment turns nine words about Asia into a staged year (passport renewal, fare corridors, seasons, family dates, one refundable hold) while booking and spend stay behind the gate.
 
-> By 2030, software may not wait for clicks. It may receive intent, coordinate work, and return decisions for human judgment.
+### The boundary lens
 
-Actions:
+The agent trace (`Sense → Interpret → Check authority → Act or wait → Receipt`), the standing-authority map (Full auto, Notify first, Stage to gate, Stage only, Draft only), the incubation ledger, and the infrastructure receipt live in one inspectable overlay opened from the masthead. Transparency is on demand; it never replaces the conversation, and it never claims to reveal hidden chain-of-thought.
 
-- Run a sample mission.
-- Enter an objective.
-- Explore Kevin’s AI work.
-- View assumptions.
+### Live mode
 
-#### Frame 2 — Objective selection
-
-Suggested missions:
-
-- Turn a vague product idea into an execution plan.
-- Diagnose a broken workflow.
-- Compare three strategic options.
-- Design an automation system.
-- Prepare a project kickoff.
-
-The visitor can also type a short objective.
-
-#### Frame 3 — Agent activation
-
-Five nodes activate:
-
-1. **Clarifier** — identifies the real objective and missing information.
-2. **Researcher** — gathers relevant evidence.
-3. **Architect** — designs the system or approach.
-4. **Builder** — translates the approach into execution steps.
-5. **Governor** — checks risk, evidence, and human-control boundaries.
-
-The roles are visually distinct but not humanoid.
-
-#### Frame 4 — Work orchestration
-
-The visitor watches:
-
-- Tasks being decomposed.
-- Context moving between nodes.
-- Parallel work.
-- Conflicts being surfaced.
-- Evidence attached to recommendations.
-- Confidence and uncertainty labels.
-
-A readable HTML panel narrates what is happening.
-
-#### Frame 5 — Human gate
-
-The system stops before a meaningful decision.
-
-The visitor can:
-
-- Approve.
-- Revise.
-- Reject.
-- Ask why.
-- Lower or raise autonomy.
-
-The experience should make human control visible rather than imply magical autonomous certainty.
-
-#### Frame 6 — Kevin connection
-
-The system explains how the mission reflects Kevin’s approach:
-
-- Clarify ambiguity.
-- Build shared context.
-- Separate roles and responsibilities.
-- Create review gates.
-- Surface evidence.
-- Turn plans into executable work.
-
-Relevant real projects can open alongside the mission.
-
-### 2030 Easter eggs
-
-- Hidden legacy agent with an identifier from 1990.
-- Max-autonomy warning.
-- Agent disagreement that requires human arbitration.
-- A cached KevTok clip inside shared memory.
-- A recovered Kevin Online attachment.
-- A command that reveals the transition protocol to 2040.
+Optional. Saito leads the exchange on a natural clock and speaks aloud when sound is on. Any tap interrupts. Consent is never advanced by the machine.
 
 ### Exit transition to 2040
 
-1. The mission completes.
-2. Each agent sends its memory to the central core.
-3. The nodes dim one by one.
-4. Their combined signal begins forming a human-shaped field.
-5. The interface announces: `PERSPECTIVE RECONSTRUCTION AVAILABLE`.
-6. Kevin Echo appears.
+The same apartment, ten years later. Every keep or refuse decision travels with the visitor.
 
 ---
 
-## Page 8 — `/experience/2040` — Kevin Echo
+## Page 8 — `/experience/2040` — Morning, After
 
 ### Purpose
 
-Create a speculative future interface in which Kevin’s public knowledge, projects, values, and memories are represented as a holographic digital echo.
+Show a speculative reproduction of Kevin built only from the memories the visitor allowed in 2030, and let consent become the portrait.
 
 ### Emotional target
 
-Calm, reflection, continuity, wonder, and a slight sense of the uncanny.
+Calm, reflection, continuity, and a slight sense of the uncanny.
 
 ### Required disclosure
 
-Before interaction begins:
-
-> Kevin Echo is a speculative digital representation assembled from confirmed public information, authored memories, and future-design fiction. It is not transferred consciousness and is not the biological Kevin.
+Holographic Kevin is an authored reproduction built from permissioned memory and design fiction. He is not transferred consciousness and not the biological Kevin.
 
 ### Environment
 
-A minimal holographic chamber:
-
-- Abstract human-shaped signal.
-- Orbiting memory shards.
-- Sparse spatial interface.
-- Voice-responsive waveform.
-- Light lines connecting eras.
-- Almost no conventional furniture or dashboard framing.
+The 2030 apartment rebuilt as black glass, rain, sodium amber, and vermilion light. The same mug sits on the counter, and a hand that cannot touch it.
 
 ### Entry storyboard
 
-#### Frame 1 — Reconstruction
+#### Frame 1 — Memory bands
 
-Particles assemble slowly into an abstract Kevin silhouette.
+The hologram is formed from six light bands, one per 2030 moment. Kept moments glow; refused moments stay dashed, deliberate blanks. A six-slot memory constellation shows what was kept. If no 2030 moment was witnessed, the room says so: he can only remember what you allowed.
 
-The figure is suggestive rather than photorealistic.
+#### Frame 2 — Environmental cues
 
-#### Frame 2 — Interpreter opens
+Cues in the room (including a boarding pass, unprinted, carried from the 20:15 staged year) drive `Notice → Recall → Deliberate → Act → Continue`. Holographic Kevin speaks, demonstrates, initiates, and refuses.
 
-The visitor sees:
+#### Frame 3 — Source trace
 
-- **Send a thought** field.
-- Suggested thought chips.
-- Signal/resonance indicator.
-- Memory categories.
-- Text transcript.
-- Sound/voice setting.
+A theatrical source trace separates stable records, incomplete patterns, and frayed conjecture that he refuses to promote into memory.
 
-Suggested prompts:
+#### Frame 4 — The question
 
-- Who are you?
-- What shaped Kevin?
-- Show me a project.
-- What did Kevin believe about technology?
-- What changed between 1990 and 2040?
-- What should humans preserve?
-
-#### Frame 3 — Thought transmission
-
-When a thought is submitted:
-
-1. A pulse leaves the UI.
-2. The hologram fragments briefly.
-3. Related memory shards illuminate.
-4. A concise answer appears.
-5. Optional actions appear:
-   - Expand answer
-   - Open memory
-   - Open project
-   - Return to era
-   - Contact the present-day Kevin
-
-#### Frame 4 — Memory constellations
-
-Six primary shards correspond to the six eras:
-
-- Wonder
-- Connection
-- Identity
-- Creation
-- Orchestration
-- Continuity
-
-Selecting a shard reconstructs a short scene, quote, artifact, or project connection.
-
-#### Frame 5 — The final synthesis
-
-After at least three memories are viewed, the hologram explains:
-
-> The interfaces changed. The pattern did not: curiosity, systems, invention, and the drive to make ideas usable.
-
-All major era devices briefly appear as orbiting silhouettes.
-
-#### Frame 6 — Return to the present
-
-Primary closing actions:
-
-- **View Kevin’s Work**
-- **Contact the biological Kevin**
-- **Return to 1990**
-- **Explore another year**
-- **Review collected artifacts**
-
-Selecting View Kevin’s Work dissolves the hologram into the clean Portfolio Mode hero.
-
-### 2040 Easter eggs
-
-- Two alternate Kevin echoes briefly disagree.
-- A memory shard plays backward.
-- The 1990 game cartridge appears as an archival object.
-- A corrupted thought reconstructs a 2000 away message.
-- A paradox object references a future date beyond 2040.
-- A hidden prompt reveals the site’s complete transition map.
+“May I keep this?” Keeping or releasing the encounter changes the room: letting him disappear disperses the hologram and dims the apartment. Both outcomes light the exit to reach the living Kevin.
 
 ### Reduced-motion adaptation
 
-- Static holographic portrait.
-- No particle tunnel.
-- Thought responses use restrained fades.
-- Memory shards are a semantic grid.
+- Ambient loops hold a legible frame.
+- State changes still announce themselves as short fades.
+- The complete response is always available as text.
 
 ---
 

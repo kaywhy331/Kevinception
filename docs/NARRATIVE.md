@@ -1,4 +1,7 @@
-# Kevinception V7.6 — Narrative Architecture
+# Kevinception — Narrative architecture
+
+- **Status:** Living document. Controls chapter names, in-world experience names, and chapter-to-chapter story language.
+- **Introduced:** V7.6 (shipped in 0.8.2); current as of 0.9.0.
 
 ## Product statement
 
