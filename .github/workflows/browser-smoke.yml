@@ -1,22 +1,28 @@
 name: Browser smoke
+# Called by ci.yml after `verify` so the probes reuse the same static export.
 on:
-  pull_request:
+  workflow_call:
+
+permissions:
+  contents: read
 
 jobs:
   runtime:
     runs-on: ubuntu-24.04
-    timeout-minutes: 15
+    timeout-minutes: 20
     steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-node@v4
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4.4.0
+      - uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020 # v4.4.0
         with:
-          node-version: 22
+          node-version-file: .nvmrc
           cache: npm
       - name: Install locked dependencies
         run: npm ci
-      - name: Build static application
-        run: npm run build
-      - name: Run browser interaction review
+      - uses: actions/download-artifact@d3f86a106a0bac45b974a628896c90dbdf5c8093 # v4.3.0
+        with:
+          name: static-export
+          path: out
+      - name: Run every browser runtime probe
         shell: bash
         run: |
           npm run preview > preview-server.log 2>&1 &
@@ -42,20 +48,13 @@ jobs:
             exit 1
           fi
 
-          CHROME_PATH="$chrome_path" BASE_URL=http://127.0.0.1:4321 node scripts/runtime-review-v77.mjs
-          CHROME_PATH="$chrome_path" BASE_URL=http://127.0.0.1:4321 node scripts/capture-future-ultrawide.mjs
-          CHROME_PATH="$chrome_path" BASE_URL=http://127.0.0.1:4321 npm run test:runtime
-          CHROME_PATH="$chrome_path" BASE_URL=http://127.0.0.1:4321 npm run test:runtime:chapters
-      - name: Upload browser review
+          CHROME_PATH="$chrome_path" BASE_URL=http://127.0.0.1:4321 npm run test:runtime:all
+      - name: Upload runtime reports and screenshots
         if: always()
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
         with:
-          name: browser-review-v77
+          name: runtime-artifacts
           if-no-files-found: warn
           path: |
-            docs/previews/v77
-            docs/previews/v7-*.png
-            docs/RUNTIME_VERIFICATION_V7.json
-            docs/RUNTIME_COMMERCE_COEXISTENCE.json
-            docs/RUNTIME_REVIEW_V77.json
+            artifacts
             preview-server.log

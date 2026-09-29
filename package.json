@@ -1,10 +1,10 @@
 {
-  "name": "kevinception-v7-r3f",
-  "version": "0.8.2",
+  "name": "kevinception",
+  "version": "0.9.0",
   "private": true,
-  "description": "Kevinception V7.7 — an accessible six-era portfolio with immersive and direct paths, canonical case studies, and production hardening.",
+  "description": "Kevinception — an accessible six-era portfolio with immersive and direct paths, canonical case studies, and production hardening.",
   "engines": {
-    "node": ">=20.9.0"
+    "node": ">=22.0.0"
   },
   "scripts": {
     "dev": "node scripts/dev.mjs",
@@ -13,21 +13,30 @@
     "start": "npm run preview",
     "typecheck": "tsc --noEmit",
     "test": "vitest run",
+    "lint": "eslint .",
+    "lint:css": "stylelint \"app/**/*.css\" \"src/**/*.css\"",
+    "format": "prettier --write .",
+    "format:check": "prettier --check .",
+    "check:legacy-js": "node scripts/check-legacy-js.mjs",
+    "check:content": "node scripts/check-content.mjs",
+    "check:legacy-data": "node scripts/sync-era-world-data.mjs --check",
     "check:build": "node scripts/check-build.mjs",
-    "verify": "npm run typecheck && npm run test && npm run check:commerce-js && npm run check:content && npm run build && npm run check:build && npm run check:bundle && npm run check:links && npm run check:security",
+    "check:bundle": "node scripts/check-bundle.mjs",
     "check:links": "node scripts/check-links.mjs",
     "check:security": "node scripts/check-security.mjs",
-    "check:content": "node scripts/check-content.mjs",
-    "sync:legacy-data": "node scripts/sync-era-world-data.mjs",
-    "check:bundle": "node scripts/check-bundle.mjs",
     "check:diff": "git diff --check",
-    "check:commerce-js": "node --input-type=module --check < public/legacy/assets/client/kevazon.js && node --check scripts/runtime-commerce-coexistence.mjs",
+    "smoke:headers": "node scripts/smoke-headers.mjs",
+    "verify": "npm run typecheck && npm run test && npm run check:legacy-js && npm run check:content && npm run check:legacy-data && npm run build && npm run check:build && npm run check:bundle && npm run check:links && npm run check:security",
+    "sync:legacy-data": "node scripts/sync-era-world-data.mjs",
     "test:runtime": "node scripts/runtime-check.mjs",
     "test:runtime:chapters": "node scripts/runtime-commerce-coexistence.mjs",
     "test:runtime:future": "node scripts/runtime-future-native.mjs",
+    "test:runtime:review": "node scripts/runtime-review-v77.mjs",
+    "test:runtime:ultrawide": "node scripts/capture-future-ultrawide.mjs",
+    "test:runtime:all": "node scripts/runtime-all.mjs",
     "doctor": "node scripts/doctor.mjs",
     "audit": "npm audit --omit=dev --audit-level=moderate",
-    "verify:full": "npm run doctor && npm run audit && npm run verify"
+    "verify:full": "npm run doctor && npm run verify && npm run audit"
   },
   "dependencies": {
     "@react-three/drei": "10.7.7",
@@ -45,15 +54,23 @@
     "zustand": "5.0.14"
   },
   "devDependencies": {
+    "@eslint/js": "9.39.4",
     "@testing-library/jest-dom": "6.9.1",
     "@testing-library/react": "16.3.0",
     "@types/node": "24.10.1",
     "@types/react": "19.2.17",
     "@types/react-dom": "19.2.3",
     "@types/three": "0.185.0",
+    "eslint": "9.39.5",
+    "eslint-plugin-jsx-a11y": "6.10.2",
+    "eslint-plugin-react-hooks": "7.1.1",
+    "globals": "17.12.0",
     "jsdom": "27.2.0",
-    "puppeteer-core": "^25.3.0",
+    "prettier": "3.9.9",
+    "puppeteer-core": "25.3.0",
+    "stylelint": "17.15.0",
     "typescript": "6.0.3",
+    "typescript-eslint": "8.71.0",
     "vitest": "4.1.10"
   }
 }
