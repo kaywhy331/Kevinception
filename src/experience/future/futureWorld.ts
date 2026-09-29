@@ -39,13 +39,13 @@ export type SaitoAuthorityTier = {
 /**
  * The standing delegation Kevin has granted, visible as an instrument rather
  * than buried in settings. Every staged card exists because a tier allows it;
- * commitment always happens at the dial.
+ * commitment always happens by Kevin’s hand.
  */
 export const saitoAuthorityMap: readonly SaitoAuthorityTier[] = [
   { domains: 'Home · Food · Entertainment · Information', level: 'Full auto', meaning: 'Act, then leave a receipt. Reversible by nature.' },
   { domains: 'Health · Family', level: 'Notify first', meaning: 'Surface privately; act only on Kevin’s word.' },
   { domains: 'Work · Projects · Travel', level: 'Stage to gate', meaning: 'Prepare everything; only the hand commits.' },
-  { domains: 'Money', level: 'Stage only', meaning: 'Refundable holds at most; spend is always the dial.' },
+  { domains: 'Money', level: 'Stage only', meaning: 'Refundable holds at most; spending is always Kevin’s call.' },
   { domains: 'Social', level: 'Draft only', meaning: 'Written in Kevin’s voice; sent only by Kevin’s hand.' }
 ];
 
@@ -95,10 +95,12 @@ export type CoexistenceMoment = {
   /**
    * Optional ambient caption for the shared pane while another moment is live.
    * Deliberately absent for private incubations (family health, guests):
-   * those never surface on shared glass.
+   * those never surface on shared screens.
    */
   thread?: string;
   exchange: readonly CoexistenceExchangeBeat[];
+  /** Exchange index at which the seed and staged work are revealed. */
+  revealAt: number;
   agent: CoexistenceAgentTrace;
 };
 
@@ -109,6 +111,7 @@ export const coexistenceMoments: Record<CoexistenceMomentId, CoexistenceMoment> 
     place: 'Kitchen',
     title: 'The room wakes gently',
     invitation: 'Keep the shape of this morning?',
+    revealAt: 3,
     ambient: 'Kettle · rain · one unread message',
     receipt: 'Preference carried from three quiet mornings. No private conversation retained.',
     seed: {
@@ -200,6 +203,7 @@ export const coexistenceMoments: Record<CoexistenceMomentId, CoexistenceMoment> 
     place: 'Studio table',
     title: 'An idea finds its edge',
     invitation: 'Carry the disagreement into the next draft?',
+    revealAt: 3,
     ambient: 'Graphite · low music · two possible forms',
     receipt: 'Project context mounted by permission. Dissent remains attributed to Saito.',
     seed: {
@@ -291,8 +295,9 @@ export const coexistenceMoments: Record<CoexistenceMomentId, CoexistenceMoment> 
     place: 'Window desk',
     title: 'Judgment stays human',
     invitation: 'Remember why the boundary moved?',
+    revealAt: 3,
     ambient: 'Sunbreak · live call · decision held',
-    receipt: 'TIP authority boundary honored. Decision context can be recalled; authority cannot be delegated.',
+    receipt: 'Authority boundary honored. Decision context can be recalled; authority cannot be delegated.',
     seed: {
       said: '“If legal signs off, we go this week.”',
       when: 'Monday, on the live call',
@@ -361,7 +366,7 @@ export const coexistenceMoments: Record<CoexistenceMomentId, CoexistenceMoment> 
         govern: {
           status: 'Human authority required',
           summary: 'Preparation is delegated; commitment is not.',
-          detail: 'TIP permits evidence gathering, simulation, and reversible staging. Publication, spend, expanded access, and human-impact decisions stop at Kevin’s gate.'
+          detail: 'Kevin’s authority rules permit evidence gathering, simulation, and reversible staging. Publication, spend, expanded access, and human-impact decisions stop at Kevin’s gate.'
         },
         act: {
           status: 'Stopped as designed',
@@ -382,6 +387,7 @@ export const coexistenceMoments: Record<CoexistenceMomentId, CoexistenceMoment> 
     place: 'Threshold',
     title: 'Attention changes direction',
     invitation: 'Let this remain only here?',
+    revealAt: 3,
     ambient: 'Door latch · warm hall · work gone quiet',
     receipt: 'Ephemeral by default. Refusal deletes the inferred pattern from this journey.',
     seed: {
@@ -471,8 +477,9 @@ export const coexistenceMoments: Record<CoexistenceMomentId, CoexistenceMoment> 
     place: 'Dinner table',
     title: 'A sentence becomes a year',
     invitation: 'Keep the year Saito is holding?',
+    revealAt: 3,
     ambient: 'Plates cleared · maps of light · one open question',
-    receipt: 'Anticipation staged on TokenPak. Booking, spend, and dates remain behind the TIP human gate.',
+    receipt: 'Anticipation staged on TokenPak. Booking, spend, and dates remain behind Kevin’s human gate.',
     seed: {
       said: '“We should finally do Asia next year.”',
       when: 'Eleven weeks ago',
@@ -542,7 +549,7 @@ export const coexistenceMoments: Record<CoexistenceMomentId, CoexistenceMoment> 
         govern: {
           status: 'Stage · never book',
           summary: 'Long-horizon staging is allowed; booking and spending are not.',
-          detail: 'Travel authority permits research, drafts, monitoring, and refundable holds. Purchases, bookings, visa submissions, and committed dates stop at the TIP human gate until Kevin turns the decision by hand.'
+          detail: 'Travel authority permits research, drafts, monitoring, and refundable holds. Purchases, bookings, visa submissions, and committed dates stop at Kevin’s human gate until Kevin turns the decision by hand.'
         },
         act: {
           status: '14 checks · $0 spent',
@@ -563,6 +570,7 @@ export const coexistenceMoments: Record<CoexistenceMomentId, CoexistenceMoment> 
     place: 'Living room',
     title: 'Company without performance',
     invitation: 'May I keep this?',
+    revealAt: 3,
     ambient: 'Glass rings · distant train · shared silence',
     receipt: 'Only the consent decision persists. Voices, faces, and guest identities are excluded.',
     seed: {
@@ -859,10 +867,16 @@ export function createInitialConsciousnessState(): ConsciousnessState {
   };
 }
 
+/**
+ * Choosing a new cue starts a new encounter. A released encounter is final:
+ * the visitor said goodbye, so nothing can summon him again.
+ */
 export function selectConsciousnessCue(state: ConsciousnessState, selectedCue: ConsciousnessCueId): ConsciousnessState {
+  if (state.encounterRetention === 'released') return state;
   return {
     ...state,
     selectedCue,
+    encounterRetention: 'unasked',
     behaviorPhase: 'notice',
     sourceTraceOpen: false,
     visitedCues: state.visitedCues.includes(selectedCue) ? state.visitedCues : [...state.visitedCues, selectedCue]
@@ -884,4 +898,65 @@ export function resolveEncounterRetention(
   encounterRetention: Exclude<EncounterRetention, 'unasked'>
 ): ConsciousnessState {
   return { ...state, encounterRetention };
+}
+
+/* ---- Shared copy: visual and text modes tell the same story in the same words. ---- */
+
+export const FUTURE_IMAGINED_LINE = 'Chapters 5 and 6 are imagined: design fiction built on how I work today.';
+export const SAITO_INTRO = 'Saito is the home’s AI companion.';
+
+export const AGENT_TRACE_LABELS: Record<AgentTracePhase, string> = {
+  sense: 'Sense',
+  interpret: 'Interpret',
+  govern: 'Check authority',
+  act: 'Act or wait',
+  account: 'Receipt'
+};
+
+export const STAGED_STATE_LABELS: Record<CoexistenceStagedState, string> = {
+  done: 'Done · can be undone',
+  staged: 'Ready · not sent',
+  gated: 'Waits for Kevin'
+};
+
+export const CONSCIOUSNESS_PHASE_LABELS: Record<ConsciousnessPhase, string> = {
+  notice: 'Notice',
+  recall: 'Recall',
+  deliberate: 'Deliberate',
+  act: 'Act',
+  continue: 'Continue'
+};
+
+export const CONSENT_OUTCOMES: Record<Exclude<CompanionConsent, 'unasked'>, string> = {
+  kept: 'Carried—with permission.',
+  refused: 'Gone. The room remembers nothing.'
+};
+
+export const RETENTION_OUTCOMES: Record<Exclude<EncounterRetention, 'unasked'>, string> = {
+  kept: 'Then I will remember that you chose to stay.',
+  released: 'Then this is the last trace. Goodbye.'
+};
+
+export const UNWITNESSED_LINE = 'He can only remember what you allowed. You allowed nothing—yet.';
+
+/** The CTA that moves holographic Kevin to his next behavior phase. */
+export function getConsciousnessContinueLabel(phase: ConsciousnessPhase): string | null {
+  const next = CONSCIOUSNESS_PHASES[CONSCIOUSNESS_PHASES.indexOf(phase) + 1];
+  return next ? `Let Kevin ${CONSCIOUSNESS_PHASE_LABELS[next].toLowerCase()}` : null;
+}
+
+/** One sentence that makes 2040’s blanks feel earned rather than broken. */
+export function getEarnedMemoryLine(coexistence: CoexistenceState): string | null {
+  const decided = COEXISTENCE_MOMENT_IDS.filter((id) => coexistence.consent[id] !== 'unasked');
+  if (decided.length === 0) return null;
+  const kept = coexistence.keptMoments.length;
+  if (kept === 0) return 'You kept none of the 6 moments; he has only what this room can show him.';
+  return `You kept ${kept} of 6 moments; this is all he has.`;
+}
+
+/** The next moment still waiting for a decision, walking forward through the day. */
+export function getNextUnaskedMoment(coexistence: CoexistenceState): CoexistenceMomentId | null {
+  const start = COEXISTENCE_MOMENT_IDS.indexOf(coexistence.activeMoment);
+  const ordered = [...COEXISTENCE_MOMENT_IDS.slice(start + 1), ...COEXISTENCE_MOMENT_IDS.slice(0, start)];
+  return ordered.find((id) => coexistence.consent[id] === 'unasked') ?? null;
 }

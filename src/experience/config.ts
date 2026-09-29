@@ -30,7 +30,8 @@ export type EraConfig = ChapterNarrative & {
   accent: string;
   designLanguage: EraDesignLanguage;
   stationX: number;
-  legacyPath: string;
+  /** Iframe app for eras 1990–2020. 2030/2040 are native React and have none. */
+  legacyPath?: string;
   transitionToNext?: TransitionId;
 };
 
@@ -75,7 +76,7 @@ const technicalConfig: Record<YearId, Pick<EraConfig, 'accent' | 'designLanguage
       name: 'Ambient domestic', texture: 'warm-fiber', chrome: 'Permissioned objects', typeTreatment: 'Quiet humanist labels', motionCharacter: 'Breath and deliberate handoff',
       secondary: '#84b8a1', surface: '#21170f', raisedSurface: '#332419', ink: '#fff4df', muted: '#cdbda8', line: '#75593c', radius: '24px', easing: 'cubic-bezier(.33,1,.68,1)'
     },
-    stationX: 18, legacyPath: '/legacy/experience/2030/index.html?embed=1', transitionToNext: 'agents-to-echo'
+    stationX: 18, transitionToNext: 'agents-to-echo'
   },
   '2040': {
     accent: '#ff9e2f',
@@ -83,7 +84,7 @@ const technicalConfig: Record<YearId, Pick<EraConfig, 'accent' | 'designLanguage
       name: 'Holographic afterimage', texture: 'refracted-rain', chrome: 'Black glass and sodium trace', typeTreatment: 'Archival signal caps', motionCharacter: 'Echo, refraction, and held frames',
       secondary: '#ff4f2e', surface: '#050403', raisedSurface: '#130d08', ink: '#fff0d4', muted: '#c9a98a', line: '#813f20', radius: '10px', easing: 'cubic-bezier(.65,0,.35,1)'
     },
-    stationX: 30, legacyPath: '/legacy/experience/2040/index.html?embed=1'
+    stationX: 30
   }
 };
 
