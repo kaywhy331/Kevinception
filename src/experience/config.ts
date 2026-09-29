@@ -1,5 +1,6 @@
 import type { YearId } from '@/content/data';
 import { CHAPTER_ORDER, chapterNarrative, type ChapterNarrative } from '@/content/narrative';
+import type { MotionPreference } from './types';
 
 export type TransitionId = 'static-modem' | 'profile-flatten' | 'portrait-rotate' | 'signals-to-agents' | 'agents-to-echo' | 'timeline-fade' | 'time-jump';
 
@@ -23,10 +24,6 @@ export type EraDesignLanguage = {
 
 export type EraConfig = ChapterNarrative & {
   id: YearId;
-  /** Backward-compatible alias for the in-world experience name. */
-  title: string;
-  /** Backward-compatible alias for the era medium. */
-  product: string;
   accent: string;
   designLanguage: EraDesignLanguage;
   stationX: number;
@@ -93,9 +90,7 @@ export const eraConfigs = Object.fromEntries(
     return [year, {
       id: year,
       ...narrative,
-      ...technicalConfig[year],
-      title: narrative.experienceName,
-      product: narrative.medium
+      ...technicalConfig[year]
     } satisfies EraConfig];
   })
 ) as Record<YearId, EraConfig>;
@@ -140,4 +135,29 @@ export function transitionBetween(from: YearId | null, to: YearId): TransitionId
   if (toIndex === fromIndex + 1) return eraConfigs[from].transitionToNext ?? 'timeline-fade';
   if (toIndex === fromIndex - 1) return eraConfigs[to].transitionToNext ?? 'timeline-fade';
   return 'timeline-fade';
+}
+
+/** True for every motion level other than `full` (`reduced` and `minimal`). */
+export function isReducedMotion(motion: MotionPreference) {
+  return motion !== 'full';
+}
+
+/**
+ * One source of truth for transition timing. The shell's completion timer, the
+ * overlay animation, the camera tween, and the future conduit all read this.
+ * Authored era bridges land in the 0.8–1.2s range and are skippable.
+ */
+export function getTransitionDuration(id: TransitionId, motion: MotionPreference) {
+  if (motion === 'minimal') return 0;
+  if (motion === 'reduced') return id === 'timeline-fade' ? 0 : 240;
+  if (id === 'timeline-fade') return 360;
+  if (id === 'time-jump') return 820;
+  if (id === 'agents-to-echo') return 1200;
+  return 1000;
+}
+
+/** Camera tween length for a settled view change (no authored overlay). */
+export function getCameraTweenSeconds(motion: MotionPreference, fromOverview = false) {
+  if (motion !== 'full') return 0.01;
+  return fromOverview ? 1.05 : 0.8;
 }

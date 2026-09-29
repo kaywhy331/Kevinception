@@ -1,9 +1,11 @@
 'use client';
 
 import { lazy, Suspense, useEffect, useState } from 'react';
+import { Html, useCursor } from '@react-three/drei';
 import type { ComponentType, LazyExoticComponent } from 'react';
 import { TimelineArchitecture } from './TimelineArchitecture';
-import { eraConfigs, YEAR_ORDER } from './config';
+import { eraConfigs, getEraCssVariables, YEAR_ORDER } from './config';
+import { useExperienceActions } from './ExperienceContext';
 import { useExperienceStore } from './store';
 import type { YearId } from '@/content/data';
 import type { ViewMode } from './types';
@@ -34,13 +36,57 @@ function EraProxy({ year }: { year: YearId }) {
 }
 
 function NeighborVeil({ year, active, viewMode }: { year: YearId; active: boolean; viewMode: ViewMode }) {
-  if (active || viewMode === 'interface' || viewMode === 'text') return null;
-  const opacity = viewMode === 'timeline' ? 0.42 : 0.52;
+  if (active || viewMode === 'interface' || viewMode === 'text' || viewMode === 'timeline') return null;
   return (
     <mesh position={[eraConfigs[year].stationX, 3.0, 4.02]} renderOrder={24} raycast={() => {}}>
       <planeGeometry args={[10.35, 6.05]} />
-      <meshBasicMaterial color="#030509" transparent opacity={opacity} depthTest={false} depthWrite={false} />
+      <meshBasicMaterial color="#030509" transparent opacity={0.52} depthTest={false} depthWrite={false} />
     </mesh>
+  );
+}
+
+/**
+ * Chapters overview: each room is one large, labelled target. Hover or focus
+ * highlights a room (lighting it); selecting it flies the camera inside.
+ */
+function OverviewRoom({ year, highlighted, visited }: { year: YearId; highlighted: boolean; visited: boolean }) {
+  const config = eraConfigs[year];
+  const { navigateToYear } = useExperienceActions();
+  const setActiveYear = useExperienceStore((state) => state.setActiveYear);
+  const [hovered, setHovered] = useState(false);
+  useCursor(hovered, 'pointer', 'auto');
+  return (
+    <group position={[config.stationX, 0, 0]}>
+      <mesh
+        position={[0, 2.9, 0.2]}
+        onClick={(event) => { event.stopPropagation(); navigateToYear(year); }}
+        onPointerOver={(event) => { event.stopPropagation(); setHovered(true); setActiveYear(year); }}
+        onPointerOut={() => setHovered(false)}
+      >
+        <boxGeometry args={[10, 6, 7]} />
+        <meshBasicMaterial transparent opacity={0} depthWrite={false} />
+      </mesh>
+      <mesh position={[0, 6.3, 3.4]} raycast={() => {}}>
+        <boxGeometry args={[9.6, 0.05, 0.05]} />
+        <meshBasicMaterial color={config.accent} transparent opacity={highlighted ? 0.95 : 0.25} toneMapped={false} />
+      </mesh>
+      <Html position={[0, 8.3, 0.4]} center zIndexRange={[9, 0]} className="overview-label-anchor">
+        <button
+          type="button"
+          className={`overview-label${highlighted ? ' is-active' : ''}`}
+          style={getEraCssVariables(year) as React.CSSProperties}
+          onClick={() => navigateToYear(year)}
+          onFocus={() => setActiveYear(year)}
+          onPointerEnter={() => setActiveYear(year)}
+          aria-label={`${year} ${config.chapterName}, experienced through ${config.experienceName}${visited ? ', visited' : ''}`}
+          aria-current={highlighted ? 'true' : undefined}
+        >
+          <span>{year}</span>
+          <b>{config.chapterName}</b>
+          <em>{config.experienceName}</em>
+        </button>
+      </Html>
+    </group>
   );
 }
 
@@ -48,12 +94,13 @@ export function ExperienceWorld() {
   const activeYear = useExperienceStore((state) => state.activeYear);
   const viewMode = useExperienceStore((state) => state.viewMode);
   const quality = useExperienceStore((state) => state.quality);
+  const visits = useExperienceStore((state) => state.yearVisits);
   const [detailedFutureYear, setDetailedFutureYear] = useState<YearId | null>(null);
-  const timeline = viewMode === 'timeline';
+  const overview = viewMode === 'timeline';
   const index = YEAR_ORDER.indexOf(activeYear);
-  const visibleYears = new Set<YearId>([activeYear]);
   const previous = YEAR_ORDER[index - 1];
   const next = YEAR_ORDER[index + 1];
+  const visibleYears = new Set<YearId>(overview ? YEAR_ORDER : [activeYear]);
   if (previous) visibleYears.add(previous);
   if (next) visibleYears.add(next);
   if (activeYear === '2030' || activeYear === '2040') {
@@ -64,10 +111,12 @@ export function ExperienceWorld() {
   const futureYear = FUTURE_YEARS.includes(activeYear as (typeof FUTURE_YEARS)[number]);
   const proxyOnly = quality === 'lite' && futureYear;
   const renderDetailedScene = !futureYear || (quality !== 'lite' && detailedFutureYear === activeYear);
+  // The overview shows every room as a real scene (not a grey proxy) unless Lite is active.
+  const sceneYears = overview && quality !== 'lite' ? YEAR_ORDER : [activeYear];
 
   useEffect(() => {
     setDetailedFutureYear(null);
-    if (!futureYear || quality === 'lite') return;
+    if (!futureYear || quality === 'lite' || overview) return;
     const idleWindow = window as Window & { requestIdleCallback?: (callback: () => void, options?: { timeout: number }) => number; cancelIdleCallback?: (id: number) => void };
     const reveal = () => setDetailedFutureYear(activeYear);
     if (idleWindow.requestIdleCallback) {
@@ -76,7 +125,7 @@ export function ExperienceWorld() {
     }
     const timer = window.setTimeout(reveal, 260);
     return () => window.clearTimeout(timer);
-  }, [activeYear, futureYear, quality]);
+  }, [activeYear, futureYear, overview, quality]);
 
   useEffect(() => {
     const device = navigator as Navigator & { connection?: { saveData?: boolean } };
@@ -94,13 +143,11 @@ export function ExperienceWorld() {
     return () => window.clearTimeout(timer);
   }, [activeYear, next, previous, quality]);
 
-  const ActiveScene = sceneComponents[activeYear];
-
   return (
     <>
       <color attach="background" args={[quality === 'lite' ? '#090b10' : '#05070b']} />
-      <fog attach="fog" args={['#05070b', 20, quality === 'lite' ? 62 : 104]} />
-      <ambientLight intensity={quality === 'lite' ? 0.72 : 0.38} color="#b8c7e8" />
+      <fog attach="fog" args={['#05070b', overview ? 48 : 20, overview ? 150 : quality === 'lite' ? 62 : 104]} />
+      <ambientLight intensity={(quality === 'lite' ? 0.72 : 0.38) + (overview ? 0.22 : 0)} color="#b8c7e8" />
       <directionalLight
         position={[5, 14, 10]}
         intensity={quality === 'high' ? 2.35 : 1.55}
@@ -112,12 +159,19 @@ export function ExperienceWorld() {
       />
       <hemisphereLight args={['#a8bee4', '#251c19', 0.6]} />
       <TimelineArchitecture />
-      {[...visibleYears].filter((year) => year !== activeYear).map((year) => <EraProxy key={`proxy-${year}`} year={year} />)}
-      {!proxyOnly ? (
-        <Suspense fallback={<EraProxy year={activeYear} />}>
-          <ActiveScene active timeline={timeline} detail={renderDetailedScene} />
-        </Suspense>
-      ) : <EraProxy year={activeYear} />}
+      {[...visibleYears].filter((year) => !sceneYears.includes(year)).map((year) => <EraProxy key={`proxy-${year}`} year={year} />)}
+      {sceneYears.map((year) => {
+        const Scene = sceneComponents[year];
+        const isActive = year === activeYear;
+        const future = FUTURE_YEARS.includes(year as (typeof FUTURE_YEARS)[number]);
+        if (isActive && proxyOnly) return <EraProxy key={`scene-${year}`} year={year} />;
+        return (
+          <Suspense key={`scene-${year}`} fallback={<EraProxy year={year} />}>
+            <Scene active={isActive} timeline={overview} detail={future ? !overview && isActive && renderDetailedScene : true} />
+          </Suspense>
+        );
+      })}
+      {overview && YEAR_ORDER.map((year) => <OverviewRoom key={`overview-${year}`} year={year} highlighted={year === activeYear} visited={visits[year] > 0} />)}
       {[...visibleYears].map((year) => <NeighborVeil key={`veil-${year}`} year={year} active={year === activeYear} viewMode={viewMode} />)}
     </>
   );

@@ -35,7 +35,8 @@ import {
   type ConsciousnessCueId,
   type EncounterRetention
 } from './future/futureWorld';
-import type { ArtifactProgress, MotionPreference, Quality, TransitionState, ViewMode } from './types';
+import type { ArtifactProgress, MotionPreference, MotionSetting, Quality, QualitySetting, RecentDiscovery, TransitionState, ViewMode } from './types';
+import type { AdaptivePreferences } from './performanceProfile';
 
 const emptyArtifacts: ArtifactProgress = {
   'signal-fragment': { discoveredYears: [] },
@@ -47,32 +48,45 @@ const emptyArtifacts: ArtifactProgress = {
 
 type ExperienceStore = {
   activeYear: YearId;
+  /** The chapter a returning visitor last opened; drives “Continue in …”. */
   lastVisitedYear: YearId;
   viewMode: ViewMode;
+  /** Effective quality (resolved from `qualitySetting` and the adaptive profile). */
   quality: Quality;
+  /** Effective motion. Anything other than `full` must be treated as reduced motion. */
   motion: MotionPreference;
+  qualitySetting: QualitySetting;
+  motionSetting: MotionSetting;
+  adaptiveQuality: Quality;
+  adaptiveReducedMotion: boolean;
+  systemReducedMotion: boolean;
   sound: boolean;
   helpOpen: boolean;
   settingsOpen: boolean;
   artifactsOpen: boolean;
   transition: TransitionState;
   artifacts: ArtifactProgress;
+  recentDiscovery: RecentDiscovery;
+  /** Eras whose in-app power-on ritual has been completed once; later visits skip it. */
+  bootedYears: YearId[];
   futureJourney: FutureJourneyState;
   yearVisits: Record<YearId, number>;
   webglAvailable: boolean | null;
-  preferencesConfigured: boolean;
   setActiveYear: (year: YearId) => void;
   setViewMode: (mode: ViewMode) => void;
   setTransition: (transition: TransitionState) => void;
-  setQuality: (quality: Quality) => void;
-  setMotion: (motion: MotionPreference) => void;
-  applyAdaptivePreferences: (preferences: Partial<Pick<ExperienceStore, 'quality' | 'motion'>>) => void;
+  setQuality: (quality: QualitySetting) => void;
+  setMotion: (motion: MotionSetting) => void;
+  applyAdaptivePreferences: (preferences: AdaptivePreferences) => void;
+  setSystemReducedMotion: (reduced: boolean) => void;
   toggleSound: () => void;
   setHelpOpen: (open: boolean) => void;
   setSettingsOpen: (open: boolean) => void;
   setArtifactsOpen: (open: boolean) => void;
   setWebglAvailable: (available: boolean) => void;
   discoverArtifact: (id: ArtifactId, year: YearId) => void;
+  clearRecentDiscovery: () => void;
+  markBooted: (year: YearId) => void;
   chooseFutureMission: (missionId: FutureMissionId) => void;
   setFutureObjective: (objective: string) => void;
   setFutureAnswer: (questionId: string, answer: string) => void;
@@ -96,8 +110,25 @@ type ExperienceStore = {
 };
 
 type PersistedExperienceState = Pick<ExperienceStore,
-  'activeYear' | 'lastVisitedYear' | 'quality' | 'motion' | 'sound' | 'artifacts' | 'futureJourney' | 'yearVisits' | 'preferencesConfigured'
+  'activeYear' | 'lastVisitedYear' | 'qualitySetting' | 'motionSetting' | 'sound' | 'artifacts' | 'bootedYears' | 'futureJourney' | 'yearVisits'
 >;
+
+type LegacyPersistedState = Partial<PersistedExperienceState> & {
+  quality?: Quality;
+  motion?: 'full' | 'reduced';
+  preferencesConfigured?: boolean;
+};
+
+const emptyVisits: Record<YearId, number> = { '1990': 0, '2000': 0, '2010': 0, '2020': 0, '2030': 0, '2040': 0 };
+
+export function resolveQuality(setting: QualitySetting, adaptive: Quality): Quality {
+  return setting === 'auto' ? adaptive : setting;
+}
+
+export function resolveMotion(setting: MotionSetting, adaptiveReduced: boolean, systemReduced: boolean): MotionPreference {
+  if (setting !== 'auto') return setting;
+  return adaptiveReduced || systemReduced ? 'reduced' : 'full';
+}
 
 export const useExperienceStore = create<ExperienceStore>()(
   persist(
@@ -107,25 +138,43 @@ export const useExperienceStore = create<ExperienceStore>()(
       viewMode: 'timeline',
       quality: 'standard',
       motion: 'full',
+      qualitySetting: 'auto',
+      motionSetting: 'auto',
+      adaptiveQuality: 'standard',
+      adaptiveReducedMotion: false,
+      systemReducedMotion: false,
       sound: false,
       helpOpen: false,
       settingsOpen: false,
       artifactsOpen: false,
       transition: null,
       artifacts: emptyArtifacts,
+      recentDiscovery: null,
+      bootedYears: [],
       futureJourney: createInitialFutureJourney(),
-      yearVisits: { '1990': 0, '2000': 0, '2010': 0, '2020': 0, '2030': 0, '2040': 0 },
+      yearVisits: emptyVisits,
       webglAvailable: null,
-      preferencesConfigured: false,
-      setActiveYear: (activeYear) => set({ activeYear, lastVisitedYear: activeYear }),
+      setActiveYear: (activeYear) => set({ activeYear }),
       setViewMode: (viewMode) => set({ viewMode: (viewMode as string) === 'transitioning' ? 'transition' : viewMode }),
       setTransition: (transition) => set({ transition }),
-      setQuality: (quality) => set({ quality, preferencesConfigured: true }),
-      setMotion: (motion) => set({ motion, preferencesConfigured: true }),
+      setQuality: (qualitySetting) => set((state) => ({ qualitySetting, quality: resolveQuality(qualitySetting, state.adaptiveQuality) })),
+      setMotion: (motionSetting) => set((state) => ({ motionSetting, motion: resolveMotion(motionSetting, state.adaptiveReducedMotion, state.systemReducedMotion) })),
       applyAdaptivePreferences: (preferences) => set((state) => {
-        if (state.preferencesConfigured || (!preferences.quality && !preferences.motion)) return state;
-        return { ...state, ...preferences };
+        // Adaptive signals only ever lower the profile within a session (a software
+        // renderer detected after the viewport check must still win).
+        const adaptiveQuality = preferences.quality === 'lite' || state.adaptiveQuality === 'lite' ? 'lite' : preferences.quality ?? state.adaptiveQuality;
+        const adaptiveReducedMotion = state.adaptiveReducedMotion || preferences.motion === 'reduced';
+        return {
+          adaptiveQuality,
+          adaptiveReducedMotion,
+          quality: resolveQuality(state.qualitySetting, adaptiveQuality),
+          motion: resolveMotion(state.motionSetting, adaptiveReducedMotion, state.systemReducedMotion)
+        };
       }),
+      setSystemReducedMotion: (systemReducedMotion) => set((state) => ({
+        systemReducedMotion,
+        motion: resolveMotion(state.motionSetting, state.adaptiveReducedMotion, systemReducedMotion)
+      })),
       toggleSound: () => set((state) => ({ sound: !state.sound })),
       setHelpOpen: (helpOpen) => set({ helpOpen }),
       setSettingsOpen: (settingsOpen) => set({ settingsOpen }),
@@ -138,9 +187,12 @@ export const useExperienceStore = create<ExperienceStore>()(
           artifacts: {
             ...state.artifacts,
             [id]: { discoveredYears: [...years, year] }
-          }
+          },
+          recentDiscovery: { id, year, at: Date.now() }
         };
       }),
+      clearRecentDiscovery: () => set({ recentDiscovery: null }),
+      markBooted: (year) => set((state) => (state.bootedYears.includes(year) ? state : { bootedYears: [...state.bootedYears, year] })),
       chooseFutureMission: (missionId) => set((state) => ({ futureJourney: selectFutureMissionState(state.futureJourney, missionId) })),
       setFutureObjective: (objective) => set((state) => ({ futureJourney: setFutureObjectiveState(state.futureJourney, objective) })),
       setFutureAnswer: (questionId, answer) => set((state) => ({ futureJourney: setFutureAnswerState(state.futureJourney, questionId, answer) })),
@@ -177,35 +229,70 @@ export const useExperienceStore = create<ExperienceStore>()(
         yearVisits: { ...state.yearVisits, [year]: state.yearVisits[year] + 1 },
         lastVisitedYear: year
       })),
-      resetProgress: () => set({ artifacts: emptyArtifacts, futureJourney: createInitialFutureJourney(), yearVisits: { '1990': 0, '2000': 0, '2010': 0, '2020': 0, '2030': 0, '2040': 0 }, lastVisitedYear: '1990' })
+      resetProgress: () => set({ artifacts: emptyArtifacts, recentDiscovery: null, bootedYears: [], futureJourney: createInitialFutureJourney(), yearVisits: emptyVisits, lastVisitedYear: '1990' })
     }),
     {
       name: 'kevinception-v7',
-      version: 4,
-      storage: createJSONStorage(() => localStorage),
+      version: 5,
+      storage: createJSONStorage(() => safeLocalStorage()),
       migrate: (persistedState, version) => {
         const state = persistedState && typeof persistedState === 'object'
-          ? persistedState as Partial<PersistedExperienceState>
+          ? persistedState as LegacyPersistedState
           : {};
+        // Before v5 a single flag froze both quality and motion after any change.
+        // Keep an explicit earlier choice, otherwise return both settings to Auto.
+        const explicit = version < 2 ? true : Boolean(state.preferencesConfigured);
+        const { quality, motion, preferencesConfigured: _ignored, ...rest } = state;
+        return {
+          ...rest,
+          qualitySetting: rest.qualitySetting ?? (explicit && quality ? quality : 'auto'),
+          motionSetting: rest.motionSetting ?? (explicit && motion ? motion : 'auto'),
+          bootedYears: Array.isArray(rest.bootedYears) ? rest.bootedYears : [],
+          futureJourney: version < 3 || !rest.futureJourney
+            ? createInitialFutureJourney()
+            : hydrateFutureJourney(rest.futureJourney)
+        } as PersistedExperienceState;
+      },
+      merge: (persisted, current) => {
+        const state = { ...current, ...(persisted as Partial<PersistedExperienceState>) };
         return {
           ...state,
-          preferencesConfigured: version < 2 ? true : Boolean(state.preferencesConfigured),
-          futureJourney: version < 3 || !state.futureJourney
-            ? createInitialFutureJourney()
-            : hydrateFutureJourney(state.futureJourney)
-        } as PersistedExperienceState;
+          quality: resolveQuality(state.qualitySetting, state.adaptiveQuality),
+          motion: resolveMotion(state.motionSetting, state.adaptiveReducedMotion, state.systemReducedMotion)
+        };
       },
       partialize: (state) => ({
         activeYear: state.activeYear,
         lastVisitedYear: state.lastVisitedYear,
-        quality: state.quality,
-        motion: state.motion,
+        qualitySetting: state.qualitySetting,
+        motionSetting: state.motionSetting,
         sound: state.sound,
         artifacts: state.artifacts,
+        bootedYears: state.bootedYears,
         futureJourney: state.futureJourney,
-        yearVisits: state.yearVisits,
-        preferencesConfigured: state.preferencesConfigured
+        yearVisits: state.yearVisits
       })
     }
   )
 );
+
+/** localStorage that degrades to an in-memory shim when storage access throws. */
+function safeLocalStorage(): Storage {
+  try {
+    const storage = window.localStorage;
+    const probe = '__kevinception_probe__';
+    storage.setItem(probe, probe);
+    storage.removeItem(probe);
+    return storage;
+  } catch {
+    const memory = new Map<string, string>();
+    return {
+      get length() { return memory.size; },
+      clear: () => memory.clear(),
+      getItem: (key) => memory.get(key) ?? null,
+      key: (index) => [...memory.keys()][index] ?? null,
+      removeItem: (key) => { memory.delete(key); },
+      setItem: (key, value) => { memory.set(key, String(value)); }
+    };
+  }
+}

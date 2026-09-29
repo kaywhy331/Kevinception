@@ -65,7 +65,6 @@ function Corridor({
 function FutureMemoryConduit() {
   const activeYear = useExperienceStore((state) => state.activeYear);
   const transition = useExperienceStore((state) => state.transition);
-  const motion = useExperienceStore((state) => state.motion);
   const coexistence = useExperienceStore((state) => state.futureJourney.coexistence);
   const pulse = useRef<THREE.Group>(null);
   const data = useMemo(() => {
@@ -85,7 +84,7 @@ function FutureMemoryConduit() {
   const memoryColor = decision === 'refused' ? '#ff5738' : carried ? '#ffc261' : '#f2d7a0';
   useFrame(({ clock }) => {
     if (!transitionActive || !pulse.current) return;
-    const duration = motion === 'reduced' ? 36 : 660;
+    const duration = Math.max(1, transition?.duration ?? 1);
     const progress = Math.min(1, Math.max(0, (Date.now() - (transition?.startedAt ?? Date.now())) / duration));
     const t = transition?.to === '2030' ? 1 - progress : progress;
     pulse.current.position.copy(data.curve.getPointAt(t));
