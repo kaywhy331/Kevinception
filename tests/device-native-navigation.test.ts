@@ -102,7 +102,7 @@ describe('V7.7 device-native navigation', () => {
     expect(overlay).toContain('className="experience-menu"');
     // Site links live in the Menu at every width instead of being hidden on phones.
     expect(overlay).not.toContain('hide-below-640');
-    expect(overlay).toContain('<Link role="menuitem" href="/contact/"');
+    expect(overlay).toContain('primaryNavigation.filter((item) => item.href !== \'/experience/\')');
     expect(globalStyles).not.toContain('.hide-below-680 { display: none !important; }');
     expect(globalStyles).toContain('-webkit-line-clamp: 3');
     expect(globalStyles).toContain('.artifact-drawer section small { color: #7f8998; }');
