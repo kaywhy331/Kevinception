@@ -34,11 +34,13 @@ for (const project of projects) {
   }
 }
 
-const chrome = fs.readFileSync('src/components/SiteChrome.tsx', 'utf8');
-for (const route of ['experience', 'portfolio', 'work', 'resume', 'about', 'contact']) {
-  if (!chrome.includes(`href: '/${route}/'`)) errors.push(`primary navigation is missing /${route}/`);
+const navigation = fs.readFileSync('src/components/navigation.ts', 'utf8');
+for (const route of ['experience', 'work', 'resume', 'about', 'contact']) {
+  if (!navigation.includes(`href: '/${route}/'`)) errors.push(`primary navigation is missing /${route}/`);
   if (!fs.existsSync(path.join('app', route))) errors.push(`route source is missing app/${route}`);
 }
+// /portfolio/ was merged into /about/; it must keep resolving (client redirect) for old links.
+if (!fs.existsSync(path.join('app', 'portfolio', 'page.tsx'))) errors.push('the /portfolio/ redirect page is missing');
 
 if (errors.length) {
   console.error(`Canonical content/configuration errors:\n${errors.join('\n')}`);

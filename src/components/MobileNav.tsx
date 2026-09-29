@@ -1,18 +1,17 @@
 'use client';
 
 import Link from 'next/link';
+import { usePathname } from 'next/navigation';
 import { useEffect, useId, useRef, useState } from 'react';
+import { ariaCurrentFor, type NavItem } from '@/components/navigation';
 
-export type MobileNavItem = {
-  href: string;
-  label: string;
-  cta?: boolean;
-};
+export type MobileNavItem = NavItem;
 
 export function MobileNav({ items }: { items: readonly MobileNavItem[] }) {
   const [open, setOpen] = useState(false);
   const buttonRef = useRef<HTMLButtonElement>(null);
   const menuId = useId();
+  const pathname = usePathname();
 
   useEffect(() => {
     if (!open) return;
@@ -43,7 +42,7 @@ export function MobileNav({ items }: { items: readonly MobileNavItem[] }) {
       </button>
       <nav id={menuId} className="site-header__mobile-panel" aria-label="Mobile primary navigation" hidden={!open}>
         {items.map((item) => (
-          <Link key={item.href} className={item.cta ? 'site-header__cta' : undefined} href={item.href} onClick={() => setOpen(false)}>
+          <Link key={item.href} className={item.cta ? 'site-header__cta' : undefined} href={item.href} aria-current={ariaCurrentFor(pathname, item.href)} onClick={() => setOpen(false)}>
             {item.label}
           </Link>
         ))}

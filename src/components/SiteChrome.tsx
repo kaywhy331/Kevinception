@@ -1,22 +1,16 @@
 import Link from 'next/link';
-import { MobileNav, type MobileNavItem } from '@/components/MobileNav';
+import { MobileNav } from '@/components/MobileNav';
+import { primaryNavigation } from '@/components/navigation';
+import { PrimaryNav } from '@/components/PrimaryNav';
+import { site } from '@/content/data';
 
-const primaryNavigation = [
-  { href: '/experience/', label: 'Timeline' },
-  { href: '/portfolio/', label: 'Profile' },
-  { href: '/work/', label: 'Case studies' },
-  { href: '/resume/', label: 'Resume' },
-  { href: '/about/', label: 'About' },
-  { href: '/contact/', label: 'Contact', cta: true }
-] satisfies readonly MobileNavItem[];
+export { primaryNavigation };
 
 export function SiteHeader() {
   return (
     <header className="site-header">
-      <Link className="site-logo" href="/"><span>K</span><b>Kevinception</b></Link>
-      <nav className="site-header__desktop-nav" aria-label="Primary navigation">
-        {primaryNavigation.map((item) => <Link key={item.href} className={item.cta ? 'site-header__cta' : undefined} href={item.href}>{item.label}</Link>)}
-      </nav>
+      <Link className="site-logo" href="/"><span aria-hidden="true">K</span><b>Kevinception</b></Link>
+      <PrimaryNav className="site-header__desktop-nav" label="Primary navigation" items={primaryNavigation} />
       <MobileNav items={primaryNavigation} />
     </header>
   );
@@ -25,9 +19,11 @@ export function SiteHeader() {
 export function SiteFooter() {
   return (
     <footer className="site-footer">
-      <div><span className="site-logo-mark">K</span><p><b>Kevinception</b><br />One life through six technologies.</p></div>
-      <nav aria-label="Footer navigation"><Link href="/experience/">Timeline</Link><Link href="/portfolio/">Profile</Link><Link href="/work/">Case studies</Link><Link href="/resume/">Resume</Link><a href="https://github.com/kaywhy331">GitHub</a></nav>
-      <small>Every chapter has a plain-text route, too.</small>
+      <div><span className="site-logo-mark" aria-hidden="true">K</span><p><b>Kevinception</b><br />{site.tagline}</p></div>
+      <nav aria-label="Footer navigation">
+        {primaryNavigation.map((item) => <Link key={item.href} href={item.href}>{item.label}</Link>)}
+        <a href={site.githubUrl}>GitHub</a>
+      </nav>
     </footer>
   );
 }

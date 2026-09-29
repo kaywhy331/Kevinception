@@ -4,13 +4,13 @@ export const site = {
   "name": "Kevinception",
   "owner": "Kevin Yang",
   "domain": "https://kevinception.com",
-  "title": "Kevinception — One Life Through Six Technologies",
-  "description": "Kevin Yang’s interactive portfolio: strategy, systems, products, operations, automation, and invention explored through six technology interfaces from 1990 to 2040.",
+  "title": "Kevinception — One life. Six eras of technology.",
+  "tagline": "One life. Six eras of technology.",
+  "description": "Kevin Yang’s interactive portfolio: strategy, systems, products, operations, automation, and invention, told as six chapters from 1990 to 2040.",
   "primaryConversion": "Start a conversation about a difficult system, ambitious product, operational challenge, or unconventional idea.",
   "githubUrl": "https://github.com/kaywhy331",
   "repositoryUrl": "https://github.com/kaywhy331/Kevinception",
   "contactEmail": "kevinception331@gmail.com",
-  "contactUrl": "https://github.com/kaywhy331",
   "tokenPakUrl": "https://tokenpak.ai",
   "tokenPakGithubUrl": "https://github.com/tokenpak",
   "draftContent": false,
@@ -31,9 +31,7 @@ export const profile = {
     "Systems Builder"
   ],
   "quote": "Anticipate tomorrow, live for today, but never forget yesterday—for the past shapes who we are in the present and who we become in the future.",
-  "origin": "Growing up in the 1990s, I was instantly hooked by the early internet. Dial-up tones became the soundtrack to countless hours exploring online communities, designing ASCII art chatroom scrollers, experimenting with punter bots and small scripts, and discovering that technology could turn imagination into an interactive world.",
-  "originContinuation": "By 2000, curiosity had become a durable passion for technology, systems, design, automation, and invention. The same pattern still drives my work: explore widely, recognize the underlying structure, and convert possibility into something people can actually use.",
-  "currentFocus": "I work across strategy, operations, product design, workflow automation, AI-enabled systems, and knowledge architecture to turn complex ideas into clear execution.",
+  "currentFocus": "I work across strategy, operations, product design, workflow automation, and AI tools to turn complex ideas into plans people can carry out.",
   "currentWork": [
     {
       "title": "Independent strategy, product, and systems practice",
@@ -41,11 +39,11 @@ export const profile = {
     },
     {
       "title": "TokenPak",
-      "text": "I lead product direction for a local-first AI project that packages, routes, governs, and records the information AI tools need."
+      "text": "I lead product direction for a local-first AI project that packages and routes the information AI tools need, and keeps a record of what they used."
     },
     {
       "title": "Kevinception",
-      "text": "I design and build an interactive portfolio engine that renders one verified body of work through technology interfaces from 1990 through 2040."
+      "text": "I design and build this site: one set of verified facts, told through six chapters of technology from 1990 to 2040."
     }
   ],
   "bestAt": [
@@ -55,15 +53,15 @@ export const profile = {
     "Designing reusable workflows rather than one-off fixes",
     "Seeing patterns across disciplines and anticipating second-order effects",
     "Using AI and automation without losing human judgment or accountability",
-    "Designing governance, observability, and recovery into complex systems",
+    "Building review steps, monitoring, and recovery into complex systems",
     "Explaining complex systems through clear interfaces, specifications, and stories"
   ],
   "workingStyle": [
     "I start with the real objective, the constraints, and the choices that have to be made.",
     "I build a shared model before adding tools or automation.",
-    "I make ownership, dependencies, evidence, and tradeoffs visible.",
+    "I make ownership, dependencies, and tradeoffs visible.",
     "I move quickly through prototypes while preserving a path to production quality.",
-    "I treat documentation, governance, and feedback loops as part of the product."
+    "I treat documentation, review, and feedback loops as part of the product."
   ],
   "philosophy": [
     {
@@ -124,7 +122,7 @@ export const capabilityGroups = [
   },
   {
     "title": "Operations & Delivery",
-    "description": "Move from intent to execution with visible ownership, milestones, risks, evidence, and operating cadence.",
+    "description": "Move from intent to execution with clear owners, milestones, risks, and a steady operating rhythm.",
     "skills": [
       "Program management",
       "Process design",
@@ -146,7 +144,7 @@ export const capabilityGroups = [
   },
   {
     "title": "Information & Knowledge Design",
-    "description": "Create durable structures for decisions, context, evidence, documentation, and organizational memory.",
+    "description": "Create lasting structures for decisions, documentation, and what an organization needs to remember.",
     "skills": [
       "Knowledge architecture",
       "Content systems",
@@ -169,49 +167,62 @@ export const capabilityGroups = [
 ] as const;
 
 // Editorial guard: add exact employers, titles, dates, education, credentials, or private client details only after Kevin confirms them; never fabricate missing evidence.
+// `period` is the only date slot. Where dates are unconfirmed it uses honest relative wording; replace it with exact years once Kevin supplies them.
+// Voice: current roles use present-tense action verbs; past roles use past-tense action verbs. First person is implied, never "Kevin".
 export const experienceItems = [
   {
     "period": "Current",
     "title": "Entrepreneur, Project & Product Leader, Technology / Business Consultant",
     "organization": "Independent practice",
-    "summary": "Work across strategy, operations, product design, automation, systems thinking, workflow optimization, and AI-enabled product development.",
+    "summary": "Strategy, operations, product design, automation, and AI-enabled product development for ambitious or messy problems.",
     "highlights": [
-      "Turn ambiguous opportunities into structured decisions, requirements, roadmaps, operating models, and executable plans.",
-      "Connect business goals with technology, process, user experience, governance, and adoption.",
-      "Build reusable frameworks and systems designed to create leverage beyond a single engagement."
+      "Turn ambiguous opportunities into decisions, requirements, roadmaps, operating models, and plans a team can execute.",
+      "Connect business goals with technology, process, user experience, and adoption.",
+      "Build reusable frameworks that keep paying off after a single engagement ends."
     ]
   },
   {
-    "period": "Current venture",
+    "period": "Current",
     "title": "Product Lead & Systems Operator",
     "organization": "TokenPak",
-    "summary": "Shape product direction and operating decisions for a local-first AI project that packages and routes the information AI tools need.",
+    "summary": "Product direction and operating decisions for a local-first AI project that packages and routes the information AI tools need.",
     "highlights": [
-      "Defines product architecture, positioning, capability boundaries, release priorities, and evidence standards.",
-      "Coordinates a multi-repository product system spanning runtime, documentation, release governance, telemetry, and commercialization planning.",
-      "Uses structured agent workflows, decision gates, and quality checks to accelerate execution without surrendering accountability."
+      "Define product architecture, positioning, capability boundaries, release priorities, and the standard of proof for product claims.",
+      "Coordinate a multi-repository product spanning runtime, documentation, release management, telemetry, and commercialization planning.",
+      "Run structured AI-agent workflows with review gates and quality checks, so work moves faster without anyone giving up accountability."
+    ]
+  },
+  {
+    "period": "Earlier venture",
+    "title": "Co-Founder, CIO",
+    "organization": "One Stop Deals / StealStreet",
+    "summary": "Co-founded a multi-channel commerce operation and helped design and build the proprietary system that ran it, from vendor purchasing to customer delivery.",
+    "highlights": [
+      "Helped design and build one proprietary system connecting vendor purchasing, inventory, about 1.5 million catalog records, 15+ sales channels, customer orders, warehouse fulfillment, customer service, finance, and reporting.",
+      "Supported operations spanning direct-to-consumer, wholesale / B2B, Amazon FBA, direct fulfillment, international marketplaces, and just-in-time vendor purchasing.",
+      "Reduced cross-functional complexity to connected records, explicit handoffs, automation, and exception queues the team could act on."
     ]
   },
   {
     "period": "Ongoing personal project",
     "title": "Creator & Experience Architect",
     "organization": "Kevinception",
-    "summary": "Design an immersive portfolio platform that presents one verified body of work through six culturally distinct technology years.",
+    "summary": "Designed and built an interactive portfolio that tells one verified body of work as six chapters of technology.",
     "highlights": [
-      "Created the Kevin Online Xennial layer as a functioning Windows/AOL/Xanga-inspired environment inside a CRT.",
-      "Designed a canonical content model so biography, projects, experience, and evidence remain consistent across every era.",
-      "Develops cross-era artifacts, conversational guides, responsive interactions, accessibility, and performance constraints as one system."
+      "Built the year-2000 Kevin Online chapter as a working Windows/AOL/Xanga-inspired environment inside a CRT.",
+      "Designed one content model so biography, projects, and experience stay consistent in every chapter.",
+      "Built cross-chapter artifacts, responsive interactions, accessibility, and performance budgets as one system."
     ]
   },
   {
     "period": "1990s → 2000",
     "title": "Early Technology Exploration",
     "organization": "Online communities, scripting, and self-directed experimentation",
-    "summary": "Early internet culture became the entry point into technology, creative problem solving, automation, and interactive design.",
+    "summary": "Early internet culture became my way into technology, creative problem solving, automation, and interactive design.",
     "highlights": [
-      "Explored dial-up communities, chatrooms, personal pages, ASCII art, and early social identity.",
-      "Experimented with scripts and small automations before software became a formal professional tool.",
-      "Developed the curiosity and systems instinct that later shaped Kevin’s product and consulting work."
+      "Explored dial-up communities, chatrooms, personal pages, ASCII art, and early online identity.",
+      "Wrote scripts and small automations before software was a formal professional tool.",
+      "Developed the curiosity and systems instinct that later shaped my product and consulting work."
     ]
   }
 ] as const;
@@ -221,7 +232,7 @@ export const projects = [
     "slug": "kevinception",
     "title": "Kevinception",
     "eyebrow": "Interactive portfolio platform",
-    "summary": "A technology-timeline portfolio that renders one verified body of work through six radically different interfaces while preserving direct, accessible routes beneath the immersion.",
+    "summary": "An interactive portfolio that tells one verified body of work as six chapters of technology, each with its own interface, while keeping plain, accessible pages underneath.",
     "year": "2025–Current",
     "roles": [
       "Creator",
@@ -417,8 +428,8 @@ export const projects = [
   {
     "slug": "tokenpak",
     "title": "TokenPak",
-    "eyebrow": "AI context logistics platform",
-    "summary": "A local-first product direction for packaging, routing, reusing, governing, and measuring the context that powers high-value AI work across sessions, tools, and agents.",
+    "eyebrow": "Local-first AI context layer",
+    "summary": "A local-first product direction for packaging, routing, and reusing the context AI tools need, and for measuring what actually helped, across sessions, tools, and agents.",
     "year": "2026–Current",
     "roles": [
       "Product direction",
@@ -516,7 +527,7 @@ export const projects = [
     "slug": "agentic-work-fleet",
     "title": "Agentic Work Fleet",
     "eyebrow": "Multi-agent operating system",
-    "summary": "A role-based operating model for coordinating specialized AI agents through shared context, task packets, governance, evidence, handoffs, and explicit human decision gates.",
+    "summary": "A role-based way of running a team of specialized AI agents: shared context, clear task briefs, reviews, handoffs, and explicit points where a human decides.",
     "year": "2026–Current",
     "roles": [
       "System design",
@@ -710,6 +721,16 @@ export const projects = [
   }
 ] as const;
 
+/**
+ * Explicit editorial order. Lead with external and operational work; the two
+ * projects about this site come last. The `projects` array order is left alone
+ * because the legacy era payloads are synchronised from it.
+ */
+export const caseStudyOrder = ['tokenpak', 'agentic-work-fleet', 'mcp-knowledge-logistics', 'kevinception', 'kevin-online'] as const;
+
+/** Projects shown on the resume, chosen deliberately rather than by array position. */
+export const resumeProjectSlugs = ['tokenpak', 'agentic-work-fleet', 'kevinception'] as const;
+
 export const eras = [
   {
     "id": "1990",
@@ -752,7 +773,7 @@ export const eras = [
     "label": "Commerce",
     "anchorYear": 2010,
     "subtitle": "StealStreet Commerce OS",
-    "metaphor": "A reconstructed proprietary commerce operating system inside Kevin’s fulfillment workstation, connecting vendors, purchase orders, inventory, 1.5 million catalog records, 20+ marketplaces, customer orders, warehouse fulfillment, service, finance, reporting, and the team.",
+    "metaphor": "A reconstructed proprietary commerce operating system inside Kevin’s fulfillment workstation, connecting vendors, purchase orders, inventory, 1.5 million catalog records, 15+ marketplaces, customer orders, warehouse fulfillment, service, finance, reporting, and the team.",
     "emotionalTarget": "Operational scale, systems thinking, automation, and customer commitment.",
     "status": "live",
     "contentMode": "historical",
@@ -760,7 +781,7 @@ export const eras = [
     "motifs": [
       "vendor-to-customer lifecycle",
       "1.5M catalog records",
-      "20+ commerce channels",
+      "15+ commerce channels",
       "exception-driven operations"
     ],
     "route": "/experience/2010/"
@@ -1268,14 +1289,14 @@ export const timelineContent = {
     "operations": {
       "company": "One Stop Deals / StealStreet Commerce Operations",
       "catalogScale": "1.5M catalog records",
-      "channelScale": "20+ commerce channels",
-      "systemStatus": "Systems healthy · 20+ channels connected",
+      "channelScale": "15+ commerce channels",
+      "systemStatus": "Systems healthy · 15+ channels connected",
       "lifecycle": [
         { "id": "vendors", "label": "Vendors", "operation": "Terms, pricing, minimums, lead times, and purchasing history." },
         { "id": "purchase-orders", "label": "Purchase Orders", "operation": "JIT buying, MOQ rules, expected inventory, tracking, and receiving." },
         { "id": "inventory", "label": "Inventory", "operation": "Available, allocated, incoming, reserved, damaged, and aging stock." },
         { "id": "catalog", "label": "Catalog", "operation": "1.5M searchable product records, taxonomy, pricing, and data quality." },
-        { "id": "marketplaces", "label": "Marketplaces", "operation": "Listings, feeds, repricing, promotions, and channel health across 20+ connections." },
+        { "id": "marketplaces", "label": "Marketplaces", "operation": "Listings, feeds, repricing, promotions, and channel health across 15+ connections." },
         { "id": "orders", "label": "Customer Orders", "operation": "Payments, source, status, tracking, fulfillment state, and exceptions." },
         { "id": "warehouse", "label": "Warehouse", "operation": "Receiving, pick routes, packing slips, shipments, carriers, and fulfillment exceptions." },
         { "id": "customer", "label": "Customer", "operation": "One coordinated promise across direct, wholesale, domestic, and international channels." }
@@ -1306,7 +1327,7 @@ export const timelineContent = {
       { "id": "purchase-orders", "label": "Purchase Orders", "description": "Vendor purchasing, JIT ordering, MOQ rules, incoming quantities, tracking, and receiving." },
       { "id": "catalog", "label": "Catalog · 1.5M", "description": "Product information, taxonomy, pricing, listings, bulk actions, and imports or exports." },
       { "id": "inventory", "label": "Inventory", "description": "Available, allocated, incoming, reserved, damaged, aging, and replenishment views." },
-      { "id": "marketplaces", "label": "Marketplaces · 20+", "description": "Channel connections, feed health, listing status, pricing, and account issues." },
+      { "id": "marketplaces", "label": "Marketplaces · 15+", "description": "Channel connections, feed health, listing status, pricing, and account issues." },
       { "id": "vendors", "label": "Vendors", "description": "Directory, categories, terms, minimums, lead times, history, and scorecards." },
       { "id": "customer-service", "label": "Customer Service", "description": "Cross-channel support for orders, payments, refunds, escalations, and chargebacks." },
       { "id": "warehouse", "label": "Warehouse", "description": "Receiving, pick routes, packing, shipment creation, carrier handoff, and exceptions." },

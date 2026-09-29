@@ -41,28 +41,25 @@ describe('V7.7 device-native navigation', () => {
   });
 
   it('keeps every standard route available in an accessible mobile disclosure menu', () => {
-    const chrome = read('src/components/SiteChrome.tsx');
+    const navigation = read('src/components/navigation.ts');
     const mobileNav = read('src/components/MobileNav.tsx');
     const styles = read('app/globals.css');
     const timelinePage = read('app/experience/page.tsx');
     const caseStudiesPage = read('app/work/page.tsx');
     for (const [href, label] of [
-      ['/experience/', 'Timeline'],
-      ['/portfolio/', 'Profile'],
+      ['/experience/', 'Journey'],
       ['/work/', 'Case studies'],
       ['/resume/', 'Resume'],
       ['/about/', 'About'],
       ['/contact/', 'Contact']
     ]) {
-      expect(chrome).toContain(`{ href: '${href}', label: '${label}'`);
+      expect(navigation).toContain(`{ href: '${href}', label: '${label}'`);
     }
     expect(mobileNav).toContain('aria-expanded={open}');
     expect(mobileNav).toContain('aria-controls={menuId}');
     expect(mobileNav).toContain("event.key !== 'Escape'");
     expect(mobileNav).toContain('buttonRef.current?.focus()');
     expect(mobileNav).toContain('onClick={() => setOpen(false)}');
-    expect(chrome).toContain('<Link href="/experience/">Timeline</Link>');
-    expect(chrome).toContain('<Link href="/work/">Case studies</Link>');
     expect(timelinePage).toContain("title: 'Timeline'");
     expect(caseStudiesPage).toContain("title: 'Case studies'");
     expect(styles).toContain('.site-header__mobile-nav { display: block; }');
@@ -72,8 +69,7 @@ describe('V7.7 device-native navigation', () => {
 
   it('opens, closes on link activation, and restores button focus on Escape', () => {
     const items: readonly MobileNavItem[] = [
-      { href: '/experience/', label: 'Timeline' },
-      { href: '/portfolio/', label: 'Profile' },
+      { href: '/experience/', label: 'Journey' },
       { href: '/work/', label: 'Case studies' },
       { href: '/resume/', label: 'Resume' },
       { href: '/about/', label: 'About' },
@@ -87,13 +83,13 @@ describe('V7.7 device-native navigation', () => {
     expect(button).toHaveAttribute('aria-expanded', 'true');
     for (const item of items) expect(screen.getByRole('link', { name: item.label })).toHaveAttribute('href', item.href.replace(/\/$/, ''));
 
-    const timelineLink = screen.getByRole('link', { name: 'Timeline' });
+    const timelineLink = screen.getByRole('link', { name: 'Journey' });
     timelineLink.addEventListener('click', (event) => event.preventDefault());
     fireEvent.click(timelineLink);
     expect(button).toHaveAttribute('aria-expanded', 'false');
 
     fireEvent.click(button);
-    screen.getByRole('link', { name: 'Profile' }).focus();
+    screen.getByRole('link', { name: 'About' }).focus();
     fireEvent.keyDown(document, { key: 'Escape' });
     expect(button).toHaveAttribute('aria-expanded', 'false');
     expect(button).toHaveFocus();

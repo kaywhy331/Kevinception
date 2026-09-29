@@ -3,9 +3,9 @@
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { useEffect, useRef, useState } from 'react';
-import type { YearId } from '@/content/data';
 import { eraConfigs, YEAR_ORDER } from '@/experience/config';
 import { isLowPowerDevice } from '@/experience/performanceProfile';
+import { chapterHref } from '@/components/navigation';
 
 const ANIMATED_ERAS = new Set([0, 3, 4, 5]);
 const PORTAL_FRAME_INTERVAL = 1000 / 20;
@@ -200,20 +200,39 @@ function drawEra(context: CanvasRenderingContext2D, width: number, height: numbe
   context.fillRect(0, 0, width, height);
 }
 
+const ROTATION_INTERVAL = 2800;
+
 export function EraPortalCanvas() {
   const router = useRouter();
+  const rootRef = useRef<HTMLDivElement>(null);
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const [activeIndex, setActiveIndex] = useState(0);
-  const [entryYear, setEntryYear] = useState<YearId>(YEAR_ORDER[0]);
   const [reducedMotion, setReducedMotion] = useState(false);
+  const [userPaused, setUserPaused] = useState(false);
+  const [interactionPaused, setInteractionPaused] = useState(false);
+  const [cycleComplete, setCycleComplete] = useState(false);
+  const [onScreen, setOnScreen] = useState(true);
+  const activeIndexRef = useRef(0);
+  const repaintRef = useRef<() => void>(() => undefined);
   const activeYear = YEAR_ORDER[activeIndex];
   const active = eraConfigs[activeYear];
-  const entry = eraConfigs[entryYear];
-  const experienceHref = `/experience/?year=${entryYear}`;
+  const experienceHref = chapterHref(activeYear);
+  const rotating = !reducedMotion && !userPaused && !interactionPaused && !cycleComplete && onScreen;
+  const autoplayAvailable = !reducedMotion;
+  const playing = !userPaused && !cycleComplete;
 
-  const selectEra = (year: YearId, index: number) => {
+  const selectEra = (index: number) => {
     setActiveIndex(index);
-    setEntryYear(year);
+    setUserPaused(true);
+  };
+
+  const toggleRotation = () => {
+    if (userPaused || cycleComplete) {
+      setCycleComplete(false);
+      setUserPaused(false);
+    } else {
+      setUserPaused(true);
+    }
   };
 
   useEffect(() => {
@@ -224,12 +243,37 @@ export function EraPortalCanvas() {
     return () => query.removeEventListener('change', sync);
   }, []);
 
+  // Rotation stops off-screen and in hidden tabs.
   useEffect(() => {
-    if (reducedMotion) return;
-    const timer = window.setInterval(() => setActiveIndex((value) => (value + 1) % YEAR_ORDER.length), 2800);
-    return () => window.clearInterval(timer);
-  }, [reducedMotion]);
+    const root = rootRef.current;
+    let inViewport = true;
+    const sync = () => setOnScreen(inViewport && !document.hidden);
+    const observer = typeof IntersectionObserver === 'undefined' || !root ? null : new IntersectionObserver(([entry]) => {
+      inViewport = entry.isIntersecting;
+      sync();
+    });
+    if (root) observer?.observe(root);
+    document.addEventListener('visibilitychange', sync);
+    return () => {
+      observer?.disconnect();
+      document.removeEventListener('visibilitychange', sync);
+    };
+  }, []);
 
+  // One pass through the six chapters, then it rests on the first (WCAG 2.2.2).
+  useEffect(() => {
+    if (!rotating) return;
+    const timer = window.setInterval(() => {
+      setActiveIndex((value) => {
+        const next = (value + 1) % YEAR_ORDER.length;
+        if (next === 0) setCycleComplete(true);
+        return next;
+      });
+    }, ROTATION_INTERVAL);
+    return () => window.clearInterval(timer);
+  }, [rotating]);
+
+  // The canvas effect is set up once per motion preference; chapter changes only repaint.
   useEffect(() => {
     const canvas = canvasRef.current;
     if (!canvas) return;
@@ -247,7 +291,6 @@ export function EraPortalCanvas() {
       saveData: Boolean(device.connection?.saveData)
     });
     const ratioCap = lowPower ? 1 : 1.5;
-    const animated = !reducedMotion && ANIMATED_ERAS.has(activeIndex);
 
     const paint = (now: number) => {
       const rect = canvas.getBoundingClientRect();
@@ -260,7 +303,7 @@ export function EraPortalCanvas() {
         canvas.height = pixelHeight;
       }
       context.setTransform(ratio, 0, 0, ratio, 0, 0);
-      drawEra(context, rect.width, rect.height, activeIndex, reducedMotion ? 0 : (now - start) / 1000);
+      drawEra(context, rect.width, rect.height, activeIndexRef.current, reducedMotion ? 0 : (now - start) / 1000);
       lastRender = now;
     };
     const render = (now: number) => {
@@ -271,8 +314,9 @@ export function EraPortalCanvas() {
       window.cancelAnimationFrame(frame);
       if (document.hidden || !inViewport) return;
       paint(performance.now());
-      if (animated) frame = window.requestAnimationFrame(render);
+      if (!reducedMotion && ANIMATED_ERAS.has(activeIndexRef.current)) frame = window.requestAnimationFrame(render);
     };
+    repaintRef.current = restart;
     const resizeObserver = new ResizeObserver(() => {
       if (!document.hidden && inViewport) paint(performance.now());
     });
@@ -286,27 +330,52 @@ export function EraPortalCanvas() {
     document.addEventListener('visibilitychange', onVisibility);
     restart();
     return () => {
+      repaintRef.current = () => undefined;
       resizeObserver.disconnect();
       intersectionObserver?.disconnect();
       document.removeEventListener('visibilitychange', onVisibility);
       window.cancelAnimationFrame(frame);
     };
-  }, [activeIndex, reducedMotion]);
+  }, [reducedMotion]);
+
+  useEffect(() => {
+    activeIndexRef.current = activeIndex;
+    repaintRef.current();
+  }, [activeIndex]);
 
   return (
-    <div className="era-portal" role="region" style={{ '--portal-accent': active.accent, '--portal-bg': palettes[activeIndex][0] } as React.CSSProperties} aria-label="Live preview of the six timeline interfaces">
+    <div
+      ref={rootRef}
+      className="era-portal"
+      role="region"
+      style={{ '--portal-accent': active.accent, '--portal-bg': palettes[activeIndex][0] } as React.CSSProperties}
+      aria-label="Preview of the six chapters"
+      onPointerEnter={() => setInteractionPaused(true)}
+      onPointerLeave={() => setInteractionPaused(false)}
+      onFocus={() => setInteractionPaused(true)}
+      onBlur={(event) => {
+        if (!event.currentTarget.contains(event.relatedTarget as Node | null)) setInteractionPaused(false);
+      }}
+    >
       <canvas ref={canvasRef} aria-hidden="true" />
       <div className="era-portal__scan" aria-hidden="true"></div>
       <div className="era-portal__hud">
-        <p><span>Live signal</span> {activeYear}</p>
+        <p><span>Chapter {active.chapterNumber}</span> · {activeYear}</p>
         <strong>{active.chapterName}</strong>
         <small>{active.experienceName} · {active.medium}</small>
       </div>
       <div className="era-portal__controls">
-        <div role="group" aria-label="Preview an era">
-          {YEAR_ORDER.map((year, index) => <button key={year} type="button" className={index === activeIndex ? 'is-active' : ''} onClick={() => selectEra(year, index)} aria-label={`Preview ${year}: ${eraConfigs[year].chapterName}`} aria-pressed={index === activeIndex}><span>{year}</span></button>)}
+        <div role="group" aria-label="Preview a chapter">
+          {YEAR_ORDER.map((year, index) => <button key={year} type="button" className={index === activeIndex ? 'is-active' : ''} onClick={() => selectEra(index)} aria-label={`Preview ${year}: ${eraConfigs[year].chapterName}`} aria-pressed={index === activeIndex}><span>{year}</span></button>)}
         </div>
-        <Link href={experienceHref} prefetch={false} onPointerEnter={() => router.prefetch(experienceHref)} onFocus={() => router.prefetch(experienceHref)} onTouchStart={() => router.prefetch(experienceHref)} data-analytics-event="timeline_enter" data-analytics-source="home_portal" data-analytics-year={entryYear}>Enter {entry.experienceName} <span aria-hidden="true">↗</span></Link>
+        <div className="era-portal__actions">
+          {autoplayAvailable && (
+            <button type="button" className="era-portal__pause" onClick={toggleRotation} aria-label={playing ? 'Pause chapter preview' : 'Play chapter preview'}>
+              <span aria-hidden="true">{playing ? '❚❚' : '▶'}</span>
+            </button>
+          )}
+          <Link href={experienceHref} prefetch={false} onPointerEnter={() => router.prefetch(experienceHref)} onFocus={() => router.prefetch(experienceHref)} onTouchStart={() => router.prefetch(experienceHref)} data-analytics-event="timeline_enter" data-analytics-source="home_portal" data-analytics-year={activeYear}>Enter {activeYear} · {active.chapterName} <span aria-hidden="true">→</span></Link>
+        </div>
       </div>
     </div>
   );

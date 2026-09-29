@@ -13,7 +13,7 @@ describe('Commerce and Co-Existence chapters', () => {
     expect(chapterNarrative['2010'].experienceName).toBe('StealStreet Commerce OS');
     expect(eras.find((era) => era.id === '2010')?.label).toBe('Commerce');
     expect(timelineContent['2010'].operations.catalogScale).toBe('1.5M catalog records');
-    expect(timelineContent['2010'].operations.channelScale).toBe('20+ commerce channels');
+    expect(timelineContent['2010'].operations.channelScale).toBe('15+ commerce channels');
     expect(timelineContent['2010'].operations.lifecycle.map((stage) => stage.label)).toEqual([
       'Vendors', 'Purchase Orders', 'Inventory', 'Catalog', 'Marketplaces', 'Customer Orders', 'Warehouse', 'Customer'
     ]);
@@ -158,7 +158,7 @@ describe('Commerce and Co-Existence chapters', () => {
       expect(payload.eras.find((era: { id: string }) => era.id === '2030')).toMatchObject({ label: 'Co-Existence', subtitle: 'Morning, Together' });
       expect(payload.eras.find((era: { id: string }) => era.id === '2040')).toMatchObject({ label: 'Consciousness', subtitle: 'Morning, After' });
       expect(payload.timelineContent['2010'].operations.catalogScale).toBe('1.5M catalog records');
-      expect(payload.timelineContent['2010'].operations.channelScale).toBe('20+ commerce channels');
+      expect(payload.timelineContent['2010'].operations.channelScale).toBe('15+ commerce channels');
       expect(payload.timelineContent['2040'].responses.memory).toContain('Commerce, Creation, Co-Existence, or Consciousness');
       expect(payload.temporalArtifacts['2010']).toMatchObject({ id: 'project-blueprint', name: 'Project Blueprint' });
       expect(payload.temporalArtifacts['2030'].name).toBe(year === '2030' ? 'Saito Consent Thread' : '2030 Consent Thread');

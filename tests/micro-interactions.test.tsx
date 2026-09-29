@@ -105,6 +105,9 @@ describe('standard-page micro interactions', () => {
     expect(motion).toContain('Magnetism and tilt never encode state or gate an action');
     expect(roadmap).toContain('4.1 Micro-interactions');
     expect(roadmap).toContain('Status 2026-08-15: ✅ Implemented');
-    expect(projectCard).toContain('data-interactive-card');
+    // Archive rows are large editorial text; the tilt stays opt-in and is not applied to them.
+    expect(projectCard).not.toMatch(/<article[^>]*data-interactive-card/);
+    expect(css).toContain("[data-magnetic-active='true'] { will-change: transform; }");
+    expect(css.split("[data-magnetic-active='true']")[0]).not.toMatch(/\.primary-action \{[^}]*will-change/);
   });
 });

@@ -2,11 +2,23 @@
 
 import Script from 'next/script';
 import { usePathname } from 'next/navigation';
-import { useEffect, useRef, useState } from 'react';
-import { analyticsPermitted, trackAnalyticsEvent, trackAnalyticsPageview } from '@/lib/analytics';
+import { useEffect, useState } from 'react';
+import { analyticsPermitted, trackAnalyticsEvent } from '@/lib/analytics';
 
 const domain = process.env.NEXT_PUBLIC_PLAUSIBLE_DOMAIN || 'kevinception.com';
 const scriptSource = process.env.NEXT_PUBLIC_PLAUSIBLE_SCRIPT_URL || 'https://plausible.io/js/script.js';
+
+/**
+ * Report only from the host the Plausible site is registered for. Netlify deploy
+ * previews, branch deploys, Vercel previews, and localhost therefore never write into
+ * production analytics. A staging site opts in by building with its own
+ * NEXT_PUBLIC_PLAUSIBLE_DOMAIN (which must match the staging host).
+ */
+export function analyticsHostAllowed(hostname: string, configuredDomain = domain) {
+  const host = hostname.toLowerCase().replace(/\.$/, '');
+  const target = configuredDomain.toLowerCase();
+  return host === target || host === `www.${target}`;
+}
 
 function datasetProps(element: HTMLElement) {
   return Object.fromEntries(
@@ -27,15 +39,13 @@ function inferredLinkEvent(anchor: HTMLAnchorElement) {
 
 export function Analytics() {
   const pathname = usePathname();
-  const previousPath = useRef<string | null>(null);
   const [enabled, setEnabled] = useState(false);
 
-  useEffect(() => setEnabled(analyticsPermitted()), []);
+  useEffect(() => setEnabled(analyticsPermitted() && analyticsHostAllowed(window.location.hostname)), []);
 
+  // Pageviews, including App Router navigations, are recorded by Plausible's own
+  // history-API tracking. Sending manual pageviews as well would double-count them.
   useEffect(() => {
-    if (previousPath.current !== null && previousPath.current !== pathname) trackAnalyticsPageview();
-    previousPath.current = pathname;
-
     const caseStudy = pathname.match(/^\/work\/([^/]+)\/?$/);
     if (caseStudy) trackAnalyticsEvent('case_study_read', { project: caseStudy[1] });
     if (pathname === '/contact' || pathname === '/contact/') trackAnalyticsEvent('contact_view');

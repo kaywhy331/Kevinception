@@ -4,6 +4,7 @@ import { notFound } from 'next/navigation';
 import { projects } from '@/content/data';
 import { CaseStudyChapterNav } from '@/components/CaseStudyChapterNav';
 import { SiteChrome } from '@/components/SiteChrome';
+import { pageMetadata } from '@/lib/pageMetadata';
 
 export function generateStaticParams() {
   return projects.map((project) => ({ slug: project.slug }));
@@ -13,7 +14,7 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
   const { slug } = await params;
   const project = projects.find((item) => item.slug === slug);
   if (!project) return {};
-  return { title: project.title, description: project.summary };
+  return pageMetadata({ title: `${project.title} — case study`, description: project.summary, path: `/work/${project.slug}/` });
 }
 
 export default async function ProjectPage({ params }: { params: Promise<{ slug: string }> }) {
@@ -23,17 +24,17 @@ export default async function ProjectPage({ params }: { params: Promise<{ slug: 
   return (
     <SiteChrome>
       <article id="main-content" className="case-study">
-        <header className="case-study__hero"><p className="eyebrow">{project.eyebrow} · {project.year}</p><h1>{project.title}</h1><p className="lead">{project.summary}</p><div className="tag-row">{project.roles.map((role) => <span key={role}>{role}</span>)}</div></header>
+        <header className="case-study__hero"><p className="eyebrow">{project.eyebrow} · {project.year}</p><h1>{project.title}</h1><p className="lead">{project.summary}</p><dl className="case-study__facts"><div><dt>Role</dt><dd>{project.roles.join(' · ')}</dd></div><div><dt>When</dt><dd>{project.year}</dd></div><div><dt>Result</dt><dd>{project.outcomes[0].value}</dd></div></dl></header>
         <CaseStudyChapterNav />
         <section id="problem" data-case-chapter><p className="eyebrow">The problem</p><h2>Why this needed to exist</h2><p>{project.problem}</p><p>{project.context}</p></section>
         <section id="constraints" data-case-chapter><p className="eyebrow">Constraints</p><h2>The edges of the system</h2><ul>{project.constraints.map((item) => <li key={item}>{item}</li>)}</ul></section>
         <section id="approach" data-case-chapter><p className="eyebrow">Approach</p><h2>From ambiguity to an executable model</h2><ol>{project.approach.map((item) => <li key={item}>{item}</li>)}</ol></section>
-        <section id="decisions" data-case-chapter><p className="eyebrow">Key decisions</p><div className="decision-grid">{project.decisions.map((item) => <article key={item}><p>{item}</p></article>)}</div></section>
-        <section id="deliverables" data-case-chapter><p className="eyebrow">Deliverables</p><div className="tag-row tag-row--large">{project.deliverables.map((item) => <span key={item}>{item}</span>)}</div></section>
-        <section id="outcomes" data-case-chapter><p className="eyebrow">Outcomes and evidence</p><div className="outcome-grid">{project.outcomes.map((outcome) => <article key={outcome.label}><small>{outcome.label}</small><h3>{outcome.value}</h3><p>{outcome.evidence}</p></article>)}</div></section>
-        <section id="artifacts" data-case-chapter><p className="eyebrow">Artifacts</p><ol className="artifact-ledger">{project.artifacts.map((artifact, index) => <li key={artifact.label}><span>{String(index + 1).padStart(2, '0')}</span><article><small>{artifact.type}</small><h3>{artifact.label}</h3><p>{artifact.description}</p>{'href' in artifact && artifact.href && <a className="text-link" href={artifact.href}>Open source →</a>}</article></li>)}</ol></section>
-        <section id="learnings" data-case-chapter><p className="eyebrow">Learnings</p><ul>{project.learnings.map((item) => <li key={item}>{item}</li>)}</ul></section>
-        <footer className="case-study__footer"><Link className="secondary-action" href="/work/">All work</Link><Link className="primary-action" href="/contact/">Discuss a similar challenge</Link></footer>
+        <section id="decisions" data-case-chapter><p className="eyebrow">Key decisions</p><h2>The choices that shaped it</h2><div className="decision-grid">{project.decisions.map((item) => <article key={item}><p>{item}</p></article>)}</div></section>
+        <section id="deliverables" data-case-chapter><p className="eyebrow">Deliverables</p><h2>What was produced</h2><div className="tag-row tag-row--large">{project.deliverables.map((item) => <span key={item}>{item}</span>)}</div></section>
+        <section id="outcomes" data-case-chapter><p className="eyebrow">What shipped</p><h2>What exists now</h2><div className="outcome-grid">{project.outcomes.map((outcome) => <article key={outcome.label}><small>{outcome.label}</small><h3>{outcome.value}</h3><p>{outcome.evidence}</p></article>)}</div></section>
+        <section id="artifacts" data-case-chapter><p className="eyebrow">Artifacts</p><h2>Documents and prototypes</h2><ol className="artifact-ledger">{project.artifacts.map((artifact, index) => <li key={artifact.label}><span>{String(index + 1).padStart(2, '0')}</span><article><small>{artifact.type}</small><h3>{artifact.label}</h3><p>{artifact.description}</p>{'href' in artifact && artifact.href && <a className="text-link" href={artifact.href}>Open source →</a>}</article></li>)}</ol></section>
+        <section id="learnings" data-case-chapter><p className="eyebrow">Learnings</p><h2>What I’d carry forward</h2><ul>{project.learnings.map((item) => <li key={item}>{item}</li>)}</ul></section>
+        <footer className="case-study__footer"><Link className="secondary-action" href="/work/">All case studies</Link><Link className="primary-action" href="/contact/">Discuss a similar challenge</Link></footer>
       </article>
     </SiteChrome>
   );

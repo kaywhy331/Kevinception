@@ -44,13 +44,14 @@ describe('adaptive performance preferences', () => {
     const portal = read('src/components/EraPortalCanvas.tsx');
     expect(portal).toContain('PORTAL_FRAME_INTERVAL = 1000 / 20');
     expect(portal).toContain('const ratioCap = lowPower ? 1 : 1.5');
-    expect(portal).toContain('ANIMATED_ERAS.has(activeIndex)');
+    expect(portal).toContain('ANIMATED_ERAS.has(activeIndexRef.current)');
     expect(portal).toContain("document.addEventListener('visibilitychange'");
     expect(portal).toContain('prefetch={false}');
     expect(portal).toContain('router.prefetch(experienceHref)');
-    expect(portal).toContain('useState<YearId>(YEAR_ORDER[0])');
-    expect(portal).toContain('setEntryYear(year)');
-    expect(portal).toContain('`/experience/?year=${entryYear}`');
+    // The canvas pipeline is built once per motion preference, not once per chapter change.
+    expect(portal).toContain('}, [reducedMotion]);');
+    expect(portal).not.toContain('}, [activeIndex, reducedMotion]);');
+    expect(portal).toContain('chapterHref(activeYear)');
   });
 
   it('prewarms future scenes and keeps constrained rendering responsive', () => {
