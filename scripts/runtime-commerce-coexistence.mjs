@@ -21,28 +21,6 @@ function assert(name, condition, detail = '') {
   if (!condition) throw new Error(`${name}${detail ? `: ${detail}` : ''}`);
 }
 
-async function clickPageButton(label) {
-  const clicked = await page.$$eval('button', (buttons, expected) => {
-    const button = buttons.find((candidate) => candidate.textContent?.trim().includes(expected) && !candidate.disabled);
-    button?.click();
-    return Boolean(button);
-  }, label);
-  if (!clicked) throw new Error(`Could not find enabled page button containing “${label}”.`);
-}
-
-async function finishCoexistenceExchange() {
-  for (let beat = 0; beat < 4; beat += 1) {
-    const before = await page.$$eval('.coexistence-exchange li', (nodes) => nodes.length);
-    const advanced = await page.$eval('.coexistence-reply', (button) => {
-      if (!(button instanceof HTMLButtonElement) || button.disabled) return false;
-      button.click();
-      return true;
-    }).catch(() => false);
-    if (!advanced) throw new Error(`Could not advance Co-Existence exchange from beat ${before}.`);
-    await page.waitForFunction((count) => document.querySelectorAll('.coexistence-exchange li').length > count, {}, before);
-  }
-}
-
 async function traverseCommerceHistory(delta, expectedModule) {
   await page.evaluate((step) => window.history.go(step), delta);
   await page.waitForFunction((module) => {
@@ -359,38 +337,8 @@ try {
   await page.goto(`${base}/experience/?year=2030&view=interface`, { waitUntil: 'domcontentloaded', timeout: 45000 });
   await page.waitForSelector('.interface-mode.is-visible .future-native--2030', { timeout: 30000 });
   assert('The future interfaces are native and mount no 2030/2040 iframe', await page.$$eval('iframe', (frames) => frames.every((frame) => !/\/legacy\/experience\/(2030|2040)\//.test(frame.src))));
-  assert('Native Co-Existence exposes six ordinary moments with Saito', await page.$$eval('.coexistence-dayline button', (buttons) => buttons.length === 6) && await page.$eval('.future-native--2030', (node) => node.textContent.includes('Morning, Together') && node.textContent.includes('Saito')));
-  await finishCoexistenceExchange();
-  await clickPageButton('Keep it with me');
-  await clickPageButton('Studio table');
-  await finishCoexistenceExchange();
-  await clickPageButton('Let it end here');
-  await clickPageButton('Window desk');
-  await finishCoexistenceExchange();
-  await clickPageButton('Let it end here');
-  assert('The audit stays behind the boundary lens until asked for', await page.$('.coexistence-lens') === null);
-  await clickPageButton('Inspect Saito');
-  await page.waitForSelector('.coexistence-lens', { timeout: 5000 });
-  assert('TokenPak, TIP, and PAK remain optional provenance rather than the 2030 hero', await page.$eval('.coexistence-lens .coexistence-provenance', (node) => node.textContent.includes('TokenPak') && node.textContent.includes('TIP authority') && node.textContent.includes('PAK context')));
-  assert('The boundary lens carries the standing-authority map', await page.$eval('.coexistence-lens', (node) => node.textContent.includes('Saito’s standing authority') && node.textContent.includes('spend is always the dial')));
-  await clickPageButton('Close the boundary');
-  await clickPageButton('Enter Morning, After');
-  await page.waitForSelector('.future-native--2040', { timeout: 30000 });
-  assert('Saito remains exclusive to the 2030 experience', await page.$eval('.future-native--2040', (node) => !/Saito/i.test(node.textContent ?? '')));
-  assert('Consciousness reports the one memory permitted by the living day', await page.$eval('.future-masthead .consciousness-constellation', (node) => node.getAttribute('aria-label') === '1 of 6 memories permitted'));
-  assert('The hologram is built from the living day’s consent bands', await page.$$eval('.consciousness-portrait__band', (bands) => bands.length === 6
-    && bands.filter((band) => band.dataset.state === 'kept').length === 1
-    && bands.filter((band) => band.dataset.state === 'refused').length === 2));
-  await clickPageButton('An unfinished sentence');
-  await clickPageButton('Let Kevin recall');
-  await page.waitForFunction(() => document.querySelector('.consciousness-encounter blockquote')?.textContent.includes('deliberate blank'));
-  await clickPageButton('Pull the sentence to its source');
-  assert('Holographic Kevin exposes withheld conjecture instead of inventing memory', await page.$eval('.consciousness-source', (node) => node.textContent.includes('deliberately withheld') && node.textContent.includes('thread ends here')));
-  await clickPageButton('Let Kevin deliberate');
-  await clickPageButton('Let Kevin speak / act / refuse');
-  await clickPageButton('Let Kevin continue');
-  await page.waitForSelector('.consciousness-retention', { timeout: 5000 });
-  assert('The behavior loop ends with explicit encounter permission', await page.$eval('.consciousness-retention', (node) => node.textContent.includes('May I keep this?') && node.textContent.includes('No—let me disappear')));
+  // The 2030/2040 beat flow, boundary lens and closing payoff are owned by
+  // scripts/runtime-future-native.mjs; this probe only guards the native mount.
 
   assert('The reviewed flows emit no console errors', report.consoleErrors.length === 0, report.consoleErrors.join(' | '));
   assert('The reviewed flows emit no page errors', report.pageErrors.length === 0, report.pageErrors.join(' | '));
