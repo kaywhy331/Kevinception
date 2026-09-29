@@ -64,14 +64,14 @@
 .future-imagined { display: inline-block; margin-left: .45rem; padding: .12rem .48rem; border: 1px solid currentColor; border-radius: 999px; color: var(--future-focus); font-style: normal; letter-spacing: .12em; vertical-align: .05em; }
 .future-native--2030 .future-masthead { background: var(--future-paper); }
 
-.future-sound-control {
+.future-native .future-sound-control {
   min-height: 44px;
   padding: .5rem .78rem;
   border: 1px solid color-mix(in srgb, var(--future-focus) 40%, transparent);
   border-radius: 999px;
   background: color-mix(in srgb, currentColor 4%, transparent);
   color: inherit;
-  font-size: var(--future-fs-meta);
+  font-size: .82rem;
   font-weight: 750;
 }
 
@@ -106,7 +106,7 @@
 }
 
 .future-disclosure span { flex: 0 0 auto; color: var(--future-focus); font-weight: 850; letter-spacing: .1em; text-transform: uppercase; }
-.future-disclosure p { margin: 0; }
+.future-disclosure p { margin: 0; color: inherit; }
 .future-native--2030 .future-disclosure { background: var(--future-paper); }
 
 /* ============================================================
@@ -340,11 +340,11 @@
 .coexistence-controls .coexistence-reply { margin-top: 0; }
 .coexistence-controls__quiet { display: flex; flex-wrap: wrap; gap: .25rem .9rem; margin-top: .3rem; }
 .coexistence-controls__quiet button,
-.coexistence-next { min-height: 44px; padding: .4rem .1rem; border: 0; background: transparent; color: #6b3a20; font-size: var(--future-fs-meta); font-weight: 750; letter-spacing: .04em; text-decoration: underline; text-decoration-color: rgba(107,58,32,.35); text-underline-offset: .25em; }
+.coexistence-consent .coexistence-next { min-height: 44px; padding: .4rem .1rem; border: 0; background: transparent; color: #6b3a20; font-size: var(--future-fs-meta); font-weight: 750; letter-spacing: .04em; text-decoration: underline; text-decoration-color: rgba(107,58,32,.35); text-underline-offset: .25em; }
 .coexistence-controls__quiet button[aria-pressed="true"] { color: #8f4424; text-decoration-color: currentColor; }
 .coexistence-controls__quiet button:hover,
-.coexistence-next:hover { text-decoration-color: currentColor; }
-.coexistence-next { flex-basis: 100%; justify-self: start; text-align: left; font-size: var(--future-fs-body); }
+.coexistence-consent .coexistence-next:hover { text-decoration-color: currentColor; }
+.coexistence-consent .coexistence-next { flex-basis: 100%; min-height: 44px; border: 0; border-radius: 0; background: transparent; text-align: left; font-size: var(--future-fs-body); }
 
 .coexistence-staged { display: grid; gap: .42rem; margin: .8rem 0 0; padding: 0; list-style: none; }
 .coexistence-staged li { display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: .14rem .6rem; padding: .5rem .62rem; border: 1px solid rgba(139,88,42,.26); border-left: 3px solid #c98b3f; background: rgba(255,246,226,.4); animation: saito-line-arrive .34s ease-out both; }
@@ -617,7 +617,7 @@
 .consciousness-retention button:hover { border-color: #ff9e2f; color: #ffe2ac; }
 
 .consciousness-cue-index { grid-column: 3; grid-row: 3; display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 1px; border-top: 1px solid rgba(255,153,37,.18); transition: opacity 1.2s ease; }
-.consciousness-cue-index button { display: grid; grid-template-columns: auto 1fr; align-items: center; gap: .45rem; min-height: 44px; padding: .5rem .6rem; border: 0; background: rgba(255,159,47,.025); color: #bda887; font-size: .8rem; text-align: left; }
+.consciousness-cue-index button { display: grid; grid-template-columns: minmax(0, 1fr); align-content: center; gap: .15rem; min-height: 44px; padding: .5rem .6rem; border: 0; background: rgba(255,159,47,.025); color: #bda887; font-size: .8rem; text-align: left; }
 .consciousness-cue-index button[aria-pressed="true"] { background: rgba(255,159,47,.1); color: #ffe2ac; }
 .consciousness-cue-index button:disabled { cursor: default; opacity: .45; }
 .consciousness-cue-index button span { color: #d98247; font-size: .75rem; letter-spacing: .07em; text-transform: uppercase; }
@@ -633,23 +633,28 @@
 .future-native--2040[data-retention='released'] .consciousness-portrait { opacity: 0; filter: blur(16px); transition: opacity 2.2s ease .25s, filter 2.2s ease .25s; }
 .future-native--2040[data-retention='released'] .consciousness-room { filter: brightness(.55) saturate(.7); }
 .future-native--2040[data-retention='kept'] .consciousness-portrait { filter: drop-shadow(0 0 32px rgba(255,151,42,.55)); }
+/* Released is final: the cue index leaves with him and the closing panel takes the column. */
+.future-native--2040[data-retention='released'] .consciousness-cue-index { display: none; }
+@media (min-width: 1081px) {
+  .future-native--2040[data-retention='released'] .consciousness-encounter--closing { grid-row: 2 / 4; }
+}
 
 /* ---- Closing panel: six chapters, tied together (visual and text paths). ---- */
 .future-closing { display: grid; gap: .7rem; animation: saito-line-arrive .5s ease-out both; }
 .future-closing__outcome { margin: 0; color: #ffbc61; font: italic 520 var(--future-fs-dialogue, 1.05rem)/1.5 var(--font-display), sans-serif; }
 .future-closing h2 { margin: .1rem 0 0; color: #fff0d1; font: 580 clamp(1.4rem, 2.6vw, 2.1rem)/1.08 var(--font-display), sans-serif; letter-spacing: -.035em; }
 .future-closing__summary { margin: 0; color: #d7c3a0; font-size: var(--future-fs-body, .88rem); line-height: 1.6; }
-.future-closing__eras { display: grid; gap: .3rem; margin: .2rem 0; padding: 0; list-style: none; }
-.future-closing__eras li { display: grid; grid-template-columns: 3.2rem minmax(0, 1fr); gap: .6rem; padding: .32rem 0; border-top: 1px solid rgba(255,158,47,.14); color: #d7c3a0; font-size: var(--future-fs-body, .88rem); }
+.future-closing__eras { display: grid; grid-template-columns: repeat(auto-fit, minmax(15rem, 1fr)); gap: 0 1rem; margin: .2rem 0; padding: 0; list-style: none; }
+.future-closing__eras li { display: grid; grid-template-columns: 3rem minmax(0, 1fr); gap: .5rem; padding: .3rem 0; border-top: 1px solid rgba(255,158,47,.14); color: #d7c3a0; font-size: var(--future-fs-body, .88rem); }
 .future-closing__eras b { color: #ffad43; font-weight: 800; letter-spacing: .04em; }
 .future-closing__artifacts,
 .future-closing__hint { margin: 0; color: #bda887; font-size: var(--future-fs-meta, .75rem); line-height: 1.5; }
 .future-closing__actions { display: flex; flex-wrap: wrap; align-items: center; gap: .5rem; margin-top: .3rem; }
 .future-closing__actions > :not(.future-primary),
-.future-closing__again { display: inline-flex; align-items: center; min-height: 44px; padding: .5rem .85rem; border: 1px solid rgba(255,164,52,.35); border-radius: 999px; background: transparent; color: #ffcb78; font-size: var(--future-fs-body, .88rem); text-decoration: none; }
-.future-closing__again { justify-self: start; border-style: dashed; }
+.future-closing .future-closing__again { display: inline-flex; align-items: center; min-height: 44px; padding: .5rem .85rem; border: 1px solid rgba(255,164,52,.35); border-radius: 999px; background: transparent; color: #ffcb78; font-size: var(--future-fs-body, .88rem); text-decoration: none; }
+.future-closing .future-closing__again { justify-self: start; border-style: dashed; }
 .future-closing__actions > :not(.future-primary):hover,
-.future-closing__again:hover { background: rgba(255,158,47,.1); }
+.future-closing .future-closing__again:hover { background: rgba(255,158,47,.1); }
 
 /* Text mode follows the same state and story without recreating the spatial theatre.
    It shares the type tokens, so the accessible path is never the smaller one. */
@@ -777,7 +782,7 @@
   .future-masthead h1 { font-size: 1.2rem; }
   .future-masthead > div:first-child > span { display: -webkit-box; margin-top: .2rem; overflow: hidden; font-size: .75rem; -webkit-box-orient: vertical; -webkit-line-clamp: 3; }
   .future-masthead > div:last-child { flex: 1 1 auto; justify-content: flex-end; }
-  .future-sound-control { padding: .4rem .7rem; }
+  .future-native .future-sound-control { padding: .4rem .75rem; }
   .future-disclosure { align-items: flex-start; padding: .4rem .6rem; }
 
   .coexistence-stage { display: grid; grid-template-columns: minmax(0, 1fr); grid-template-rows: auto 270px minmax(min-content, max-content) auto; gap: .4rem; padding: .4rem; overflow-y: auto; }
@@ -820,6 +825,7 @@
   .consciousness-exits > button { order: 3; }
   .future-closing__actions { flex-direction: column; align-items: stretch; }
   .future-closing__actions > * { justify-content: center; }
+  .future-closing .future-closing__again { justify-self: stretch; justify-content: center; }
   .consciousness-actions { display: grid; grid-template-columns: 1fr 1fr; }
   .consciousness-actions .future-primary { grid-column: 1 / -1; }
 

@@ -442,7 +442,7 @@ function CoexistenceExperience() {
         </div>
       </header>
 
-      <div className="coexistence-stage">
+      <div className="coexistence-stage" data-future-part="stage">
         <Dayline activeMoment={moment.id} anchorTeased={coexistence.consent.evening === 'unasked' && moment.id !== 'evening'} onSelect={chooseMoment} />
         <CoexistenceRoom
           activeMoment={moment.id}
@@ -700,7 +700,7 @@ function ConsciousnessExperience() {
         </div>
       </header>
 
-      <div className="consciousness-stage">
+      <div className="consciousness-stage" data-future-part="stage">
         {unwitnessed ? (
           <aside className="consciousness-unwitnessed" data-future-part="memory-line">
             <p>{UNWITNESSED_LINE}</p>
