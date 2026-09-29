@@ -43,6 +43,10 @@ async function kevtokFrame() {
   const frame = page.frames().find((candidate) => candidate.url().includes('/legacy/experience/2020/'));
   if (!frame) throw new Error('The KevTok iframe was not found.');
   await frame.waitForSelector('.kt-app[data-device-native="true"]', { timeout: 30000 });
+  // A first visit plays the era's power-on screen; press power like a visitor would.
+  const power = await frame.$('[data-era-enter]');
+  if (power && await power.isVisible()) await power.click();
+  await frame.waitForSelector('[data-kt-nav="discover"]', { visible: true, timeout: 30000 });
   return frame;
 }
 

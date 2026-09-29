@@ -49,10 +49,16 @@ function hasModifier(event: KeyboardEvent) {
   return event.metaKey || event.ctrlKey || event.altKey;
 }
 
-/** Same-path URL changes (view, 2010 module) never re-run route metadata, so retitle here. */
+/**
+ * Same-path URL changes (view, 2010 module) never re-run route metadata, and Next
+ * may re-render the head title after them, so the title is always derived from
+ * the URL: called after each same-path history write and whenever <head> changes.
+ */
 function syncDocumentTitle() {
+  if (!window.location.pathname.startsWith('/experience/')) return;
   const { year, view, module } = parseExperienceLocation(window.location.pathname, window.location.search);
-  document.title = experienceDocumentTitle(year, view, module);
+  const title = experienceDocumentTitle(year, view, module);
+  if (document.title !== title) document.title = title;
 }
 
 export function ExperienceShell({ children }: { children: React.ReactNode }) {
@@ -183,6 +189,13 @@ export function ExperienceShell({ children }: { children: React.ReactNode }) {
     if (year === '2010' && view === 'interface') window.setTimeout(() => syncLegacyModule(location.module), 60);
     syncDocumentTitle();
   }, [changeYear, commitUrl, settleView, syncLegacyModule]);
+
+  useEffect(() => {
+    syncDocumentTitle();
+    const observer = new MutationObserver(syncDocumentTitle);
+    observer.observe(document.head, { childList: true, subtree: true, characterData: true });
+    return () => observer.disconnect();
+  }, []);
 
   const syncFromLocationRef = useRef(syncFromLocation);
   useEffect(() => { syncFromLocationRef.current = syncFromLocation; }, [syncFromLocation]);
