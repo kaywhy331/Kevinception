@@ -324,10 +324,7 @@ h2 { letter-spacing: -.055em; }
   .text-link { transition: color var(--motion-fast) ease, border-color var(--motion-fast) ease, background var(--motion-fast) ease; }
 
   .primary-action:hover,
-  .secondary-action:hover { transform: none; }
-
-  .primary-action:hover,
-  .secondary-action:hover { border-color: var(--accent-2); }
+  .secondary-action:hover { transform: none; border-color: var(--accent-2); }
 
   .era-portal { transition: border-color var(--motion-fast) ease, background var(--motion-fast) ease; }
   .era-portal__scan { animation: none; opacity: .08; background-position: 0 50%; }

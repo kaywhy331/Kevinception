@@ -832,12 +832,11 @@
   .future-text { padding: .8rem; }
   .future-text-moments,
   .future-text-cues { display: flex; overflow-x: auto; }
-  .future-text-agent > ol { display: grid; }
+  .future-text-agent > ol { display: grid; grid-template-columns: 1fr; }
   .future-text-moments button,
   .future-text-cues button { flex: 0 0 10rem; }
   .future-text-exchange li { grid-template-columns: 1fr; }
   .future-text-exchange li[data-speaker="kevin"] { margin-left: 4%; }
-  .future-text-agent > ol { grid-template-columns: 1fr; }
   .future-text-scene dl { grid-template-columns: 1fr; }
   .future-text-scene dd { margin-bottom: .35rem; }
 }

@@ -89,13 +89,13 @@
 .interface-mode { transition: opacity .22s ease, visibility 0s linear 0s; }
 .interface-mode.is-hidden { opacity: 0; visibility: hidden; pointer-events: none; transition: opacity .16s ease, visibility 0s linear .16s; }
 .interface-mode.is-visible { opacity: 1; visibility: visible; pointer-events: auto; }
-.interface-mode__bar { position: relative; z-index: 45; }
+.interface-mode__bar { position: relative; }
 .interface-mode__device { position: relative; overflow: hidden; }
-.interface-mode__frame { position: absolute; inset: clamp(.35rem, 1vw, .8rem); width: calc(100% - clamp(.7rem, 2vw, 1.6rem)); height: calc(100% - clamp(.7rem, 2vw, 1.6rem)); }
+.interface-mode__frame { position: absolute; }
 .interface-mode__frame.is-cached { display: none; }
-.interface-loading { position: absolute; inset: 0; z-index: 2; display: grid; place-items: center; align-content: center; gap: .8rem; background: radial-gradient(circle, color-mix(in srgb, var(--era-accent) 14%, #08090d), #08090d 68%); }
-.interface-loading p { margin: 0; color: #dce3ed; font-size: .8rem; letter-spacing: .04em; }
-.chapter-takeaway-panel { position: absolute; top: 4.25rem; right: 1rem; z-index: 44; width: min(430px, calc(100% - 2rem)); padding: 1rem; border: 1px solid color-mix(in srgb, var(--era-accent) 38%, rgba(255,255,255,.14)); border-radius: 14px; background: rgba(8,10,16,.97); box-shadow: 0 24px 80px rgba(0,0,0,.55); pointer-events: auto; }
+.interface-loading { position: absolute; inset: 0; z-index: 2; display: grid; place-items: center; align-content: center; background: radial-gradient(circle, color-mix(in srgb, var(--era-accent) 14%, #08090d), #08090d 68%); }
+.interface-loading p { margin: 0; color: #dce3ed; letter-spacing: .04em; }
+.chapter-takeaway-panel { position: absolute; right: 1rem; z-index: 44; padding: 1rem; border: 1px solid color-mix(in srgb, var(--era-accent) 38%, rgba(255,255,255,.14)); border-radius: 14px; background: rgba(8,10,16,.97); box-shadow: 0 24px 80px rgba(0,0,0,.55); pointer-events: auto; }
 .chapter-takeaway-panel:focus { outline: none; }
 .chapter-takeaway-panel h2 { margin: .15rem 0 .5rem; font-size: 1.3rem; color: white; }
 .chapter-takeaway-panel p { margin: .4rem 0; color: #bdc6d4; font-size: .82rem; }
@@ -106,7 +106,6 @@
 .experience-hint p { flex: 1; margin: 0; color: #c8d0dc; font-size: .73rem; }
 .experience-hint button { border: 1px solid rgba(255,255,255,.16); border-radius: 999px; background: var(--era-accent); color: #081018; font-weight: 800; padding: .45rem .7rem; cursor: pointer; }
 .experience-toolbar { transition: opacity .2s ease; }
-.transition-overlay { pointer-events: none; }
 .transition-copy { position: relative; z-index: 3; display: grid; gap: .45rem; padding: 1rem; text-align: center; }
 .transition-copy strong { color: white; font-size: clamp(1.25rem, 3vw, 2.2rem); letter-spacing: .03em; text-transform: uppercase; }
 .transition-copy p { margin: 0; color: #dbe4ef; font-size: .76rem; font-weight: 750; letter-spacing: .08em; text-transform: uppercase; }
