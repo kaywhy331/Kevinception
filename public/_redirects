@@ -1,4 +1,5 @@
-# Permanent redirects for Cloudflare Pages (Netlify uses netlify.toml).
+# Permanent redirects shared by Cloudflare Pages and Netlify.
+# Netlify preparation omits only portfolio here so its forced TOML rule wins.
 # Source of truth: deploy/redirects.json — npm run check:security enforces parity.
 /experience/gen-x /experience/1990/ 301
 /experience/gen-x/ /experience/1990/ 301
