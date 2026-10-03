@@ -558,11 +558,25 @@ function SettingsPanel() {
   const reset = useExperienceStore((state) => state.resetProgress);
   const [confirmingReset, setConfirmingReset] = useState(false);
   const card = useRef<HTMLElement>(null);
+  const keepButton = useRef<HTMLButtonElement>(null);
+  const resetTrigger = useRef<HTMLButtonElement>(null);
+  const wasConfirming = useRef(false);
   const close = useCallback(() => {
     setConfirmingReset(false);
     setOpen(false);
   }, [setOpen]);
   useModalFocus(open, card, close);
+  // Keep is the safe default when asking; leaving the question returns focus to its
+  // trigger so the focused button never unmounts into <body>, outside the focus trap.
+  useEffect(() => {
+    if (confirmingReset) {
+      keepButton.current?.focus({ preventScroll: true });
+      wasConfirming.current = true;
+    } else if (wasConfirming.current) {
+      wasConfirming.current = false;
+      resetTrigger.current?.focus({ preventScroll: true });
+    }
+  }, [confirmingReset]);
   if (!open) return null;
   return (
     <div className="modal-backdrop" role="presentation" onMouseDown={close}>
@@ -592,10 +606,10 @@ function SettingsPanel() {
             <p id="reset-confirm-copy">Clear recovered artifacts, visited chapters, and the future-wing journey in this browser?</p>
             <div className="button-row">
               <button type="button" className="settings-reset__confirm" onClick={() => { reset(); close(); }}>Reset progress</button>
-              <button type="button" autoFocus onClick={() => setConfirmingReset(false)}>Keep progress</button>
+              <button type="button" ref={keepButton} onClick={() => setConfirmingReset(false)}>Keep progress</button>
             </div>
           </div>
-        ) : <button type="button" onClick={() => setConfirmingReset(true)}>Reset local progress…</button>}
+        ) : <button type="button" ref={resetTrigger} onClick={() => setConfirmingReset(true)}>Reset local progress…</button>}
       </section>
     </div>
   );
@@ -703,6 +717,9 @@ function UtilityMenu() {
 
   const activate = (action: () => void) => {
     setOpen(false);
+    // The item unmounts with the menu; park focus on the trigger first so a dialog
+    // opened by the action restores focus somewhere real when it closes.
+    trigger.current?.focus({ preventScroll: true });
     action();
   };
 
