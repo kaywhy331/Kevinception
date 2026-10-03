@@ -11,6 +11,8 @@ const run = (input: string) => {
   const root = fs.mkdtempSync(path.join(os.tmpdir(), 'kc-netlify-'));
   try {
     fs.mkdirSync(path.join(root, 'out'));
+    fs.mkdirSync(path.join(root, 'public'));
+    fs.copyFileSync('public/_headers', path.join(root, 'public/_headers'));
     const file = path.join(root, 'out/_redirects');
     fs.writeFileSync(file, input);
     const result = spawnSync(process.execPath, [script], { cwd: root, encoding: 'utf8' });

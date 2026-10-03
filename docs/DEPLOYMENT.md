@@ -45,11 +45,32 @@ deploy/cloudfront-response-headers-policy.json
 
 ```toml
 [build]
-command = "npm run build"
+command = "npm run build && node scripts/prepare-netlify.mjs"
 publish = "out"
 ```
 
-`public/_headers` is copied into the export and supplies security and caching headers.
+`public/_headers` supplies the canonical security and caching headers. The Netlify
+preparation step also delegates the portfolio redirect to the forced TOML rule.
+
+For the existing staging site only, preparation adds `X-Robots-Tag: noindex` to
+every static response. It matches `SITE_ID=2302e233-299a-4a8d-9880-2fad22bbacf9`,
+not the deploy context: canonical staging and production both use the production
+context. Netlify supplies `SITE_ID` during its builds. Every other site ID, or an
+unset ID, restores the canonical headers without the staging indexing rule.
+
+Before a manual staging upload, run the preparation step with that staging ID,
+then select the same site explicitly in the upload command:
+
+```bash
+SITE_ID=2302e233-299a-4a8d-9880-2fad22bbacf9 node scripts/prepare-netlify.mjs
+netlify deploy --dir out --site 2302e233-299a-4a8d-9880-2fad22bbacf9 --prod
+```
+
+Here `--prod` publishes the existing **staging site** at its canonical hostname;
+it does not target the separate production site. Do not reuse a staging-prepared
+directory for another target without rerunning preparation with that target's
+`SITE_ID` (or rebuilding). `noindex` is a crawler directive, not authentication or
+an access restriction. Verify the canonical hostname's response after publication.
 
 ## Vercel
 
