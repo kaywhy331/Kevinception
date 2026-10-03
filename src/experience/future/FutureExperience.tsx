@@ -306,7 +306,12 @@ function CoexistenceExperience() {
   const sound = useExperienceStore((state) => state.sound);
   const motion = useExperienceStore((state) => state.motion);
   const [exchangeIndex, setExchangeIndex] = useState(0);
+  const viewMode = useExperienceStore((state) => state.viewMode);
   const [live, setLive] = useState(false);
+  // Auto-play contract: the toggle's aria-pressed state is the visitor's choice and survives hiding.
+  // It only runs (clock + voice) while the interface is the visible view; returning resumes it
+  // from the same exchange line, and an unpressed toggle never starts on its own.
+  const running = live && viewMode === 'interface';
   const [lensOpen, setLensOpen] = useState(false);
   const stagedReveal = useRef<HTMLUListElement>(null);
   const consentBeat = useRef<HTMLFieldSetElement>(null);
@@ -382,19 +387,19 @@ function CoexistenceExperience() {
   // Auto-play: Saito keeps the exchange moving on a natural clock. Consent is
   // never advanced by the machine; the toggle is the pause.
   useEffect(() => {
-    if (!live || !nextBeat) return;
+    if (!running || !nextBeat) return;
     const delay = Math.min(1400 + activeBeat.line.length * 26, 6200);
     const timer = window.setTimeout(advanceExchange, delay);
     return () => window.clearTimeout(timer);
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [live, exchangeIndex, coexistence.activeMoment]);
+  }, [running, exchangeIndex, coexistence.activeMoment]);
 
   // Auto-play gives Saito a voice when sound is on.
   useEffect(() => {
-    if (!live || !sound || activeBeat.speaker !== 'saito') return;
+    if (!running || !sound || activeBeat.speaker !== 'saito') return;
     speakLine(activeBeat.line, 0.96, 0.82);
     return cancelSpeech;
-  }, [live, sound, activeBeat]);
+  }, [running, sound, activeBeat]);
 
   // Keep the staged reveal—especially its gated last card—in view when it lands.
   useEffect(() => {
@@ -638,8 +643,13 @@ function ConsciousnessExperience() {
   const unwitnessed = COEXISTENCE_MOMENT_IDS.every((id) => coexistence.consent[id] === 'unasked');
   const earnedLine = getEarnedMemoryLine(coexistence);
 
-  // Leaving the chapter silences him.
+  const viewMode = useExperienceStore((state) => state.viewMode);
+
+  // Leaving the chapter, or hiding the interface, silences him.
   useEffect(() => cancelSpeech, []);
+  useEffect(() => {
+    if (viewMode !== 'interface') cancelSpeech();
+  }, [viewMode]);
 
   const chooseCue = (cueId: ConsciousnessCueId) => {
     if (released) return;
