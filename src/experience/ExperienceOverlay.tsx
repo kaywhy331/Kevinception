@@ -522,7 +522,7 @@ function TextMode() {
         {activeYear === '2040' && <FutureTextExperience year="2040" />}
         <h2>Kevin’s work in this layer</h2>
         <div className="text-mode__grid">
-          {featured.map((project) => <section key={project.slug}><h3>{project.title}</h3><p>{project.summary}</p><Link href={`/work/${project.slug}/`}>Open case study</Link></section>)}
+          {featured.map((project) => <section key={project.slug}><h3>{project.title}</h3><p>{project.summary}</p><Link href={`/work/${project.slug}/`} aria-label={`Open case study: ${project.title}`}>Open case study</Link></section>)}
         </div>
         <div className="button-row"><button type="button" onClick={() => navigateToYear(next ?? '1990')}>{next ? `Continue to ${eraConfigs[next].chapterName}` : 'Return to Curiosity'}</button></div>
       </article>
