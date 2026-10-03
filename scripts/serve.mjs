@@ -7,7 +7,7 @@ const root = path.resolve(process.argv[2] ?? 'out');
 const requested = Number(process.argv[3] ?? process.env.PORT ?? 4321);
 const mime = {
   '.html': 'text/html; charset=utf-8', '.js': 'text/javascript; charset=utf-8', '.css': 'text/css; charset=utf-8',
-  '.json': 'application/json; charset=utf-8', '.svg': 'image/svg+xml', '.png': 'image/png', '.jpg': 'image/jpeg',
+  '.json': 'application/json; charset=utf-8', '.txt': 'text/plain; charset=utf-8', '.svg': 'image/svg+xml', '.png': 'image/png', '.jpg': 'image/jpeg',
   '.jpeg': 'image/jpeg', '.webp': 'image/webp', '.glb': 'model/gltf-binary', '.mp4': 'video/mp4', '.woff2': 'font/woff2'
 };
 
@@ -29,19 +29,26 @@ const server = http.createServer((req, res) => {
   let pathname = decodeURIComponent(url.pathname);
   if (pathname.endsWith('/')) pathname += 'index.html';
   let file = path.resolve(root, `.${pathname}`);
+  let status = 200;
   if (!file.startsWith(root)) {
     res.writeHead(403).end('Forbidden'); return;
   }
   if (!fs.existsSync(file) || fs.statSync(file).isDirectory()) {
     const htmlCandidate = `${file}.html`;
+    const indexCandidate = path.join(file, 'index.html');
     if (fs.existsSync(htmlCandidate)) file = htmlCandidate;
-    else file = path.join(root, '404.html');
+    else if (fs.existsSync(indexCandidate)) file = indexCandidate;
+    else {
+      status = 404;
+      file = path.join(root, '404.html');
+    }
   }
   const ext = path.extname(file).toLowerCase();
-  res.writeHead(fs.existsSync(file) ? 200 : 404, {
+  res.writeHead(fs.existsSync(file) ? status : 404, {
     'Content-Type': mime[ext] ?? 'application/octet-stream',
     'Cache-Control': ext === '.html' ? 'no-cache' : 'public, max-age=3600'
   });
+  if (!fs.existsSync(file)) { res.end('Not found'); return; }
   fs.createReadStream(file).pipe(res);
 });
 server.listen(port, '127.0.0.1', () => console.log(`Kevinception V7 preview: http://127.0.0.1:${port}`));

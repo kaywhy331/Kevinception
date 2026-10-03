@@ -61,3 +61,7 @@ Changed application files are the two listed above. New repository files are `te
 Raw browser reports and screenshots: `artifacts/journey-audit.json`, `artifacts/journey-audit-after.json`, and `artifacts/journey-audit/`. Most before screenshots were overwritten by the after probe; the before JSON remains, and Codex preserved two early screenshot samples separately. The audit helper defaults to port 4416; use `BASE_URL=http://127.0.0.1:4416` explicitly when reproducing the recorded run.
 
 Durable external evidence directory: `/home/cali/home/cali/project/kc-evidence-20261003/`. It contains `launch-receipt.json`, `claude-result.json`, `sonnet-probe.json`, prompt and launcher, failing-before/unit/build logs, `codex-gates.tsv`, baseline/patched lint and bundle logs, `bundle-comparison.json`, `verify-journey-links.mjs`, and `codex-browser-acceptance.json`. The original Claude report is retained as `claude-report-original.md`; this reviewed report corrects its unsupported claims.
+
+## Routing follow-up
+
+The bounded local routing repair and its functional keyboard-navigation evidence are recorded in [ROUTING_REPAIR.md](ROUTING_REPAIR.md). Kevin selected Codex CLI for that follow-up, superseding the earlier runtime recommendation above. This audit's original failure evidence and coverage limitations remain historical findings.
